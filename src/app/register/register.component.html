@@ -1,0 +1,92 @@
+<div class="header">
+  <div class="header-centre">
+    <img src='../../assets/logo.png'>
+    <h1>Quantum Maintainance</h1>
+  </div>
+</div>
+
+<div class="register">
+    <form [formGroup]="registerForm" (ngSubmit)="register()" >
+        <h1 id="reg">Sign Up</h1>
+        <div class="form-group d-flex justify-content-between">
+          <mat-form-field style="padding-left: 0px;">
+            <mat-label>FirstName</mat-label>
+            <input matInput type="text" class="form-control" formControlName="firstName" >
+            
+          </mat-form-field>
+        
+          <mat-form-field >
+            <mat-label>LastName</mat-label>
+            <input matInput type="text" class="form-control" formControlName="lastName">
+            
+          </mat-form-field>
+        </div>
+        <div class="form-group">
+          <mat-form-field style="width: 100%;">
+            <mat-label>Company Name</mat-label>
+            <input matInput type="text" class="form-control" formControlName="companyName" >
+            
+          </mat-form-field>
+      
+        </div>
+        <div class="form-group">
+          <mat-form-field style="width: 100%;">
+            <mat-label>Email</mat-label>
+            <input matInput type="email" class="form-control" formControlName="email">
+            
+          </mat-form-field>
+      
+        </div>
+        <div class="form-group">
+          <mat-form-field style="width: 100%;">
+            <mat-label>Mobile Number</mat-label>
+            <input matInput type="tel" class="form-control" formControlName="mobileNumber">
+            
+          </mat-form-field>
+      
+        </div>
+        <div class="form-group">
+          <mat-form-field style="width: 100%;">
+            <mat-label>Password</mat-label>
+            <input matInput type="password" class="form-control" formControlName="password" >
+            
+          </mat-form-field>
+      
+        </div>
+        <div class="form-group">
+          <mat-form-field style="width: 100%;">
+            <mat-label>Confirm Password</mat-label>
+            <input matInput type="password" class="form-control" formControlName="cpassword" >
+            
+          </mat-form-field>
+      
+        </div>
+       
+        <button type="submit" class="btn btn-primary" [disabled]="registerForm.invalid">Submit</button>
+        <div style="display: flex; justify-content: center; margin-top: 15px;">
+           
+              Already Have account?
+                <a  [routerLink]="['/login']"> Log in</a>
+            
+            
+
+        </div>
+      </form>
+</div>
+<div class="modal" tabindex="-1" role="dialog" [ngStyle]="{'display':displayStyle}">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h1 class="modal-title " >Alert</h1>
+      </div>
+      <div class="modal-body">
+        {{errorMessage}}
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-warning"  (click)="closePopup()">Close</button>
+      </div>
+
+    </div>
+  </div>
+
+</div>

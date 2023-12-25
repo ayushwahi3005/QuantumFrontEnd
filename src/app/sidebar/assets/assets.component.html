@@ -1,0 +1,152 @@
+<div>
+<div *ngIf="!detailedAsset">
+    <div class="row">
+      <div class="col flex justify-content-between searchBar" style="float: left;" >
+         <input type="text" (keyup)="onSearch($event)" placeholder="Search">
+         
+          <i class="bi bi-search"></i>
+          <a class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" fill="currentColor" class="bi bi-funnel-fill" viewBox="0 0 16 16">
+              <path d="M1.5 1.5A.5.5 0 0 1 2 1h12a.5.5 0 0 1 .5.5v2a.5.5 0 0 1-.128.334L10 8.692V13.5a.5.5 0 0 1-.342.474l-3 1A.5.5 0 0 1 6 14.5V8.692L1.628 3.834A.5.5 0 0 1 1.5 3.5v-2z"/>
+            </svg>
+            
+          </a>
+          <div class="dropdown-menu" aria-labelledby="dropdownMenuButton" style="z-index: 10;">
+            <a class="dropdown-item" (click)="onSort('name')">Sort By Name</a>
+            <a class="dropdown-item" (click)="onSort('serial')">Sort By Serial Number</a>
+            <a class="dropdown-item" (click)="onSort('category')">Sort By Category</a>
+            <a class="dropdown-item" (click)="onSort('customer')">Sort By Customer</a>
+            <a class="dropdown-item" (click)="onSort('location')">Sort By Location</a>
+            <a class="dropdown-item" (click)="onSort('status')">Sort By Status</a>
+            <a *ngFor="let item of selectedExtraColums"  class="dropdown-item" (click)="onSort(item)">Sort By {{item}}</a>
+          </div>
+      </div>
+      <div class="col filter">
+        
+      
+      
+      
+      <button class="btn btn-dark" (click)="exportexcel()">EXPORT</button>
+      <button class="btn btn-dark" data-toggle="modal" data-target="#importModel">IMPORT</button>
+      <ng-multiselect-dropdown
+        [placeholder]="'Columns...'"
+        [settings]="dropdownSettings"
+        [data]="extraFieldNameList"
+        [(ngModel)]="selectedExtraColums"
+        id="custom-columns">
+      </ng-multiselect-dropdown>
+      
+      
+      </div>
+    </div>
+    <div class="row" style="height: calc(100vh - 140px); overflow: scroll; width: 100%;">
+      <div class="col">
+        <button *ngIf="sortoption" class="sort btn btn-secondary" (click)="removeFilter()">Sorted By: {{sortoption|titlecase}} &times;</button>
+        <span *ngIf="searchText" class="search">Searched Text: {{searchText|titlecase}}</span>
+        <div class="extra-columns">
+
+
+        <!-- <mat-form-field>
+          <mat-label>Columns</mat-label>
+          <mat-select   multiple >
+            <mat-option *ngFor="let item of extraFieldName" type="checkbox" value="{{ item.name }}" (click)="onChange(item.name)" >{{item.name}}</mat-option>
+          </mat-select>
+        </mat-form-field> -->
+
+
+        
+
+
+
+      </div>
+      
+
+      
+    
+    
+      
+        
+        <table class="table" id="asset-table">
+            <thead class="table-dark">
+                <tr >
+                    <th scope="col">#</th>
+                    <th scope="col">Image</th>
+                    <th scope="col">Id</th>
+                   
+                    <th scope="col">Name</th>
+                    <th scope="col">Serial #</th>
+                    <th scope="col">Category</th>
+                    <th scope="col">Customer</th>
+                    <th scope="col">Location</th>
+                    <th scope="col">Status</th>
+                    <th scope="col" *ngFor="let col of selectedExtraColums">{{col}}</th>
+                  </tr>
+            </thead>
+            <tbody>
+                <tr *ngFor="let item of searchedAssets" (click)="changeAssetDetails(item)">
+                    <th scope="row">{{searchedAssets.indexOf(item)+1}}</th>
+                    <td class="d-flex justify-content-between upload"><img src="../../../assets/asset_image.jpg" class="image" *ngIf="!item.image" ><img src={{item.image}} class="image"  *ngIf="item.image"  ></td>
+                    <td>{{item.id}}</td>
+                    <td>{{item.name|titlecase}}</td>
+                    <td>{{item.serialNumber}}</td>
+                    <td>{{item.category|titlecase}}</td>
+                    <td>{{item.customer|titlecase}}</td>
+                    <td>{{item.location|titlecase}}</td>
+                    <td>{{item.status|titlecase}}</td>
+                    <td *ngFor="let col of selectedExtraColums">{{item[col]|titlecase}}</td>
+                    
+                    
+                    
+                  </tr>
+                 
+            </tbody>
+          </table>
+      </div>
+    </div>
+  </div>
+
+
+  <div class="modal fade" id="importModel" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h2 class="modal-title" id="exampleModalLongTitle">Select File To Import</h2>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close" #closeBox>
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <form>
+          <input type="file" (change)="onSubmit($event)" #excelFile required>
+          <button class="btn btn-primary close" data-dismiss="modal" aria-label="Close" (click)="onAdd()" (click)="closeBox.click()" (click)="excelFile.value=''" [disabled]="excelFile.value==''">ADD</button>
+          </form>
+         
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+  <div class="modal fade" id="imageUploadModel" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h2 class="modal-title" id="exampleModalLongTitle">Select Image To Upload</h2>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close" #closeBox2>
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <form class="d-flex justify-content-between">
+            <input type="file" (change)="imageUpload($event)" (click)="closeBox2.click()" #imageFile>
+            <button class="btn btn-danger" (click)="removeImage() " (click)="closeBox2.click()">Remove</button>
+          </form>
+
+         
+        </div>
+      </div>
+    </div>
+  </div>
+<app-asset-details  *ngIf="detailedAsset" [assetDetails]="currDetails" (backStatus)=onBackClicked($event) [ngClass]="{'app-assets-open':!hoverOverSidebar}"></app-asset-details>
+</div> 
+      

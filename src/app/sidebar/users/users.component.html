@@ -1,0 +1,59 @@
+
+<div style="width: 100vw; display: flex; justify-content: center;"><button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModalLong">
+    Add User
+  </button></div>
+  
+
+<div class="modal fade" id="exampleModalLong" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h2 class="modal-title" id="exampleModalLongTitle">Select User Role</h2>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          
+          <form [formGroup]="userForm" (ngSubmit)="addUser()" >
+           
+            <div class="d-flex justify-content-between form-group">
+              <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="currentColor" class="bi bi-file-person-fill" viewBox="0 0 16 16">
+                <path d="M12 0H4a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2zm-1 7a3 3 0 1 1-6 0 3 3 0 0 1 6 0zm-3 4c2.623 0 4.146.826 5 1.755V14a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1v-1.245C3.854 11.825 5.377 11 8 11z"/>
+              </svg>
+              <label for="admin"><h2>Admin <embed src="../../../assets/star.svg" style="height: 10px;"/></h2><p>Admins have full access!! You can invite them </p></label>
+              <input type="radio" formControlName="usertype" value="admin" id="admin" >
+            </div>
+            <div class="d-flex justify-content-between form-group">
+              <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="currentColor" class="bi bi-file-person-fill" viewBox="0 0 16 16">
+                <path d="M12 0H4a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2zm-1 7a3 3 0 1 1-6 0 3 3 0 0 1 6 0zm-3 4c2.623 0 4.146.826 5 1.755V14a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1v-1.245C3.854 11.825 5.377 11 8 11z"/>
+              </svg>
+              <label for="technical"><h2>Technical <embed src="../../../assets/star.svg" style="height: 10px;"/></h2><p>Technical have full access!! You can invite them </p></label>
+              <input type="radio"  formControlName="usertype" value="technical" id="technical" >
+            </div>
+            <div class="d-flex justify-content-between form-group">
+              <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="currentColor" class="bi bi-file-person-fill" viewBox="0 0 16 16">
+                <path d="M12 0H4a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2zm-1 7a3 3 0 1 1-6 0 3 3 0 0 1 6 0zm-3 4c2.623 0 4.146.826 5 1.755V14a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1v-1.245C3.854 11.825 5.377 11 8 11z"/>
+              </svg><label for="limitedtechnical"><h2>Limited Technical <embed src="../../../assets/star.svg" style="height: 10px;"/></h2><p>Limited Technical have full access!! You can invite them </p></label>
+              <input type="radio"  formControlName="usertype" value="limitedtechnical" id="limitedtechnical" >
+            </div>
+            <div class="d-flex justify-content-between form-group">
+              <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="currentColor" class="bi bi-file-person-fill" viewBox="0 0 16 16">
+                <path d="M12 0H4a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2zm-1 7a3 3 0 1 1-6 0 3 3 0 0 1 6 0zm-3 4c2.623 0 4.146.826 5 1.755V14a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1v-1.245C3.854 11.825 5.377 11 8 11z"/>
+              </svg><label for="viewonly"><h2>View Only</h2><p>Only can view!! Dont have full access. You can invite them </p></label>
+              <input type="radio" formControlName="usertype" value="viewonly" id="viewonly">
+            </div>
+            <hr>
+            <div class="d-flex justify-content-between form-group">
+              <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="currentColor" class="bi bi-envelope" viewBox="0 0 16 16">
+                <path d="M0 4a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V4Zm2-1a1 1 0 0 0-1 1v.217l7 4.2 7-4.2V4a1 1 0 0 0-1-1H2Zm13 2.383-4.708 2.825L15 11.105V5.383Zm-.034 6.876-5.64-3.471L8 9.583l-1.326-.795-5.64 3.47A1 1 0 0 0 2 13h12a1 1 0 0 0 .966-.741ZM1 11.105l4.708-2.897L1 5.383v5.722Z"/>
+              </svg><label for="email" style="padding-top: 18px; width: 20%;"><h2>Email</h2></label>
+              <input type="email" formControlName="email" class="form-control" id="email" style="height: 30px; width: 90%">
+            </div>
+            <button type="submit" class="btn btn-primary" [disabled]="userForm.invalid" >Invite</button>
+          </form>
+        </div>
+        
+      </div>
+    </div>
+  </div>

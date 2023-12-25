@@ -1,0 +1,228 @@
+.main{
+    display: flex;
+    flex-direction: row;
+    /* justify-content:space-evenly */
+    
+}
+
+img{
+    width: 30%;
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+    border-radius: 30px;
+    height: 300px;
+    margin-bottom: 30px;
+}
+.option{
+    
+    /* width: 100px; */
+    height: 70px;
+    margin-right: 10px;
+   
+   background-color: #c2c7cf;
+   
+    
+    
+}
+ .option span{
+    border: 1px solid #8c8e91;
+    width: 50%;
+    display: flex;
+    justify-content: center;
+    padding-top: 20px;
+    border-radius: 5px;
+    font-size: large;
+
+   
+} 
+.container{
+    display: flex;
+    flex-direction: column;
+   
+} 
+.selected-option{
+    background-color: #12232E;
+    color: white;
+    
+}
+input{
+    margin: 10px 2px;
+}
+
+table i{
+    color: red;
+    margin-bottom: 2px;
+    font-size: larger;
+    margin-left: 20px;
+
+}
+table{
+    width:100%;
+}
+.nav-button{
+
+
+position: fixed;
+ bottom: 0px;
+ width:  100vw;
+ display: flex;
+ justify-content:center;
+ background-color: #F8F9F9;
+    padding-right: 8%;
+    padding-top: 10px;
+    border:1px solid darkgray;
+
+}
+.nav-button button{
+    margin: 10px;
+
+}
+
+
+#dropdownMenuButton{
+    margin: 10px 10px;
+}
+label{
+    margin-bottom: 2px;
+}
+.extra-field-input span{
+   padding-top: 10px;
+}
+.extra-field-input i{
+    padding-top: 10px;
+    color: red;
+    display: inline-flex;
+    margin-top: 25px;
+
+}
+.extra-field-input button{
+    margin-top: 25px;
+}
+input{
+    width: 100%;
+  border-radius: 8px;
+  padding: 12px 20px;
+  margin: 8px 0;
+  box-sizing: border-box;
+  border: 3px solid #aab1b8;
+  -webkit-transition: 0.5s;
+  transition: 0.5s;
+  outline: none;
+}
+.extra-field-input{
+    color: #5E6164;
+}
+.card-body input{
+    color: #717275;
+    background-color: #F8F9F9;
+    margin-bottom: 30px;
+}
+.card{
+    width: 75vw;
+    margin-right: 10px;
+    margin-bottom: 100px;
+}
+input:focus {
+    border: 3px solid #1a65ab;
+  }
+.back-button{
+    cursor: default;
+    text-decoration: none;
+    color: #8c8e91;
+    font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+    
+    margin-top: 10px;
+    font-size: larger;
+    float: inline-start;
+    height: 20px;
+    padding: 10px;
+    margin: 10px;
+    
+    
+    
+   
+    
+}
+.back-button:hover{
+    color: #1a65ab;
+    
+}
+body{
+    float: left;
+}
+i{
+    display: inline-flex;
+}
+tr:hover{
+    box-shadow: 5px 5px 20px grey;
+}
+.checkedIn-status{
+    background-color: green;
+    padding: 5px 5px;
+    color: white;
+    border-radius: 5px;
+    float: inline-end;
+}
+.checkedOut-status{
+    background-color: #DE3163;
+    padding: 5px 5px;
+    color: white;
+    border-radius: 5px;
+    float: inline-end;
+}
+.danger-button{
+    background-color: #DA3445;
+    padding: 5px 5px;
+    border-radius: 5px;
+    border-color: #DA3445;
+    color: white;
+}
+/* .{
+    background-color: #1a65ab;
+    padding: 5px 5px;
+    border-radius: 5px;
+    border-color: #1a65ab;
+    color: white;
+} */
+.onhold{
+    height: 15px;
+    width: 15px;
+    border-radius: 15px;
+    background-color: #E7B948;
+    display: inline-flex;
+    margin: 0px 5px;
+}
+.closed{
+    height: 15px;
+    width: 15px;
+    border-radius: 15px;
+    background-color: rgb(64, 136, 238);
+    display: inline-flex;
+    margin: 0px 5px;
+}
+.inprogress{
+    height: 15px;
+    width: 15px;
+    border-radius: 15px;
+    background-color: #26C464;
+    display: inline-flex;
+    margin: 0px 5px;
+}
+.open{
+    height: 15px;
+    width: 15px;
+    border-radius: 15px;
+    background-color: lightgray;
+    border: 1px gray solid;
+    display: inline-flex;
+    margin: 0px 5px;
+}
+i{
+    font-size: large;
+    color: #5E6164;
+}
+i:hover{
+    color: #0D6EFD;
+}
+.delete:hover{
+    color: #DA3445;
+}

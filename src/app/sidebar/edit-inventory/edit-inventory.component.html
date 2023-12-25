@@ -1,0 +1,73 @@
+<div class="container d-flex justify-content-center" *ngIf="!loadingScreen">
+<form  [formGroup]="inventoryForm" (ngSubmit)="editInventory()">
+    <div  class="form-group d-flex justify-content-center">
+      <img src="../../../assets/asset_image.jpg" class="image" *ngIf="!img"  data-toggle="modal" data-target="#imageUploadModel1">
+      <img src={{img}} class="image"  *ngIf="img"  data-toggle="modal" data-target="#imageUploadModel1">
+      <!-- <input type="file" class="form-control" id="PartImage" (change)="imageChange($event)" #partImage > -->
+     
+    </div>
+    <div class="form-group">
+      <label for="PartId">Part Id</label>
+      <input type="text" class="form-control" id="PartId" formControlName="partId"   required="true" #partId ngModel={{inventory.partId}}>
+    </div>
+    
+      <div class="form-group">
+        <label for="PartName">Part Name</label>
+        <input type="text" class="form-control" id="PartName" formControlName="partName"   ngModel={{inventory.partName}} required >
+      </div>
+    
+    
+      <div class="form-group">
+        <label for="Price">Price</label>
+        <input type="number" class="form-control" id="Price" formControlName="price"   ngModel={{inventory.price}}>
+      </div>
+   
+      <div class="form-group">
+        <label for="Price">Cost</label>
+        <input type="number" class="form-control" id="Cost" formControlName="cost"  ngModel={{inventory.cost}}>
+      </div>
+      <div class="form-group">
+        <label for="Price">Category</label>
+        <input type="text" class="form-control" id="Category" formControlName="category"  ngModel={{inventory.category}}>
+      </div>
+      <div class="form-group">
+        <label for="Price">Quantity</label>
+        <input type="text" class="form-control" id="Quantity" formControlName="quantity" ngModel={{inventory.quantity}} >
+      </div>
+      <div class="form-group d-flex justify-content-center">
+        <button type="submit" class="btn btn-primary mt-3 "  [disabled]=inventoryForm.invalid >Update</button>
+      </div>
+      <div class="form-group d-flex justify-content-center">
+        <button type="submit" class="btn btn-danger mt-3 " (click)="deleteInventory()" >Delete</button>
+      </div>
+
+        
+      
+    
+  </form>
+</div>
+<div class="modal fade" id="imageUploadModel1" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2 class="modal-title" id="exampleModalLongTitle">Select Image To Upload</h2>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close" #closeBox2>
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <form class="d-flex justify-content-">
+          <input type="file" class="form-control" id="PartImage" (click)="closeBox2.click()" (change)="imageChange($event)" #partImage >
+          
+        </form>
+
+       
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-danger" (click)="removeTheImage()" (click)="closeBox2.click()" >Remove</button>
+      </div>
+      
+    </div>
+  </div>
+</div>
+<div class="loading" *ngIf="loadingScreen"></div>

@@ -1,0 +1,69 @@
+<div class="main" *ngIf="!loadingScreen">
+
+    <div class="back-button">
+        <a [routerLink]="['/dashboard']" style="margin-right: 30px; text-decoration: none;"  >&larr; Back to WorkOrder</a>
+      </div>
+
+<div class="mainform">
+    <h2 style="display: flex; justify-content: center;">Work Order Details</h2>
+    <hr>
+<form [formGroup]="workOrderUpdateForm" (ngSubmit)="onSubmit()">
+    <div class="form-group">
+        <label for="status">Status</label>
+       <br>
+        <select class="form-select" class="form-control" id="status" formControlName="status" ngModel={{workOrder.status}} [ngClass]="{'open':(workOrder.status=='open'),'closed':(workOrder.status=='closed'),'onhold':(workOrder.status=='onHold'),'inprogress':(workOrder.status=='inProgress')}" (change)="onDropDownChange(mySelect.value)"  [ngStyle]="{'background-color': (currColor.toLowerCase()=='open') ? 'lightgray' : ((currColor.toLowerCase()=='inprogress') ? '#26C464' : ((currColor.toLowerCase()=='onhold') ? '#FFC008' : '#4088ee')) }"  #mySelect>
+         
+          <option value="open" >OPEN</option>
+          <option value="onHold">ON HOLD</option>
+          <option value="inProgress" >IN PROGRESS</option>
+          <option value="closed" >CLOSED</option>
+          
+        </select>
+      </div> 
+    <div class="form-group">
+        <label for="description">Description</label>
+        <input type="text" class="form-control" id="description"  formControlName="description" ngModel={{workOrder.description}} >
+       
+      </div>
+      <div class="form-group">
+        <label for="customer">Customer</label>
+        <input type="text" class="form-control" id="customer" formControlName="customer"  ngModel={{workOrder.customer}}>
+      </div>
+      
+        <div class="form-group">
+          <label for="due-date">Due Date</label>
+          <!-- <input type="date" class="form-control" id="due-date" formControlName="dueDate" [(ngModel)]="workOrder.dueDate" value="{{workOrder.dueDate|date}}" > -->
+          <input id="due-date" type="date" class="form-control" ngModel={{workOrder.dueDate}} formControlName="dueDate" >
+        </div>
+      
+      
+        <div class="form-group">
+          <label for="technician">Technician</label>
+          <input type="text" class="form-control" id="technician" formControlName="assignedTechnician"  ngModel={{workOrder.assignedTechnician}}>
+        </div>
+     
+        <div class="form-group">
+          <label for="priority">Priority</label>
+          <select class="form-select" class="form-control" id="priority" formControlName="priority" ngModel={{workOrder.priority}} >
+           
+            <option value="None" >None</option>
+            <option value="Low">Low</option>
+            <option value="Medium" selected>Medium</option>
+            <option value="High">High</option>
+          </select>
+        </div>
+       <div class="form-group">
+          <label for="asset-details">Asset Details</label>
+         
+          <select class="form-select" class="form-control" id="asset-details" formControlName="assetDetails" ngModel={{workOrder.assetDetails}} >
+   
+            <option value={{workOrder.assetDetails}} selected>{{workOrder.assetDetails}}</option>
+            
+          </select>
+        </div>
+        
+    <button type="submit" class="btn btn-primary submit" [disabled]=workOrderUpdateForm.invalid style="margin-left: 45%;">Update WorkOrder</button>
+  </form>
+</div>
+</div>
+<div class="loading" *ngIf="loadingScreen"></div>

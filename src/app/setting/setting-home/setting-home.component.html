@@ -1,0 +1,67 @@
+<ul class="nav justify-content-between header">
+  
+    <div class="header-centre">
+      <img src='../../assets/logo.png'>
+      <h1>Quantum Maintenance</h1>
+    </div>
+  
+  
+ 
+  
+    <li class="nav-item"  style="padding-right: 5px; margin-top: 10px;">
+    <b>Welcome</b> <span style="margin: 10px;">{{username}}</span>
+    <i class="bi bi-bell-fill" matBadge="15" matBadgeColor="warn"></i>
+    
+    <span class="dropdown">
+      <a class="dropdown-toggle" type="button" data-toggle="dropdown"><i class="bi bi-person-circle"></i>
+     
+      <span class="caret"></span></a>
+      <ul class="dropdown-menu">
+       
+        <li><a href="#" style="text-decoration: none; color: black;">Profile</a></li>
+        <hr>
+     
+        <li ><a (click)="logout()">Logout</a></li>
+       
+       
+
+      </ul>
+    </span>
+    
+    </li>
+
+
+
+  
+
+
+
+    
+    
+    
+</ul>
+<div class="side-navbar"   >
+    <h2 style="padding: 10px 15px;">Custom Fields</h2>
+    <ul class="nav-list"  >
+    
+   
+    <li class="nav-list-item" *ngFor="let item of sideBarOption" [ngClass]="{'selected':(current==item.number)}"  (click)="update(item.number)">
+
+      <i class={{item.icon}}></i>
+      <span >
+        
+        {{item.name}}
+      </span>
+    
+    </li>
+
+  
+
+
+  </ul>
+</div>
+<div class="content-area" >
+    <!-- <app-workorder *ngIf="current==1" ></app-workorder> -->
+    <app-asset-module *ngIf="current==3"></app-asset-module>
+    <!-- <app-users *ngIf="current==6"></app-users> -->
+</div>

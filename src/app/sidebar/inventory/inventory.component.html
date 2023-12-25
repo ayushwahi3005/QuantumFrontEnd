@@ -1,0 +1,116 @@
+<h1 style="display: flex; justify-content: center;">Inventory</h1>
+<button class="btn btn-primary mt-2 me-5" style="float: right;" data-toggle="modal" data-target="#addInventory" >+ Inventory</button>
+<div class="row" style="height: calc(100vh - 140px); overflow: scroll; width: 100%;">
+    <div class="col">
+      <!-- <button *ngIf="sortoption" class="sort btn btn-secondary" (click)="removeFilter()">Sorted By: {{sortoption|titlecase}} &times;</button>
+      <span *ngIf="searchText" class="search">Searched Text: {{searchText|titlecase}}</span> -->
+      
+      
+      <table class="table" id="inventory-table">
+          <thead class="table-dark">
+              <tr>
+                  <th scope="col">#</th>
+                  <th scope="col">Part Image</th>
+                  <th scope="col">Part ID</th>                 
+                  <th scope="col"> Part Name</th>
+                  <th scope="col">Price</th>
+                  <th scope="col">Cost</th>
+                  <th scope="col">Category</th>
+                  <th scope="col">Quantity</th>
+                  <th scope="col"> Running Low</th>
+                  <th scope="col">Stock</th>
+                  <th></th>
+                </tr>
+          </thead>
+          <tbody>
+              <tr *ngFor="let item of inventoryList" (mouseenter)="editButtonVisibile(inventoryList.indexOf(item)+1)" (mouseleave)="editButtonNotVisible()">
+                  <th scope="row">{{inventoryList.indexOf(item)+1}}</th>
+                  
+            
+                  <td style="color: black;"  data-toggle="modal" data-target="#imagePopUp" (click)="updatePopUpImage(item.partImage)"><img src="../../../assets/asset_image.jpg" class="image" *ngIf="!item.partImage" ><img src={{item.partImage}} class="image"  *ngIf="item.partImage"  ></td>
+                  <td>{{item.partId|titlecase}}</td>
+                  <td>{{item.partName}}</td>
+                  <td >{{item.price}}</td>
+                  <td >{{item.cost}}</td>
+                  <td>{{item.category|titlecase}}</td>
+                  <td>{{item.quantity}}</td>
+                  <td></td>
+                  <td style="font: message-box;" [ngStyle]="{'color':item.quantity<=0?'red':'green'}" ><p *ngIf="item.quantity<=0" >Out of Stock</p><p *ngIf="item.quantity>0">In Stock</p></td>
+                  <td>
+                    <i class="bi bi-pencil" [ngClass]="{'editoption':!(editVisibility&&(editButtonId==inventoryList.indexOf(item)+1))}"  style="float: inline-start; margin: 15px 5px;"  [routerLink]="['/edit-inventory',item.id]" ></i>
+                    <i class="bi bi-trash"  [ngClass]="{'editoption':!(editVisibility&&(editButtonId==inventoryList.indexOf(item)+1))}" style="color: red; float: inline-start; margin: 15px 5px;" (click)="deleteInventory(item.id)"></i>
+                  </td>
+                  
+                </tr>
+              
+               
+          </tbody>
+        </table>
+    </div>
+  </div>
+  <div class="modal fade" id="addInventory" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle" aria-hidden="true" >
+    <div class="modal-dialog modal-xl" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h2 class="modal-title" id="exampleModalLongTitle">Add Inventory</h2>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close" #closeBox>
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body" >
+            <form [formGroup]="inventoryForm" (ngSubmit)="addInventory()">
+                <div  class="form-group">
+                  <label for="PartImage">Part Image</label>
+                  <input type="file" class="form-control" id="PartImage" (change)="imageChange($event)" #partImage>
+                 
+                </div>
+                <div class="form-group">
+                  <label for="PartId">Part Id</label>
+                  <input type="text" class="form-control" id="PartId" formControlName="partId"  placeholder="Part Id" required="true" #partId>
+                </div>
+                
+                  <div class="form-group">
+                    <label for="PartName">Part Name</label>
+                    <input type="text" class="form-control" id="PartName" formControlName="partName"  placeholder="Part Name" required>
+                  </div>
+                
+                
+                  <div class="form-group">
+                    <label for="Price">Price</label>
+                    <input type="number" class="form-control" id="Price" formControlName="price"  placeholder="Price">
+                  </div>
+               
+                  <div class="form-group">
+                    <label for="Price">Cost</label>
+                    <input type="number" class="form-control" id="Cost" formControlName="cost"  placeholder="Cost">
+                  </div>
+                  <div class="form-group">
+                    <label for="Price">Category</label>
+                    <input type="text" class="form-control" id="Category" formControlName="category"  placeholder="Category">
+                  </div>
+                  <div class="form-group">
+                    <label for="Price">Quantity</label>
+                    <input type="text" class="form-control" id="Quantity" formControlName="quantity"  placeholder="Quantity">
+                  </div>
+                  <div class="modal-footer">
+                    <button type="submit" class="btn btn-primary mt-3" (click)="closeBox.click()" (click)="partImage.value=''">ADD</button>
+                  </div>
+                
+              </form>
+         
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal fade" id="imagePopUp" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle" aria-hidden="true" >
+    <div class="modal-dialog modal-l" role="document">
+      <div class="modal-content">
+       
+        <div class="modal-body d-flex justify-content-center" >
+          <img src="../../../assets/asset_image.jpg" class="image" *ngIf="!popUpImage" ><img src={{popUpImage}} class="image"  *ngIf="popUpImage"  style="height: 500px; width: 500px">
+         
+        </div>
+      </div>
+    </div>
+  </div>

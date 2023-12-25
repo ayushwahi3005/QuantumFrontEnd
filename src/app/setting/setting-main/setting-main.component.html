@@ -1,0 +1,140 @@
+<ul class="nav justify-content-between header">
+  
+    <div class="header-centre">
+      <img src='../../assets/logo.png'>
+      <h1>Quantum Maintenance</h1>
+    </div>
+  
+  
+ 
+  
+    <li class="nav-item"  style="padding-right: 5px; margin-top: 10px;">
+    <b>Welcome</b> <span style="margin: 10px;">{{username}}</span>
+    <i class="bi bi-bell-fill" matBadge="15" matBadgeColor="warn"></i>
+    
+    <span class="dropdown">
+      <a class="dropdown-toggle" type="button" data-toggle="dropdown"><i class="bi bi-person-circle"></i>
+     
+      <span class="caret"></span></a>
+      <ul class="dropdown-menu">
+       
+        <li><a href="#" style="text-decoration: none; color: black;">Profile</a></li>
+        <hr>
+     
+        <li ><a (click)="logout()">Logout</a></li>
+       
+       
+
+      </ul>
+    </span>
+    
+    </li>
+
+
+
+  
+
+
+
+    
+    
+    
+</ul>
+<div class="side-navbar"   >
+    <h2 style="padding: 10px 15px;">Modules</h2>
+    <ul class="nav-list"  >
+    
+   
+    <li class="nav-list-item" *ngFor="let item of sideBarOption" [ngClass]="{'selected':(current==item.number)}"  (click)="update(item.number)">
+
+      <i class={{item.icon}}></i>
+      <span >
+        
+        {{item.name}}
+      </span>
+    
+    </li>
+
+  
+
+
+  </ul>
+</div>
+<div class="content-area d-flex justify-content-center" >
+    <!-- <app-workorder *ngIf="current==1" ></app-workorder> -->
+    <div *ngIf="current==1" >
+      <!-- <form [formGroup]="companyInformationForm" (ngSubmit)="addCompanyInformation()" class="form-inline">
+        <div class="form-group">
+          <label for="companyName" >Company Name</label>
+          
+            <input type="text" class="form-control" formControlName="companyName" >
+          
+        </div>
+        <div class="form-group">
+          <label for="comapanyLogo">Company Logo</label>
+          
+            <input type="file" class="form-control" formControlName="comapanyLogo" >
+          
+        </div>
+        <div class="form-group">
+          <label for="accountId">Account Id</label>
+          
+            <input type="text" class="form-control" formControlName="accountId" >
+          
+        </div> 
+        <div class="form-group">
+          <label for="accountId">Account Id</label>
+          
+            <input type="text" class="form-control" formControlName="accountId" >
+          
+        </div>
+         
+        
+        <button type="submit" class="btn btn-primary mt-3"  [disabled]="companyInformationForm.invalid">Submit</button>
+      </form> -->
+      <form class="row g-3">
+        <div class="col-md-12">
+          <label for="companyName" class="form-label">Company Name</label>
+          <input type="text" class="form-control" formControlName="companyName">
+        </div>
+        <div class="col-md-12">
+          <label for="comapanyLogo" class="form-label">Company Logo</label>
+          <input type="file" class="form-control" formControlName="comapanyLogo">
+        </div>
+        <div class="col-12">
+          <label for="accountId" class="form-label">Account Id</label>
+          <input type="text" class="form-control" formControlName="accountId">
+        </div>
+        <div class="col-12">
+          <label for="Address" class="form-label">Address</label>
+          <input type="text" class="form-control"  formControlName="address1" placeholder="Address1">
+       </div >
+       <div class="col-12">
+          <input type="text" class="form-control"  formControlName="address2" placeholder="Address2">
+        </div>
+        <div class="col-md-4">
+          
+          <input type="text" class="form-control" formControlName="city" placeholder="City">
+        </div>
+        <div class="col-md-4">
+          
+          <input type="text" class="form-control" formControlName="state" placeholder="State">
+        </div>
+        <div class="col-md-4">
+          
+          <input type="number" class="form-control" formControlName="zipCode" placeholder="Zip Code">
+        </div>
+        <div class="col-12">
+          <label for="phoneNo" class="form-label">Phone Number</label>
+          <input type="number" class="form-control" formControlName="phoneNo" value="+1">
+        </div>
+        <div class="col-12">
+          <label for="website" class="form-label">Website</label>
+          <input type="text" class="form-control" formControlName="website">
+        </div>
+        
+      </form>
+    </div>
+    <app-asset-module *ngIf="current==3"></app-asset-module>
+    <!-- <app-users *ngIf="current==6"></app-users> -->
+</div>

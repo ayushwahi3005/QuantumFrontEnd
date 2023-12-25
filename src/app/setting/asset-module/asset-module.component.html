@@ -1,0 +1,87 @@
+<div class="card mt-2">
+    <h1 style="display: flex; justify-content: center; margin-top: 10px;">Edit Extra Fields</h1>
+    <div class="card-body">
+
+    
+      <table class="table" *ngIf="extraFieldName">
+        <thead class="table-dark">
+          <tr>
+            <th scope="col">Name</th>
+            <th scope="col">Type</th>
+           <th></th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let item of extraFieldName">
+           
+            <td>{{item.name|titlecase}}</td>
+            <td>{{item.type|titlecase}} </td>
+            <td>
+            <i class="bi bi-trash3" (click)="updateDeleteId(item.id)" data-toggle="modal" data-target="#popup"></i>
+          </td>
+          </tr>
+         
+        </tbody>
+      </table>
+      <div class="extra-field-input">
+      <div style="margin-top: 50px;" *ngIf="extraFieldOption=='number'" class="d-flex justify-content-between">
+        <span style="margin-bottom: 10px;"><button class="btn btn-warning" >{{extraFieldOption|titlecase}}</button></span>
+        <label for="name">Field Name <input id="name" type="text" [(ngModel)]="addFieldName" #name></label>
+        <!-- <label for="name">Field Value <input id="value" type="number" [(ngModel)]="addFieldValue" #value></label> -->
+        <i class="bi bi-trash3" (click)="removeFieldOption()">Remove</i>
+        
+      </div>
+      <div style="margin-top: 50px;" *ngIf="extraFieldOption=='text'" class="d-flex justify-content-between">
+        <span style="margin-bottom: 10px;"><button class="btn btn-warning">{{extraFieldOption|titlecase}}</button></span>
+        <label for="name">Field Name <input id="name" type="text" [(ngModel)]="addFieldName" #name></label>
+        <!-- <label for="name">Field Value <input id="value" type="text" [(ngModel)]="addFieldValue" #value></label> -->
+        <i class="bi bi-trash3" (click)="removeFieldOption()">Remove</i>
+      </div>
+      <!-- <div style="margin-top: 50px;" *ngIf="extraFieldOption=='checkbox'" class="d-flex justify-content-between">
+        <span style="margin-bottom: 10px;"><button class="btn btn-warning">{{extraFieldOption|titlecase}}</button></span>
+        <label for="name">Field Name <input id="name" type="text" [(ngModel)]="addFieldName" #name></label>
+        
+        <i class="bi bi-trash3" (click)="removeFieldOption()">Remove</i>
+      </div> -->
+      <div style="margin: 50px;" *ngIf="extraFieldOption=='date'" class="d-flex justify-content-between">
+        <span style="margin-bottom: 10px;"><button class="btn btn-warning">{{extraFieldOption|titlecase}}</button></span>
+        <label for="name">Field Name <input id="name" type="text" [(ngModel)]="addFieldName" #name></label>
+        <!-- <label for="name">Date<input id="value" type="date" [(ngModel)]="addFieldValue" #value></label> -->
+        <i class="bi bi-trash3" (click)="removeFieldOption()">Remove</i>
+      </div>
+    </div>
+      <button id="dropdownMenuButton" data-toggle="dropdown" class="btn btn-secondary">Select Type</button>
+      <button class="btn btn-primary" (click)="onAddField()">Add Fields</button>
+   
+      <div class="dropdown-menu" aria-labelledby="dropdownMenuButton" style="z-index: 10;">
+        
+        <a class="dropdown-item" (click)="addFieldOption('number')">Number <i class="bi bi-123" style="color: black;"></i></a>
+        <a class="dropdown-item" (click)="addFieldOption('text')">Text <i class="bi bi-type" style="color: black;"></i></a>
+        <!-- <a class="dropdown-item" (click)="addFieldOption('checkbox')">CheckBox</a> -->
+        <a class="dropdown-item" (click)="addFieldOption('date')">Date <i class="bi bi-calendar2" style="color: black;"></i></a>
+        
+      </div>
+    </div>
+  </div>
+
+
+  <div class="modal fade" id="popup" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h2 class="modal-title" id="exampleModalLongTitle">Alert. All asset data associated with this column will be deleted!!</h2>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close" #closeBox>
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="d-flex justify-content-center">
+          
+         
+          <button class="btn btn-primary close" data-dismiss="modal" aria-label="Close" (click)="removeExtraField()" (click)="closeBox.click()" style="margin-right: 20px; margin: 10px;">Sure</button>
+          <button class="btn btn-danger close" data-dismiss="modal" aria-label="Close" (click)="closeBox.click()" style="margin: 10px;" >Go Back</button>
+          
+         
+        </div>
+      </div>
+    </div>
+  </div>

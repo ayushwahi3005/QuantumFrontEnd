@@ -1,0 +1,46 @@
+<div class="header">
+  <div class="header-centre">
+    <img src='../../assets/logo.png'>
+    <h1>Quantum Maintenance</h1>
+  </div>
+</div>
+<div class="login container">
+    <form>
+        <h1 id="log-in">Log in</h1>
+        <div class="form-group">
+         
+          <mat-form-field>
+            <mat-label>Email</mat-label>
+            <input matInput type="email" id="email" name="email"[(ngModel)]="email" required>
+            
+          </mat-form-field>
+        </div>
+        <div class="form-group">
+          <mat-form-field>
+          <mat-label>Password</mat-label>
+          <input matInput type="password" id="password" name="password"[(ngModel)]="password" required>
+        </mat-form-field>
+        </div>
+       
+        <button class="btn btn-primary" (click)="login()">SUBMIT</button>
+          
+            
+            <div class="forget" >
+                <a href="" style="text-decoration: none;">Forget Password? </a>
+            </div>
+
+            <hr>
+            
+           
+            <div class="d-flex justify-content-center">
+            <button id="signup" [routerLink]="['/register']">SIGNUP</button>
+          </div>
+            
+
+       
+
+        
+      </form>
+</div>
+
+

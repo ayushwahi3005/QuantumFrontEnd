@@ -1,0 +1,141 @@
+
+input{
+    margin: 10px 0px;
+    color: #717275;
+    border-radius: 8px;
+    padding: 12px 20px;
+   
+    /* box-sizing: border-box; */
+    border: 3px solid #aab1b8;
+    -webkit-transition: 0.5s;
+    transition: 0.5s;
+    outline:none
+}
+select{
+    color: #717275;
+    outline: none;
+    margin: 10px 0px;
+}
+select:focus{
+    border: 0px solid #1a65ab;
+    outline: none;
+}
+.form-group{
+    margin: 10px 0px;
+}
+.onhold{
+  
+    border-radius: 8px;
+    background-color: #FFC008;
+    display: inline-flex;
+    /* margin: 0px 5px; */
+    color: white;
+}
+.closed{
+  
+
+    border-radius: 8px;
+    background-color: #4088ee;
+    display: inline-flex;
+    /* margin: 0px 5px; */
+    color: white;
+}
+.inprogress{
+
+    border-radius: 8px;
+    background-color: #26C464;
+    display: inline-flex;
+    /* margin: 0px 5px; */
+    color: white;
+}
+.open{
+  
+    border-radius: 8px;
+    background-color: lightgray;
+    border: 1px gray solid;
+    display: inline-flex;
+    /* margin: 0px 5px; */
+    color: white;
+}
+option{
+    background-color: lightgrey;
+    color: #717275;
+    -webkit-transition: 0.5s;
+    transition: 0.5s;
+    outline: none;
+}
+#status{
+    width: 200px;
+}
+.submit{
+    display: flex;
+    background: rgb(13,7,117);
+background: linear-gradient(90deg, rgba(13,7,117,1) 0%, rgba(9,9,121,1) 48%, rgba(8,110,148,1) 100%);
+color: white;
+}
+.main{
+    display: flex;
+    flex-direction: row;
+
+  
+    
+}
+.loading{
+    display: flex;
+    flex-direction: row;
+    
+    background-image: url('../../../assets/loader.gif');
+    /* background-size: 100%; */
+    height: 100%;
+    background-position:top;
+  background-repeat: no-repeat;
+  position: fixed;
+  width: 100%;
+  left: 0;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  background-color: rgba(255, 255, 255, 0.7);
+  z-index: 9999;
+  
+}
+.back-button{
+    cursor: default;
+    text-decoration: none;
+    color: #8c8e91;
+    font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+    
+    margin-top: 10px;
+    font-size: larger;
+    float: inline-start;
+    height: 20px;
+    padding: 10px;
+    margin: 10px;
+    
+    
+    
+   
+    
+}
+.back-button:hover{
+    color: #1a65ab;
+    
+}
+.mainform{
+    width: 80%;
+    color: #717275;
+    border: 1px solid lightgray ;
+    padding: 10px 10px;
+    margin-top: 20px;
+    border-radius: 15px;
+}
+
+input:focus {
+    border: 3px solid #1a65ab;
+  }
+a{
+    color: #717275;
+}
+a:hover{
+    color: #1a65ab;
+}
