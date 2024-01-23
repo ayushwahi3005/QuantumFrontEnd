@@ -109,3 +109,16 @@ app-asset-details  {
 .multiselect-dropdown .dropdown-btn .dropdown-multiselect__caret:before{
 border-style: none;
 }
+.editoption{
+    opacity: 0;
+}
+#edit-button{
+    font-size: 18px;
+     color: #5E6164;
+}
+#edit-button:hover{
+    color: #0D6EFD;
+}
+label{
+    margin-bottom: 5px;
+}

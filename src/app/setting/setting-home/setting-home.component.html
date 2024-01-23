@@ -1,7 +1,7 @@
 <ul class="nav justify-content-between header">
   
     <div class="header-centre">
-      <img src='../../assets/logo.png'>
+      <!-- <img src='../../assets/logo.png'> -->
       <h1>Quantum Maintenance</h1>
     </div>
   
@@ -20,12 +20,13 @@
        
         <li><a href="#" style="text-decoration: none; color: black;">Profile</a></li>
         <hr>
+        <li>More Details</li>
      
-        <li ><a (click)="logout()">Logout</a></li>
        
        
 
       </ul>
+      <a (click)="logout()" style="margin-left: 5px; cursor: pointer;">Logout</a>
     </span>
     
     </li>
@@ -62,6 +63,6 @@
 </div>
 <div class="content-area" >
     <!-- <app-workorder *ngIf="current==1" ></app-workorder> -->
-    <app-asset-module *ngIf="current==3"></app-asset-module>
+    <!-- <app-asset-module *ngIf="current==3"></app-asset-module> -->
     <!-- <app-users *ngIf="current==6"></app-users> -->
 </div>

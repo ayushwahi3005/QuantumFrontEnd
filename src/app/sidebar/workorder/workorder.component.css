@@ -112,3 +112,37 @@ tr:hover{
     background-position:top;
   background-repeat: no-repeat;
 }
+.searchBar {
+    position: relative;
+    width: 200px;
+    border: none;
+    margin: 10px;
+    margin-left: 28px;
+}
+.searchBar input {
+    padding-left: 24px;
+    width: 250px; /* 200px - 30px */
+    border-radius: 5px;
+    height: 30px;
+}
+.searchBar i {
+    position: absolute;
+    left: 5px;
+     /* padding: 10px 12px; */
+    pointer-events: none;
+    top: 0.3rem;
+}
+.searchBar a{
+
+    border: none;
+  
+
+    background-color: white;
+    color: black;
+    padding: 0px 5px;
+}
+.sort{
+    
+    padding: 5px;
+    margin-left: 5px;
+}

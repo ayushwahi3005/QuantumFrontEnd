@@ -13,21 +13,21 @@ import { Inventory } from './inventory';
 export class InventoryComponent {
   email:any='';
   inventoryForm!:FormGroup;
-  username:any='';
+
   imageFile!:any
   popUpImage:string='';
   inventoryList:Inventory[]=[];
   editVisibility:boolean=false;
   editButtonId:number=-1;
+  companyId!:any;
  
 constructor(private router:Router,private inventoryService:InventoryService,private auth:AuthService,private formBuilder:FormBuilder){}
 ngOnInit(){
   this.email=localStorage.getItem('user');
-  console.log(this.email);
-  this.inventoryService.dashboard(this.email).subscribe((data)=>{
-    this.username=data.firstName+" "+data.lastName;
-  })
-  this.inventoryService.getAllInventory().subscribe((data)=>{
+  this.companyId=localStorage.getItem('companyId');
+  console.log(this.companyId);
+  
+  this.inventoryService.getAllInventory(this.companyId).subscribe((data)=>{
     this.inventoryList=data;
   },
   (err)=>{
@@ -43,7 +43,8 @@ ngOnInit(){
     price:['',Validators.required],
     cost:['',Validators.required],
     category:['',Validators.required],
-    quantity:['',Validators.required]
+    quantity:['',Validators.required],
+    companyId:[this.companyId]
     
 
 
@@ -92,13 +93,6 @@ editButtonNotVisible(){
   
   this.editVisibility=false;
   this.editButtonId=-1;
-}
-openEditInventory(id:String){
-  const url = this.router.serializeUrl(
-    this.router.createUrlTree([`/edit-inventory/${id}`])
-  );
-
-  window.open(url);
 }
 deleteInventory(id:String){
   this.inventoryService.deleteInventory(id).subscribe((data)=>{

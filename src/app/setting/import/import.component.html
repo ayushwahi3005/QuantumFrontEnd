@@ -1,0 +1,67 @@
+<div *ngIf="showAlert" class="alert" [ngClass]="'alert-' + alertType" role="alert">
+    {{ alertMessage }}
+    <!-- Optionally, add a close button -->
+    <button type="button" class="btn-close" (click)="showAlert = false" aria-label="Close" style="float: right;"></button>
+  </div>
+<div class="main">
+    <div class="container d-flex justify-content-between">
+        <div>
+        <h1>Import Assistant</h1>
+        <label style="font-size: large;margin-top: 10px;">Record Type</label>
+        <br>
+        <form [formGroup]="importForm" (ngSubmit)="onSubmit()">
+            <div class="form-group">
+                <select class="form-select form-control" id="dropdown"  formControlName="module" style="width: 30%;" (change)="dropDown(val)" #val>
+                
+                <option value="asset" >Asset</option>
+                <option value="workOrder" selected>Work Order</option>
+                <option value="inventory" >Inventory</option>
+                <option value="customerVendor">Customer and Vendors</option>
+                </select>
+            </div>
+
+            <div class="form-group" style="margin-top: 100px;">
+                <input type="radio" id="add" value="add" name="importType" formControlName="importType">
+                <label for="add" style="margin-left: 10px;">ADD</label><br>
+                <input type="radio" id="update" value="update" name="importType" formControlName="importType">
+                <label for="update" style="margin-left: 10px;">UPDATE</label>
+            </div>
+            
+            <div class="mt-5">
+                <span class="downloadTemplate">Download Template</span> | <span class="exportList" (click)="exportData()" >Export Current List</span>
+            </div>
+            <div class="form-group" class="form-control" (change)="FileUpload($event)" style="border: 0px;">
+              
+                    <label style="font-size: x-large;margin-top: 50px;">CSV File</label><br>
+                    <input type="file" class="mt-1" formControlName="file" #myFile>
+               
+            </div>
+            <button type="submit" class="btn btn-primary mt-5"  [disabled]="importForm.invalid" (click)="myFile.value=''">Submit</button>
+        </form>
+    </div>
+        <div *ngIf="excelColumns.length && databaseColumns.length" style="float: right;" class="mapping">
+           
+            <table>
+                <thead> <h2>Column Mapping</h2></thead>
+                <tbody>
+            <tr *ngFor="let dbCol of databaseColumns; let i = index" >
+                
+                <td>
+             {{ dbCol }}
+                </td>
+                <td>
+              <select  (change)="update(dbCol,$event)">
+                <option selected></option>
+                <option *ngFor="let excelCol of excelColumns" [value]="excelCol" >
+                  {{ excelCol }}
+                </option>
+              </select>
+            </td>
+           
+        </tr>
+        </tbody>
+        </table>
+            <button (click)="saveMappings()">Save Mappings</button>
+          </div>
+    </div>
+</div>

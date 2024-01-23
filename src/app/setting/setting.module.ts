@@ -1,9 +1,6 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { SettingHomeComponent } from './setting-home/setting-home.component';
-import { AssetModuleComponent } from './asset-module/asset-module.component';
-import { SettingMainComponent } from './setting-main/setting-main.component';
-
+import {MatSlideToggleModule} from '@angular/material/slide-toggle';
 
 
 @NgModule({
@@ -12,9 +9,14 @@ import { SettingMainComponent } from './setting-main/setting-main.component';
   
     
   
+  
+  
+  
+   
   ],
   imports: [
-    CommonModule
+    CommonModule,
+    MatSlideToggleModule
   ]
 })
 export class SettingModule { }

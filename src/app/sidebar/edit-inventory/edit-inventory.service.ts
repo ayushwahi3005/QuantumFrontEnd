@@ -8,8 +8,8 @@ import { Observable } from 'rxjs';
 export class EditInventoryService {
 
   constructor(private httpClient:HttpClient) { }
-  dashboard(email:string):Observable<any>{
-    return this.httpClient.get('http://localhost:8080/customer/get/'+email);
+  dashboard(companyId:string):Observable<any>{
+    return this.httpClient.get('http://localhost:8080/customer/get/'+companyId);
   }
   addInventory(data:any):Observable<any>{
     return this.httpClient.post('http://localhost:8084/inventory/addInventory',data,{

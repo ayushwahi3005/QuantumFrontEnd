@@ -1,7 +1,5 @@
 import { Component, NgZone, ViewChild } from '@angular/core';
 import { AuthService } from '../shared/auth.service';
-import { CdkTextareaAutosize } from '@angular/cdk/text-field';
-import { take } from 'rxjs/operators';
 
 @Component({
   selector: 'app-login',
@@ -12,12 +10,14 @@ export class LoginComponent {
 
   email:string='';
   password:string='';
+  errorMessage:string='';
 
 
-  constructor(private auth:AuthService,private _ngZone: NgZone){}
+  constructor(private auth:AuthService,private authService:AuthService){}
 
   ngOnInit():void{
-
+    console.log("--------------AuthTokenIn------------------"+localStorage.getItem('authToken'));
+    console.log("--------------------------"+localStorage.getItem('companyId'));
   }
   login(){
     if(this.email==''){
@@ -31,6 +31,8 @@ export class LoginComponent {
     this.auth.login(this.email,this.password);
     this.email='';
     this.password='';
+    this.errorMessage=this.authService.getErrorMessage();
+    console.log(this.errorMessage+"in Login")
   }
   firstNameAutofilled!: boolean;
   lastNameAutofilled!: boolean;

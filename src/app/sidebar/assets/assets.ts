@@ -1,5 +1,6 @@
 export class Assets{
     id!:string;
+    assetId!:number;
     name!:string;
     serialNumber!:string;
     category!:string;

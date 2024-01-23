@@ -1,8 +1,10 @@
-import { Component } from '@angular/core';
+import { Component, ElementRef, ViewChild } from '@angular/core';
 import { AuthService } from 'src/app/shared/auth.service';
 import { Router } from '@angular/router';
 import { SettingMainService } from './setting-main.service';
-import { FormBuilder, FormGroup } from '@angular/forms';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import Lottie from 'lottie-web';
+import { CompanyInformation } from './companyInformation';
 
 @Component({
   selector: 'app-setting-main',
@@ -10,10 +12,14 @@ import { FormBuilder, FormGroup } from '@angular/forms';
   styleUrls: ['./setting-main.component.css']
 })
 export class SettingMainComponent {
+  @ViewChild('lottieAnimation') lottieAnimationContainer!: ElementRef;
   email:any='';
   current:number=1;
   username:any='';
   companyInformationForm!:FormGroup;
+  companyImage:any;
+  companyInformation!:CompanyInformation;
+  companyId!:any;
   sideBarOption=[{
     number:1,
     name:'Company Information',
@@ -62,30 +68,95 @@ constructor(private settingMainService:SettingMainService,private auth:AuthServi
     
     this.email=localStorage.getItem('user');
     console.log(this.email);
+    this.companyId=localStorage.getItem('companyId');
+    this.settingMainService.getCompanyInformation(this.email).subscribe((data)=>{
+      this.companyInformation=data;
+      console.log(this.companyInformation)
+    },
+    (err)=>{
+      console.log(err);
+    })
     this.settingMainService.dashboard(this.email).subscribe((data)=>{
       this.username=data.firstName+" "+data.lastName;
+    },(err)=>{
+      console.log(err);
     })
+    
    this.companyInformationForm=this.formBuilder.group(({
-
+    companyName:['',Validators.required],
+    comapanyLogo:[''],
+    id:[''],
+    address1:['',Validators.required],
+    address2:['',Validators.required],
+    city:['',Validators.required],
+    state:['',Validators.required],
+    zipCode:['',Validators.required],
+    phoneNo:['',Validators.required],
+    website:['',Validators.required],
+    customerEmail:['']
    }))
+  }
+
+
+  playLottieAnimation() {
+    Lottie.loadAnimation({
+      container: this.lottieAnimationContainer.nativeElement,
+      renderer: 'svg', // or 'canvas', choose based on your preference
+      loop: true, // Set loop to true if needed
+      autoplay: true, // Autoplay the animation
+      path: 'assets/tick.json' // Path to your animation JSON file
+    });
   }
   update(val:number){
     console.log(val);
     this.current=val;
-    if(val==3){
-      this.router.navigate(['/custom-setting'])
-    }
+    // if(val==3){
+    //   this.router.navigate(['/custom-setting'])
+    // }
   }
   logout(){
     this.auth.currUser=null;
     this.auth.isLoggedIn=false;
     localStorage.removeItem('token');
       localStorage.removeItem('user');
+   
+    localStorage.removeItem('currOption');
+    localStorage.removeItem('authToken');
+    localStorage.removeItem('companyId');
+
     this.router.navigate(['/login']);
 
    
   }
+  imageUpload(event:any){
+    console.log(event);
+    const file = event.target.files[0];
+  const reader = new FileReader();
+  reader.readAsDataURL(file);
+  reader.onload = () => {
+      console.log(reader.result);
+  
+      this.companyImage=reader.result;
+
+ 
+      };
+  
+ 
+
+
+  }
   addCompanyInformation(){
-    
+    this.companyInformationForm.controls['customerEmail'].setValue(this.email);
+    this.companyInformationForm.controls['comapanyLogo'].setValue(this.companyImage);
+    this.companyInformationForm.controls['id'].setValue(this.companyId);
+    this.settingMainService.addCompanyInformation(this.companyInformationForm.value).subscribe((data)=>{
+      console.log("Company Data Uploaded");
+    },
+    (err)=>{
+      console.log(err);
+    }
+    ,()=>{
+      this.ngOnInit()
+    })
   }
 }

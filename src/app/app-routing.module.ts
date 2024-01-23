@@ -9,6 +9,8 @@ import { SettingHomeComponent } from './setting/setting-home/setting-home.compon
 import { InventoryComponent } from './sidebar/inventory/inventory.component';
 import { SettingMainComponent } from './setting/setting-main/setting-main.component';
 import { EditInventoryComponent } from './sidebar/edit-inventory/edit-inventory.component';
+import { TickAnimationComponent } from './tick-animation/tick-animation.component';
+import { AssetPreviewComponent } from './sidebar/asset-preview/asset-preview.component';
 
 const routes: Routes = [
   {path: '', component:HomeComponent, pathMatch:'full'},
@@ -21,6 +23,8 @@ const routes: Routes = [
   {path:'custom-setting',component:SettingHomeComponent},
   {path:'edit-inventory/:id',component:EditInventoryComponent},
   {path:'setting-home',component:SettingMainComponent},
+  {path:'assets/:id',component:AssetPreviewComponent},
+
 
  
 ];

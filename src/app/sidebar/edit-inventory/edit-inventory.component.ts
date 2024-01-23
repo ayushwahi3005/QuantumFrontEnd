@@ -19,7 +19,7 @@ export class EditInventoryComponent {
   id:any;
   img:any;
   loadingScreen=false;
-  
+  companyId!:any;
   constructor(private editInventoryService:EditInventoryService,private formBuilder:FormBuilder,private activeRoute:ActivatedRoute,private router:Router){}
   @Output() messageEvent = new EventEmitter<string>();
 
@@ -29,6 +29,7 @@ export class EditInventoryComponent {
     this.messageEvent.emit("update the component");
   }
   ngOnInit(){
+    this.companyId=localStorage.getItem('companyId');
     this.activeRoute.paramMap.subscribe((data)=>{
       // this.workOrderId=data.get('id');
       this.id=data.get('id');
@@ -51,7 +52,8 @@ export class EditInventoryComponent {
       price:['',Validators.required],
       cost:['',Validators.required],
       category:['',Validators.required],
-      quantity:['',Validators.required]
+      quantity:['',Validators.required],
+      companyId:[this.companyId]
       
   
   

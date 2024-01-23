@@ -1,15 +1,61 @@
 <div *ngIf="!detailedWorkOrder" [ngClass]="{'loading':loadingScreen}">
-<button class="btn btn-primary mt-2 me-5" style="float: right;" data-toggle="modal" data-target="#add-order" >+ Work Order</button>
+  <div class="d-flex justify-content-around">
+  <div class="col flex justify-content-between searchBar" style="float: left;" >
+    
+    <input type="text" (keyup)="onSearch(search.value)" placeholder="Search"  #search>
+    <button class="btn btn-primary ms-2" (click)="searchClick()" [disabled]="(!searchData)||(!searchDataBy)">Search By Fields</button>
+  
+     <i class="bi bi-search"></i>
+     <a class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+      <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" fill="currentColor" class="bi bi-funnel-fill" viewBox="0 0 16 16">
+        <path d="M1.5 1.5A.5.5 0 0 1 2 1h12a.5.5 0 0 1 .5.5v2a.5.5 0 0 1-.128.334L10 8.692V13.5a.5.5 0 0 1-.342.474l-3 1A.5.5 0 0 1 6 14.5V8.692L1.628 3.834A.5.5 0 0 1 1.5 3.5v-2z"/>
+      </svg>
+      
+    </a>
+    <div class="dropdown-menu" aria-labelledby="dropdownMenuButton" style="z-index: 10; cursor: pointer;">
+      <a class="dropdown-item" (click)="searchBy('description')">Search By Description</a>
+      <a class="dropdown-item" (click)="searchBy('customer')">Search By Customer</a>
+      <a class="dropdown-item" (click)="searchBy('status')">Search By Status</a>
+      <a class="dropdown-item" (click)="searchBy('priority')">Search By Priority</a>
+      <a class="dropdown-item" (click)="searchBy('dueDate')">Search By Due Date</a>
+      <a class="dropdown-item" (click)="searchBy('assignedTechnician')">Search By Assigned Technician</a>
+      <a class="dropdown-item" (click)="searchBy('assetDetails')">Search By Asset Details</a>
+      <a class="dropdown-item" (click)="searchBy('lastUpdate')">Search By Last Update</a>
+      <!-- <a *ngFor="let item of selectedExtraColums"  class="dropdown-item" (click)="onSort(item)">Sort By {{item}}</a> -->
+    </div>
+    
+ </div>
+  <div style="margin: 10px;">
+    <a class="btn btn-secondary dropdown-toggle" type="button" id="sortButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+      Sort <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" fill="currentColor" class="bi bi-funnel-fill" viewBox="0 0 16 16">
+        <path d="M1.5 1.5A.5.5 0 0 1 2 1h12a.5.5 0 0 1 .5.5v2a.5.5 0 0 1-.128.334L10 8.692V13.5a.5.5 0 0 1-.342.474l-3 1A.5.5 0 0 1 6 14.5V8.692L1.628 3.834A.5.5 0 0 1 1.5 3.5v-2z"/>
+      </svg>
+      
+    </a>
+    <div class="dropdown-menu" aria-labelledby="sortButton" style="z-index: 10; cursor: pointer;">
+      <a class="dropdown-item" (click)="sortBy('description')">Sort By Description</a>
+      <a class="dropdown-item" (click)="sortBy('customer')">Sort By Customer</a>
+      <a class="dropdown-item" (click)="sortBy('status')">Sort By Status</a>
+      <a class="dropdown-item" (click)="sortBy('priority')">Sort By Priority</a>
+      <a class="dropdown-item" (click)="sortBy('dueDate')">Sort By Due Date</a>
+      <a class="dropdown-item" (click)="sortBy('assignedTechnician')">Sort By Assigned Technician</a>
+      <a class="dropdown-item" (click)="sortBy('assetDetails')">Sort By Asset Details</a>
+      <a class="dropdown-item" (click)="sortBy('lastUpdate')">Sort By Last Update</a>
+      <!-- <a *ngFor="let item of selectedExtraColums"  class="dropdown-item" (click)="onSort(item)">Sort By {{item}}</a> -->
+    </div>
+  </div>
+  <button class="btn btn-primary mt-2 me-5" data-toggle="modal" data-target="#add-order" >+ Work Order</button>
+</div>
 <div class="row" style="height: calc(100vh - 140px); overflow: scroll; width: 100%;">
     <div class="col">
-      <!-- <button *ngIf="sortoption" class="sort btn btn-secondary" (click)="removeFilter()">Sorted By: {{sortoption|titlecase}} &times;</button>
-      <span *ngIf="searchText" class="search">Searched Text: {{searchText|titlecase}}</span> -->
+      <button *ngIf="searchDataBy" class="sort btn btn-secondary" (click)="removeSearchDataBy()">Search By: {{searchDataBy|titlecase}} &times;</button>
+      <button *ngIf="sortedBy" class="sort btn btn-secondary" (click)="removeSort()">Sorted By: {{sortedBy|titlecase}} &times;</button>
       
       
       <table class="table" id="asset-table">
           <thead class="table-dark">
               <tr>
-                  <th scope="col">#</th>
+                  <!-- <th scope="col">#</th> -->
                   <th scope="col">Description</th>
                   <th scope="col">Customer</th>                 
                   <th scope="col">Status</th>
@@ -23,7 +69,7 @@
           </thead>
           <tbody>
               <tr *ngFor="let item of workorderlist" (mouseenter)="editButtonVisibile(workorderlist.indexOf(item)+1)" (mouseleave)="editButtonNotVisible()">
-                  <th scope="row">{{workorderlist.indexOf(item)+1}}</th>
+                  <!-- <th scope="row">{{workorderlist.indexOf(item)+1}}</th> -->
                   
             
                   <td style="color: black;"><b>{{item.description|titlecase}}</b></td>
@@ -47,7 +93,7 @@
   </div>
 
   <div class="modal fade" id="add-order" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle" aria-hidden="true">
-    <div class="modal-dialog" role="document">
+    <div class="modal-dialog  modal-xl" role="document">
       <div class="modal-content">
         <div class="modal-header">
           <h2 class="modal-title" id="exampleModalLongTitle">Add Work Order</h2>
@@ -92,7 +138,7 @@
                 <label for="asset-details">Asset Details</label>
                
                 <select class="form-select" class="form-control" id="asset-details" formControlName="assetDetails" #asset>
-                  <option selected>Select Asset</option>
+                  <!-- <option selected>Select Asset</option> -->
                   <option value={{[asset.name,asset.id]}} *ngFor="let asset of assetList">{{asset.name}}</option>
                   
                 </select>

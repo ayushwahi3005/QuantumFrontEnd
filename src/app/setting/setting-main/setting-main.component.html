@@ -1,7 +1,7 @@
 <ul class="nav justify-content-between header">
   
     <div class="header-centre">
-      <img src='../../assets/logo.png'>
+      <!-- <img src='../../assets/logo.png'> -->
       <h1>Quantum Maintenance</h1>
     </div>
   
@@ -20,12 +20,13 @@
        
         <li><a href="#" style="text-decoration: none; color: black;">Profile</a></li>
         <hr>
+        <li>More Details</li>
      
-        <li ><a (click)="logout()">Logout</a></li>
        
        
 
       </ul>
+      <a (click)="logout()" style="margin-left: 5px; cursor: pointer;">Logout</a>
     </span>
     
     </li>
@@ -61,80 +62,77 @@
   </ul>
 </div>
 <div class="content-area d-flex justify-content-center" >
+  
     <!-- <app-workorder *ngIf="current==1" ></app-workorder> -->
     <div *ngIf="current==1" >
-      <!-- <form [formGroup]="companyInformationForm" (ngSubmit)="addCompanyInformation()" class="form-inline">
-        <div class="form-group">
-          <label for="companyName" >Company Name</label>
-          
-            <input type="text" class="form-control" formControlName="companyName" >
-          
-        </div>
-        <div class="form-group">
-          <label for="comapanyLogo">Company Logo</label>
-          
-            <input type="file" class="form-control" formControlName="comapanyLogo" >
-          
-        </div>
-        <div class="form-group">
-          <label for="accountId">Account Id</label>
-          
-            <input type="text" class="form-control" formControlName="accountId" >
-          
-        </div> 
-        <div class="form-group">
-          <label for="accountId">Account Id</label>
-          
-            <input type="text" class="form-control" formControlName="accountId" >
-          
-        </div>
-         
-        
-        <button type="submit" class="btn btn-primary mt-3"  [disabled]="companyInformationForm.invalid">Submit</button>
-      </form> -->
-      <form class="row g-3">
+     
+      <form class="row g-3" [formGroup]="companyInformationForm" (ngSubmit)="addCompanyInformation()">
         <div class="col-md-12">
           <label for="companyName" class="form-label">Company Name</label>
-          <input type="text" class="form-control" formControlName="companyName">
+          <input type="text" class="form-control" formControlName="companyName" [ngModel]="companyInformation ? companyInformation.companyName : ''">
         </div>
         <div class="col-md-12">
+          <img src={{companyInformation?.comapanyLogo}} >
           <label for="comapanyLogo" class="form-label">Company Logo</label>
-          <input type="file" class="form-control" formControlName="comapanyLogo">
+          <input type="file" class="form-control"  (change)="imageUpload($event)">
+          
         </div>
         <div class="col-12">
-          <label for="accountId" class="form-label">Account Id</label>
-          <input type="text" class="form-control" formControlName="accountId">
+          <label for="accountId" class="form-label">Account Id</label><br>
+          <input value={{companyInformation?.id}} disabled style="width: 480px;">
+          
         </div>
         <div class="col-12">
           <label for="Address" class="form-label">Address</label>
-          <input type="text" class="form-control"  formControlName="address1" placeholder="Address1">
+          <input type="text" class="form-control"  formControlName="address1" placeholder="Address1" [ngModel]="companyInformation ? companyInformation.address1 : ''">
        </div >
        <div class="col-12">
-          <input type="text" class="form-control"  formControlName="address2" placeholder="Address2">
+          <input type="text" class="form-control"  formControlName="address2" placeholder="Address2" [ngModel]="companyInformation ? companyInformation.address2 : ''">
         </div>
         <div class="col-md-4">
           
-          <input type="text" class="form-control" formControlName="city" placeholder="City">
+          <input type="text" class="form-control" formControlName="city" placeholder="City" [ngModel]="companyInformation ? companyInformation.city : ''">
         </div>
         <div class="col-md-4">
           
-          <input type="text" class="form-control" formControlName="state" placeholder="State">
+          <input type="text" class="form-control" formControlName="state" placeholder="State" [ngModel]="companyInformation ? companyInformation.state : ''">
         </div>
         <div class="col-md-4">
           
-          <input type="number" class="form-control" formControlName="zipCode" placeholder="Zip Code">
+          <input type="number" class="form-control" formControlName="zipCode" placeholder="Zip Code" [ngModel]="companyInformation ? companyInformation.zipCode : ''">
         </div>
         <div class="col-12">
           <label for="phoneNo" class="form-label">Phone Number</label>
-          <input type="number" class="form-control" formControlName="phoneNo" value="+1">
+          <input type="number" class="form-control" formControlName="phoneNo" value="+1" [ngModel]="companyInformation ? companyInformation.phoneNo : ''">
         </div>
         <div class="col-12">
-          <label for="website" class="form-label">Website</label>
-          <input type="text" class="form-control" formControlName="website">
+          <label for="website" class="form-label" >Website</label>
+          <input type="text" class="form-control" formControlName="website" [ngModel]="companyInformation ? companyInformation.website : ''">
         </div>
-        
+        <button type="submit" class="btn btn-primary" data-toggle="modal" data-target="#popup" [disabled]="companyInformationForm.invalid">Submit</button>
       </form>
     </div>
-    <app-asset-module *ngIf="current==3"></app-asset-module>
+    <!-- <app-asset-module *ngIf="current==3"></app-asset-module> -->
     <!-- <app-users *ngIf="current==6"></app-users> -->
+    <!-- <div *ngIf="current==3" >
+    Hello</div> -->
+    <app-custom-fields-settings *ngIf="current==3"></app-custom-fields-settings>
+    <app-import *ngIf="current==4"></app-import>
+</div>
+<div class="modal fade" id="popup" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header d-flex justify-content-center">
+        Successfully Updated
+        
+      </div>
+      <div class="d-flex justify-content-center">
+      <app-tick-animation></app-tick-animation>
+       
+        
+        
+       
+      </div>
+    </div>
+  </div>
 </div>

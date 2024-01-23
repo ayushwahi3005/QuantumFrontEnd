@@ -15,6 +15,7 @@ export class RegisterComponent  {
 
   constructor(private auth:AuthService,private formBuilder:FormBuilder,private registerService:RegisterService){}
   errorMessage:String='';
+  successMessage:String='';
   ngOnInit():void{
   this.registerForm=this.formBuilder.group({
     firstName:['',Validators.required],
@@ -33,16 +34,29 @@ export class RegisterComponent  {
     console.log(this.registerForm.value);
     this.registerService.register(this.registerForm.value).subscribe((data)=>{
       this.auth.register(this.registerForm.controls['email'].value,this.registerForm.controls['password'].value);
+      const obj={
+        "customerEmail":this.registerForm.controls['email'].value,
+        "companyName":this.registerForm.controls['companyName'].value,
+
+      }
+      this.registerService.addCompanyInformation(obj).subscribe((data)=>{
+        console.log("Company Data uploaded");
+      },
+      (err)=>{
+        console.log(err);
+      })
       this.registerForm.reset();
+      this.successMessage="Successfully registered"
     },
     (err)=>{
+      this.errorMessage="Internal Error"
       this.errorMessage=err.error.errorMessage;
       this.registerForm.reset();
       this.openPopup();
     },
     ()=>{
       
-      if(this.errorMessage==''){
+      if(this.errorMessage==''&&this.successMessage==''){
         console.log("Database Error");
       }
     })

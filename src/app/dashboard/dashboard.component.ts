@@ -52,25 +52,48 @@ export class DashboardComponent {
   ngOnInit(){
     
     this.email=localStorage.getItem('user');
-    console.log(this.email);
+    let storedCurr=localStorage.getItem('currOption');
+    if(storedCurr!=null){
+    this.current=parseInt(storedCurr,10);
+    }
+    
+    console.log("------------------>",localStorage.getItem('authToken'));
     this.dashService.dashboard(this.email).subscribe((data)=>{
       this.username=data.firstName+" "+data.lastName;
-      console.log(this.username)
+      if(this.username==''||this.username==null){
+        this.ngOnInit();
+      }
+      
+    },
+    (err)=>{
+      console.log("myerr------------>",err.status);
+      
+      if(err.status=="403"){
+        alert("Session expired");
+        this.logout();
+
+      }
     })
    
   }
   update(val:number){
     console.log(val);
     this.current=val;
+    let myCurrentOption:string=this.current.toString();
+    localStorage.setItem('currOption',myCurrentOption);
    
   }
   find(){
 console.log(localStorage.getItem('user'));
   }
   logout(){
+    console.log("logging out")
     this.auth.currUser=null;
     this.auth.isLoggedIn=false;
     localStorage.removeItem('token');
+    localStorage.removeItem('currOption');
+    localStorage.removeItem('authToken');
+    localStorage.removeItem('companyId');
       localStorage.removeItem('user');
     this.router.navigate(['/login']);
 

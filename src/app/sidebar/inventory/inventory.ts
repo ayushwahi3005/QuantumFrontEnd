@@ -7,4 +7,5 @@ export class Inventory{
 	cost!:number;
     category!:string;
 	quantity!:number;
+	companyId!:string;
 }

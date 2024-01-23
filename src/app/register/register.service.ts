@@ -12,4 +12,8 @@ export class RegisterService {
   register(formData:any):Observable<any>{
     return this.httpClient.post('http://localhost:8080/customer/addCustomer', formData);
   }
+  addCompanyInformation(data:any):Observable<any>{
+    
+    return this.httpClient.post('http://localhost:8080/customer/addCompanyInformation',data);
+  }
 }

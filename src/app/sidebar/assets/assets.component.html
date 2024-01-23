@@ -1,5 +1,11 @@
+<div *ngIf="showAlert" class="alert" [ngClass]="'alert-' + alertType" role="alert" style="margin: 5px; position: fixed; width: 95%; z-index: 100;">
+  {{ alertMessage }}
+  <!-- Optionally, add a close button -->
+  <button type="button" class="btn-close" (click)="showAlert = false" aria-label="Close" style="float: right;"></button>
+</div>
 <div>
-<div *ngIf="!detailedAsset">
+  
+<div *ngIf="mainAsset">
     <div class="row">
       <div class="col flex justify-content-between searchBar" style="float: left;" >
          <input type="text" (keyup)="onSearch($event)" placeholder="Search">
@@ -25,7 +31,7 @@
         
       
       
-      
+      <button class="btn btn-primary" data-toggle="modal" data-target="#addAssetPopup">+ Asset</button>
       <button class="btn btn-dark" (click)="exportexcel()">EXPORT</button>
       <button class="btn btn-dark" data-toggle="modal" data-target="#importModel">IMPORT</button>
       <ng-multiselect-dropdown
@@ -33,6 +39,7 @@
         [settings]="dropdownSettings"
         [data]="extraFieldNameList"
         [(ngModel)]="selectedExtraColums"
+        [settings]="dropdownSettings"
         id="custom-columns">
       </ng-multiselect-dropdown>
       
@@ -69,7 +76,7 @@
         <table class="table" id="asset-table">
             <thead class="table-dark">
                 <tr >
-                    <th scope="col">#</th>
+                    <!-- <th scope="col">#</th> -->
                     <th scope="col">Image</th>
                     <th scope="col">Id</th>
                    
@@ -80,13 +87,14 @@
                     <th scope="col">Location</th>
                     <th scope="col">Status</th>
                     <th scope="col" *ngFor="let col of selectedExtraColums">{{col}}</th>
+                    <th></th>
                   </tr>
             </thead>
             <tbody>
-                <tr *ngFor="let item of searchedAssets" (click)="changeAssetDetails(item)">
-                    <th scope="row">{{searchedAssets.indexOf(item)+1}}</th>
+                <tr *ngFor="let item of searchedAssets"  (mouseenter)="editButtonVisibile(searchedAssets.indexOf(item)+1)" (mouseleave)="editButtonNotVisible()" [routerLink]="['/assets',item.id]" >
+                    <!-- <th scope="row">{{searchedAssets.indexOf(item)+1}}</th> -->
                     <td class="d-flex justify-content-between upload"><img src="../../../assets/asset_image.jpg" class="image" *ngIf="!item.image" ><img src={{item.image}} class="image"  *ngIf="item.image"  ></td>
-                    <td>{{item.id}}</td>
+                    <td>{{item.assetId}}</td>
                     <td>{{item.name|titlecase}}</td>
                     <td>{{item.serialNumber}}</td>
                     <td>{{item.category|titlecase}}</td>
@@ -94,8 +102,12 @@
                     <td>{{item.location|titlecase}}</td>
                     <td>{{item.status|titlecase}}</td>
                     <td *ngFor="let col of selectedExtraColums">{{item[col]|titlecase}}</td>
-                    
-                    
+                    <td>
+                    <!-- <i class="bi bi-pencil" id="edit-button"  [ngClass]="{'editoption':!(editVisibility&&(editButtonId==searchedAssets.indexOf(item)+1))}"  style="float: inline-start; margin: 15px 5px;" (click)="changeAssetDetails(item)"></i> -->
+                    <!-- <i class="bi bi-trash"  [ngClass]="{'editoption':!(editVisibility&&(editButtonId==searchedAssets.indexOf(item)+1))}" style="color: red; float: inline-start; margin: 15px 5px;" ></i> -->
+                    <!-- <p [ngClass]="{'editoption':!(editVisibility&&(editButtonId==searchedAssets.indexOf(item)+1))}"  style="float: inline-start; margin: 15px 5px; color: #5E6164; cursor: pointer;" (click)="changeAssetDetails(item)">Edit</p> -->
+                    <img src="../../../assets/edit.svg" id="edit-button" [ngClass]="{'editoption':!(editVisibility&&(editButtonId==searchedAssets.indexOf(item)+1))}" style="float: inline-start; height: 25px; width: 25px;" (click)="changeAssetDetails(item)">
+                  </td>
                     
                   </tr>
                  
@@ -127,7 +139,7 @@
   </div>
 
 
-  <div class="modal fade" id="imageUploadModel" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle" aria-hidden="true">
+  <!-- <div class="modal fade" id="imageUploadModel" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle" aria-hidden="true">
     <div class="modal-dialog" role="document">
       <div class="modal-content">
         <div class="modal-header">
@@ -146,7 +158,79 @@
         </div>
       </div>
     </div>
+  </div> -->
+  <div class="modal fade" id="addAssetPopup" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle" aria-hidden="true">
+    <div class="modal-dialog modal-xl" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h2 class="modal-title" id="exampleModalLongTitle">Add Asset</h2>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close" #closeBox2>
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <!-- <form class="d-flex justify-content-between">
+            <input type="file" (change)="imageUpload($event)" (click)="closeBox2.click()" #imageFile>
+            <button class="btn btn-danger" (click)="removeImage() " (click)="closeBox2.click()">Remove</button>
+          </form> -->
+          <form [formGroup]="assetForm" (ngSubmit)="addAsset()">
+            <div  class="form-group">
+              <label for="image">Image<span *ngIf="mandatoryFieldsMap.get('image')" class="text-danger">*</span> </label>
+              <input type="file" class="form-control" id="image" (change)="imageUpload($event)" #image>
+             
+            </div>
+            <br>
+            <div class="form-group">
+              <label for="name">Name<span *ngIf="mandatoryFieldsMap.get('name')" class="text-danger">*</span> </label>
+              <input type="text" class="form-control" id="name" formControlName="name"  placeholder="Name" #name>
+              
+            </div>
+            <br>
+              <div class="form-group">
+                <label for="serialNumber">Serial Number<span *ngIf="mandatoryFieldsMap.get('serialNumber')" class="text-danger">*</span> </label>
+                <input type="text" class="form-control" id="serialNumber" formControlName="serialNumber"  placeholder="Serial Number" >
+              </div>
+              <br>
+            
+              <div class="form-group">
+                <label for="category">Category<span *ngIf="mandatoryFieldsMap.get('category')" class="text-danger">*</span></label>
+                <input type="text" class="form-control" id="category" formControlName="category"  placeholder="Category">
+              </div>
+              <br>
+              <div class="form-group">
+                <label for="customer">Customer<span *ngIf="mandatoryFieldsMap.get('customer')" class="text-danger">*</span></label>
+                <input type="text" class="form-control" id="customer" formControlName="customer"  placeholder="Customer">
+              </div>
+              <br>
+              <div class="form-group">
+                <label for="location">Location<span *ngIf="mandatoryFieldsMap.get('location')" class="text-danger">*</span></label>
+                <input type="text" class="form-control" id="location" formControlName="location"  placeholder="Location">
+              </div>
+              <br>
+              <div class="form-group">
+                <label for="status">Status<span *ngIf="mandatoryFieldsMap.get('status')" class="text-danger">*</span></label>
+                <input type="text" class="form-control" id="status" formControlName="status"  placeholder="Status">
+              </div>
+              <br>
+              <div class="form-group" *ngFor="let item of showFieldsList" >
+                <div *ngIf="item.show">
+                <label for={{item.name}}>{{item.name|titlecase}}<span *ngIf="mandatoryFieldsMap.get(item.name)" class="text-danger">*</span></label>
+                <input type={{item.type}} class="form-control" id="{{item.name}}" formControlName={{item.name}}  placeholder={{item.name|titlecase}}>
+                </div>
+                <br>
+              </div>
+              <div class="modal-footer">
+                <button type="submit" class="btn btn-primary mt-3" (click)="closeBox2.click()" (click)="image.value=''">ADD</button>
+              </div>
+
+            
+          </form>
+         
+        </div>
+      </div>
+    </div>
   </div>
 <app-asset-details  *ngIf="detailedAsset" [assetDetails]="currDetails" (backStatus)=onBackClicked($event) [ngClass]="{'app-assets-open':!hoverOverSidebar}"></app-asset-details>
+<!-- <app-asset-preview ></app-asset-preview> -->
 </div> 
       

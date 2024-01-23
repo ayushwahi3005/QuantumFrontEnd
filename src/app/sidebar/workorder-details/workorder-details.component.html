@@ -11,7 +11,7 @@
     <div class="form-group">
         <label for="status">Status</label>
        <br>
-        <select class="form-select" class="form-control" id="status" formControlName="status" ngModel={{workOrder.status}} [ngClass]="{'open':(workOrder.status=='open'),'closed':(workOrder.status=='closed'),'onhold':(workOrder.status=='onHold'),'inprogress':(workOrder.status=='inProgress')}" (change)="onDropDownChange(mySelect.value)"  [ngStyle]="{'background-color': (currColor.toLowerCase()=='open') ? 'lightgray' : ((currColor.toLowerCase()=='inprogress') ? '#26C464' : ((currColor.toLowerCase()=='onhold') ? '#FFC008' : '#4088ee')) }"  #mySelect>
+        <select class="form-select" class="form-control" id="status" formControlName="status" [ngModel]="workOrder ? workOrder.status : ''" [ngClass]="{'open':(workOrder?.status=='open'),'closed':(workOrder?.status=='closed'),'onhold':(workOrder?.status=='onHold'),'inprogress':(workOrder?.status=='inProgress')}" (change)="onDropDownChange(mySelect.value)"  [ngStyle]="{'background-color': (currColor.toLowerCase()=='open') ? 'lightgray' : ((currColor.toLowerCase()=='inprogress') ? '#26C464' : ((currColor.toLowerCase()=='onhold') ? '#FFC008' : '#4088ee')) }"  #mySelect>
          
           <option value="open" >OPEN</option>
           <option value="onHold">ON HOLD</option>
@@ -22,29 +22,29 @@
       </div> 
     <div class="form-group">
         <label for="description">Description</label>
-        <input type="text" class="form-control" id="description"  formControlName="description" ngModel={{workOrder.description}} >
+        <input type="text" class="form-control" id="description"  formControlName="description" [ngModel]="workOrder ? workOrder.description : ''" >
        
       </div>
       <div class="form-group">
         <label for="customer">Customer</label>
-        <input type="text" class="form-control" id="customer" formControlName="customer"  ngModel={{workOrder.customer}}>
+        <input type="text" class="form-control" id="customer" formControlName="customer"  [ngModel]="workOrder ? workOrder.customer : ''">
       </div>
       
         <div class="form-group">
           <label for="due-date">Due Date</label>
           <!-- <input type="date" class="form-control" id="due-date" formControlName="dueDate" [(ngModel)]="workOrder.dueDate" value="{{workOrder.dueDate|date}}" > -->
-          <input id="due-date" type="date" class="form-control" ngModel={{workOrder.dueDate}} formControlName="dueDate" >
+          <input id="due-date" type="date" class="form-control" [ngModel]="workOrder ? workOrder.dueDate : ''" formControlName="dueDate" >
         </div>
       
       
         <div class="form-group">
           <label for="technician">Technician</label>
-          <input type="text" class="form-control" id="technician" formControlName="assignedTechnician"  ngModel={{workOrder.assignedTechnician}}>
+          <input type="text" class="form-control" id="technician" formControlName="assignedTechnician"  [ngModel]="workOrder ? workOrder.assignedTechnician : ''">
         </div>
      
         <div class="form-group">
           <label for="priority">Priority</label>
-          <select class="form-select" class="form-control" id="priority" formControlName="priority" ngModel={{workOrder.priority}} >
+          <select class="form-select" class="form-control" id="priority" formControlName="priority" [ngModel]="workOrder ? workOrder.priority : ''" >
            
             <option value="None" >None</option>
             <option value="Low">Low</option>
@@ -55,9 +55,9 @@
        <div class="form-group">
           <label for="asset-details">Asset Details</label>
          
-          <select class="form-select" class="form-control" id="asset-details" formControlName="assetDetails" ngModel={{workOrder.assetDetails}} >
+          <select class="form-select" class="form-control" id="asset-details" formControlName="assetDetails" [ngModel]="workOrder ? workOrder.assetDetails : ''" >
    
-            <option value={{workOrder.assetDetails}} selected>{{workOrder.assetDetails}}</option>
+            <option [value]="workOrder ? workOrder.assetDetails : ''" selected>{{workOrder?.assetDetails}}</option>
             
           </select>
         </div>

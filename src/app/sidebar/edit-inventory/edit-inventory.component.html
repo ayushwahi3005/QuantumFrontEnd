@@ -8,31 +8,31 @@
     </div>
     <div class="form-group">
       <label for="PartId">Part Id</label>
-      <input type="text" class="form-control" id="PartId" formControlName="partId"   required="true" #partId ngModel={{inventory.partId}}>
+      <input type="text" class="form-control" id="PartId" formControlName="partId"   required="true" #partId ngModel={{inventory?.partId}}>
     </div>
     
       <div class="form-group">
         <label for="PartName">Part Name</label>
-        <input type="text" class="form-control" id="PartName" formControlName="partName"   ngModel={{inventory.partName}} required >
+        <input type="text" class="form-control" id="PartName" formControlName="partName"   ngModel={{inventory?.partName}} required >
       </div>
     
     
       <div class="form-group">
         <label for="Price">Price</label>
-        <input type="number" class="form-control" id="Price" formControlName="price"   ngModel={{inventory.price}}>
+        <input type="number" class="form-control" id="Price" formControlName="price"   ngModel={{inventory?.price}}>
       </div>
    
       <div class="form-group">
         <label for="Price">Cost</label>
-        <input type="number" class="form-control" id="Cost" formControlName="cost"  ngModel={{inventory.cost}}>
+        <input type="number" class="form-control" id="Cost" formControlName="cost"  ngModel={{inventory?.cost}}>
       </div>
       <div class="form-group">
         <label for="Price">Category</label>
-        <input type="text" class="form-control" id="Category" formControlName="category"  ngModel={{inventory.category}}>
+        <input type="text" class="form-control" id="Category" formControlName="category"  ngModel={{inventory?.category}}>
       </div>
       <div class="form-group">
         <label for="Price">Quantity</label>
-        <input type="text" class="form-control" id="Quantity" formControlName="quantity" ngModel={{inventory.quantity}} >
+        <input type="text" class="form-control" id="Quantity" formControlName="quantity" ngModel={{inventory?.quantity}} >
       </div>
       <div class="form-group d-flex justify-content-center">
         <button type="submit" class="btn btn-primary mt-3 "  [disabled]=inventoryForm.invalid >Update</button>

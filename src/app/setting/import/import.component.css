@@ -1,0 +1,47 @@
+.main{
+    border: 2px solid gainsboro;
+    border-radius: 5px;
+    width: calc(100vw - 400px);
+    margin-left: 140px;
+    height: 75vh;
+    margin-top: 5%;
+    
+}
+.alert{
+    width: calc(100vw - 290px);
+    margin-left: 120px;
+    margin-top: 5px;
+}
+h1{
+    font-family: Sans-serif;
+    margin-top: 40px;
+    font-weight: bold;
+    font-size: xx-large;
+}
+#dropdown{
+    margin-top: 10px;
+}
+.downloadTemplate{
+    text-decoration: underline;
+    cursor: pointer;
+}
+.downloadTemplate:hover{
+    color: #0D6EFD;
+    
+}
+.exportList{
+    text-decoration: underline;
+    cursor: pointer;
+}
+.exportList:hover{
+    color: #0D6EFD;
+}
+.mapping{
+    width: 40%;
+    height: 70vh;
+    overflow-y: scroll;
+    margin-top: 5%;
+}
+/* .mapping label{
+    margin-right: 50%;
+} */

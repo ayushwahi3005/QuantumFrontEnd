@@ -37,6 +37,11 @@ import { GoogleMapsModule } from '@angular/google-maps';
 import { InventoryComponent } from './sidebar/inventory/inventory.component';
 import { SettingMainComponent } from './setting/setting-main/setting-main.component';
 import { EditInventoryComponent } from './sidebar/edit-inventory/edit-inventory.component';
+import { CustomFieldsSettingsComponent } from './setting/custom-fields-settings/custom-fields-settings.component';
+import { TickAnimationComponent } from './tick-animation/tick-animation.component';
+import { AssetPreviewComponent } from './sidebar/asset-preview/asset-preview.component';
+import { ImportComponent } from './setting/import/import.component';
+import {MatSlideToggleModule} from '@angular/material/slide-toggle';
 
 @NgModule({
   declarations: [
@@ -56,7 +61,11 @@ import { EditInventoryComponent } from './sidebar/edit-inventory/edit-inventory.
     AssetModuleComponent,
     InventoryComponent,
     SettingMainComponent,
-    EditInventoryComponent
+    EditInventoryComponent,
+    CustomFieldsSettingsComponent,
+    TickAnimationComponent,
+    AssetPreviewComponent,
+    ImportComponent
     
    
   ],
@@ -71,7 +80,8 @@ import { EditInventoryComponent } from './sidebar/edit-inventory/edit-inventory.
     BrowserAnimationsModule,
     HttpClientModule,
     NgMultiSelectDropDownModule.forRoot(),
-    GoogleMapsModule
+    GoogleMapsModule,
+    MatSlideToggleModule
     
   ],
   providers: [DatePipe],

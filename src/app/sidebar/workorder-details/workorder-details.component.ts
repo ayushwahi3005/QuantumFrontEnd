@@ -5,6 +5,7 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { WorkOrder } from './workorder';
 import { coerceStringArray } from '@angular/cdk/coercion';
 import { ActivatedRoute, Router } from '@angular/router';
+import { DatePipe } from '@angular/common';
 
 @Component({
   selector: 'app-workorder-details',
@@ -20,7 +21,7 @@ export class WorkorderDetailsComponent {
   currColor='open';
   loadingScreen=false;
   workOrderId!:any;
-  constructor(private workOrderDetailService:WorkorderDetailsService,private formBuilder:FormBuilder,private activeRoute:ActivatedRoute,private router:Router){}
+  constructor(private workOrderDetailService:WorkorderDetailsService,private formBuilder:FormBuilder,private activeRoute:ActivatedRoute,private router:Router,private datePipe: DatePipe){}
 
   ngOnInit(){
     this.activeRoute.paramMap.subscribe((data)=>{
@@ -29,8 +30,9 @@ export class WorkorderDetailsComponent {
     })
     this.workOrderDetailService.getWorkOrder(this.workOrderId).subscribe((data)=>{
       this.workOrder=data;
-      // this.workOrder.dueDate=this.workOrder.dueDate.substring(1,10);
+      this.workOrder.dueDate=this.workOrder.dueDate.substring(0,10);
       console.log(this.workOrder)
+      // this.workOrder.dueDate=this.datePipe.transform(this.workOrder.dueDate, 'yyyy-MM-dd');
     },
     (err)=>{
       console.log(err);
@@ -51,6 +53,7 @@ export class WorkorderDetailsComponent {
       lastUpdate:[''],
       email:[''],
       status:[''],
+      companyId:['']
       
 
 
@@ -69,7 +72,12 @@ export class WorkorderDetailsComponent {
   onSubmit(){
     this.workOrderUpdateForm.controls['email'].setValue(this.workOrder.email)
     this.workOrderUpdateForm.controls['id'].setValue(this.workOrder.id)
-    // this.workOrderUpdateForm.controls['dueDate'].setValue(this.workOrder.dueDate.substring(0,10))
+    this.workOrderUpdateForm.controls['companyId'].setValue(this.workOrder.companyId)
+    // const originalDate = this.workOrderUpdateForm.get('dueDate')?.value;
+    // let formattedDate = this.datePipe.transform(originalDate, 'yyyy-MM-dd');
+    // let date=new Date(this.workOrderUpdateForm.get('dueDate')?.value).toISOString().split('T')[0];
+    // console.log(formattedDate);
+    // this.workOrderUpdateForm.controls['dueDate'].setValue(formattedDate);
     this.workOrderUpdateForm.controls['assetId'].setValue(this.workOrder.assetId)
     // console.log("mydate",this.workOrderUpdateForm.controls['dueDate'].value)
 

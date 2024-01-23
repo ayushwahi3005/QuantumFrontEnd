@@ -9,8 +9,9 @@ table{
     width:100%;
 }
 .card{
-    width: calc(100vw - 270px);
+    width: calc(100vw - 400px);
     margin-right: 10px;
+    margin-left: 60px;
     margin-bottom: 100px;
 }
 i{
@@ -18,6 +19,7 @@ i{
     margin-bottom: 2px;
     font-size: larger;
     margin-left: 20px;
+    cursor: default;
 
 }
 .dropdown-menu i{

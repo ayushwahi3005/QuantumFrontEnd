@@ -1,4 +1,4 @@
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 
@@ -10,10 +10,18 @@ export class WorkorderDetailsService {
   constructor(private httpClient:HttpClient) { }
 
   updateWorkOrder(data:any):Observable<any>{
-    return this.httpClient.put("http://localhost:8083/workorder/update",data);
+    const headers = new HttpHeaders({
+      'Authorization': `Bearer ${localStorage.getItem('authToken')}`,
+      'Content-Type': 'application/json'
+    });
+    return this.httpClient.put("http://localhost:8083/workorder/update",data,{headers});
   }
   getWorkOrder(id:string):Observable<any>{
-    return this.httpClient.get("http://localhost:8083/workorder/getworkorder/"+id);
+    const headers = new HttpHeaders({
+      'Authorization': `Bearer ${localStorage.getItem('authToken')}`,
+      'Content-Type': 'application/json'
+    });
+    return this.httpClient.get("http://localhost:8083/workorder/getworkorder/"+id,{headers});
   }
  
 }

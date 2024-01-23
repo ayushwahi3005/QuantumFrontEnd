@@ -3,5 +3,6 @@ export class ExtraFieldName{
     name!:string;
     email!:string;
     type!:string;
+    companyId!:string;
   
 }

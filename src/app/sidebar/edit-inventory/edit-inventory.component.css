@@ -68,14 +68,7 @@ color: white;
   
 }
 
-.mainform{
-    width: 80%;
-    color: #717275;
-    border: 1px solid lightgray ;
-    padding: 10px 10px;
-    margin-top: 20px;
-    border-radius: 15px;
-}
+
 
 input:focus {
     border: 3px solid #1a65ab;
@@ -95,5 +88,5 @@ img{
     border-radius: 30px;
     height: 300px;
     margin-bottom: 30px;
-    ;
+    
 }

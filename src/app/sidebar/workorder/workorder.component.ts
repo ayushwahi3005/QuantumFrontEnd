@@ -17,6 +17,7 @@ export class WorkorderComponent {
   workorderlist!:WorkOrder[];
   assetList!:Assets[];
   email:any;
+  companyId:any;
   priority!:string;
   todayDate!:Date;
   editVisibility:boolean=false;
@@ -24,11 +25,15 @@ export class WorkorderComponent {
   detailedWorkOrder=false;
   selectedWorkOrder!:string;
   loadingScreen=false;
+  searchData!:string
+  searchDataBy!:string;
+  sortedBy!:string;
   constructor(private formBuilder:FormBuilder,private workOrderService:WorkOrderService){}
 
   ngOnInit():void{
     this.email=localStorage.getItem('user');
-    console.log(this.email);
+    this.companyId=localStorage.getItem('companyId');
+    console.log(this.companyId);
     this.workorderform=this.formBuilder.group({
       description:['',Validators.required],
       customer:['',Validators.required],
@@ -38,15 +43,15 @@ export class WorkorderComponent {
       assetId:[''],
       priority:['None'],
       lastUpdate:[''],
-      email:[this.email],
+      companyId:[this.companyId],
       status:['open'],
       
 
 
 
     })
-    this.getAllWorkOrderList(this.email);
-    this.getAllAssets(this.email);
+    this.getAllWorkOrderList(this.companyId);
+    this.getAllAssets(this.companyId);
     this.todayDate=new Date();
     console.log(this.todayDate);
     console.log("inside"+this.workorderlist)
@@ -67,15 +72,15 @@ export class WorkorderComponent {
     }
     )
   }
-  getAllWorkOrderList(email:string){
-    this.workOrderService.getWorkOrder(email).subscribe((data)=>{
+  getAllWorkOrderList(companyId:string){
+    this.workOrderService.getWorkOrder(companyId).subscribe((data)=>{
       this.workorderlist=data;
     },(err)=>{
       console.log(err);
     })
   }
-  getAllAssets(email:string){
-    this.workOrderService.getAssets(email).subscribe((data)=>{
+  getAllAssets(companyId:string){
+    this.workOrderService.getAssets(companyId).subscribe((data)=>{
       this.assetList=data;
     },(err)=>{
       console.log(err);
@@ -124,6 +129,7 @@ export class WorkorderComponent {
     },3000);
     
   }
+  
   deleteAsset(id:string){
     this.deleteloading();
    setTimeout(()=>{
@@ -139,7 +145,66 @@ export class WorkorderComponent {
    },3000);
     
   }
+  
   assetSelected(data:any){
     console.log(data)
+  }
+  onSearch(data:any){
+    console.log(data);
+    this.searchData=data;
+  }
+  searchClick(){
+    
+    if(this.searchData?.trim()==null||this.searchData?.trim()==''||this.searchDataBy==''){
+
+      this.getAllWorkOrderList(this.companyId);
+      
+      return;
+    }
+    if(this.searchDataBy==''||this.searchDataBy==null){
+      alert("Please select the category from drop down");
+      return;
+    }
+    this.loadingScreen=true;
+    setTimeout(()=>{
+      this.workOrderService.getSearchedWorkOrderList(this.companyId,this.searchData?.trim(),this.searchDataBy).subscribe((data)=>{
+        this.workorderlist=data;
+        console.log(this.workorderlist);
+        
+      },
+      (err)=>{
+        console.log(err);
+      },()=>{
+        this.loadingScreen=false;
+      })
+     },1000);
+    
+  }
+  searchBy(data:string){
+    this.searchDataBy=data;
+    console.log(data)
+    this.sortedBy='';
+  }
+  removeSearchDataBy(){
+    this.searchDataBy='';
+    this.getAllWorkOrderList(this.companyId);
+  }
+  sortBy(data:string){
+    this.searchDataBy='';
+    this.sortedBy=data;
+    console.log("Sorted By:"+data)
+    this.workOrderService.getSortedWorkOrderList(this.companyId,data).subscribe((data)=>{
+      this.workorderlist=data;
+      console.log(this.workorderlist);
+      
+    },
+    (err)=>{
+      console.log(err);
+    },()=>{
+      this.loadingScreen=false;
+    })
+  }
+  removeSort(){
+   this.sortedBy='';
   }
 }
