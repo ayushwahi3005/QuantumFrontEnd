@@ -1,3 +1,9 @@
+<div *ngIf="showAlert" class="alert" [ngClass]="'alert-' + alertType" role="alert" style="margin: 5px; position: fixed; width: 95%; z-index: 100;">
+  {{ alertMessage }}
+  <!-- Optionally, add a close button -->
+  <button type="button" class="btn-close" (click)="showAlert = false" aria-label="Close" style="float: right;"></button>
+</div>
+
 <div *ngIf="!detailedWorkOrder" [ngClass]="{'loading':loadingScreen}">
   <div class="d-flex justify-content-around">
   <div class="col flex justify-content-between searchBar" style="float: left;" >
@@ -12,6 +18,7 @@
       </svg>
       
     </a>
+    
     <div class="dropdown-menu" aria-labelledby="dropdownMenuButton" style="z-index: 10; cursor: pointer;">
       <a class="dropdown-item" (click)="searchBy('description')">Search By Description</a>
       <a class="dropdown-item" (click)="searchBy('customer')">Search By Customer</a>
@@ -41,10 +48,24 @@
       <a class="dropdown-item" (click)="sortBy('assignedTechnician')">Sort By Assigned Technician</a>
       <a class="dropdown-item" (click)="sortBy('assetDetails')">Sort By Asset Details</a>
       <a class="dropdown-item" (click)="sortBy('lastUpdate')">Sort By Last Update</a>
-      <!-- <a *ngFor="let item of selectedExtraColums"  class="dropdown-item" (click)="onSort(item)">Sort By {{item}}</a> -->
+      <a *ngFor="let item of selectedExtraColums"  class="dropdown-item" >Sort By {{item}}</a>
     </div>
+    
   </div>
-  <button class="btn btn-primary mt-2 me-5" data-toggle="modal" data-target="#add-order" >+ Work Order</button>
+  <div>
+    <ng-multiselect-dropdown
+          [placeholder]="'Columns...'"
+          [settings]="dropdownSettings"
+          [data]="extraFieldNameList"
+          [(ngModel)]="selectedExtraColums"
+        
+          id="custom-columns">
+        </ng-multiselect-dropdown>
+  </div>
+    
+    <button class="btn btn-primary mt-2 me-5" data-toggle="modal" data-target="#add-order" >+ Work Order</button>
+    
+  
 </div>
 <div class="row" style="height: calc(100vh - 140px); overflow: scroll; width: 100%;">
     <div class="col">
@@ -64,11 +85,12 @@
                   <th scope="col">Assigned Technician</th>
                   <th scope="col">Asset Details</th>
                   <th scope="col">Last Update</th>
+                  <th scope="col" *ngFor="let col of selectedExtraColums">{{col|titlecase}}</th>
                   <th></th>
-                </tr>
+              </tr>
           </thead>
           <tbody>
-              <tr *ngFor="let item of workorderlist" (mouseenter)="editButtonVisibile(workorderlist.indexOf(item)+1)" (mouseleave)="editButtonNotVisible()">
+              <tr *ngFor="let item of searchedWorkorder" (mouseenter)="editButtonVisibile(workorderlist.indexOf(item)+1)" (mouseleave)="editButtonNotVisible()">
                   <!-- <th scope="row">{{workorderlist.indexOf(item)+1}}</th> -->
                   
             
@@ -80,9 +102,14 @@
                   <td>{{item.assignedTechnician|titlecase}}</td>
                   <td>{{item.assetDetails|titlecase}}</td>
                   <td>{{item.lastUpdate|titlecase}}</td>
+                  
+                  <td *ngFor="let col of selectedExtraColums"> {{ item[col] }}</td>
+                  <!-- <td>{{item.extraFields.}}</td> -->
+                
                   <td>
+                    
                   <i class="bi bi-pencil" [ngClass]="{'editoption':!(editVisibility&&(editButtonId==workorderlist.indexOf(item)+1))}"  style="float: inline-start; margin: 15px 5px;" (click)="workOrderDetail(item.id)" [routerLink]="['/workorder',item.id]"></i>
-                  <i class="bi bi-trash"  [ngClass]="{'editoption':!(editVisibility&&(editButtonId==workorderlist.indexOf(item)+1))}" style="color: red; float: inline-start; margin: 15px 5px;" (click)="deleteAsset(item.id)"></i>
+                  <i class="bi bi-trash"  [ngClass]="{'editoption':!(editVisibility&&(editButtonId==workorderlist.indexOf(item)+1))}" style="color: red; float: inline-start; margin: 15px 5px;" (click)="deleteWorkorder(item.id)"></i>
                 </td>
                   
                 </tr>
@@ -127,8 +154,8 @@
               <div class="form-group">
                 <label for="priority">Priority</label>
                 <select class="form-select" class="form-control" id="priority" formControlName="priority" >
-                  <option selected>Select Priority</option>
-                  <option value="None">None</option>
+                 
+                  <option value="None" selected>None</option>
                   <option value="Low">Low</option>
                   <option value="Medium">Medium</option>
                   <option value="High">High</option>
@@ -138,13 +165,21 @@
                 <label for="asset-details">Asset Details</label>
                
                 <select class="form-select" class="form-control" id="asset-details" formControlName="assetDetails" #asset>
-                  <!-- <option selected>Select Asset</option> -->
+                  
                   <option value={{[asset.name,asset.id]}} *ngFor="let asset of assetList">{{asset.name}}</option>
                   
                 </select>
               </div>
+              <div class="form-group" *ngFor="let item of showFieldsList" >
+                <div *ngIf="item.show">
+                <label for={{item.name}}>{{item.name|titlecase}}<span *ngIf="mandatoryFieldsMap.get(item.name)" class="text-danger">*</span></label>
+                <input type={{item.type}} class="form-control" id="{{item.name}}" formControlName={{item.name}}  placeholder={{item.name|titlecase}}>
+                </div>
+                <br>
+              </div>
             
-            <button type="submit" class="btn btn-primary mt-3" (click)="closeBox.click()" [disabled]="workorderform.invalid">Submit</button>
+            <!-- <button type="submit" class="btn btn-primary mt-3" (click)="closeBox.click()" [disabled]="workorderform.invalid">Submit</button> -->
+            <button type="submit" class="btn btn-primary mt-3" (click)="closeBox.click()" >Submit</button>
           </form>
          
         </div>

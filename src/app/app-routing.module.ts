@@ -11,6 +11,7 @@ import { SettingMainComponent } from './setting/setting-main/setting-main.compon
 import { EditInventoryComponent } from './sidebar/edit-inventory/edit-inventory.component';
 import { TickAnimationComponent } from './tick-animation/tick-animation.component';
 import { AssetPreviewComponent } from './sidebar/asset-preview/asset-preview.component';
+import { InvitationComponent } from './invitation/invitation.component';
 
 const routes: Routes = [
   {path: '', component:HomeComponent, pathMatch:'full'},
@@ -24,6 +25,7 @@ const routes: Routes = [
   {path:'edit-inventory/:id',component:EditInventoryComponent},
   {path:'setting-home',component:SettingMainComponent},
   {path:'assets/:id',component:AssetPreviewComponent},
+  {path:'invitation/:id/:details',component:InvitationComponent},
 
 
  

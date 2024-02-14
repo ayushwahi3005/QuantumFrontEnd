@@ -100,7 +100,7 @@ app-asset-details  {
 .multiselect-dropdown .dropdown-list{
     width: 300px;
 }
-.multiselect-dropdown .dropdown-btn {
+#custom-columns .dropdown-btn {
     background-color: #085ED7;
 }
 .multiselect-dropdown .selected-item {

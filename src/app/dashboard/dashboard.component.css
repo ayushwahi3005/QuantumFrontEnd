@@ -147,6 +147,13 @@ app-assets,app-workorder,app-inventory {
     overflow-y: scroll;
     height: calc(100vh - 80px);
 }
+app-users{
+    width: calc(100vw - 85px);
+    transition: width 150ms linear;
+    overflow-y: hidden;
+    overflow-x: hidden;
+    height: calc(100vh - 80px);
+}
 .app-assets-open{
     width: calc(100vw - 270px);
 }

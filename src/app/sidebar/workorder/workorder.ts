@@ -1,3 +1,5 @@
+import { ExtraField } from "./extraField";
+
 export class WorkOrder{
     id!:string;
 	description!:string;
@@ -9,4 +11,5 @@ export class WorkOrder{
 	assetDetails!:string;
     lastUpdate!:string;
 	email!:string;
+
 }

@@ -47,4 +47,23 @@ export class WorkOrderService {
   deleteWorkOrder(id:string):Observable<any>{
     return this.httpClient.delete("http://localhost:8083/workorder/delete/"+id,{headers:this.headers});
   }
+  getAllMandatoryFields(companyId:any):Observable<any>{
+    return this.httpClient.get("http://localhost:8083/workorder/getAllMandatoryFields/"+companyId,{headers:this.headers});
+  }
+  getAllShowFields(companyId:any):Observable<any>{
+    return this.httpClient.get("http://localhost:8083/workorder/getAllShowFields/"+companyId,{headers:this.headers});
+  }
+  getExtraFieldName(id:string):Observable<any>{
+    return this.httpClient.get("http://localhost:8083/workorder/getExtraFieldName/"+id,{headers:this.headers});
+  }
+
+  getExtraFieldNameValue(companyId:string):Observable<any>{
+    return this.httpClient.get("http://localhost:8083/workorder/getExtraFieldNameValue/"+companyId,{headers:this.headers});
+  }
+  addExtraFields(data:any):Observable<any>{
+    return this.httpClient.post("http://localhost:8083/workorder/addfields",data,{headers:this.headers});
+  }
+  deleteWorkorderExtraField(id:String):Observable<any>{
+    return this.httpClient.delete("http://localhost:8083/workorder/deleteWorkorderExtraFields/"+id,{headers:this.headers});
+  }
 }

@@ -40,20 +40,26 @@
         </form>
     </div>
         <div *ngIf="excelColumns.length && databaseColumns.length" style="float: right;" class="mapping">
-           
-            <table>
-                <thead> <h2>Column Mapping</h2></thead>
-                <tbody>
-            <tr *ngFor="let dbCol of databaseColumns; let i = index" >
+            <h2 >Column Mapping</h2>
+            <table class="table" >
+                <thead class="table-dark">
+                    <th style="padding-left: 10%;">Excel Column</th>
+                    <th  style="padding-left: 10%;">Database Column</th>
+                </thead>
                 
-                <td>
-             {{ dbCol }}
+                <tbody >
+                    
+            <tr *ngFor="let excelCol of excelColumns; let i = index" >
+                
+                <td style="padding-left: 10%;">
+             {{ excelCol }}
                 </td>
-                <td>
-              <select  (change)="update(dbCol,$event)">
+                <td style="padding-left: 10%;">
+              <select  (change)="update(excelCol,$event)">
                 <option selected></option>
-                <option *ngFor="let excelCol of excelColumns" [value]="excelCol" >
-                  {{ excelCol }}
+                
+                <option *ngFor="let dbCol of databaseColumns" [value]="dbCol" >
+                  {{ dbCol }}
                 </option>
               </select>
             </td>
@@ -61,7 +67,7 @@
         </tr>
         </tbody>
         </table>
-            <button (click)="saveMappings()">Save Mappings</button>
+            <button class="btn btn-primary" style="margin-left: 15%; margin-top: 20px; " (click)="saveMappings()" >Save Mappings</button>
           </div>
     </div>
 </div>

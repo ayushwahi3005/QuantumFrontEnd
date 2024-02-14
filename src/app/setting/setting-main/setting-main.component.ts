@@ -59,6 +59,11 @@ export class SettingMainComponent {
     number:8,
     name:'Subscription',
     icon:'bi bi-clipboard-check'
+  },
+  {
+    number:9,
+    name:'Asset QR code',
+    icon:'bi bi-qr-code'
   }
   
 ];

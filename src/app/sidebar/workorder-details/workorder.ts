@@ -1,3 +1,5 @@
+import { ExtraField } from "./extraField";
+
 export class WorkOrder{
     id!:string;
 	description!:string;
@@ -11,4 +13,5 @@ export class WorkOrder{
     lastUpdate!:string;
 	email!:string;
 	companyId!:string;
+	extraFields!:Map<String,ExtraField>;
 }

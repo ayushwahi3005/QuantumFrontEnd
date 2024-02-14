@@ -107,7 +107,7 @@ export class AssetsComponent {
     (err)=>{
       console.log(err);
     })
-    this,this.assetService.getAllShowFields(this.companyId).subscribe((data)=>{
+    this.assetService.getAllShowFields(this.companyId).subscribe((data)=>{
       this.showFieldsList=data;
       console.log("show----------------------->",this.showFieldsList)
       this.showFieldsList.forEach((x)=>{

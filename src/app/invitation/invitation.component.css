@@ -1,0 +1,85 @@
+form{
+    width: 500px;
+    padding: 10px 10px;
+    
+    margin-top: 100PX;
+    
+    
+}
+.register{
+    display: flex;
+    justify-content: center;
+    padding-top: 50px;
+    
+}
+h2{
+    display: flex;
+    justify-content: center;
+    
+}
+button{
+    width: 100%;
+    margin-top: 10px;
+}
+.header{
+    background-color: #12232E;
+    color: white;
+    text-align: center;
+}
+img{
+    height: 48px;
+}
+.header-centre{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: row;
+    padding: 1em;
+}
+.header-centre h1{
+    display: block;
+    font-size: 2em;
+    font-weight: bold;
+    padding-left: 15px;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
+    -webkit-font-smoothing: antialiased;
+}
+form{
+    border: 0px;
+}
+
+button{
+    background-color: #013365 ;
+    height: 40px;
+    color: white;
+    margin-top: 30px;
+    
+}
+a{
+    text-decoration: none; color: #2C1376; padding-left: 5px; font-weight: bolder;
+    
+}
+#reg{
+    
+        display: flex;
+        justify-content: center;
+      
+        font-size: 2em;
+        margin-block-start: 0.67em;
+        margin-block-end: 0.67em;
+        margin-inline-start: 0px;
+        margin-inline-end: 0px;
+        font-weight: bold;
+    
+    
+}
+.modal button{
+    background-color: yellow;
+    color: black;
+}
+.modal{
+    margin-top: 300px;
+}
+/* .form-group{
+    height: 60px;
+} */

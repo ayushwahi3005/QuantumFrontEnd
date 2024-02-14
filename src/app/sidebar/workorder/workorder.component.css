@@ -58,6 +58,10 @@ td{
 /* tbody{
     box-shadow: 5px 5px 5px grey;
 } */
+.filter{
+    display: flex;
+    flex-direction: row-reverse;
+    }
 th{
     padding: 20px 5px;
     font-size: medium;
@@ -145,4 +149,30 @@ tr:hover{
     
     padding: 5px;
     margin-left: 5px;
+}
+
+#custom-columns{
+   
+    color: white;
+    /* border-radius: 10px;*/
+    /* margin: 1px;  */
+ 
+}
+.multiselect-dropdown .dropdown-list{
+    width: 300px;
+}
+#custom-columns .dropdown-btn {
+    background-color: #085ED7;
+}
+/* .multiselect-dropdown .dropdown-btn {
+    background-color: #085ED7;
+} */
+.multiselect-dropdown .selected-item {
+    background-color: white;
+}
+.multiselect-dropdown .dropdown-btn .dropdown-multiselect__caret:before{
+border-style: none;
+}
+.row{
+    margin: 10px;
 }

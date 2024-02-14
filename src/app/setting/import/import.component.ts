@@ -3,6 +3,8 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ImportService } from './import.service';
 import { AssetsService } from 'src/app/sidebar/assets/assets.service';
 import { ExtraFieldName } from './extraFieldName';
+import * as XLSX from 'xlsx';
+import { ColumnMapping } from './columnMapping';
 
 
 @Component({
@@ -21,9 +23,14 @@ export class ImportComponent {
   companyId!:any;
   excelColumns: string[] = [];
   databaseColumns: string[] = [];
+  databaseColumnsToAdd: string[] = [];
+  databaseColumnsToUpdate: string[] = [];
+  col=new ColumnMapping();
   // columnMappings: { excel: string, database: string }[] = [];
-  columnMappings!:Map<String,any>;
+  columnMappings!:Map<String,String>;
   extraFieldsColumns!:ExtraFieldName[];
+  convertedFile!:any;
+  impType!:string;
   constructor(private formBuilder:FormBuilder,private importService:ImportService,private assetService:AssetsService){
 
   }
@@ -32,7 +39,7 @@ export class ImportComponent {
   ngOnInit(){
     this.email=localStorage.getItem('user');
     this.companyId=localStorage.getItem('companyId');
-   
+    
     this.importForm=this.formBuilder.group({
       module:['asset',Validators.required],
       importType:['',Validators.required],
@@ -51,10 +58,23 @@ export class ImportComponent {
     console.log(this.columnMappings)
 
   }
+
+  
+  convertCSVToXlsx(csvData:any): void {
+    // Replace this with your CSV data
+    // const csvData = 'Name, Age\nJohn, 25\nJane, 30';
+
+    // Specify a file name without extension
+    // const fileName = 'converted_data';
+
+    this.importService.csvToXlsx(csvData, this.convertedFile);
+  }
+
   FileUpload(event:any){
     const file = event.target.files[0];
   const formData = new FormData();
   formData.append('file', file);
+ 
   this.myFile=formData;
   const reader: FileReader = new FileReader();
 
@@ -75,14 +95,40 @@ export class ImportComponent {
 
     // Read the file as text
     reader.readAsText(file);
+    
   }
   onSubmit(){
     console.log(this.importForm.value)
+    const formData=this.myFile
+    const objArray:any={
+
+    }
+    this.columnMappings.forEach((v,k)=>{
+      console.log(v+" "+k)
+      let myString:string=k.toString();
+      // 
+      objArray[myString]=v;
+    // this.col.databaseColumn=v;
+    // this.col.excelColumn=k;
+    
+      
+      // objArray.push(obj);
+      
+     
+      
+    })
+    const jsonString = JSON.stringify(objArray);
+    console.log(jsonString)
+    
+    formData.append('columnMappings', jsonString);
+    this.myFile=formData;
     if(this.importForm.controls['module'].value=="asset"){
       console.log("Asset")
       if(this.importForm.controls['importType'].value=="add"){
+        this.impType="add";
         this.importService.addAssets(this.myFile,this.companyId).subscribe((data)=>{
           console.log("Successfully Uploaded");
+          
           this.triggerAlert("Asset File Successfully Uploaded","success");
         },
         (err)=>{
@@ -90,7 +136,8 @@ export class ImportComponent {
         })
       }
       else{
-        this.importService.updateAssets(this.myFile,this.companyId,this.columnMappings).subscribe((data)=>{
+        this.impType="update";
+        this.importService.updateAssets(this.myFile,this.companyId).subscribe((data)=>{
           console.log("Successfully Updated");
           this.triggerAlert("Asset File Successfully Updated","success");
         },

@@ -1,16 +1,15 @@
 import { Component } from '@angular/core';
 import { ExtraFieldName } from './extraFieldName';
-import { AssetModuleService } from './asset-module.service';
-import { MandatoryFields } from './mandatoryFields';
 import { ShowFieldsData } from './showFieldsData';
+import { MandatoryFields } from './mandatoryFields';
+import { WorkorderModuleService } from './workorder-module.service';
 
 @Component({
-  selector: 'app-asset-module',
-  templateUrl: './asset-module.component.html',
-  styleUrls: ['./asset-module.component.css'],
-  
+  selector: 'app-workorder-module',
+  templateUrl: './workorder-module.component.html',
+  styleUrls: ['./workorder-module.component.css']
 })
-export class AssetModuleComponent {
+export class WorkorderModuleComponent {
   extraFieldName!:ExtraFieldName[];
   addFieldName!:string;
   showFieldsList!:ShowFieldsData[];
@@ -29,19 +28,7 @@ export class AssetModuleComponent {
   isSubscribedToEmailsMessage!:boolean;
   companyId!:any;
   mandatoryFields=[{
-    name:"image",
-    type:"file"
-  },
-  {
-    name:"name",
-    type:"String"
-  },
-  {
-    name:"serialNumber",
-    type:"Number"
-  },
-  {
-    name:"category",
+    name:"description",
     type:"String"
   },
   {
@@ -49,21 +36,33 @@ export class AssetModuleComponent {
     type:"String"
   },
   {
-    name:"location",
+    name:"status",
     type:"String"
   },
   {
-    name:"status",
-    type:"Option"
+    name:"priority",
+    type:"String"
+  },
+  {
+    name:"due Date",
+    type:"String"
+  },
+  {
+    name:"assigned Technician",
+    type:"String"
+  },
+  {
+    name:"last Update",
+    type:"String"
   }]
-  constructor(private assetModuleService:AssetModuleService){}
+  constructor(private workorderModuleService:WorkorderModuleService){}
   ngOnInit(){
-    this.extraFieldOption="number";
+    this.extraFieldOption='number';
     this.mandatoryFieldsMap = new Map<string, boolean>();
     this.showFieldsMap = new Map<string, boolean>();
     this.email=localStorage.getItem('user');
     this.companyId=localStorage.getItem('companyId');
-    this.assetModuleService.getExtraFields(this.companyId).subscribe((data)=>{
+    this.workorderModuleService.getExtraFields(this.companyId).subscribe((data)=>{
       this.extraFieldName=data;
       console.log("--------extra------------->"+this.companyId);
       this.extraFieldName.forEach((x)=>{
@@ -74,7 +73,7 @@ export class AssetModuleComponent {
       console.log(err);
     })
 
-    this.assetModuleService.getAllMandatoryFields(this.companyId).subscribe((data)=>{
+    this.workorderModuleService.getAllMandatoryFields(this.companyId).subscribe((data)=>{
       this.mandatoryFieldsList=data;
       // console.log("mandatory----------------------->",this.mandatoryFieldsList)
       this.mandatoryFieldsList.forEach((x)=>{
@@ -84,7 +83,7 @@ export class AssetModuleComponent {
     (err)=>{
       console.log(err);
     })
-    this,this.assetModuleService.getAllShowFields(this.companyId).subscribe((data)=>{
+    this.workorderModuleService.getAllShowFields(this.companyId).subscribe((data)=>{
       this.showFieldsList=data;
       // console.log("show----------------------->",this.showFieldsList)
       this.showFieldsList.forEach((x)=>{
@@ -94,6 +93,8 @@ export class AssetModuleComponent {
     (err)=>{
       console.log(err);
     })
+
+    
   }
   onClick(option:number){
     this.currOption=option;
@@ -113,7 +114,7 @@ export class AssetModuleComponent {
        "type":this.extraFieldOption,
        "companyId":this.companyId
     }
-    this.assetModuleService.addExtraFields(obj).subscribe((data)=>{this.extraFieldOption
+    this.workorderModuleService.addExtraFields(obj).subscribe((data)=>{this.extraFieldOption
       console.log(data);
     },
     (err)=>{
@@ -131,7 +132,7 @@ export class AssetModuleComponent {
   }
   }
   removeExtraField(){
-    this.assetModuleService.removeExtraField(this.deletionId).subscribe((data)=>{
+    this.workorderModuleService.removeExtraField(this.deletionId).subscribe((data)=>{
       console.log(data);
       this.deletionId='';
     },
@@ -143,7 +144,7 @@ export class AssetModuleComponent {
       
     }
     )
-    this.assetModuleService.deleteShowAndMandatoryFields(this.deletionName,this.companyId).subscribe((data)=>{
+    this.workorderModuleService.deleteShowAndMandatoryFields(this.deletionName,this.companyId).subscribe((data)=>{
       console.log("deleted extra fields mandate and show");
     },
     (err)=>{
@@ -173,7 +174,7 @@ export class AssetModuleComponent {
   mandatoryField(event:any,name:string,type:string){
     console.log(event.checked);
     console.log(name);
-    this.assetModuleService.getMandatoryFields(name,this.companyId).subscribe((data)=>{
+    this.workorderModuleService.getMandatoryFields(name,this.companyId).subscribe((data)=>{
       let obj;
       console.log(data);
       if(data==null){
@@ -196,7 +197,7 @@ export class AssetModuleComponent {
           "companyId":this.companyId
         }
       }
-      this.assetModuleService.mandatoryFields(obj).subscribe((data)=>{
+      this.workorderModuleService.mandatoryFields(obj).subscribe((data)=>{
         console.log("Updated");
         this.triggerAlert("SuccessFully Updated Field","success");
       },
@@ -223,7 +224,7 @@ export class AssetModuleComponent {
     
     console.log(event.checked);
     console.log(name);
-    this.assetModuleService.getShowFields(name,this.companyId).subscribe((data)=>{
+    this.workorderModuleService.getShowFields(name,this.companyId).subscribe((data)=>{
       let obj;
       console.log(data);
       if(data==null){
@@ -246,7 +247,7 @@ export class AssetModuleComponent {
           "companyId":this.companyId
         }
       }
-      this.assetModuleService.showFields(obj).subscribe((data)=>{
+      this.workorderModuleService.showFields(obj).subscribe((data)=>{
         console.log("Updated");
         this.triggerAlert("SuccessFully Updated Field","success");
       },

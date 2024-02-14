@@ -1,10 +1,10 @@
-form div{
+/* form div{
     border:0.5px solid lightgray;
     height: 80px;
     border-radius: 5px;
     margin: 5px;
-}
-svg{
+} */
+/* svg{
     margin: 20px 5px;
 }
 label{
@@ -18,4 +18,34 @@ input{
 }
 .form-control{
     margin-top: 20px;
+} */
+input{
+    margin: 10px 0px;
+    color: #717275;
+    border-radius: 8px;
+    padding: 12px 20px;
+   
+   
+    border: 3px solid #aab1b8;
+    -webkit-transition: 0.5s;
+    transition: 0.5s;
+    outline:none
+}
+input:focus {
+    border: 3px solid #1a65ab;
+  }
+  button{
+    margin-top: 10px;
+  }
+  app-asset-details  {
+    width: calc(100vw - 85px);
+    transition: width 150ms linear;
+    overflow-y: scroll;
+    height: calc(100vh - 80px);
+}
+.app-assets-open{
+    width: calc(100vw - 270px);
+}
+.row{
+    margin: 10px;
 }

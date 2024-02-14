@@ -42,6 +42,8 @@ import { TickAnimationComponent } from './tick-animation/tick-animation.componen
 import { AssetPreviewComponent } from './sidebar/asset-preview/asset-preview.component';
 import { ImportComponent } from './setting/import/import.component';
 import {MatSlideToggleModule} from '@angular/material/slide-toggle';
+import { WorkorderModuleComponent } from './setting/workorder-module/workorder-module.component';
+import { InvitationComponent } from './invitation/invitation.component';
 
 @NgModule({
   declarations: [
@@ -65,7 +67,9 @@ import {MatSlideToggleModule} from '@angular/material/slide-toggle';
     CustomFieldsSettingsComponent,
     TickAnimationComponent,
     AssetPreviewComponent,
-    ImportComponent
+    ImportComponent,
+    WorkorderModuleComponent,
+    InvitationComponent
     
    
   ],

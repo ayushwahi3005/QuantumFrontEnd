@@ -1,0 +1,72 @@
+
+<div class="register">
+    <form [formGroup]="inviteForm" (ngSubmit)="register()" >
+        <h1 id="reg">You are Invited!!!</h1>
+        <h3 id="reg">Register</h3>
+        <!-- <div class="form-group d-flex justify-content-between">
+          <mat-form-field style="padding-left: 0px;">
+            <mat-label>FirstName</mat-label>
+            <input matInput type="text" class="form-control" formControlName="firstName" >
+            
+          </mat-form-field>
+        
+          <mat-form-field >
+            <mat-label>LastName</mat-label>
+            <input matInput type="text" class="form-control" formControlName="lastName">
+            
+          </mat-form-field>
+        </div>
+        <div class="form-group">
+          <mat-form-field style="width: 100%;">
+            <mat-label>Email</mat-label>
+            <input matInput type="email" class="form-control" formControlName="email">
+            
+          </mat-form-field>
+      
+        </div>
+        <div class="form-group">
+          <mat-form-field style="width: 100%;">
+            <mat-label>Mobile Number</mat-label>
+            <input matInput type="tel" class="form-control" formControlName="mobileNumber">
+            
+          </mat-form-field>
+      
+        </div> -->
+        <div class="form-group">
+          <mat-form-field style="width: 100%;">
+            <mat-label>Password</mat-label>
+            <input matInput type="password" class="form-control" formControlName="password" >
+            
+          </mat-form-field>
+      
+        </div>
+        <div class="form-group">
+          <mat-form-field style="width: 100%;">
+            <mat-label>Confirm Password</mat-label>
+            <input matInput type="password" class="form-control" formControlName="cpassword" >
+            
+          </mat-form-field>
+      
+        </div>
+       
+        <button type="submit" class="btn btn-primary" [disabled]="inviteForm.invalid" data-toggle="modal" data-target="#popup">Submit</button>
+        
+      </form>
+</div>
+<div class="modal fade" id="popup" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header d-flex justify-content-center">
+          Successfully Registered
+          
+        </div>
+        <div class="d-flex justify-content-center">
+        <app-tick-animation></app-tick-animation>
+         
+          
+          
+         
+        </div>
+      </div>
+    </div>
+  </div>

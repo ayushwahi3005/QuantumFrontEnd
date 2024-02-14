@@ -38,10 +38,34 @@ h1{
 }
 .mapping{
     width: 40%;
-    height: 70vh;
+    height: 65vh;
     overflow-y: scroll;
     margin-top: 5%;
 }
 /* .mapping label{
     margin-right: 50%;
 } */
+/* table{
+    height: 500px;
+} */
+thead{
+    position: sticky;
+    top: 0;
+    background-color: black;
+    color: white;
+    z-index: 1000; 
+  }
+  h2{
+    display: flex;
+    justify-content: center;
+  }
+  table{
+    overflow-y: hidden;
+  }
+/* thead, tbody {
+    display: block;
+  } */
+  /* th{
+    display: flex;
+    justify-content: center;
+  } */
