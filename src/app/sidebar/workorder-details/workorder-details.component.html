@@ -48,7 +48,12 @@
       
         <div >
           <label for="technician">Technician</label><br>
-          <input type="text"  id="technician"   [(ngModel)]="workOrder.assignedTechnician ">
+          <!-- <input type="text"  id="technician"   [(ngModel)]="workOrder.assignedTechnician "> -->
+          <select class="form-select"  id="asset-details" [(ngModel)]="workOrder.assignedTechnician" >
+   
+            <option [value]="workOrder ? workOrder.assignedTechnician : ''" selected>{{workOrder?.assignedTechnician}}</option>
+            
+          </select>
         </div>
      
         <div >
@@ -105,8 +110,9 @@
         <label for={{entry.key}}>{{entry.key+" "+entry.value.value}}</label>
         <input type="text"  id="technician" formControlName="assignedTechnician" [ngModel]="entry.value.value" (ngModelChange)="updateValue(entry.key, $event)">
       </div>
-    <button type="submit" class="btn btn-primary submit" style="margin-left: 45%;" (click)="onCheck()">Update WorkOrder</button>
-  
+      <div class="button-container">
+    <button type="submit" class="centered-button btn btn-primary submit"  (click)="onCheck()">Update WorkOrder</button>
+        </div>
 </div>
 </div>
 <div class="loading" *ngIf="loadingScreen"></div>

@@ -6,6 +6,7 @@ import { Assets } from './assets';
 import { ShowFieldsData } from './showFieldsData';
 import { MandatoryFields } from './mandatoryFields';
 import { ExtraFieldName } from './extraFieldName';
+import { User } from './user';
 
 
 @Component({
@@ -51,6 +52,9 @@ export class WorkorderComponent {
   showAlert: boolean = false; // Flag to toggle alert visibility
   alertMessage: string = ''; // Alert message
   alertType: string = 'success'; // Alert type: success, warning, error, etc.
+
+  technicalUserList!:User[];
+  userRole:any;
   dropdownSettings= {
     singleSelection: false,
     idField: 'item_id',
@@ -65,6 +69,7 @@ export class WorkorderComponent {
 
   ngOnInit():void{
     this.email=localStorage.getItem('user');
+    this.userRole=localStorage.getItem('role');
     this.companyId=localStorage.getItem('companyId');
     this.mandatoryFieldsMap = new Map<string, boolean>();
     this.showFieldsMap = new Map<string, boolean>();
@@ -179,6 +184,14 @@ export class WorkorderComponent {
       console.log(err);
     })
 
+    this.workOrderService.getTechnicalUsers(this.companyId).subscribe((data)=>{
+      this.technicalUserList=data;
+      console.log(this.technicalUserList);
+    }
+    ,(err)=>{
+      console.log(err);
+    })
+
 
   }
   addWorkOrder(){
@@ -259,6 +272,7 @@ export class WorkorderComponent {
       console.log(data+" WorkOrderInserted");
       myWorkorder=data
       console.log("workOrder id"+myWorkorder.id)
+      this.workorderform.reset();
     },
     (err)=>{
       console.log(err);

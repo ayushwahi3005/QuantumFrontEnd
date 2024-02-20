@@ -1,0 +1,23 @@
+<div class="main">
+    <div class="d-flex justify-content-between">
+        <div class="qr first" (click)="update('1')" [ngClass]="{'selected':(type=='1')}">
+            <p style="display: flex; justify-content: center;">{{custom}}</p>
+            <qrcode [qrdata]="'Your Asset Data'" [width]="128" [errorCorrectionLevel]="'M'" style="display: flex; justify-content: center;"></qrcode>
+            <p style="display: flex; justify-content: center;">{{optional}}</p>
+        </div>
+        <div class="qr second d-flex justify-content-around" (click)="update('2')" [ngClass]="{'selected':(type=='2')}">
+            <qrcode [qrdata]="'Your Asset Data'" [width]="128" [errorCorrectionLevel]="'M'" style="margin-top: 36px;"></qrcode>
+            <div>
+                <p style="display: flex; justify-content: center;">{{custom}}</p>
+                <p style="display: flex; justify-content: center;">{{optional}}</p>
+
+            </div>
+        </div>
+    </div>
+    <div>
+        <label>Custom Text </label><input type="text" [(ngModel)]="custom"><br>
+        <label>Optional Text</label><input type="text" [(ngModel)]="optional">
+    </div>
+</div>
+
+

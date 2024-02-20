@@ -17,7 +17,7 @@ h2{
     justify-content: center;
     
 }
-button{
+#submitButton{
     width: 100%;
     margin-top: 10px;
 }
@@ -48,7 +48,7 @@ form{
     border: 0px;
 }
 
-button{
+#submitButton{
     background-color: #013365 ;
     height: 40px;
     color: white;
@@ -78,7 +78,7 @@ a{
     color: black;
 }
 .modal{
-    margin-top: 300px;
+    margin-top: 10%;
 }
 /* .form-group{
     height: 60px;

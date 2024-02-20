@@ -151,3 +151,11 @@ a:hover{
 .mainFields input{
     width: 20vw;
 }
+.button-container {
+    text-align: center; /* Center align its child elements */
+}
+
+.centered-button {
+    margin: 0 auto; /* Set left and right margins to auto */
+    display: block; /* Make the button a block element */
+}

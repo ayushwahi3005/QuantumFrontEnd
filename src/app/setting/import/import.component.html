@@ -21,9 +21,9 @@
             </div>
 
             <div class="form-group" style="margin-top: 100px;">
-                <input type="radio" id="add" value="add" name="importType" formControlName="importType">
+                <input type="radio" id="add" value="add" name="importType" formControlName="importType" (click)="updateType('add')">
                 <label for="add" style="margin-left: 10px;">ADD</label><br>
-                <input type="radio" id="update" value="update" name="importType" formControlName="importType">
+                <input type="radio" id="update" value="update" name="importType" formControlName="importType" (click)="updateType('update')">
                 <label for="update" style="margin-left: 10px;">UPDATE</label>
             </div>
             
@@ -69,5 +69,8 @@
         </table>
             <button class="btn btn-primary" style="margin-left: 15%; margin-top: 20px; " (click)="saveMappings()" >Save Mappings</button>
           </div>
+
+
+          
     </div>
 </div>

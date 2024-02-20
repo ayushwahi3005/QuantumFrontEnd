@@ -108,8 +108,8 @@
                 
                   <td>
                     
-                  <i class="bi bi-pencil" [ngClass]="{'editoption':!(editVisibility&&(editButtonId==workorderlist.indexOf(item)+1))}"  style="float: inline-start; margin: 15px 5px;" (click)="workOrderDetail(item.id)" [routerLink]="['/workorder',item.id]"></i>
-                  <i class="bi bi-trash"  [ngClass]="{'editoption':!(editVisibility&&(editButtonId==workorderlist.indexOf(item)+1))}" style="color: red; float: inline-start; margin: 15px 5px;" (click)="deleteWorkorder(item.id)"></i>
+                  <i class="bi bi-pencil" [ngClass]="{'editoption':!(editVisibility&&(editButtonId==workorderlist.indexOf(item)+1))}"  style="float: inline-start; margin: 15px 5px;" (click)="workOrderDetail(item.id)" [routerLink]="['/workorder',item.id]" ></i>
+                  <i class="bi bi-trash"  [ngClass]="{'editoption':!(editVisibility&&(editButtonId==workorderlist.indexOf(item)+1))}" style="color: red; float: inline-start; margin: 15px 5px;" (click)="deleteWorkorder(item.id)" ></i>
                 </td>
                   
                 </tr>
@@ -148,7 +148,12 @@
             
               <div class="form-group">
                 <label for="technician">Technician</label>
-                <input type="text" class="form-control" id="technician" formControlName="assignedTechnician"  placeholder="Technician">
+                <!-- <input type="text" class="form-control" id="technician" formControlName="assignedTechnician"  placeholder="Technician"> -->
+                <select class="form-select" class="form-control" id="technician" formControlName="assignedTechnician" #technician>
+                  
+                  <option value="{{technician.firstName}}  {{technician.lastName}}" *ngFor="let technician of technicalUserList">{{technician.firstName}} {{technician.lastName}}</option>
+                  
+                </select>
               </div>
            
               <div class="form-group">

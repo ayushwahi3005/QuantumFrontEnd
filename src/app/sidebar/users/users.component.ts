@@ -18,6 +18,13 @@ export class UsersComponent {
   companyId!:any;
   access!:boolean;
   userList!:User[];
+
+  showAlert: boolean = false; // Flag to toggle alert visibility
+  alertMessage: string = ''; // Alert message
+  alertType: string = 'success'; // Alert type: success, warning, error, etc.
+
+  
+
   constructor(private formBuilder:FormBuilder,private userService:UsersService,private authService:AuthService){}
 
   ngOnInit(){
@@ -40,6 +47,7 @@ export class UsersComponent {
     (err)=>{
       console.log(err);
     })
+   
   }
   addUser(){
     console.log(this.userForm.value);
@@ -51,12 +59,32 @@ export class UsersComponent {
       "role":this.userForm.controls['role'].value,
       "from":this.email
     }
-    this.userService.sendEmail(obj,this.companyId).subscribe((data)=>{
-      console.log("email sent");
+    let user={
+      "firstName":this.userForm.controls['firstName'].value,
+      "lastName":this.userForm.controls['lastName'].value,
+      "email":this.userForm.controls['email'].value,
+      "companyId":this.companyId,
+      "mobileNumber":this.userForm.controls['phoneNumber'].value,
+      "role":this.userForm.controls['role'].value
+    }
+    this.userService.registerUser(user).subscribe((data)=>{
+      console.log("data saved");
+      this.triggerAlert("Successfully Invited","success");
     },
     (err)=>{
       console.log(err);
+      this.triggerAlert(err.error.errorMessage,"danger");
+    },
+    ()=>{
+      this.userService.sendEmail(obj,this.companyId).subscribe((data)=>{
+        console.log("email sent");
+        
+      },
+      (err)=>{
+        console.log(err);
+      })
     })
+    
     // console.log("-------->",this.userForm.controls['usertype'].value)
     // console.log("-------->",this.userForm.controls['email'].value)
     // console.log("-------->",this.authService.getEmail())
@@ -85,6 +113,15 @@ export class UsersComponent {
     console.log(data.checked);
     this.access=data.checked;
   }
-
+  triggerAlert(message: string, type: string) {
+    console.log("triiger")
+    this.alertMessage = message;
+    this.alertType = type;
+    this.showAlert = true;
+    // You can set a timeout to automatically hide the alert after a certain time
+    setTimeout(() => {
+      this.showAlert = false;
+    }, 5000); // Hide the alert after 5 seconds (adjust as needed)
+  }
 
 }

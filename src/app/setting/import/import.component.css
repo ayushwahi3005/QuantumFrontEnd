@@ -1,11 +1,14 @@
 .main{
-    border: 2px solid gainsboro;
-    border-radius: 5px;
+   
     width: calc(100vw - 400px);
     margin-left: 140px;
     height: 75vh;
     margin-top: 5%;
     
+}
+.container{
+    border: 2px solid gainsboro;
+    border-radius: 5px;
 }
 .alert{
     width: calc(100vw - 290px);
@@ -69,3 +72,6 @@ thead{
     display: flex;
     justify-content: center;
   } */
+  button{
+    margin-bottom: 10px;
+  }

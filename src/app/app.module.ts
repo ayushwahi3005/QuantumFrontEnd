@@ -44,6 +44,9 @@ import { ImportComponent } from './setting/import/import.component';
 import {MatSlideToggleModule} from '@angular/material/slide-toggle';
 import { WorkorderModuleComponent } from './setting/workorder-module/workorder-module.component';
 import { InvitationComponent } from './invitation/invitation.component';
+import { AssetQRComponent } from './setting/asset-qr/asset-qr.component';
+import { QRCodeModule } from 'angularx-qrcode';
+
 
 @NgModule({
   declarations: [
@@ -69,7 +72,8 @@ import { InvitationComponent } from './invitation/invitation.component';
     AssetPreviewComponent,
     ImportComponent,
     WorkorderModuleComponent,
-    InvitationComponent
+    InvitationComponent,
+    AssetQRComponent
     
    
   ],
@@ -85,7 +89,10 @@ import { InvitationComponent } from './invitation/invitation.component';
     HttpClientModule,
     NgMultiSelectDropDownModule.forRoot(),
     GoogleMapsModule,
-    MatSlideToggleModule
+    MatSlideToggleModule,
+    QRCodeModule
+  
+    
     
   ],
   providers: [DatePipe],

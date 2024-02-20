@@ -4,8 +4,10 @@ export class User{
 	  lastName!:string;
 	  email!:string;
 	  companyId!:string;
+	  companyName!:string;
 	  mobileNumber!:string;
 	  role!:string;
+	  password!:string;
 
 
 }

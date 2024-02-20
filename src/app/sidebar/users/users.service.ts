@@ -24,4 +24,7 @@ export class UsersService {
  
     return this.httpClient.get('http://localhost:8082/users/getUsers/'+companyId,{headers:this.headers});
   }
+  registerUser(data:any){
+    return this.httpClient.post('http://localhost:8082/users/registerUser',data,{headers:this.headers});
+  }
 }

@@ -30,7 +30,7 @@ export class ImportComponent {
   columnMappings!:Map<String,String>;
   extraFieldsColumns!:ExtraFieldName[];
   convertedFile!:any;
-  impType!:string;
+  impType:string='add';
   constructor(private formBuilder:FormBuilder,private importService:ImportService,private assetService:AssetsService){
 
   }
@@ -45,11 +45,13 @@ export class ImportComponent {
       importType:['',Validators.required],
       file:['',Validators.required]
     })
-    this.databaseColumns.push("AssetId","Category","Name","SerialNumber","Customer","Location","Status");
+    this.databaseColumnsToUpdate.push("AssetId","Category","Name","SerialNumber","Customer","Location","Status");
+    this.databaseColumnsToAdd.push("Category","Name","SerialNumber","Customer","Location","Status");
     this.importService.getExtraFields(this.companyId).subscribe((data)=>{
       this.extraFieldsColumns=data;
       this.extraFieldsColumns.forEach((x)=>{
-        this.databaseColumns.push(x.name);
+        this.databaseColumnsToUpdate.push(x.name);
+        this.databaseColumnsToAdd.push(x.name);
       })
       console.log(this.databaseColumns)
     })
@@ -126,6 +128,7 @@ export class ImportComponent {
       console.log("Asset")
       if(this.importForm.controls['importType'].value=="add"){
         this.impType="add";
+        console.log()
         this.importService.addAssets(this.myFile,this.companyId).subscribe((data)=>{
           console.log("Successfully Uploaded");
           
@@ -133,6 +136,7 @@ export class ImportComponent {
         },
         (err)=>{
           console.log(err);
+          this.triggerAlert("Failed!! Please check file again and map all fields correctly ","danger");
         })
       }
       else{
@@ -143,7 +147,7 @@ export class ImportComponent {
         },
         (err)=>{
           console.log(err);
-          this.triggerAlert("Failed!! Please check file again and fill all fields correctly ","danger");
+          this.triggerAlert("Failed!! Please check file again and map all fields correctly ","danger");
         })
       }
       
@@ -174,5 +178,14 @@ export class ImportComponent {
   }
   update(key:String,value:any){
     this.columnMappings.set(key,value.target.value)
+  }
+  updateType(data:string){
+    this.impType=data;
+    if(data=="add"){
+      this.databaseColumns=this.databaseColumnsToAdd
+    }
+    else{
+      this.databaseColumns=this.databaseColumnsToUpdate
+    }
   }
 }

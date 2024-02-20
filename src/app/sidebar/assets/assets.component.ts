@@ -60,11 +60,14 @@ export class AssetsComponent {
   editButtonId:number=-1;
   assetList!:Assets[];
   companyId!:any;
+  userRole: any;
  
+  
   constructor(private assetService:AssetsService,private authService:AuthService,private formBuilder:FormBuilder){
    
    }
   ngOnInit(){
+    this.userRole=localStorage.getItem('role');
     this.email=localStorage.getItem('user');
     this.companyId=localStorage.getItem('companyId');
     this.mandatoryFieldsMap = new Map<string, boolean>();
@@ -152,13 +155,15 @@ export class AssetsComponent {
 
     this.assetService.getExtraFieldNameValue(this.companyId).subscribe((data)=>{
       this.fieldNameValueMap=data;
+      console.log(data)
       if(this.searchedAssets!=null){
       this.searchedAssets.forEach((x1,ind)=>{
         const keys=Object.keys(this.fieldNameValueMap);
         var obj=Object.create(this.fieldNameValueMap);
         var searchAsset=this.searchedAssets[ind] as any;
-       
+      
         keys.forEach((key)=>{
+          console.log(key)
           if(x1.id==key){
             
             let myObj=obj[key];
@@ -170,7 +175,7 @@ export class AssetsComponent {
              searchAsset[newKey]=myObj[newKey]
          
             })
-           // console.log(searchAsset)
+          //  console.log(searchAsset)
 
             
             // const searchAssetObj=Object.create(searchAsset);
@@ -183,6 +188,7 @@ export class AssetsComponent {
           }
         })
         this.searchedAssets[ind]=searchAsset;
+        console.log(this.searchedAssets);
 
       })
     }

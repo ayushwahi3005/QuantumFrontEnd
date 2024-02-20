@@ -6,6 +6,12 @@ import { AuthenticationService } from './authentication.service';
 import { AuthDetail } from './AuthDetail';
 import { TokenAuthenticationService } from './token-authentication.service';
 import { CompanyId } from './companyId';
+import * as jwt_decode from 'jwt-decode';
+
+
+
+
+
 
 
 @Injectable({
@@ -29,13 +35,23 @@ export class AuthService {
             this.tokenAuthenticationService.loginToken(email).subscribe((data)=>{
               this.authDetails=data;
               this.myToken=this.authDetails.token;
+              const token =  this.myToken; // Replace this with your actual JWT token
+              const decodedToken:any = jwt_decode.jwtDecode(token);
+              if(decodedToken.Role){
+              localStorage.setItem('role',decodedToken.Role[0].authority);
+              }
               console.log("mytoken->",this.myToken)
               localStorage.setItem('authToken', this.myToken);
+              // console.log(decodedToken.sub); // Access the subject (user ID)
+             
+
               this.fireAuth.authState.subscribe({
                 next:(user)=>{
+                  console.log(user);
                 localStorage.setItem('user',user?.email!);
                  this.tokenAuthenticationService.getCompanyId(user?.email).subscribe((data)=>{
                   this.companyId=data;
+                  console.log(this.companyId)
                   localStorage.setItem('companyId',this.companyId.id);
                   console.log("CompanyId"+this.companyId.id+" "+localStorage.getItem('user'))
                   this.isLoggedIn=true;
@@ -107,12 +123,25 @@ export class AuthService {
       this.router.navigate(['/register']);
     })
   }
+   registerForUser(email:string,password:string){
+    return this.fireAuth.createUserWithEmailAndPassword(email, password).then(()=>{
+      this.sendVerification();
+      alert("Verification Email Sent Successfully");
+     
+    },
+    err=>{
+      alert(err.message);
+      
+    });
+   
+  }
   logout(){
     this.fireAuth.signOut().then(()=>{
       
       localStorage.removeItem('token');
       localStorage.removeItem('user');
       localStorage.removeItem('companyId');
+      localStorage.removeItem('role');
      
       this.currUser=null;
       this.isLoggedIn=false;

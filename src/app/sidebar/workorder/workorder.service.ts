@@ -66,4 +66,7 @@ export class WorkOrderService {
   deleteWorkorderExtraField(id:String):Observable<any>{
     return this.httpClient.delete("http://localhost:8083/workorder/deleteWorkorderExtraFields/"+id,{headers:this.headers});
   }
+  getTechnicalUsers(companyId:string):Observable<any>{
+    return this.httpClient.get("http://localhost:8082/users/getTechnicalUser/"+companyId,{headers:this.headers});
+  }
 }

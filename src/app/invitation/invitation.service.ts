@@ -6,14 +6,14 @@ import { Observable } from 'rxjs';
   providedIn: 'root'
 })
 export class InvitationService {
-
+  
   constructor(private httpClient:HttpClient) { }
   
-  register(companyId:string,token:string,data:any):Observable<any>{
-    const headers = new HttpHeaders({
-      'Authorization': `Bearer ${localStorage.getItem('authToken')}`,
-      'Content-Type': 'application/json'
-    });
-    return this.httpClient.post('http://localhost:8082/users/invite/'+companyId+'/'+token,data);
+  register(data:any):Observable<any>{
+  
+    return this.httpClient.post('http://localhost:8080/customer/addUser',data);
+  }
+  getUser(companyId:string,token:string){
+    return this.httpClient.get('http://localhost:8082/users/invite/getUser/'+companyId+'/'+token);
   }
 }

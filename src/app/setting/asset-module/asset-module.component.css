@@ -7,12 +7,17 @@ table i{
 }
 table{
     width:100%;
+   margin: 10px 5px;
 }
+
 .card{
     width: calc(100vw - 400px);
     margin-right: 10px;
     margin-left: 60px;
     margin-bottom: 100px;
+    height: 80vh;
+    overflow-y: scroll;
+    
 }
 i{
     color: red;
@@ -35,4 +40,7 @@ i{
     border: 1px solid black;
     margin-bottom: 10px;
     height: 30px;
+}
+button{
+    float: inline-end;
 }

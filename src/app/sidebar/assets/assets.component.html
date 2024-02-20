@@ -106,7 +106,7 @@
                     <!-- <i class="bi bi-pencil" id="edit-button"  [ngClass]="{'editoption':!(editVisibility&&(editButtonId==searchedAssets.indexOf(item)+1))}"  style="float: inline-start; margin: 15px 5px;" (click)="changeAssetDetails(item)"></i> -->
                     <!-- <i class="bi bi-trash"  [ngClass]="{'editoption':!(editVisibility&&(editButtonId==searchedAssets.indexOf(item)+1))}" style="color: red; float: inline-start; margin: 15px 5px;" ></i> -->
                     <!-- <p [ngClass]="{'editoption':!(editVisibility&&(editButtonId==searchedAssets.indexOf(item)+1))}"  style="float: inline-start; margin: 15px 5px; color: #5E6164; cursor: pointer;" (click)="changeAssetDetails(item)">Edit</p> -->
-                    <img src="../../../assets/edit.svg" id="edit-button" [ngClass]="{'editoption':!(editVisibility&&(editButtonId==searchedAssets.indexOf(item)+1))}" style="float: inline-start; height: 25px; width: 25px;" (click)="changeAssetDetails(item)">
+                    <img src="../../../assets/edit.svg" id="edit-button" [ngClass]="{'editoption':!(editVisibility&&(editButtonId==searchedAssets.indexOf(item)+1))}" style="float: inline-start; height: 25px; width: 25px;" (click)="changeAssetDetails(item)" *ngIf="userRole=='ADMIN'">
                   </td>
                     
                   </tr>

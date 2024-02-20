@@ -52,6 +52,7 @@ export class DashboardComponent {
   ngOnInit(){
     
     this.email=localStorage.getItem('user');
+    console.log(localStorage.getItem('role'))
     let storedCurr=localStorage.getItem('currOption');
     if(storedCurr!=null){
     this.current=parseInt(storedCurr,10);
