@@ -1,0 +1,38 @@
+.searchIcon{
+  position: relative;
+  left: -190px;
+   /* padding: 10px 12px; */
+  /* pointer-events: none; */
+ 
+}
+#category-input {
+  padding-left: 24px;
+  border: 1px solid gray;
+  outline: none;
+  transition:  border-color 0.2s; /* Apply transition to border properties */
+}
+input{
+border: 1px solid gray;
+outline: none;
+transition:  border-color 0.2s; /* Apply transition to border properties */
+}
+input:focus{
+border: 2.5px solid #1a65ab; /* Change in border width */
+-webkit-transition: border-width 0.2s, border-color 0.2s; /* Webkit for older browsers */
+transition:  border-color 0.2s; 
+}
+
+#category-input:focus {
+  border: 2.5px solid #1a65ab; /* Change in border width */
+  -webkit-transition: border-width 0.2s, border-color 0.2s; /* Webkit for older browsers */
+  transition:  border-color 0.2s; /* Define transition properties */
+}
+.bi-trash3{
+color: red;
+}
+table{
+width: 95%;
+  margin: 10px auto;
+  border-radius: 10px;
+  border: 1px solid lightgray;
+}

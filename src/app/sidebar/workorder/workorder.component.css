@@ -4,12 +4,12 @@ table{
     margin-top: 10px;
     margin-left: 10px;
     font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
-    
+    border-radius: 10px;
 
 }
 .low{
     background-color: lightblue;
-    color: #71A5D0;
+    color: #2685d4;
     border-radius: 10px;
     height: 30px;
     padding-left: 20px;
@@ -63,7 +63,7 @@ td{
     flex-direction: row-reverse;
     }
 th{
-    padding: 20px 5px;
+    /* padding: 20px 5px; */
     font-size: medium;
    
 }
@@ -75,33 +75,33 @@ tr:hover{
    
 }
 .onhold{
-    height: 15px;
-    width: 15px;
-    border-radius: 15px;
+    height: 13px;
+    width: 13px;
+    border-radius: 13px;
     background-color: #E7B948;
     display: inline-flex;
     margin: 0px 5px;
 }
 .closed{
-    height: 15px;
-    width: 15px;
-    border-radius: 15px;
+    height: 13px;
+    width: 13px;
+    border-radius: 13px;
     background-color: rgb(64, 136, 238);
     display: inline-flex;
     margin: 0px 5px;
 }
 .progress{
-    height: 15px;
-    width: 15px;
-    border-radius: 15px;
+    height: 13px;
+    width: 13px;
+    border-radius: 13px;
     background-color: #26C464;
     display: inline-flex;
     margin: 0px 5px;
 }
 .open{
-    height: 15px;
-    width: 15px;
-    border-radius: 15px;
+    height: 13px;
+    width: 13px;
+    border-radius: 13px;
     background-color: lightgray;
     border: 1px gray solid;
     display: inline-flex;
@@ -151,28 +151,61 @@ tr:hover{
     margin-left: 5px;
 }
 
-#custom-columns{
-   
-    color: white;
-    /* border-radius: 10px;*/
-    /* margin: 1px;  */
- 
+/* .multiselect-dropdown{
+    background-color: #26C464;
+} */
+
+#custom-columns-workorder .dropdown-list{
+    width: 500px;
 }
-.multiselect-dropdown .dropdown-list{
-    width: 300px;
-}
-#custom-columns .dropdown-btn {
-    background-color: #085ED7;
-}
+
 /* .multiselect-dropdown .dropdown-btn {
     background-color: #085ED7;
+    
 } */
+
+#custom-columns-workorder {
+    background-color: #085ED7;
+    margin: 10px 10px;
+    color: white;
+    border-radius: 5px;
+}
+/* span.dropdown-btn {
+    background-color:yellow ;
+} */
+
+
 .multiselect-dropdown .selected-item {
     background-color: white;
 }
+
 .multiselect-dropdown .dropdown-btn .dropdown-multiselect__caret:before{
 border-style: none;
 }
+
+
+
 .row{
     margin: 10px;
 }
+#workorder-table{
+    /* overflow: hidden; */
+    margin-top: 10px;
+    border-radius: 10px;
+}
+.extraFieldInput{
+    color: #717275;
+    border-radius: 8px;
+    
+   
+
+    border: 2px solid #aab1b8;
+    -webkit-transition: 0.5s;
+    transition: 0.5s;
+    outline:none;
+    width: 90%;
+    height: 40px;
+ }
+ .extraFieldInput:focus{
+    border: 2px solid #1a65ab;
+ }

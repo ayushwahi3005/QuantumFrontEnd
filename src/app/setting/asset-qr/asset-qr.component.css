@@ -1,24 +1,59 @@
 .qr{
     border: 1px grey solid;
+    border-radius: 10px;
     /* width: 300px;
     height: 300px; */
-    margin: 30px;
+    margin: 50px;
 }
 .first{
-    width: 200px;
-    height: 200px;
+    width: 250px;
+    height: 250px;
+    background-color: white;
+    border-radius: 10px;
 }
 .second{
-    width: 300px;
-    height: 200px;
+    width: 350px;
+    height: 250px;
+    background-color: white;
+    border-radius: 10px;
 }
+
 .main{
     /* margin-left: 250px; */
     left: 250px;
+    z-index: 999; /* Ensure background appears below the modal */
+    transition: filter 0.3s ease;
+    position:static;
 }
 label{
     margin: 10px 5px;
 }
 .selected{
-    background-color: red;
+    background-color: #12232E;
+    /* color: white; */
 }
+.inside{
+    background-color: white;
+    height: 200px;
+    margin: 25px;
+    border-radius: 10px;
+}
+
+.blur {
+    filter: blur(5px); /* Apply blur effect to the background */
+  }
+  input{
+    margin: 10px 0px;
+    color: #717275;
+    border-radius: 8px;
+    padding: 12px 20px;
+    width: 20vw;
+    /* box-sizing: border-box; */
+    border: 3px solid #aab1b8;
+    -webkit-transition: 0.5s;
+    transition: 0.5s;
+    outline:none
+}
+input:focus {
+    border: 3px solid #1a65ab;
+  }

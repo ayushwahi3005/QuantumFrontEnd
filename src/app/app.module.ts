@@ -1,4 +1,4 @@
-import { NgModule } from '@angular/core';
+import { APP_INITIALIZER, NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 
 import { AppRoutingModule } from './app-routing.module';
@@ -7,7 +7,7 @@ import { HomeComponent } from './home/home.component';
 import { environment } from 'src/environments/environment';
 import { AngularFireModule } from '@angular/fire/compat';
 // import { AngularFireDatabaseModule } from '@angular/fire/compat/database';
-// import { AngularFirestoreModule } from '@angular/fire/compat/firestore';
+import { AngularFirestoreModule } from '@angular/fire/compat/firestore';
 // import { AngularFireStorageModule } from '@angular/fire/compat/storage';
 import {  AngularFireAuthModule } from '@angular/fire/compat/auth';
 import { LoginComponent } from './login/login.component';
@@ -33,7 +33,6 @@ import { SettingHomeComponent } from './setting/setting-home/setting-home.compon
 import { AssetModuleComponent } from './setting/asset-module/asset-module.component';
 import { DatePipe } from '@angular/common';
 import { NgMultiSelectDropDownModule } from 'ng-multiselect-dropdown';
-import { GoogleMapsModule } from '@angular/google-maps';
 import { InventoryComponent } from './sidebar/inventory/inventory.component';
 import { SettingMainComponent } from './setting/setting-main/setting-main.component';
 import { EditInventoryComponent } from './sidebar/edit-inventory/edit-inventory.component';
@@ -46,6 +45,33 @@ import { WorkorderModuleComponent } from './setting/workorder-module/workorder-m
 import { InvitationComponent } from './invitation/invitation.component';
 import { AssetQRComponent } from './setting/asset-qr/asset-qr.component';
 import { QRCodeModule } from 'angularx-qrcode';
+import {MatTableModule} from '@angular/material/table';
+import { NgSelectModule } from '@ng-select/ng-select';
+import { InventoryModuleComponent } from './setting/inventory-module/inventory-module.component';
+import { MatButtonModule } from '@angular/material/button';
+import { MatMenuModule } from '@angular/material/menu';
+import {MatIconModule} from '@angular/material/icon';
+import {MatDividerModule} from '@angular/material/divider';
+import { CompanyCustomerComponent } from './sidebar/company-customer/company-customer.component';
+import { CompanyCustomerDetailsComponent } from './sidebar/company-customer-details/company-customer-details.component';
+import {MatTabsModule} from '@angular/material/tabs';
+import { CompanyCustomerDetailsPreviewComponent } from './sidebar/company-customer-details-preview/company-customer-details-preview.component';
+import { RoleAndPermissionComponent } from './setting/role-and-permission/role-and-permission.component';
+import {MatButtonToggleModule} from '@angular/material/button-toggle';
+import {MatExpansionModule} from '@angular/material/expansion';
+import {MatPaginatorModule} from '@angular/material/paginator';
+import {MatCheckboxModule} from '@angular/material/checkbox';
+import { CustomerModuleComponent } from './setting/customer-module/customer-module.component';
+import { LocationComponent } from './setting/location/location.component';
+import { SecretService } from 'src/secret.service';
+import { MatSnackBarModule } from '@angular/material/snack-bar';
+import { SubscriptionComponent } from './setting/subscription/subscription.component';
+import { CategoryComponent } from './setting/category/category.component';
+import { AssetCategoryComponent } from './setting/asset-category/asset-category.component';
+import { WorkorderCategoryComponent } from './setting/workorder-category/workorder-category.component';
+import { InventoryCategoryComponent } from './setting/inventory-category/inventory-category.component';
+import { CustomerCategoryComponent } from './setting/customer-category/customer-category.component';
+
 
 
 @NgModule({
@@ -73,7 +99,24 @@ import { QRCodeModule } from 'angularx-qrcode';
     ImportComponent,
     WorkorderModuleComponent,
     InvitationComponent,
-    AssetQRComponent
+    AssetQRComponent,
+    InventoryModuleComponent,
+    CompanyCustomerComponent,
+    CompanyCustomerDetailsComponent,
+    CompanyCustomerDetailsPreviewComponent,
+    RoleAndPermissionComponent,
+    CustomerModuleComponent,
+    LocationComponent,
+    SubscriptionComponent,
+    PaymentComponent,
+    CategoryComponent,
+    AssetCategoryComponent,
+    WorkorderCategoryComponent,
+    InventoryCategoryComponent,
+    CustomerCategoryComponent
+    
+    
+ 
     
    
   ],
@@ -81,6 +124,7 @@ import { QRCodeModule } from 'angularx-qrcode';
     BrowserModule,
     AppRoutingModule,
     AngularFireModule.initializeApp(environment.firebaseConfig),
+    AngularFirestoreModule,
     AngularFireAuthModule,
     FormsModule,
     ReactiveFormsModule,
@@ -88,14 +132,36 @@ import { QRCodeModule } from 'angularx-qrcode';
     BrowserAnimationsModule,
     HttpClientModule,
     NgMultiSelectDropDownModule.forRoot(),
-    GoogleMapsModule,
     MatSlideToggleModule,
-    QRCodeModule
+    QRCodeModule,
+    NgSelectModule,
+    MatButtonModule,
+    MatMenuModule,
+    MatInputModule,
+    MatIconModule,
+    MatTableModule,
+    MatDividerModule,
+    MatTabsModule,
+    MatButtonToggleModule,
+    MatExpansionModule,
+    MatPaginatorModule,
+    MatCheckboxModule,
+    MatSnackBarModule
   
     
     
   ],
-  providers: [DatePipe],
+  providers: [DatePipe,
+    SecretService
+  ],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
+
+export function initializeAppFactory(secretsService: SecretService) {
+  return async(): Promise<any> => secretsService.initializeEnvironmentVariables().then(() => {
+    // Initialize Firebase here after secrets are fetched
+    // console.log(environment.firebaseConfig)
+    // AngularFireModule.initializeApp(environment.firebaseConfig);
+  });
+}

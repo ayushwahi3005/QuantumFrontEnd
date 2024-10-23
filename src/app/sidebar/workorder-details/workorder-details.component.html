@@ -13,7 +13,7 @@
     <h2 style="display: flex; justify-content: center;">Work Order Details</h2>
     <hr>
     <div style="margin-left: 20px;" >
-      <label for="status">Status</label>
+      <label for="status">Status<span *ngIf="mandatoryFieldsMap.get('status')" class="text-danger">*</span></label>
      <br>
       <select  id="status" style="border-color: white;"  [(ngModel)]=" workOrder.status" [ngClass]="{'open':(workOrder?.status=='open'),'closed':(workOrder?.status=='closed'),'onhold':(workOrder?.status=='onHold'),'inprogress':(workOrder?.status=='inProgress')}" (change)="onDropDownChange(mySelect.value)"  [ngStyle]="{'background-color': (currColor.toLowerCase()=='open') ? 'lightgray' : ((currColor.toLowerCase()=='inprogress') ? '#26C464' : ((currColor.toLowerCase()=='onhold') ? '#FFC008' : '#4088ee')) }"  #mySelect>
        
@@ -29,17 +29,22 @@
       
       <div>
         <div >
-          <label for="description">Description</label><br>
+          <label for="description">Description<span *ngIf="mandatoryFieldsMap.get('description')" class="text-danger">*</span></label><br>
           <input type="text"  id="description"   [(ngModel)]=" workOrder.description" >
         
         </div>
         <div >
-          <label for="customer">Customer</label><br>
-          <input type="text"  id="customer" [(ngModel)]="workOrder.customer">
+          <label for="customer">Customer<span *ngIf="mandatoryFieldsMap.get('customer')" class="text-danger">*</span></label><br>
+          <select id="customer" class="customer" (change)="customerChange($event)">
+            <option value="" selected>None</option>
+            <option *ngFor="let customer of companyCustomerList" [value]="customer.name + ',' + customer.id" [selected]="selectedCustomerId==customer.id">
+              {{ customer.name }}
+            </option>
+          </select>
         </div>
       
         <div >
-          <label for="due-date">Due Date</label><br>
+          <label for="due-date">Due Date<span *ngIf="mandatoryFieldsMap.get('dueDate')" class="text-danger">*</span></label><br>
           
           <input id="due-date" type="date"  [(ngModel)]=" workOrder.dueDate"  >
         </div>
@@ -47,7 +52,7 @@
       <div>
       
         <div >
-          <label for="technician">Technician</label><br>
+          <label for="technician">Technician<span *ngIf="mandatoryFieldsMap.get('assignedTechnician')" class="text-danger">*</span></label><br>
           <!-- <input type="text"  id="technician"   [(ngModel)]="workOrder.assignedTechnician "> -->
           <select class="form-select"  id="asset-details" [(ngModel)]="workOrder.assignedTechnician" >
    
@@ -57,7 +62,7 @@
         </div>
      
         <div >
-          <label for="priority">Priority</label><br>
+          <label for="priority">Priority<span *ngIf="mandatoryFieldsMap.get('priority')" class="text-danger">*</span></label><br>
           <select class="form-select"  id="priority"  [(ngModel)]="workOrder.priority" >
            
             <option value="None" >None</option>
@@ -67,7 +72,7 @@
           </select>
         </div>
        <div >
-          <label for="asset-details">Asset Details</label><br>
+          <label for="asset-details">Asset Details<span *ngIf="mandatoryFieldsMap.get('assetDetails')" class="text-danger">*</span></label><br>
          
           <select class="form-select"  id="asset-details" [(ngModel)]="workOrder.assetDetails" >
    

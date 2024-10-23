@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { AuthService } from '../shared/auth.service';
 import { Router } from '@angular/router';
 import { DashboardService } from './dashboard.service';
@@ -9,48 +9,58 @@ import { AssetsComponent } from '../sidebar/assets/assets.component';
   templateUrl: './dashboard.component.html',
   styleUrls: ['./dashboard.component.css']
 })
-export class DashboardComponent {
+export class DashboardComponent  {
   email:any='';
   current:number=1;
   username:any='';
   hoverOverSidebar=true;
   sideBarOption=[{
     number:1,
-    name:'Work Order',
-    icon:'bi bi-bookshelf'
+    name:'Customers',
+    icon:'bi bi-person'
   },
   {
     number:2,
-    name:'Preventive Maintainance',
-    icon:'bi bi-speedometer2'
-  },
-  {
-    number:3,
     name:'Assets',
     icon:'bi bi-boxes'
   },
   {
-    number:4,
+    number:3,
     name:'Inventory',
     icon:'bi bi-journal-text'
   },
   {
-    number:5,
-    name:'Customers and Vendors',
-    icon:'bi bi-person'
+    number:4,
+    name:'Preventive Maintainance',
+    icon:'bi bi-speedometer2'
   },
   {
-    number:6,
-    name:'People',
-    icon:'bi bi-people-fill'
+    number:5,
+     name:'Work Order',
+    icon:'bi bi-bookshelf'
   }
+  // {
+  //   number:6,
+  //   name:'People',
+  //   icon:'bi bi-people-fill'
+  // }
   
 ];
 
-  constructor(private auth:AuthService,private router:Router,private dashService:DashboardService){}
+  constructor(private auth:AuthService,private router:Router,private dashService:DashboardService){
+   
+  }
 
   ngOnInit(){
-    
+    // this.dashService.componentMethodCalled$.subscribe((data) => {
+    //   if (data) { // Ensure there's data to handle
+    //     // alert('Method called with data: ' + JSON.stringify(data));
+    //     console.log(data)
+    //     this.current=data;
+    //     this.router.navigate(['/dashboard']);
+
+    //   }
+    // });
     this.email=localStorage.getItem('user');
     console.log(localStorage.getItem('role'))
     let storedCurr=localStorage.getItem('currOption');
@@ -60,9 +70,17 @@ export class DashboardComponent {
     
     console.log("------------------>",localStorage.getItem('authToken'));
     this.dashService.dashboard(this.email).subscribe((data)=>{
+    
       this.username=data.firstName+" "+data.lastName;
+      console.log("dashboard"+ this.username)
+     
       if(this.username==''||this.username==null){
         this.ngOnInit();
+      }
+      else{
+       
+        localStorage.setItem('name',this.username);
+      
       }
       
     },
@@ -75,6 +93,8 @@ export class DashboardComponent {
 
       }
     })
+
+    
    
   }
   update(val:number){
@@ -91,11 +111,16 @@ console.log(localStorage.getItem('user'));
     console.log("logging out")
     this.auth.currUser=null;
     this.auth.isLoggedIn=false;
-    localStorage.removeItem('token');
-    localStorage.removeItem('currOption');
-    localStorage.removeItem('authToken');
-    localStorage.removeItem('companyId');
-      localStorage.removeItem('user');
+    // localStorage.removeItem('token');
+    // localStorage.removeItem('currOption');
+    // localStorage.removeItem('authToken');
+    // localStorage.removeItem('companyId');
+    //   localStorage.removeItem('user');
+    //   localStorage.removeItem('selectedExtraColumsAssets')
+    //   localStorage.removeItem("showMandatoryBasicFieldsAssets")
+      localStorage.clear()
+      localStorage.getItem('uploadProgress');
+      localStorage.getItem('uploadInProgress');
     this.router.navigate(['/login']);
 
    
@@ -110,6 +135,7 @@ console.log(localStorage.getItem('user'));
 
     // console.log(this.hoverOverSidebar);
   }
+  
 
 
 

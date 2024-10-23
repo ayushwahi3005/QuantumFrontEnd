@@ -1,9 +1,10 @@
 
 
-table{
+#asset-table{
     
-    overflow: hidden;
-    margin-top: 10px;
+    /* overflow: hidden; */
+    /* margin-top: 10px; */
+    border-radius: 10px;
 }
 
 .row{
@@ -13,12 +14,12 @@ table{
 display: flex;
 flex-direction: row-reverse;
 }
-button{
+/* button{
     margin: 0px 10px;
-}
-.filter svg{
+} */
+/* .filter svg{
     padding-top: 5px;
-}
+} */
 .sort{
     
     padding: 5px;
@@ -74,7 +75,7 @@ font-size: x-small;
 .dropdown-menu a{
     cursor: default;
 }
-tr:hover{
+#asset-table tr:hover{
     box-shadow: 20px 10px 10px 5px black;
    
 }
@@ -95,13 +96,14 @@ app-asset-details  {
     color: white;
     /* border-radius: 10px;
     margin: 10px; */
- 
+    width: auto;
 }
-.multiselect-dropdown .dropdown-list{
-    width: 300px;
-}
+/* #custom-columns .dropdown-list{
+    width: 500px;
+} */
 #custom-columns .dropdown-btn {
     background-color: #085ED7;
+    
 }
 .multiselect-dropdown .selected-item {
     background-color: white;
@@ -122,3 +124,260 @@ border-style: none;
 label{
     margin-bottom: 5px;
 }
+table{
+    color: #5E6164;
+    /* font-size: medium;
+    padding: 20px 5px; */
+   
+   
+}
+th{
+    /* padding: 20px 5px; */
+    font-size: medium;
+    
+   
+}
+
+.loading{
+
+    
+    background-image: url('../../../assets/loader.gif');
+    /* background-size: 100%; */
+    height: 100%;
+    background-position:top;
+  background-repeat: no-repeat;
+}
+/* .filter_drawer_asset{
+    width: 0px;
+    overflow: hidden;
+}
+
+.filter_drawer_expanded_asset{
+    height: 90%;
+    
+    background-color: whitesmoke;
+    z-index: 20;
+    position: absolute;
+    top: 75px;
+    right: 0px;
+  
+    overflow: hidden;
+    transition: all 0.5s ease;
+    width: 25%;
+   
+}
+#filter_table{
+    width: 24%;
+    margin: 10px;
+  
+}
+#filter_table  td {
+   padding: 20px 40px;
+  
+}
+
+#filter_table  input{
+  
+    color: #717275;
+    border-radius: 8px;
+    
+    width: 80%;
+
+    border: 2px solid #aab1b8;
+    -webkit-transition: 0.5s;
+    transition: 0.5s;
+    outline:none
+    
+ }
+select{
+    color: #717275;
+    border-radius: 8px;
+    
+    width: 30%;
+
+    border: 2px solid #aab1b8;
+    -webkit-transition: 0.5s;
+    transition: 0.5s;
+    outline:none
+ }
+ #filter_table  input:focus{
+    border: 2px solid #1a65ab;
+ }
+#advance_filter{
+    overflow-y: scroll;
+} */
+
+#filter_table{
+    width: 24%;
+    margin: 10px;
+  
+}
+#filter_table  td {
+   padding: 20px 40px;
+  
+}
+
+#filter_table  input{
+  
+    color: #717275;
+    border-radius: 8px;
+    width: 80%;
+   
+
+    border: 2px solid #aab1b8;
+    -webkit-transition: 0.5s;
+    transition: 0.5s;
+    outline:none
+    
+ }
+select{
+    color: #717275;
+    border-radius: 8px;
+    
+    /* width: 100%; */
+
+    border: 2px solid #aab1b8;
+    -webkit-transition: 0.5s;
+    transition: 0.5s;
+    outline:none
+ }
+ #filter_table  input:focus{
+    border: 2px solid #1a65ab;
+ }
+
+ .extraFieldInput{
+    color: #717275;
+    border-radius: 8px;
+    
+   
+
+    border: 2px solid #aab1b8;
+    -webkit-transition: 0.5s;
+    transition: 0.5s;
+    outline:none;
+    width: 93%;
+    height: 40px;
+ }
+ .extraFieldInput:focus{
+    border: 2px solid #1a65ab;
+ }
+ /* input{
+    width: 150px;
+ } */
+
+
+ /* .loader {
+    position: relative;
+    width: 54px;
+    height: 54px;
+    border-radius: 10px;
+  }
+  
+  .loader div {
+    width: 8%;
+    height: 24%;
+    background: rgb(128, 128, 128);
+    position: absolute;
+    left: 50%;
+    top: 30%;
+    opacity: 0;
+    border-radius: 50px;
+    box-shadow: 0 0 3px rgba(0,0,0,0.2);
+    animation: fade458 1s linear infinite;
+  }
+   */
+  @keyframes fade458 {
+    from {
+      opacity: 1;
+    }
+  
+    to {
+      opacity: 0.25;
+    }
+  }
+  
+ /* .bar1 {
+    transform: rotate(0deg) translate(0, -130%);
+    animation-delay: 0s;
+  }
+  
+  .bar2 {
+    transform: rotate(30deg) translate(0, -130%);
+    animation-delay: -1.1s;
+  }
+  
+.bar3 {
+    transform: rotate(60deg) translate(0, -130%);
+    animation-delay: -1s;
+  }
+  
+.bar4 {
+    transform: rotate(90deg) translate(0, -130%);
+    animation-delay: -0.9s;
+  }
+  
+.bar5 {
+    transform: rotate(120deg) translate(0, -130%);
+    animation-delay: -0.8s;
+  }
+ .bar6 {
+    transform: rotate(150deg) translate(0, -130%);
+    animation-delay: -0.7s;
+  }
+  
+.bar7 {
+    transform: rotate(180deg) translate(0, -130%);
+    animation-delay: -0.6s;
+  }
+  
+.bar8 {
+    transform: rotate(210deg) translate(0, -130%);
+    animation-delay: -0.5s;
+  }
+  
+.bar9 {
+    transform: rotate(240deg) translate(0, -130%);
+    animation-delay: -0.4s;
+  }
+  
+.bar10 {
+    transform: rotate(270deg) translate(0, -130%);
+    animation-delay: -0.3s;
+  }
+  
+.bar11 {
+    transform: rotate(300deg) translate(0, -130%);
+    animation-delay: -0.2s;
+  }
+  
+ .bar12 {
+    transform: rotate(330deg) translate(0, -130%);
+    animation-delay: -0.1s;
+  } */
+
+   
+
+
+   #asset-table thead{
+    position: sticky;
+    top: 0;
+    z-index: 1;
+   }
+   mat-form-field {
+    z-index: 100000;
+  }
+  label {
+    display: block;
+  }
+  /* Lower the z-index of the mat paginator dropdown */
+.mat-select-panel {
+    z-index: 1050 !important; /* Ensure this is lower than the modal's z-index */
+  }
+  
+  /* Or, alternatively, increase the z-index of the modal */
+  .modal {
+    z-index: 11000 !important;
+  }
+  .mat-mdc-paginator-container  {
+   z-index: 0;
+  }

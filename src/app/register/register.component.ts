@@ -3,6 +3,7 @@ import { AuthService } from '../shared/auth.service';
 import { FormGroup,FormBuilder, Validators } from '@angular/forms';
 import { RegisterService } from './register.service';
 import { CompanyInformation } from './companyInformation';
+import { ActivatedRoute, Router } from '@angular/router';
 
 @Component({
   selector: 'app-register',
@@ -15,9 +16,15 @@ export class RegisterComponent  {
   displayStyle="none";
   companyInformation!:CompanyInformation;
 
-  constructor(private auth:AuthService,private formBuilder:FormBuilder,private registerService:RegisterService){}
+  constructor(private auth:AuthService,private formBuilder:FormBuilder,private registerService:RegisterService,private router:Router){}
   errorMessage:String='';
   successMessage:String='';
+
+  showAlert: boolean = false; // Flag to toggle alert visibility
+  alertMessage: string = ''; // Alert message
+  alertType: string = 'success'; // Alert type: success, warning, error, etc.
+
+
   ngOnInit():void{
   this.registerForm=this.formBuilder.group({
     firstName:['',Validators.required],
@@ -29,7 +36,20 @@ export class RegisterComponent  {
     cpassword:['',Validators.required],
     companyId:['']
   })
+  this.subscribeToService();
 
+  }
+
+  triggerAlert(message: string, type: string) {
+    this.alertMessage = message;
+    this.alertType = type;
+    this.showAlert = true;
+    // You can set a timeout to automatically hide the alert after a certain time
+    console.log("alert trigger register"+message+" "+type)
+    setTimeout(() => {
+      this.showAlert = false;
+      this.router.navigate(['/login']);
+    }, 5000); // Hide the alert after 5 seconds (adjust as needed)
   }
   register(){
     
@@ -108,5 +128,12 @@ export class RegisterComponent  {
   closePopup(){
     
     this.displayStyle="none";
+  }
+
+  subscribeToService() {
+    this.registerService.getTriggerFunctionSubjectRegister().subscribe((mydata:any) => {
+      console.log("trigger register in service vallleeddd2222")
+      this.triggerAlert(mydata.data,mydata.type); // Call your component function here
+    });
   }
 }

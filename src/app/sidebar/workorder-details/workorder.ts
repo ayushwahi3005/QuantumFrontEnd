@@ -4,6 +4,7 @@ export class WorkOrder{
     id!:string;
 	description!:string;
     customer!:string;
+	customerId!:string;
 	status!:string;
 	priority!:string;
     dueDate!:string;

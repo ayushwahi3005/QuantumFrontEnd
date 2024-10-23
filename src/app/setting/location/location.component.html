@@ -1,0 +1,255 @@
+<div class="main">
+<div class="option d-flex flex-row bd-highlight " style="width: 60%; margin: 30px auto;">
+    <span [ngClass]="{'selected-option':(currOption==1)}" (click)="onClick(1)">Locations</span>
+    <span [ngClass]="{'selected-option':(currOption==2)}" (click)="onClick(2)">Bins</span>
+   
+  </div>
+
+  <div class="locations" *ngIf="currOption==1">
+    <!-- Locations -->
+ 
+        <div class="d-flex justify-content-between">
+            <div>
+                <input type="text" placeholder="Search" (keyup)="locationSearch($event)" #location>
+                <i class="bi bi-search"></i>
+            </div>
+            <div>
+                <button class="btn btn-primary" id="dropdownMenuButton" data-toggle="modal" data-target="#addLocation">+ Locations</button>
+            </div>
+        </div>
+        <div class="location_table">
+            <table class="table">
+                <thead class="table-dark" >
+                  <tr>
+                    <th scope="col">#</th>
+                    <th scope="col">Location Name</th>
+                    <th scope="col">Address</th>
+                    <th scope="col">Status</th>
+                    <th></th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr *ngFor="let item of searchedLocationList" (mouseenter)="editButtonVisibile(searchedLocationList.indexOf(item)+1)" (mouseleave)="editButtonNotVisible()">
+                    <th scope="row">{{searchedLocationList.indexOf(item)+1}}</th>
+                    <td>{{item.city|titlecase}}</td>
+                    <td>{{item.address|titlecase}}</td>
+                    <td>{{item.status|titlecase}}</td>
+                    <td>
+                        <!-- <img src="../../../assets/edit.svg" id="edit-button" [ngClass]="{'editoption':!(editVisibility&&(editButtonId==locationList.indexOf(item)+1))}" style="float: inline-start; height: 25px; width: 25px;"  > -->
+                        <i class="bi bi-pencil" [ngClass]="{'editoption':!(editVisibility&&(editButtonId==searchedLocationList.indexOf(item)+1))}"  style="float: inline-start; margin: 15px 5px;" ></i>
+                      <i class="bi bi-trash"  [ngClass]="{'editoption':!(editVisibility&&(editButtonId==searchedLocationList.indexOf(item)+1))}" style="color: red; float: inline-start; margin: 15px 5px;" (click)="deleteLocation(item.id)"></i>
+                    </td>
+                  </tr>
+                  
+                </tbody>
+              </table>
+              
+              
+        </div>
+ 
+  </div>
+
+  <div class="bins" *ngIf="currOption==2">
+
+      <div class="d-flex justify-content-between">
+          <div>
+              <input type="text" placeholder="Search" (keyup)="binSearch($event)" #bin>
+              <i class="bi bi-search"></i>
+          </div>
+          <div>
+              <button class="btn btn-primary" id="dropdownMenuButton" data-toggle="modal" data-target="#addBin">+ Bins</button>
+          </div>
+      </div>
+      <div class="location_table">
+          <table class="table">
+              <thead class="table-dark" >
+                <tr>
+                  <th scope="col">#</th>
+                  <th scope="col">Bin Number</th>
+                  <th scope="col">Location</th>
+                  <th scope="col">Status</th>
+                  <th></th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let item of searchedBinList" (mouseenter)="editButtonVisibile(searchedBinList.indexOf(item)+1)" (mouseleave)="editButtonNotVisible()">
+                  <th scope="row">{{searchedBinList.indexOf(item)+1}}</th>
+                  <td>{{item.binNumber|titlecase}}</td>
+                  <td>{{item.location|titlecase}}</td>
+                  <td>{{item.status|titlecase}}</td>
+                  <td>
+                      <!-- <img src="../../../assets/edit.svg" id="edit-button" [ngClass]="{'editoption':!(editVisibility&&(editButtonId==locationList.indexOf(item)+1))}" style="float: inline-start; height: 25px; width: 25px;"  > -->
+                      <i class="bi bi-pencil" [ngClass]="{'editoption':!(editVisibility&&(editButtonId==searchedBinList.indexOf(item)+1))}"  style="float: inline-start; margin: 15px 5px;" ></i>
+                    <i class="bi bi-trash"  [ngClass]="{'editoption':!(editVisibility&&(editButtonId==searchedBinList.indexOf(item)+1))}" style="color: red; float: inline-start; margin: 15px 5px;" (click)="deleteBin(item.id)"></i>
+                  </td>
+                </tr>
+                
+              </tbody>
+            </table>
+            
+            
+      </div>
+  
+  </div>
+  <div class="modal fade" id="addLocation" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h2 class="modal-title" id="exampleModalLongTitle">Add Location</h2>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close" #closeBox4>
+            <span aria-hidden="true" style="height: 20px; width: 10px; background-color: #f0f0f0; border:none; display:block; padding-top: 0px;  ">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <form [formGroup]="locationForm" >
+
+            <div style="width: 95%;">
+            <div class="form-group">
+              <label for="parentLocation">Parent Location</label>
+              <div class="">
+              <input type="text" class="form-control" id="parentLocation" formControlName="parentLocation"  #name>
+              <!-- <i class="bi bi-trash-fill delete" style="display: inline-flex; margin-top: 12px; margin-left: 10px; color: red; margin-right: 5px;" (click)="removeMandatoryFieldFilter('assetId')"></i> -->
+              </div>
+              <br>
+            </div>
+            <div class="form-group" >
+              <label for="address">Address</label>
+              <div class="">
+              <input type="text" class="form-control" id="address" formControlName="address"   #name>
+              <!-- <i class="bi bi-trash-fill delete" style="display: inline-flex; margin-top: 12px; margin-left: 10px; color: red; margin-right: 5px;" (click)="removeMandatoryFieldFilter('name')"></i> -->
+              </div>
+              <br>
+            </div>
+         
+              <div class="form-group">
+                <label for="apartment">Apartment</label>
+                <div class="">
+                <input type="text" class="form-control" id="apartment" formControlName="apartment"  >
+                <!-- <i class="bi bi-trash-fill delete" style="display: inline-flex; margin-top: 12px; margin-left: 10px; color: red; margin-right: 5px;" (click)="removeMandatoryFieldFilter('serialNumber')"></i> -->
+                </div>
+                <br>
+              </div>
+              
+            
+              <div class="form-group" >
+                <label for="city" >City</label>
+                <div class="">
+                <input type="text" class="form-control" id="city" formControlName="city" >
+                <!-- <i class="bi bi-trash-fill delete" style="display: inline-flex; margin-top: 12px; margin-left: 10px; color: red; margin-right: 5px;" (click)="removeMandatoryFieldFilter('category')"></i> -->
+                  </div>
+                  <br>
+              </div>
+              
+              <div class="form-group">
+                <label for="state">State</label>
+                <div class="">
+                <input type="text" class="form-control" id="state" formControlName="state" >
+                <!-- <i class="bi bi-trash-fill delete" style="display: inline-flex; margin-top: 12px; margin-left: 10px; color: red; margin-right: 5px;" (click)="removeMandatoryFieldFilter('customer')"></i> -->
+                </div>
+                <br>
+              </div>
+              
+              <div class="form-group" >
+                <label for="zipCode">ZipCode</label>
+                <div class="">
+                <input type="text" class="form-control" id="zipCode" formControlName="zipCode"  >
+                <!-- <i class="bi bi-trash-fill delete" style="display: inline-flex; margin-top: 12px; margin-left: 10px; color: red; margin-right: 5px;" (click)="removeMandatoryFieldFilter('location')"></i> -->
+                </div>
+                <br>
+              </div>
+              
+             
+
+              
+            
+
+
+        
+
+
+        </div>
+       
+      </form>
+    
+
+            
+         
+       
+        <div class="modal-footer d-flex justify-content-around">
+          <button  class="btn btn-light mt-3"  (click)="closeBox4.click()"  >Close</button>
+          <button type="submit" class="btn btn-primary mt-3" (click)="closeBox4.click()" (click)="saveLocation()">Save</button>
+          
+        </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal fade" id="addBin" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h2 class="modal-title" id="exampleModalLongTitle">Add Bin</h2>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close" #closeBox5 (click)="binNumber.value=''"  (click)="location.value=''">
+            <span aria-hidden="true" style="height: 20px; width: 10px; background-color: #f0f0f0; border:none; display:block; padding-top: 0px;  ">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+            <form [formGroup]="binForm" >
+
+                <div style="width: 95%;">
+                  <div class="form-group" >
+                    <label for="binNumber">Bin Number<span style="border: none; background-color: white;display:contents;" class="text-danger">*</span></label>
+                    <div class="">
+                    <input type="text" class="form-control" id="binNumber" formControlName="binNumber" #binNumber>
+                    <!-- <i class="bi bi-trash-fill delete" style="display: inline-flex; margin-top: 12px; margin-left: 10px; color: red; margin-right: 5px;" (click)="removeMandatoryFieldFilter('name')"></i> -->
+                    </div>
+                    <br>
+                  </div>
+
+                <div class="form-group">
+                  <label for="location">Location<span style="border: none; background-color: white;display:contents;" class="text-danger">*</span></label>
+                  <div class="">
+                  <!-- <input type="text" class="form-control" id="location" formControlName="location" > -->
+                  <!-- <i class="bi bi-trash-fill delete" style="display: inline-flex; margin-top: 12px; margin-left: 10px; color: red; margin-right: 5px;" (click)="removeMandatoryFieldFilter('assetId')"></i> -->
+                  <select class="form-select custom-dropdown" class="form-control" id="state" formControlName="location" #location >
+                    <option value="{{location.city}}" *ngFor="let location of locationList">{{location.city}}</option>
+                    <!-- <option value="{{[customer.name,customer.id]}}" *ngFor="let customer of companyCustomerList">{{customer.name}}</option> -->
+                    <!-- <option value="outOfService" selected>Out Of Service</option> -->
+                    
+                    
+                  </select>
+                </div>
+                  <br>
+                </div>
+                
+             
+                 
+                  
+                 
+  
+                  
+                
+  
+  
+            
+  
+  
+            </div>
+           
+          </form>
+    
+
+            
+         
+       
+        <div class="modal-footer d-flex justify-content-around">
+          <button  class="btn btn-light mt-3"  (click)="closeBox5.click()"  >Close</button>
+          <button type="submit" class="btn btn-primary mt-3" (click)="closeBox5.click()" (click)="saveBin()" [disabled]="binForm.invalid">Save</button>
+          
+        </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

@@ -51,6 +51,14 @@ export class WorkorderDetailsService {
     return this.httpClient.get("http://localhost:8083/workorder/getAllShowFields/"+companyId,{headers:this.headers});
   }
 
+  getCompanyCustomerList(companyId:string):Observable<any>{
+    // const headers = new HttpHeaders({
+    //   'Authorization': `Bearer ${localStorage.getItem('authToken')}`,
+    //   'Content-Type': 'application/json'
+    // });
+    return this.httpClient.get("http://localhost:8085/companycustomer/allCompanyCustomer/"+companyId,{headers:this.headers});
+  }
+
   // updateAsset(data:any):Observable<any>{
   //   return this.httpClient.put('http://localhost:8083/workorder/addassets',data,{headers:this.headers});
   // }

@@ -1,23 +1,56 @@
-<div class="main">
-    <div class="d-flex justify-content-between">
+<div class="main" [ngClass]="{'blur': isModalOpen}">
+    <div class="d-flex justify-content-around">
+        <input type="radio" style="height: 20px; width: 20px; margin: auto 5px;" class="qr-radio" name="qr-radio" (click)="update('1')" [checked]="type=='1'">
         <div class="qr first" (click)="update('1')" [ngClass]="{'selected':(type=='1')}">
-            <p style="display: flex; justify-content: center;">{{custom}}</p>
-            <qrcode [qrdata]="'Your Asset Data'" [width]="128" [errorCorrectionLevel]="'M'" style="display: flex; justify-content: center;"></qrcode>
-            <p style="display: flex; justify-content: center;">{{optional}}</p>
+            <div class="inside">
+                <p style="display: flex; justify-content: center; padding-top: 5px;">Custom Text</p>
+                <qrcode [qrdata]="'Your Asset Data'" [width]="128" [errorCorrectionLevel]="'M'" style="display: flex; justify-content: center;"></qrcode>
+                <p style="display: flex; justify-content: center;">Optional Text</p>
+            </div>
         </div>
-        <div class="qr second d-flex justify-content-around" (click)="update('2')" [ngClass]="{'selected':(type=='2')}">
-            <qrcode [qrdata]="'Your Asset Data'" [width]="128" [errorCorrectionLevel]="'M'" style="margin-top: 36px;"></qrcode>
-            <div>
-                <p style="display: flex; justify-content: center;">{{custom}}</p>
-                <p style="display: flex; justify-content: center;">{{optional}}</p>
+        <input type="radio" style="height: 20px; width: 20px; margin: auto 5px;"  class="qr-radio" name="qr-radio" (click)="update('2')"  [checked]="type=='2'">
+        <div class="qr second " (click)="update('2')" [ngClass]="{'selected':(type=='2')}">
+            <div class="inside d-flex justify-content-around">
+                <qrcode [qrdata]="'Your Asset Data'" [width]="128" [errorCorrectionLevel]="'M'" style="margin-top: 36px;"></qrcode>
+                <div style="margin: auto;" >
+                    <p style="font-family: Copperplate Gothic Light; font-weight: bolder;display: flex; justify-content: center; ">AssetYug</p>
+                    <p style="display: flex; justify-content: center;">Serial #: <b> 12345667</b></p>
+                    <p style="display: flex; justify-content: center;">Optional Text</p>
 
+                </div>
             </div>
         </div>
     </div>
-    <div>
-        <label>Custom Text </label><input type="text" [(ngModel)]="custom"><br>
-        <label>Optional Text</label><input type="text" [(ngModel)]="optional">
+    <div class="d-flex justify-content-center">
+     
+        <label style="margin: auto 5px;">Custom Text </label><br><input type="text" [(ngModel)]="custom"><br>
+        <label style="margin: auto 5px;">Optional Text</label><br><input type="text" [(ngModel)]="optional"><br>
+      
+   
+      
     </div>
+    <div class="d-flex justify-content-center">
+      <button (click)="save()" class="btn btn-primary" style="margin: 50px;">Update</button>
+    </div>
+    
 </div>
 
+
+<div class="modal" tabindex="-1" role="dialog" [ngStyle]="{'display':displayStyle}" style="margin-top: 10%;" id="mypopup"  >
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h1 class="modal-title " >Alert</h1>
+        </div>
+        <div class="modal-body">
+          <p style="font-size: larger;">{{message}}</p>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-warning"  (click)="closePopup()">Close</button>
+        </div>
+  
+      </div>
+    </div>
+  
+  </div>
 

@@ -33,7 +33,7 @@ export class WorkOrderService {
     });
     return this.httpClient.get("http://localhost:8083/workorder/searchWorkorderlist/"+companyId+"?data="+data+"&category="+category,{headers});
   }
-  getSortedWorkOrderList(companyId:string,category:any):Observable<any>{
+  getSortedWorkOrderList(companyId:string,category:any,type:any):Observable<any>{
     
     return this.httpClient.get("http://localhost:8083/workorder/sortWorkorderlist/"+companyId+"?category="+category,{headers:this.headers});
   }
@@ -68,5 +68,21 @@ export class WorkOrderService {
   }
   getTechnicalUsers(companyId:string):Observable<any>{
     return this.httpClient.get("http://localhost:8082/users/getTechnicalUser/"+companyId,{headers:this.headers});
+  }
+  getAllWorkOrderWithExtraColumn(companyId:string):Observable<any>{
+    return this.httpClient.get("http://localhost:8083/workorder/allWorkOrderWithExtraFields/"+companyId,{headers:this.headers});
+  }
+  getCompanyCustomerList(companyId:string):Observable<any>{
+    // const headers = new HttpHeaders({
+    //   'Authorization': `Bearer ${localStorage.getItem('authToken')}`,
+    //   'Content-Type': 'application/json'
+    // });
+    return this.httpClient.get("http://localhost:8085/companycustomer/allCompanyCustomer/"+companyId,{headers:this.headers});
+  }
+  getRoleAndPermission(id:string,name:string):Observable<any>{
+    return this.httpClient.get('http://localhost:8080/customer/roleAndPermissionByName/get/'+id+'/'+name,{headers:this.headers});
+  }
+  advanceFilter(data:any,pageIndex:number,pageSize:number):Observable<any>{
+    return this.httpClient.post('http://localhost:8083/workorder/advanceFilter/'+pageIndex+'/'+pageSize,data,{headers:this.headers});
   }
 }

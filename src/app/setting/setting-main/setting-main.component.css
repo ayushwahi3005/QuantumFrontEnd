@@ -66,7 +66,7 @@ img{
     position: absolute;
     left: 0rem;
     width: 250px;
-    height: 120vh;
+    height: calc(100vh - 76px);
     background-color: #FAFAFA;
     box-shadow:rgba(255, 255, 255, 0.5);
     color: black;
@@ -118,16 +118,20 @@ img{
     
 }
 .content-area{
-    width: calc(100vw - 120px);
+    /* width: calc(100vw - 120px); */
     padding-left: 250px;
     
-    height: 500px;
+    height: calc(100vh - 80px);
 
  
 }
 form{
     width: 500px;
     margin-top: 50px;
+    border: 1px solid gainsboro;
+    padding: 20px;
+    background-color: white;
+    border-radius: 10px;
 }
 .modal{
     margin-top: 200px;
@@ -136,4 +140,36 @@ img{
     border-radius: 5px;
     width: 50px;
     margin: 5px;
+}
+body{
+    background-color: lightgray;
+}
+.back-button{
+    cursor: default;
+    text-decoration: none;
+    /* color: #8c8e91;
+     */
+
+    font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+   
+    /* margin: 10px 0px; */
+    font-size: larger;
+    /* float: inline-start; */
+    height: 20px;
+    margin: 10px 20px;
+   
+
+    
+    
+    
+   
+    
+}
+.backarrow{
+    color: #8c8e91;
+}
+.backarrow:hover{
+    /* color: #1a65ab; */
+    color:#1a65ab
+    
 }

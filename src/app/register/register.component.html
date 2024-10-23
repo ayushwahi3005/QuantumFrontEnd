@@ -1,10 +1,14 @@
 <div class="header">
   <div class="header-centre">
     <!-- <img src='../../assets/logo.png'> -->
-    <h1>Quantum Maintainance</h1>
+    <h1>AssetYug</h1>
   </div>
 </div>
-
+<div *ngIf="showAlert" class="alert" [ngClass]="'alert-' + alertType" role="alert">
+  {{ alertMessage }}
+  <!-- Optionally, add a close button -->
+  <button type="button" class="btn-close" (click)="showAlert = false" aria-label="Close" style="float: right;"></button>
+</div>
 <div class="register">
     <form [formGroup]="registerForm" (ngSubmit)="register()" >
         <h1 id="reg">Sign Up</h1>
@@ -62,7 +66,11 @@
       
         </div>
        
-        <button type="submit" class="btn btn-primary" [disabled]="registerForm.invalid">Submit</button>
+        <button type="submit" class="btn btn-primary" [disabled]="registerForm.invalid" style=" width: 100%;
+       background-color: #013365 ;
+    height: 40px;
+    color: white;
+    margin-top: 30px;">Submit</button>
         <div style="display: flex; justify-content: center; margin-top: 15px;">
            
               Already Have account?
@@ -83,7 +91,11 @@
         {{errorMessage}}
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-warning"  (click)="closePopup()">Close</button>
+        <button type="button" class="btn btn-warning" style=" width: 100%;
+       background-color: #013365 ;
+    height: 40px;
+    color: white;
+    margin-top: 30px;" (click)="closePopup()">Close</button>
       </div>
 
     </div>

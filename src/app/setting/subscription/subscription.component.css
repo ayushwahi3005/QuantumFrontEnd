@@ -1,0 +1,244 @@
+.card {
+    width: 300px;
+    height: 500px;
+    border: 1px solid white;
+    border-radius: 10px;
+    margin: 30px;
+    /* box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);  */
+}
+
+.card:hover{
+    border: 1px solid lightgray;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Horizontal, Vertical, Blur, Color */
+}
+.main-subscription{
+
+}
+.logo {
+    height: 140px;
+    width: 100%;
+    border-top-left-radius: 10px;
+    border-top-right-radius: 10px;
+}
+.price {
+    position: relative;
+    font-size: 32px;
+    color: #2B2B2F;
+    font-weight: 900;
+    margin: 0px auto;
+  }
+  .person{
+    font-weight: 700;
+    font-size: 15px;
+    line-height: 21px;
+    text-align: center;
+    color: #2B2B2F;
+    margin-bottom: 15px;
+    margin-top: 5px;
+    bottom: 0px;
+  }
+  
+  .price sup {
+    font-size: 13px;
+  }
+  
+  .price sub {
+    width: fit-content;
+    position: absolute;
+    font-size: 11px;
+    color: #5F5D6B;
+    bottom: 5px;
+    display: inline-block;
+  }
+  .title {
+    font-weight: 700;
+    font-size: 19px;
+    line-height: 21px;
+    text-align: center;
+    color: #2B2B2F;
+    margin-bottom: 15px;
+    margin-top: 20px;
+  }
+  .tab-container {
+    display: flex;
+    flex-direction: row;
+    align-items: flex-start;
+    position: relative;
+    padding: 2px;
+    background-color: #ebebec;
+    border-radius: 9px;
+    margin: 10px 20px 0px 20px;
+  }
+  .indicator {
+    content: "";
+    width: 50%;
+    height: 28px;
+    background: #FFFFFF;
+    position: absolute;
+    top: 2px;
+    left: 2px;
+    z-index: 9;
+    border: 0.5px solid rgba(0, 0, 0, 0.04);
+    box-shadow: 0px 3px 8px rgba(0, 0, 0, 0.12), 0px 3px 1px rgba(0, 0, 0, 0.04);
+    border-radius: 7px;
+    transition: all 0.2s ease-out;
+  }
+  
+  .tab {
+    width: 50%;
+    height: 28px;
+    position: relative;
+    z-index: 99;
+    background-color: transparent;
+    border: 0;
+    outline: none;
+    flex: none;
+    align-self: stretch;
+    flex-grow: 1;
+    cursor: pointer;
+    font-weight: 500;
+  }
+  
+  .tab--1:hover ~ .indicator {
+    left: 2px;
+  }
+  
+  .tab--2:hover ~ .indicator {
+    left: calc(50% - 2px);
+  }
+  .selected-tab{
+    left: calc(50% - 2px);
+  }
+
+
+  .lists {
+    margin-top: 2.5rem;
+    display: flex;
+    flex-direction: column;
+    grid-row-gap: 0.75rem;
+    row-gap: 0.75rem;
+    font-size: 0.875rem;
+    line-height: 1.25rem;
+    color: rgb(19, 2, 2);
+  }
+  
+  .list {
+    display: flex;
+    align-items: center;
+  }
+  
+  .list svg {
+    height: 1rem;
+    width: 1rem;
+  }
+  
+  .list span {
+    margin-left: 1rem;
+  }
+  .plus-minus-btn{
+    border: 1px solid darkgray;
+    height: 25px;
+
+
+  }
+  .plus-minus{
+    display: ruby-text;
+    margin-top: 2px;
+  }
+  #addPerson{
+    left: 100px;
+  }
+  .address{
+    border: 1px white solid;
+    border-radius: 10px;
+    background-color: white;
+    padding: 10px;
+    width: 70vw;
+  }
+  .mode{
+    width: 100%;
+    height: 70px;
+    border: 1px rgb(241, 238, 238) solid;
+    margin: 5px 0px;
+    padding: 10px;
+    border-radius: 10px;
+  }
+  #subscription-back:hover{
+    color: #1a65ab;
+
+    
+    
+    
+   
+    
+}
+#subscription-back{
+  cursor: default;
+  text-decoration: none;
+  color: #8c8e91;
+  font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+  
+  /* margin-top: 10px; */
+  font-size: larger;
+  float: inline-start;
+  height: 2px;
+  width: 100%;
+  padding: 10px;
+  /* margin: 10px; */
+
+  /* border-radius: 10px; */
+
+  position: sticky;
+  top: 0;
+  z-index: 1000; 
+}
+.curr-plan-card{
+  width: 100%;
+  background-color:#bac9bbeb ;
+  height: auto;
+  border-radius: 10px;
+  margin-bottom: 10px;
+  display: flex;
+  flex-direction: column;
+}
+.curr-plan {
+  font-weight: 500;
+  font-size: 19px;
+  line-height: 21px;
+  text-align: center;
+  color: #2B2B2F;
+  margin:5px auto
+}
+.curr-plan-title {
+  font-weight: 100;
+  font-size: 23px;
+  line-height: 21px;
+  text-align: center;
+  color: #2B2B2F;
+  margin:5px auto
+}
+.curr-plan-person {
+  font-weight: 100;
+  font-size: 15px;
+  line-height: 21px;
+
+  color: #2B2B2F;
+  margin-left: 10px;
+}
+.plan-details-card{
+  width: 100%;
+  background-color:rgb(239, 237, 237) ;
+  height: auto;
+  border-radius: 10px;
+  margin-bottom: 10px;
+  display: flex;
+  flex-direction: column;
+}
+.curr-plan-expiry{
+  font-weight: 100;
+  font-size: 15px;
+  line-height: 21px;
+
+  color: #2B2B2F;
+  margin-left: 10px;
+}

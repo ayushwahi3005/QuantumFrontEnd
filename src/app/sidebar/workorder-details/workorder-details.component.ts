@@ -10,6 +10,7 @@ import { ExtraField } from './extraField';
 import { ExtraFieldName } from './extraFieldName';
 import { MandatoryFields } from './mandatoryFields';
 import { ShowFieldsData } from './showFieldsData';
+import { CompanyCustomer } from './company-cutomer';
 
 @Component({
   selector: 'app-workorder-details',
@@ -22,11 +23,12 @@ export class WorkorderDetailsComponent {
   @Output() backStatus = new EventEmitter<{ show: boolean }>();
   workOrder!: WorkOrder;
   workOrderUpdateForm!:FormGroup;
-  extraFieldName!:ExtraFieldName[];
+
   currColor='open';
   loadingScreen=false;
   workOrderId!:any;
   workOrderObject:any;
+  extraFieldName!:ExtraFieldName[];
   extraFieldsList!:any[];
   extraFields!:ExtraField[];
   extraFieldString:string[]=[];
@@ -42,10 +44,19 @@ export class WorkorderDetailsComponent {
   showAlert: boolean = false; // Flag to toggle alert visibility
   alertMessage: string = ''; // Alert message
   alertType: string = 'success';
+
+
+  companyCustomerList!:CompanyCustomer[];
+  companyCustomerArr!:string[];
+  selectedCompanyCustomer!:string;
+  selectedCustomerId!:string;
+
+  changedCustomerName!:string;
+  changedCustomerId!:string;
   constructor(private workOrderDetailService:WorkorderDetailsService,private formBuilder:FormBuilder,private activeRoute:ActivatedRoute,private router:Router,private datePipe: DatePipe){}
 
   ngOnInit(){
-    
+  
     this.extraFieldString=[];
     this.extraFieldNameString=[];
     this.mandatoryFieldsMap = new Map<string, boolean>();
@@ -61,6 +72,7 @@ export class WorkorderDetailsComponent {
    
     this.workOrderDetailService.getWorkOrder(this.workOrderId).subscribe((data)=>{
       this.workOrder=data;
+      this.selectedCustomerId=this.workOrder.customerId;
       this.workOrderObject=this.workOrder as any;
      
      
@@ -141,30 +153,23 @@ export class WorkorderDetailsComponent {
       console.log(err);
     })
 
-  
-    // this.workOrderUpdateForm=this.formBuilder.group({
-    //   id:[''],
-    //   description:['',Validators.required],
-    //   customer:['',Validators.required],
-    //   dueDate:['',Validators.required],
-    //   assignedTechnician:['',Validators.required],
-    //   assetDetails:['',Validators.required],
-    //   assetId:[''],
-    //   priority:['None'],
-    //   lastUpdate:[''],
-    //   email:[''],
-    //   status:[''],
-    //   companyId:['']
-      
 
-
-
-    // });
-  
-   
+    this.workOrderDetailService.getCompanyCustomerList(this.companyId).subscribe((data)=>{
+      this.companyCustomerList=data;
+      this.companyCustomerList.forEach((x)=>{
+        // console.log(x.name+" "+(x.id===this.assetDetails.customerId))
+      })
+      console.log(this.companyCustomerList)
+    },
+    (err)=>{
+      console.log(err);
+    })
 
     
   }
+  
+
+  
   onCheck(){
     console.log(typeof(this.workOrder));
     // this.mandatoryFieldsMap.forEach((val,key)=>{
@@ -286,6 +291,13 @@ export class WorkorderDetailsComponent {
         })
   
       // console.log(this.assetDetails);
+      this.selectedCompanyCustomer=this.workOrder.customer
+      console.log(this.selectedCompanyCustomer);
+      if(this.changedCustomerName!=null&& this.changedCustomerId!=null){
+        
+        this.workOrder.customer=this.changedCustomerName
+        this.workOrder.customerId=this.changedCustomerId;
+        }
       this.workOrderDetailService.updateWorkOrder(this.workOrder).subscribe((data)=>{
         console.log("Data Updated");
         this.loading();
@@ -297,7 +309,7 @@ export class WorkorderDetailsComponent {
   
       
     
-      this.triggerAlert("Successfully Updated","success");
+      // this.triggerAlert("Successfully Updated","success");
       
     }
   toCamelCase(str: string): string {
@@ -373,6 +385,15 @@ export class WorkorderDetailsComponent {
       }
   }
 }
+customerChange(event:any) {
+  console.log("changed->"+event.target.value)
+  let myData:string=event.target.value;
+  if(myData!=null){
+    this.companyCustomerArr=myData.split(',');
+    this.changedCustomerName=this.companyCustomerArr[0];
+    this.changedCustomerId=this.companyCustomerArr[1];
+    }
+  }
  
 
 }

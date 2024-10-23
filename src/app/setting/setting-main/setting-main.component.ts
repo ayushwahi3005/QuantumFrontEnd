@@ -27,7 +27,7 @@ export class SettingMainComponent {
   },
   {
     number:2,
-    name:'Location',
+    name:'Locations and Bins',
     icon:'bi bi-geo-alt-fill'
   },
   {
@@ -37,31 +37,36 @@ export class SettingMainComponent {
   },
   {
     number:4,
+    name:'Categories',
+    icon:'bi bi-boxes'
+  },
+  {
+    number:5,
     name:'Import',
     icon:'bi bi-journal-text'
   },
   {
-    number:5,
-    name:'Role and Role Rights',
+    number:6,
+    name:'Role and Permissions',
     icon:'bi bi-person'
   },
   {
-    number:6,
+    number:7,
     name:'Employees/Users',
     icon:'bi bi-people-fill'
   },
   {
-    number:7,
+    number:8,
     name:'Labor Rates',
     icon:'bi bi-currency-dollar'
   },
   {
-    number:8,
+    number:9,
     name:'Subscription',
     icon:'bi bi-clipboard-check'
   },
   {
-    number:9,
+    number:10,
     name:'Asset QR code',
     icon:'bi bi-qr-code'
   }
@@ -74,17 +79,23 @@ constructor(private settingMainService:SettingMainService,private auth:AuthServi
     this.email=localStorage.getItem('user');
     console.log(this.email);
     this.companyId=localStorage.getItem('companyId');
-    this.settingMainService.getCompanyInformation(this.email).subscribe((data)=>{
+    this.settingMainService.getCompanyInformation(this.companyId).subscribe((data)=>{
+      
       this.companyInformation=data;
+      this.companyImage=this.companyInformation?.comapanyLogo;
       console.log(this.companyInformation)
     },
     (err)=>{
       console.log(err);
-    })
+    },
+  ()=>{
+    
+  })
     this.settingMainService.dashboard(this.email).subscribe((data)=>{
       this.username=data.firstName+" "+data.lastName;
     },(err)=>{
       console.log(err);
+    
     })
     
    this.companyInformationForm=this.formBuilder.group(({
@@ -156,11 +167,14 @@ constructor(private settingMainService:SettingMainService,private auth:AuthServi
     this.companyInformationForm.controls['id'].setValue(this.companyId);
     this.settingMainService.addCompanyInformation(this.companyInformationForm.value).subscribe((data)=>{
       console.log("Company Data Uploaded");
+      this.ngOnInit()
     },
     (err)=>{
       console.log(err);
+      alert(err)
     }
     ,()=>{
+      console.log("Update")
       this.ngOnInit()
     })
   }

@@ -1,50 +1,101 @@
+<div *ngIf="showAlert" class="alert" [ngClass]="'alert-' + alertType" role="alert" style="margin: 5px; position: fixed; width: 95%; z-index: 100;">
+  {{ alertMessage }}
+  <!-- Optionally, add a close button -->
+  <button type="button" class="btn-close" (click)="showAlert = false" aria-label="Close" style="float: right;"></button>
+</div>
+
 <div class="container d-flex justify-content-center" *ngIf="!loadingScreen">
-<form  [formGroup]="inventoryForm" (ngSubmit)="editInventory()">
+<div class="mainForm">
+  <h2 style="display: flex; justify-content: center;">Inventory Details</h2>
+  <hr>
+  
     <div  class="form-group d-flex justify-content-center">
       <img src="../../../assets/asset_image.jpg" class="image" *ngIf="!img"  data-toggle="modal" data-target="#imageUploadModel1">
       <img src={{img}} class="image"  *ngIf="img"  data-toggle="modal" data-target="#imageUploadModel1">
       <!-- <input type="file" class="form-control" id="PartImage" (change)="imageChange($event)" #partImage > -->
      
     </div>
-    <div class="form-group">
-      <label for="PartId">Part Id</label>
-      <input type="text" class="form-control" id="PartId" formControlName="partId"   required="true" #partId ngModel={{inventory?.partId}}>
+    <hr>
+    <div class="d-flex justify-content-around">
+     
+    <div>
+      <label for="PartId">Part Id<span *ngIf="mandatoryFieldsMap.get('partId')" class="text-danger">*</span> </label><br>
+      <input type="text"  id="PartId"    required="true" #partId [(ngModel)]="inventory.partId">
+      <p *ngIf="mandatoryFieldsMap.get('partId') && inventory.partId==''" class="text-danger">Mandatory</p>
+      <br>
+     
+        <label for="PartName">Part Name<span *ngIf="mandatoryFieldsMap.get('partName')" class="text-danger">*</span> </label><br>
+        <input type="text"  id="PartName"    [(ngModel)]="inventory.partName" required >
+        <p *ngIf="mandatoryFieldsMap.get('partName') && inventory.partName==''" class="text-danger">Mandatory</p>
+        <br>
+    
+    
+      
+        <label for="Price">Price<span *ngIf="mandatoryFieldsMap.get('price')" class="text-danger">*</span>  </label><br>
+        <input type="number"  id="Price"    [(ngModel)]="inventory.price">
+        <p *ngIf="mandatoryFieldsMap.get('price')" class="text-danger">Mandatory</p>
+        <br>
+      </div>
+    <div>
+     
+        <label for="Price">Cost<span *ngIf="mandatoryFieldsMap.get('cost')" class="text-danger">*</span> </label><br>
+        <input type="number"  id="Cost"   [(ngModel)]="inventory.cost">
+        <p *ngIf="mandatoryFieldsMap.get('cost') " class="text-danger">Mandatory</p>
+        <br>
+     
+        <label for="Price">Category<span *ngIf="mandatoryFieldsMap.get('category')" class="text-danger">*</span> </label><br>
+        <input type="text" id="Category"  [(ngModel)]="inventory.category">
+        <p *ngIf="mandatoryFieldsMap.get('category') && inventory.category==''" class="text-danger">Mandatory</p>
+        <br>
+      
+        <label for="Price">Quantity<span *ngIf="mandatoryFieldsMap.get('quantity')" class="text-danger">*</span> </label><br>
+        <input type="text" id="Quantity" [(ngModel)]="inventory.quantity" >
+        <p *ngIf="mandatoryFieldsMap.get('quantity')" class="text-danger">Mandatory</p>
+        <br>
     </div>
+  </div>
+  <hr>
+  <h2 style="display: flex; justify-content: center;">Custom Fields</h2>
+  <div class="extraFields">
+    <div > 
+     <div *ngFor="let item of extraFieldName" >
+       <div *ngIf="!extraFieldString.includes(item.name) && showFieldsMap?.get(item.name)">
+        
+         <span>{{item.name|titlecase}}<span *ngIf="mandatoryFieldsMap.get(item.name) " class="text-danger">*</span></span>
+         <br><input id="value" type="{{item.type}}" [(ngModel)]="extraFieldValue[extraFieldName.indexOf(item)]" >
+         <p *ngIf="mandatoryFieldsMap.get(item.name) && extraFieldValue[extraFieldName.indexOf(item)]==''" class="text-danger">*Mandatory</p>
+       </div>
+     </div>
     
-      <div class="form-group">
-        <label for="PartName">Part Name</label>
-        <input type="text" class="form-control" id="PartName" formControlName="partName"   ngModel={{inventory?.partName}} required >
-      </div>
+   </div>
+   <div >
+     <div *ngFor="let item of extraFields" >
+         <div *ngIf="showFieldsMap.get(item.name)">
+         <span>{{item.name|titlecase}}<span *ngIf="mandatoryFieldsMap.get(item.name) " class="text-danger">*</span></span>
+         <br><input id="value" type="{{item.type}}" [(ngModel)]="item.value" >
+         <p *ngIf="mandatoryFieldsMap.get(item.name) && item.value==''" class="text-danger">*Mandatory</p>
+         </div>
+     </div>
     
     
-      <div class="form-group">
-        <label for="Price">Price</label>
-        <input type="number" class="form-control" id="Price" formControlName="price"   ngModel={{inventory?.price}}>
-      </div>
-   
-      <div class="form-group">
-        <label for="Price">Cost</label>
-        <input type="number" class="form-control" id="Cost" formControlName="cost"  ngModel={{inventory?.cost}}>
-      </div>
-      <div class="form-group">
-        <label for="Price">Category</label>
-        <input type="text" class="form-control" id="Category" formControlName="category"  ngModel={{inventory?.category}}>
-      </div>
-      <div class="form-group">
-        <label for="Price">Quantity</label>
-        <input type="text" class="form-control" id="Quantity" formControlName="quantity" ngModel={{inventory?.quantity}} >
-      </div>
-      <div class="form-group d-flex justify-content-center">
-        <button type="submit" class="btn btn-primary mt-3 "  [disabled]=inventoryForm.invalid >Update</button>
-      </div>
-      <div class="form-group d-flex justify-content-center">
+   </div>
+ </div>
+    <div class="d-flex justify-content-center">
+      
+        <button type="submit" class="btn btn-primary mt-3 me-3"  (click)="onCheck()">Update</button>
+    
+      
         <button type="submit" class="btn btn-danger mt-3 " (click)="deleteInventory()" >Delete</button>
-      </div>
-
+      
+    </div>
+   
         
       
     
-  </form>
+  
+</div>
+
+
 </div>
 <div class="modal fade" id="imageUploadModel1" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle" aria-hidden="true">
   <div class="modal-dialog" role="document">

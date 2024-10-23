@@ -1,0 +1,61 @@
+@import '~@angular/material/prebuilt-themes/indigo-pink.css';
+.roleTable{
+  width:90% ;
+  border: 1px solid lightgray;
+  }
+  .addTable select{
+    margin: 10px 0px;
+    width: 8vw;
+  }
+  .addTable tr:hover{
+    background: none;
+  }
+  /* .addTable td{
+    padding: 10px;
+  } */
+  /* .addTable tr{
+    border: 2px lightgrey solid;
+    border-radius: 10px;
+  } */
+  .searchIcon{
+
+
+     /* padding: 10px 12px; */
+    /* pointer-events: none; */
+    position: relative;
+      left: -90%;
+      pointer-events: none;
+    
+   
+  }
+  input{
+    padding-left: 24px;
+   
+  }
+  .role-main{
+    width: calc(100vw - 300px);
+  }
+  .background-tab{
+    border-radius: 10px;
+    border: 1px solid lightgray;
+    /* margin-top: 10px; */
+    background-color: white;
+    height: 75vh;
+    width: 90%;
+    margin: 30px auto;
+    padding: 20px;
+  }
+  tr{
+    height: 10px;
+  }
+  #role-input{
+    border-radius: 10px;
+    border: 1px solid gray;
+    height: 40px;
+    outline: none;
+  }
+  #role-input:focus{
+    border: 2px solid #1a65ab;
+    
+  }
+  

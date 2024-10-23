@@ -1,25 +1,21 @@
-/* form div{
-    border:0.5px solid lightgray;
-    height: 80px;
-    border-radius: 5px;
-    margin: 5px;
-} */
-/* svg{
-    margin: 20px 5px;
+#main{
+  border-radius: 10px;
+  border: 1px solid lightgray;
+
+  background-color: white;
+  height: 75vh;
+  width: 90%;
+  padding: 20px;
+  /* margin-top: 30px; */
+
+  
 }
-label{
-    width: 80%;
+#user-main{
+  width: calc(100vw - 300px);
+  margin-top: 30px;
+
 }
-form h2{
-    margin-bottom: 3px;
-}
-input{
-    margin-right: 5px;
-}
-.form-control{
-    margin-top: 20px;
-} */
-input{
+#userform input{
     margin: 10px 0px;
     color: #717275;
     border-radius: 8px;
@@ -31,21 +27,45 @@ input{
     transition: 0.5s;
     outline:none
 }
-input:focus {
+#userform input:focus {
     border: 3px solid #1a65ab;
   }
-  button{
-    margin-top: 10px;
+
+
+
+#usertable{
+  width: 90%;
+  margin: 10px 20px;
+  border: 1px solid lightgray;
+
+}
+
+
+  #usertablehead th{
+    
+    background-color: black;
+    color: white;
   }
-  app-asset-details  {
-    width: calc(100vw - 85px);
-    transition: width 150ms linear;
-    overflow-y: scroll;
-    height: calc(100vh - 80px);
-}
-.app-assets-open{
-    width: calc(100vw - 270px);
-}
-.row{
-    margin: 10px;
-}
+  #user-search{
+    border-radius: 10px;
+    border: 1px solid gray;
+    padding-left: 24px;
+    outline: none;
+    height: 40px;
+  }
+  #user-search:focus{
+    border: 2px solid #1a65ab;
+    
+  }
+
+  #searchIcon-user{
+  
+      position: relative;
+      left: -90%;
+      pointer-events: none;
+      /* top: 0.65rem; */
+
+   
+  }
+  
+  

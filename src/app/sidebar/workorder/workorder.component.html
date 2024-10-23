@@ -4,7 +4,7 @@
   <button type="button" class="btn-close" (click)="showAlert = false" aria-label="Close" style="float: right;"></button>
 </div>
 
-<div *ngIf="!detailedWorkOrder" [ngClass]="{'loading':loadingScreen}">
+<div *ngIf="!detailedWorkOrder&& !loadingScreen" >
   <div class="d-flex justify-content-around">
   <div class="col flex justify-content-between searchBar" style="float: left;" >
     
@@ -12,14 +12,14 @@
     <button class="btn btn-primary ms-2" (click)="searchClick()" [disabled]="(!searchData)||(!searchDataBy)">Search By Fields</button>
   
      <i class="bi bi-search"></i>
-     <a class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+     <a class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="modal" data-target="#advanceFilterModule">
       <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" fill="currentColor" class="bi bi-funnel-fill" viewBox="0 0 16 16">
         <path d="M1.5 1.5A.5.5 0 0 1 2 1h12a.5.5 0 0 1 .5.5v2a.5.5 0 0 1-.128.334L10 8.692V13.5a.5.5 0 0 1-.342.474l-3 1A.5.5 0 0 1 6 14.5V8.692L1.628 3.834A.5.5 0 0 1 1.5 3.5v-2z"/>
       </svg>
       
     </a>
     
-    <div class="dropdown-menu" aria-labelledby="dropdownMenuButton" style="z-index: 10; cursor: pointer;">
+    <!-- <div class="dropdown-menu" aria-labelledby="dropdownMenuButton" style="z-index: 10; cursor: pointer;">
       <a class="dropdown-item" (click)="searchBy('description')">Search By Description</a>
       <a class="dropdown-item" (click)="searchBy('customer')">Search By Customer</a>
       <a class="dropdown-item" (click)="searchBy('status')">Search By Status</a>
@@ -28,9 +28,10 @@
       <a class="dropdown-item" (click)="searchBy('assignedTechnician')">Search By Assigned Technician</a>
       <a class="dropdown-item" (click)="searchBy('assetDetails')">Search By Asset Details</a>
       <a class="dropdown-item" (click)="searchBy('lastUpdate')">Search By Last Update</a>
-      <!-- <a *ngFor="let item of selectedExtraColums"  class="dropdown-item" (click)="onSort(item)">Sort By {{item}}</a> -->
-    </div>
-    
+      <a *ngFor="let item of selectedExtraColums"  class="dropdown-item" (click)="searchBy(item)">Sort By {{item}}</a>
+    </div> -->
+
+
  </div>
   <div style="margin: 10px;">
     <a class="btn btn-secondary dropdown-toggle" type="button" id="sortButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -39,6 +40,7 @@
       </svg>
       
     </a>
+    
     <div class="dropdown-menu" aria-labelledby="sortButton" style="z-index: 10; cursor: pointer;">
       <a class="dropdown-item" (click)="sortBy('description')">Sort By Description</a>
       <a class="dropdown-item" (click)="sortBy('customer')">Sort By Customer</a>
@@ -48,32 +50,47 @@
       <a class="dropdown-item" (click)="sortBy('assignedTechnician')">Sort By Assigned Technician</a>
       <a class="dropdown-item" (click)="sortBy('assetDetails')">Sort By Asset Details</a>
       <a class="dropdown-item" (click)="sortBy('lastUpdate')">Sort By Last Update</a>
-      <a *ngFor="let item of selectedExtraColums"  class="dropdown-item" >Sort By {{item}}</a>
+      <a *ngFor="let item of selectedExtraColums"  class="dropdown-item" (click)="sortBy(item)" >Sort By {{item}}</a>
     </div>
     
   </div>
+  <!-- <mat-form-field>
+    <mat-select placeholder="Custom Columns" [(ngModel)]="selectedExtraColums" multiple>
+      <mat-option *ngFor="let item of extraFieldNameList" [value]="item">{{item}}</mat-option>
+    </mat-select>
+  </mat-form-field> -->
   <div>
+    
+
+ 
+    
+    <div  id="custom-columns-workorder">
     <ng-multiselect-dropdown
           [placeholder]="'Columns...'"
           [settings]="dropdownSettings"
           [data]="extraFieldNameList"
           [(ngModel)]="selectedExtraColums"
-        
-          id="custom-columns">
+          [disabled]="false"
+          id="custom-columns-workorder-inside"
+         
+         >
         </ng-multiselect-dropdown>
+      
+      </div>
+   
   </div>
     
-    <button class="btn btn-primary mt-2 me-5" data-toggle="modal" data-target="#add-order" >+ Work Order</button>
+    <button class="btn btn-primary mt-2 me-5" data-toggle="modal" data-target="#add-order" (click)="resetForm()" *ngIf="!(userRoleDetails?.workOrders!='full' &&userRole!='ADMIN')" >+ Work Order</button>
     
   
 </div>
-<div class="row" style="height: calc(100vh - 140px); overflow: scroll; width: 100%;">
+<div class="row" style="height: calc(100vh - 220px); overflow: scroll; width: 100%;">
     <div class="col">
       <button *ngIf="searchDataBy" class="sort btn btn-secondary" (click)="removeSearchDataBy()">Search By: {{searchDataBy|titlecase}} &times;</button>
       <button *ngIf="sortedBy" class="sort btn btn-secondary" (click)="removeSort()">Sorted By: {{sortedBy|titlecase}} &times;</button>
       
       
-      <table class="table" id="asset-table">
+      <table class="table"  id="workorder-table" style=" border-radius: 10px;">
           <thead class="table-dark">
               <tr>
                   <!-- <th scope="col">#</th> -->
@@ -90,9 +107,8 @@
               </tr>
           </thead>
           <tbody>
-              <tr *ngFor="let item of searchedWorkorder" (mouseenter)="editButtonVisibile(workorderlist.indexOf(item)+1)" (mouseleave)="editButtonNotVisible()">
-                  <!-- <th scope="row">{{workorderlist.indexOf(item)+1}}</th> -->
-                  
+              <!-- <tr *ngFor="let item of searchedWorkorder" (mouseenter)="editButtonVisibile(workorderlist.indexOf(item)+1)" (mouseleave)="editButtonNotVisible()">
+                 
             
                   <td style="color: black;"><b>{{item.description|titlecase}}</b></td>
                   <td>{{item.customer|titlecase}}</td>
@@ -104,12 +120,35 @@
                   <td>{{item.lastUpdate|titlecase}}</td>
                   
                   <td *ngFor="let col of selectedExtraColums"> {{ item[col] }}</td>
-                  <!-- <td>{{item.extraFields.}}</td> -->
+                 
                 
                   <td>
                     
                   <i class="bi bi-pencil" [ngClass]="{'editoption':!(editVisibility&&(editButtonId==workorderlist.indexOf(item)+1))}"  style="float: inline-start; margin: 15px 5px;" (click)="workOrderDetail(item.id)" [routerLink]="['/workorder',item.id]" ></i>
                   <i class="bi bi-trash"  [ngClass]="{'editoption':!(editVisibility&&(editButtonId==workorderlist.indexOf(item)+1))}" style="color: red; float: inline-start; margin: 15px 5px;" (click)="deleteWorkorder(item.id)" ></i>
+                </td>
+                  
+                </tr> -->
+                <tr *ngFor="let item of workOrderListWithExtraFields" (mouseenter)="editButtonVisibile(workOrderListWithExtraFields.indexOf(item)+1)" (mouseleave)="editButtonNotVisible()">
+                  <!-- <th scope="row">{{workorderlist.indexOf(item)+1}}</th> -->
+                  
+            
+                  <td style="color: black;"><b>{{item.description|titlecase}}</b></td>
+                  <td>{{item.customer|titlecase}}</td>
+                  <td><div class="onhold" *ngIf='(item.status=="onHold")'></div><div class="open" *ngIf='(item.status=="open")'></div><div class="progress" *ngIf='(item.status=="inProgress")'></div><div class="closed" *ngIf='(item.status=="closed")'></div><span>{{item.status|titlecase}}</span></td>
+                  <td ><div style="border-radius: 4px;" [ngClass]="{'low':(item.priority  =='Low'),'medium':(item.priority=='Medium'),'high':(item.priority=='High'),'none':(item.priority=='None')}">{{item.priority}}</div></td>
+                  <td [ngClass]="{'due-passed':checkDueDate(item.dueDate)}">{{item.dueDate|date:"shortDate"}} <i class="bi bi-exclamation-triangle" *ngIf="checkDueDate(item.dueDate)"></i></td>
+                  <td>{{item.assignedTechnician|titlecase}}</td>
+                  <td>{{item.assetDetails|titlecase}}</td>
+                  <td>{{item.lastUpdate}}</td>
+                  
+                  <td *ngFor="let col of selectedExtraColums"> {{ item[col] }}</td>
+                  <!-- <td>{{item.extraFields.}}</td> -->
+                
+                  <td>
+                    
+                  <i class="bi bi-pencil" [ngClass]="{'editoption':!(editVisibility&&(editButtonId==workOrderListWithExtraFields.indexOf(item)+1))}"  style="float: inline-start; margin: 15px 5px;" (click)="workOrderDetail(item.id)" [routerLink]="['/workorder',item.id]" ></i>
+                  <i class="bi bi-trash"  [ngClass]="{'editoption':!(editVisibility&&(editButtonId==workOrderListWithExtraFields.indexOf(item)+1))}" style="color: red; float: inline-start; margin: 15px 5px;" (click)="deleteWorkorder(item.id)" ></i>
                 </td>
                   
                 </tr>
@@ -124,7 +163,7 @@
       <div class="modal-content">
         <div class="modal-header">
           <h2 class="modal-title" id="exampleModalLongTitle">Add Work Order</h2>
-          <button type="button" class="close" data-dismiss="modal" aria-label="Close" #closeBox>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close"  #closeBox>
             <span aria-hidden="true">&times;</span>
           </button>
         </div>
@@ -137,7 +176,13 @@
             </div>
             <div class="form-group">
               <label for="customer">Customer</label>
-              <input type="text" class="form-control" id="customer" formControlName="customer"  placeholder="Customer">
+              <!-- <input type="text" class="form-control" id="customer" formControlName="customer"  placeholder="Customer"> -->
+              <select class="form-select" class="form-control" id="customer" formControlName="customer" #customer>
+                <option value="" selected>None</option>
+                
+                <option value="{{[customer.name,customer.id]}}" *ngFor="let customer of companyCustomerList">{{customer.name}}</option>
+                
+              </select>
             </div>
             
               <div class="form-group">
@@ -150,8 +195,8 @@
                 <label for="technician">Technician</label>
                 <!-- <input type="text" class="form-control" id="technician" formControlName="assignedTechnician"  placeholder="Technician"> -->
                 <select class="form-select" class="form-control" id="technician" formControlName="assignedTechnician" #technician>
-                  
-                  <option value="{{technician.firstName}}  {{technician.lastName}}" *ngFor="let technician of technicalUserList">{{technician.firstName}} {{technician.lastName}}</option>
+                  <option value="" selected>None</option>
+                  <option value="{{[technician.firstName+' '+technician.lastName,technician.id]}}" *ngFor="let technician of technicalUserList">{{technician.firstName}} {{technician.lastName}}</option>
                   
                 </select>
               </div>
@@ -170,7 +215,7 @@
                 <label for="asset-details">Asset Details</label>
                
                 <select class="form-select" class="form-control" id="asset-details" formControlName="assetDetails" #asset>
-                  
+                  <option value="" selected>None</option>
                   <option value={{[asset.name,asset.id]}} *ngFor="let asset of assetList">{{asset.name}}</option>
                   
                 </select>
@@ -192,4 +237,112 @@
     </div>
   </div>
 </div>
+<div class="modal fade" id="advanceFilterModule" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2 class="modal-title" id="exampleModalLongTitle">Advance Filter</h2>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close" #closeBox3>
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        
+          <form [formGroup]="filterForm" >
+
+            <div style="width: 100%;">
+            <div class="form-group">
+              <label for="Description">Description</label>
+              <input type="text" class="form-control" id="description" formControlName="description"  #name>
+              
+            </div>
+            <br>
+            <div class="form-group">
+              <label for="customer">Customer</label>
+              <input type="text" class="form-control" id="customer" formControlName="customer"   #name>
+              
+            </div>
+            <br>
+              <div class="form-group">
+                <label for="dueDate">Due Date</label>
+                <input type="date" class="form-control" id="dueDate" formControlName="dueDate"  >
+              </div>
+              <br>
+            
+              <div class="form-group">
+                <label for="status">Status</label>
+                <select  class="form-select" class="form-control" id="status" formControlName="status" #status>
+       
+                  <option value="open" >OPEN</option>
+                  <option value="onHold">ON HOLD</option>
+                  <option value="inProgress" >IN PROGRESS</option>
+                  <option value="closed" >CLOSED</option>
+                  
+                </select>
+              </div>
+              <br>
+              <div class="form-group">
+                <label for="priority">Priority</label>
+         
+                <select  class="form-select" class="form-control" id="priority" formControlName="priority" #priority>
+       
+                  <option value="None" selected>None</option>
+                  <option value="Low">Low</option>
+                  <option value="Medium">Medium</option>
+                  <option value="High">High</option>
+                  
+                </select>
+              </div>
+              <br>
+              <div class="form-group">
+                <label for="assignedTechnician">Assigned Technician</label>
+                <input type="text" class="form-control" id="assignedTechnician" formControlName="assignedTechnician"  >
+              </div>
+              <br>
+              <div class="form-group">
+                <label for="assetDetails">Asset Details</label>
+               
+                <input type="text" class="form-control" id="assetDetails" formControlName="assetDetails"  >
+              </div>
+              <br>
+              <div class="form-group">
+                <label for="lastUpdate">Last Update</label>
+               
+                <input type="text" class="form-control" id="lastUpdate" formControlName="lastUpdate"  >
+              </div>
+              <br>
+
+              <div *ngFor="let input of selectedFilterList; let i = index" style="margin-top: 5px;">
+                <label for={{input}}>{{input|titlecase}}</label>
+                <input [formControlName]="input" type={{extraFieldFilterList.get(input)}} class="extraFieldInput"> <!-- Since each form group is wrapped in a form array -->
+                <i class="bi bi-trash-fill delete" style="display: inline-flex; margin-top: 25px; margin-left: 10px; color: red; margin-right: 5px;" (click)="removeInputField(input)"></i>
+              </div>
+              <br>
+              
+                <h3 style="margin-left: 38%; margin-top: 5px;">Add Extra Fields</h3>
+                <div class="d-flex justify-content-between" style="margin: 5px 0px;">                  
+                  <select #selectField (change)="updateSelectedField(selectField.value)" style="width: 30%">
+                  <option value="" selected>None</option>
+                  <option value="{{col}}" *ngFor="let col of filterList">{{col}}</option>
+                  </select>
+                <button class="btn btn-primary" (click)="addFilter()" style="margin-left: 10px;">Add Field</button>
+              </div>
+
+
+        
+
+
+        </div>
+       
+      </form>
+      <div class="modal-footer d-flex justify-content-around">
+        <button  class="btn btn-light mt-3"  (click)="closeBox3.click()" (click)="reset()" >Clear</button>
+        <button type="submit" class="btn btn-primary mt-3" (click)="closeBox3.click()" (click)="addFilterForm()"  >Filter</button>
+        
+      </div>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="loading" *ngIf="loadingScreen"></div>
 <app-workorder-details [id]="selectedWorkOrder" (backStatus)=onBackClicked($event) *ngIf="detailedWorkOrder"></app-workorder-details>

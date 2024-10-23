@@ -3,7 +3,7 @@
     <!-- Optionally, add a close button -->
     <button type="button" class="btn-close" (click)="showAlert = false" aria-label="Close" style="float: right;"></button>
   </div>
-<div class="main">
+<div class="main" *ngIf="loading==false">
     <div class="container d-flex justify-content-between">
         <div>
         <h1>Import Assistant</h1>
@@ -11,12 +11,12 @@
         <br>
         <form [formGroup]="importForm" (ngSubmit)="onSubmit()">
             <div class="form-group">
-                <select class="form-select form-control" id="dropdown"  formControlName="module" style="width: 30%;" (change)="dropDown(val)" #val>
+                <select class="form-select form-control" id="dropdown"  formControlName="module" style="width: 60%;" (change)="dropDown(val)" #val>
                 
                 <option value="asset" >Asset</option>
-                <option value="workOrder" selected>Work Order</option>
+                <option value="workorder" selected>Work Order</option>
                 <option value="inventory" >Inventory</option>
-                <option value="customerVendor">Customer and Vendors</option>
+                <option value="customer">Customer</option>
                 </select>
             </div>
 
@@ -28,8 +28,8 @@
             </div>
             
             <div class="mt-5">
-                <span class="downloadTemplate">Download Template</span> | <span class="exportList" (click)="exportData()" >Export Current List</span>
-            </div>
+                <!-- <span class="downloadTemplate">Download Template</span> | <span class="exportList" (click)="exportData()" >Export Current List</span> -->
+            </div><span class="downloadTemplate">Download Template</span>
             <div class="form-group" class="form-control" (change)="FileUpload($event)" style="border: 0px;">
               
                     <label style="font-size: x-large;margin-top: 50px;">CSV File</label><br>
@@ -39,7 +39,7 @@
             <button type="submit" class="btn btn-primary mt-5"  [disabled]="importForm.invalid" (click)="myFile.value=''">Submit</button>
         </form>
     </div>
-        <div *ngIf="excelColumns.length && databaseColumns.length" style="float: right;" class="mapping">
+        <div *ngIf="excelColumns.length && assetDatabaseColumns.length" style="float: right;" class="mapping">
             <h2 >Column Mapping</h2>
             <table class="table" >
                 <thead class="table-dark">
@@ -55,10 +55,34 @@
              {{ excelCol }}
                 </td>
                 <td style="padding-left: 10%;">
-              <select  (change)="update(excelCol,$event)">
+              <select  (change)="update(excelCol,$event)" *ngIf="(currImport=='asset')">
                 <option selected></option>
                 
-                <option *ngFor="let dbCol of databaseColumns" [value]="dbCol" >
+                <option *ngFor="let dbCol of assetDatabaseColumns" [value]="dbCol" >
+                  {{ dbCol }}
+                </option>
+              </select>
+
+              <select  (change)="update(excelCol,$event)" *ngIf="(currImport=='inventory')">
+                <option selected></option>
+                
+                <option *ngFor="let dbCol of inventoryDatabaseColumns" [value]="dbCol" >
+                  {{ dbCol }}
+                </option>
+              </select>
+
+              <select  (change)="update(excelCol,$event)" *ngIf="(currImport=='workorder')">
+                <option selected></option>
+                
+                <option *ngFor="let dbCol of workorderDatabaseColumns" [value]="dbCol" >
+                  {{ dbCol }}
+                </option>
+              </select>
+
+              <select  (change)="update(excelCol,$event)" *ngIf="(currImport=='customer')">
+                <option selected></option>
+                
+                <option *ngFor="let dbCol of customerDatabaseColumns" [value]="dbCol" >
                   {{ dbCol }}
                 </option>
               </select>
@@ -73,4 +97,21 @@
 
           
     </div>
+</div>
+
+<div class="loader" *ngIf="loading==true" style="margin-top: 10px;">
+  <!-- MYLOADER -->
+   Loading... {{progress}}
+  <div class="bar1"></div>
+  <div class="bar2"></div>
+  <div class="bar3"></div>
+  <div class="bar4"></div>
+  <div class="bar5"></div>
+  <div class="bar6"></div>
+  <div class="bar7"></div>
+  <div class="bar8"></div>
+  <div class="bar9"></div>
+  <div class="bar10"></div>
+  <div class="bar11"></div>
+  <div class="bar12"></div>
 </div>

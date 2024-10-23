@@ -4,13 +4,16 @@ input{
     color: #717275;
     border-radius: 8px;
     padding: 12px 20px;
-   
+    width: 20vw;
     /* box-sizing: border-box; */
     border: 3px solid #aab1b8;
     -webkit-transition: 0.5s;
     transition: 0.5s;
     outline:none
 }
+input:focus {
+    border: 3px solid #1a65ab;
+  }
 select{
     color: #717275;
     outline: none;
@@ -70,9 +73,7 @@ color: white;
 
 
 
-input:focus {
-    border: 3px solid #1a65ab;
-  }
+
 a{
     color: #717275;
 }
@@ -80,7 +81,7 @@ a:hover{
     color: #1a65ab;
 }
 form{
-    width: 70%;
+    width: 100%;
 }
 img{
     width: 500px;
@@ -89,4 +90,15 @@ img{
     height: 300px;
     margin-bottom: 30px;
     
+}
+.mainForm{
+    width: 100%;
+    color: #717275;
+    border: 1px solid lightgray ;
+    padding: 10px 10px;
+    margin: 20px 0px;
+    border-radius: 15px;
+}
+.extraFields input{
+    width: 100%;
 }

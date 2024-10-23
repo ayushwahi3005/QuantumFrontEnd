@@ -2,7 +2,7 @@
   
     <div class="header-centre">
       <!-- <img src='../../assets/logo.png'> -->
-      <h1>Quantum Maintenance</h1>
+      <h1>AssetYug</h1>
     </div>
   
   
@@ -18,7 +18,7 @@
       <span class="caret"></span></a>
       <ul class="dropdown-menu">
        
-        <li><a href="#" style="text-decoration: none; color: black;">Profile</a></li>
+        <li><a href="#" style="text-decoration: none; color: black;">Profile ({{email}})</a></li>
         <hr>
         <li>More Details</li>
      
@@ -63,15 +63,18 @@
 
         <li  class="nav-list-item" style=" margin-top: 400px; margin-bottom: 0px; position: absolute; bottom: 0;" [routerLink]="['/setting-home']">
           <i class="bi bi-gear-fill"></i>
-          <span >Setting</span>
+          <span >Settings</span>
         </li>
       </ul>
   </div>
 <div class="content-area" [ngClass]="{'content-area-onhover':!hoverOverSidebar}">
-  <app-workorder *ngIf="current==1" [ngClass]="{'app-assets-open':!hoverOverSidebar}"></app-workorder>
-  <app-assets *ngIf="current==3" [ngClass]="{'app-assets-open':!hoverOverSidebar}"></app-assets>
-  <app-inventory *ngIf="current==4" [ngClass]="{'app-assets-open':!hoverOverSidebar}"></app-inventory>
-  <app-users *ngIf="current==6" [ngClass]="{'app-assets-open':!hoverOverSidebar}"></app-users></div>
+  <app-workorder *ngIf="current==5" [ngClass]="{'app-assets-open':!hoverOverSidebar}"></app-workorder>
+  <app-assets *ngIf="current==2" [ngClass]="{'app-assets-open':!hoverOverSidebar}"></app-assets>
+  <app-inventory *ngIf="current==3" [ngClass]="{'app-assets-open':!hoverOverSidebar}"></app-inventory>
+ <app-company-customer *ngIf="current==1" [ngClass]="{'app-assets-open':!hoverOverSidebar}"></app-company-customer>
+ <!-- <app-company-customer-details *ngIf="current==6" [ngClass]="{'app-assets-open':!hoverOverSidebar}"></app-company-customer-details> -->
+
+ 
  
 </div>
 

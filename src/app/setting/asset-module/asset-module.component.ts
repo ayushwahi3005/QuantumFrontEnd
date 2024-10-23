@@ -20,6 +20,7 @@ export class AssetModuleComponent {
   extraFieldOption!:string;
   currOption:number=1;
   email!:any;
+  savedExtraColumn!:any
   editOn:boolean=true;
   deletionId:string='';
   deletionName!:string;
@@ -28,6 +29,7 @@ export class AssetModuleComponent {
   alertType: string = 'success'; // Alert type: success, warning, error, etc.
   isSubscribedToEmailsMessage!:boolean;
   companyId!:any;
+  selectedExtraColums :string[]=[];
   mandatoryFields=[{
     name:"image",
     type:"file"
@@ -65,7 +67,7 @@ export class AssetModuleComponent {
     this.companyId=localStorage.getItem('companyId');
     this.assetModuleService.getExtraFields(this.companyId).subscribe((data)=>{
       this.extraFieldName=data;
-      console.log("--------extra------------->"+this.companyId);
+      console.log("--------extra------------->"+this.companyId+" "+this.extraFieldName.length);
       this.extraFieldName.forEach((x)=>{
         console.log(x.companyId+" "+x.name+" "+x.email)
       })
@@ -84,7 +86,7 @@ export class AssetModuleComponent {
     (err)=>{
       console.log(err);
     })
-    this,this.assetModuleService.getAllShowFields(this.companyId).subscribe((data)=>{
+    this.assetModuleService.getAllShowFields(this.companyId).subscribe((data)=>{
       this.showFieldsList=data;
       // console.log("show----------------------->",this.showFieldsList)
       this.showFieldsList.forEach((x)=>{
@@ -115,6 +117,9 @@ export class AssetModuleComponent {
     }
     this.assetModuleService.addExtraFields(obj).subscribe((data)=>{this.extraFieldOption
       console.log(data);
+      const event = { checked: true }; 
+      this.showField(event,this.addFieldName.trim().toLowerCase(),this.extraFieldOption)
+      this.ngOnInit();
     },
     (err)=>{
       console.log(err.error);
@@ -123,7 +128,7 @@ export class AssetModuleComponent {
     },
     ()=>{
       this.addFieldName='';
-     
+      
       this.extraFieldOption='number';
       this.ngOnInit();
 
@@ -202,6 +207,7 @@ export class AssetModuleComponent {
       },
       (err)=>{
         console.log(err);
+        
       })
       
     })
@@ -222,7 +228,20 @@ export class AssetModuleComponent {
   showField(event:any,name:string,type:string){
     
     console.log(event.checked);
-    console.log(name);
+    
+    if(event.checked==false){
+      console.log("Remving------------------")
+      console.log(name);
+     
+
+      this.savedExtraColumn=localStorage.getItem("selectedExtraColumsAssets")
+  
+        this.selectedExtraColums=JSON.parse(this.savedExtraColumn);
+        this.selectedExtraColums=this.selectedExtraColums.filter((data)=> data!=name);
+        localStorage.setItem("selectedExtraColumsAssets",  JSON.stringify(this.selectedExtraColums));
+        
+      
+    }
     this.assetModuleService.getShowFields(name,this.companyId).subscribe((data)=>{
       let obj;
       console.log(data);
@@ -249,6 +268,7 @@ export class AssetModuleComponent {
       this.assetModuleService.showFields(obj).subscribe((data)=>{
         console.log("Updated");
         this.triggerAlert("SuccessFully Updated Field","success");
+        this.ngOnInit();
       },
       (err)=>{
         console.log(err);

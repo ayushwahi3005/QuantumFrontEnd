@@ -1,0 +1,244 @@
+table{
+    
+   
+    /* margin-top: 10px;
+    margin-left: 10px; */
+    font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+    border-radius: 10px;
+
+}
+thead {
+    position: sticky;
+    top: 0;
+    z-index: 1;
+    background-color: #343a40;
+    color: white;
+    margin-top: 0; /* Ensure there's no margin here */
+  }
+.low{
+    background-color: lightblue;
+    color: #71A5D0;
+    border-radius: 10px;
+    height: 30px;
+    padding-left: 20px;
+    padding-top: 5px;
+    width: 70px;
+
+}
+.medium{
+    background-color: #FBF2D7;
+    color: #E7B948;
+    border-radius: 10px;
+    height: 30px;
+    padding-left: 5px;
+    padding-top: 5px;
+    width: 70px;
+}
+.high{
+    background-color: #e8a7a7;
+    color: #C6482A;
+    border-radius: 10px;
+    height: 30px;
+    padding-left: 18px;
+    padding-top: 5px;
+    width: 70px;
+}
+.none{
+    background-color: #EFEDEA;
+    color: #282828;
+    border-radius: 10px;
+    height: 30px;
+    padding-left: 15px;
+    padding-top: 5px;
+    width: 70px;
+}
+.due-passed{
+    color: #FF545E;
+    font-weight:bold
+}
+td{
+    color: #5E6164;
+    font-size: medium;
+    padding: 20px 5px;
+   
+   
+}
+/* tbody{
+    box-shadow: 5px 5px 5px grey;
+} */
+.filter{
+    display: flex;
+    flex-direction: row-reverse;
+    }
+th{
+    /* padding: 20px 5px; */
+    font-size: medium;
+   
+}
+.editoption{
+    opacity: 0;
+}
+tr:hover{
+    box-shadow: 5px 5px 20px grey;
+   
+}
+.onhold{
+    height: 13px;
+    width: 13px;
+    border-radius: 13px;
+    background-color: #E7B948;
+    display: inline-flex;
+    margin: 0px 5px;
+}
+.closed{
+    height: 13px;
+    width: 13px;
+    border-radius: 13px;
+    background-color: rgb(64, 136, 238);
+    display: inline-flex;
+    margin: 0px 5px;
+}
+.progress{
+    height: 13px;
+    width: 13px;
+    border-radius: 13px;
+    background-color: #26C464;
+    display: inline-flex;
+    margin: 0px 5px;
+}
+.open{
+    height: 13px;
+    width: 13px;
+    border-radius: 13px;
+    background-color: lightgray;
+    border: 1px gray solid;
+    display: inline-flex;
+    margin: 0px 5px;
+}
+.loading{
+
+    
+    background-image: url('../../../assets/loader.gif');
+    /* background-size: 100%; */
+    height: 100%;
+    background-position:top;
+  background-repeat: no-repeat;
+}
+.searchBar {
+    position: relative;
+    width: 200px;
+    border: none;
+    margin: 10px;
+    margin-left: 28px;
+}
+.searchBar input {
+    padding-left: 24px;
+    width: 250px; /* 200px - 30px */
+    border-radius: 5px;
+    height: 30px;
+}
+.searchBar i {
+    position: absolute;
+    left: 5px;
+     /* padding: 10px 12px; */
+    pointer-events: none;
+    top: 0.3rem;
+}
+.searchBar a{
+
+    border: none;
+  
+
+    background-color: white;
+    color: black;
+    padding: 0px 5px;
+}
+.sort{
+    
+    padding: 5px;
+    margin-left: 5px;
+}
+
+/* .multiselect-dropdown{
+    background-color: #26C464;
+} */
+
+/* #custom-columns-companycustomer .dropdown-list{
+    width: 500px;
+} */
+
+/* .multiselect-dropdown .dropdown-btn {
+    background-color: #085ED7;
+    
+} */
+
+/* #custom-columns-companycustomer {
+    background-color: #085ED7;
+    margin: 10px 10px;
+    color: white;
+    border-radius: 5px;
+} */
+/* span.dropdown-btn {
+    background-color:yellow ;
+} */
+
+
+/* .multiselect-dropdown .selected-item {
+    background-color: white;
+}
+
+.multiselect-dropdown .dropdown-btn .dropdown-multiselect__caret:before{
+border-style: none;
+} */
+
+
+
+.row{
+    margin: 10px;
+}
+#companycustomer-table{
+    /* overflow: hidden; */
+    /* margin-top: 10px; */
+    position: sticky;
+    top: 0;
+    border-radius: 10px;
+}
+
+.extraFieldInput{
+    color: #717275;
+    border-radius: 8px;
+    
+   
+
+    border: 2px solid #aab1b8;
+    -webkit-transition: 0.5s;
+    transition: 0.5s;
+    outline:none;
+    width: 93%;
+    height: 40px;
+ }
+ .extraFieldInput:focus{
+    border: 2px solid #1a65ab;
+ }
+ label {
+    display: block;
+  }
+  .custom-dropdown {
+    position: relative; /* Ensure it stays in flow of the document */
+    z-index: 1000; /* Bring the dropdown on top of other elements */
+    height: 50px; /* Set desired height */
+    overflow-y: auto; /* Ensure scrolling within the dropdown */
+    display: block; /* Block-level display */
+    -webkit-appearance: none; 
+    -moz-appearance: none; 
+    appearance: none;
+  }
+  
+  .custom-dropdown:focus {
+    position: absolute; /* Force dropdown to open below the select */
+    bottom: auto; /* Prevent it from being aligned upwards */
+  }
+  
+  .mat-mdc-paginator-container  {
+    z-index: 0;
+   }

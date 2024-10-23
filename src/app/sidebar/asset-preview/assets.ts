@@ -4,6 +4,7 @@ export class Assets{
     serialNumber!:string;
     category!:string;
     customer!:string;
+    customerId!:string;
     location!:string;
     status!:string;
     image!:string;

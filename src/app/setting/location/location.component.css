@@ -1,0 +1,118 @@
+.main{
+    display: flex;
+    flex-direction: column;
+    /* justify-content:space-evenly */
+    width: calc(100vw - 400px);
+  
+    
+}
+
+img{
+    width: 30%;
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+    border-radius: 30px;
+    height: 300px;
+    margin-bottom: 30px;
+}
+.option{
+    width: calc(100vw - 400px);
+    margin-top: 50px;
+    
+    height: 70px;
+
+    margin-left: 60px;
+   
+  
+   
+    
+    
+}
+ span{
+    /* border: 1px solid #8c8e91; */
+    border: 1px solid #c2c7cf;
+    width: 50%;
+    display: flex;
+    justify-content: center;
+    padding-top: 20px;
+    border-radius: 5px;
+    font-size: large;
+    margin: 0px 1px;
+    background-color: #c2c7cf;
+    cursor: pointer;
+   
+} 
+span:hover{
+    border:2px solid darkgray; 
+}
+.container{
+    display: flex;
+    flex-direction: column;
+   
+} 
+.selected-option{
+    background-color: #12232E;
+    color: white;
+    
+}
+.bi-search{
+    position: absolute;
+    left: 24.5rem;
+    pointer-events: none;
+    top: 15.2rem;
+}
+input{
+    padding-left: 25px;
+    border-radius: 10px;
+    /* width: 250px; */
+    height: 35px;
+    color: #717275;
+    border-radius: 8px;
+    
+   
+
+    border: 2px solid #aab1b8;
+    -webkit-transition: 0.5s;
+    transition: 0.5s;
+    outline:none;
+
+}
+.locations,.bins{
+    margin: 10px 50px;
+    border-radius: 10px;
+    border: 1px black lightgray;
+    /* margin-top: 10px; */
+    background-color: white;
+    height: 60vh;
+    /* width: 80%; */
+    /* margin: 20px auto; */
+    padding: 20px;
+    border: 1px solid lightgray;
+}
+input:focus{
+    /* padding-left: 25px;
+    border-radius: 10px;
+    width: 250px;
+    height: 35px; */
+    border: 2px solid #1a65ab;
+
+}
+.location_table{
+    margin-top: 10px;
+    height: 80%;
+    overflow-y: scroll;
+}
+.location_table thead{
+    top: 0;
+    position: sticky;
+    z-index: 100;
+}
+.editoption{
+    opacity: 0;
+}
+#edit-button{
+    font-size: 18px;
+     color: #5E6164;
+}
+#edit-button:hover{
+    color: #0D6EFD;
+}

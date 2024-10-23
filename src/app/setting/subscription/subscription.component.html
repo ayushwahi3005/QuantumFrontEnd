@@ -1,0 +1,213 @@
+<div class="main-subscription d-flex justify-content-between container">
+    <div class="card" *ngIf="curr_phase==1">
+        <div class="logo d-flex justify-content-center" style=" background-color: #bac9bbeb;">
+            <div style="display: flex; flex-direction: column;">
+            <label class="title" >Basic Duo</label>
+            <label class="price" *ngIf="basicIsMonthly">${{curr_amount}}<sub>/mo</sub></label>
+            <label class="price" *ngIf="!basicIsMonthly"><span  style="text-decoration: line-through; font-weight: 100; font-size: x-large; color: rgba(54, 52, 52, 0.893);"><span>$</span>{{basicMonthlyCharge}}</span> <span>${{curr_amount}}</span><sub>/mo</sub></label>
+            <label *ngIf="!basicIsMonthly" style="margin-top: 5px; font-size: large;">{{basicAnnualDiscount}}% Discount</label>
+            <label class="person" >per person</label>
+            </div>
+        </div>
+        <div class="tab-container">
+            <button class="tab tab--1" (click)="basicMonthClick()" >Monthly</button>
+            <button class="tab tab--2"   (click)="basicAnnualClick()" >Annual</button>
+            <div class="indicator" [ngClass]="{'selected-tab':!basicIsMonthly}"></div>
+        </div>
+        <div class="d-flex justify-content-center">
+            <button style="background-color: #bac9bbeb; border: #bac9bbeb; width: 70%;height: 30px; border-radius: 10px; bottom: 0; margin-bottom: 10px; position: absolute;"   data-toggle="modal" data-target="#addPerson">Select</button>
+        </div>
+          <div>
+            <ul class="lists">
+                <li class="list">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-check" viewBox="0 0 16 16">
+                        <path d="M10.97 4.97a.75.75 0 0 1 1.07 1.05l-3.99 4.99a.75.75 0 0 1-1.08.02L4.324 8.384a.75.75 0 1 1 1.06-1.06l2.094 2.093 3.473-4.425z"/>
+                      </svg>
+                    <span> Connect 80 websites </span>
+                </li>
+                <li class="list">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-check" viewBox="0 0 16 16">
+                        <path d="M10.97 4.97a.75.75 0 0 1 1.07 1.05l-3.99 4.99a.75.75 0 0 1-1.08.02L4.324 8.384a.75.75 0 1 1 1.06-1.06l2.094 2.093 3.473-4.425z"/>
+                      </svg>
+                    <span> Track up to 50 credit cards </span>
+                </li>
+                <li class="list">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-check" viewBox="0 0 16 16">
+                        <path d="M10.97 4.97a.75.75 0 0 1 1.07 1.05l-3.99 4.99a.75.75 0 0 1-1.08.02L4.324 8.384a.75.75 0 1 1 1.06-1.06l2.094 2.093 3.473-4.425z"/>
+                      </svg>
+                    <span> Export up to 12 months data </span>
+                </li>
+                <li class="list">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-check" viewBox="0 0 16 16">
+                        <path d="M10.97 4.97a.75.75 0 0 1 1.07 1.05l-3.99 4.99a.75.75 0 0 1-1.08.02L4.324 8.384a.75.75 0 1 1 1.06-1.06l2.094 2.093 3.473-4.425z"/>
+                      </svg>
+                    <span> Cloud service 24/7 </span>
+                </li>
+                <li class="list">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-check" viewBox="0 0 16 16">
+                        <path d="M10.97 4.97a.75.75 0 0 1 1.07 1.05l-3.99 4.99a.75.75 0 0 1-1.08.02L4.324 8.384a.75.75 0 1 1 1.06-1.06l2.094 2.093 3.473-4.425z"/>
+                      </svg>
+                    <span> Connect 80 websites </span>
+                </li>
+                <li class="list">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-check" viewBox="0 0 16 16">
+                        <path d="M10.97 4.97a.75.75 0 0 1 1.07 1.05l-3.99 4.99a.75.75 0 0 1-1.08.02L4.324 8.384a.75.75 0 1 1 1.06-1.06l2.094 2.093 3.473-4.425z"/>
+                      </svg>
+                    <span> Connect up to 5 bank accounts  </span>
+                </li>
+              </ul>
+          </div>
+    </div>
+   
+    <!-- <div class="card">
+      
+        <div class="logo d-flex justify-content-center" style=" background-color: #63e257;">
+            <div style="display: flex; flex-direction: column;">
+            <label class="title" >Intermediate Duo</label>
+            <label class="price"><sup>$</sup>29<sub>/mo</sub></label>
+            </div>
+        </div>
+        <div class="tab-container">
+            <button class="tab tab--1">Monthly</button>
+            <button class="tab tab--2">Annual</button>
+            <div class="indicator"></div>
+          </div>
+    </div>
+
+    <div class="card">
+        <div class="logo d-flex justify-content-center" style=" background-color: #FEB347;">
+            <div style="display: flex; flex-direction: column;">
+            <label class="title">Premium Duo</label>
+            <label class="price"><sup>$</sup>49<sub>/mo</sub></label>
+            </div>
+        </div>
+        <div class="tab-container">
+            <button class="tab tab--1">Monthly</button>
+            <button class="tab tab--2">Annual</button>
+            <div class="indicator"></div>
+          </div>
+    </div> -->
+    <div class=" d-flex justify-content-center" style="margin-top: 50px; width:100% ;" *ngIf="curr_phase==2" >
+      <div  style="margin-right: 30px;display: flex; justify-content:center; display: flex; flex: none;">
+        <a  (click)="onBack()" style="margin-right: 30px; font-size: large; font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;" id="subscription-back" >&larr; Back</a>
+       
+      </div>
+      <div>
+        <div class="curr-plan-card" >
+         <span class="curr-plan-title">Your Current Plan</span>
+         <span class="curr-plan">Basic</span>
+         <span class="curr-plan-person">{{person}} Person</span>
+         <span class="curr-plan-expiry">{{expiryDate| date: 'MMM d, y'}}</span>
+        </div>
+        <div class="plan-details-card" >
+         
+          <span class="curr-plan-person">{{person}} Person</span>
+         </div>
+        <div class="address" >
+          
+          <form [formGroup]="paymentForm" (ngSubmit)="addPaymentInformation()">
+          <div class="form-group" >
+            <label for="Address" class="form-label">Address</label>
+            <input type="text" class="form-control"  formControlName="address" placeholder="Address" >
+        </div >
+    
+          <div class="form-group">
+            <label for="phoneNo" class="form-label">City</label>
+            <input type="text" class="form-control" formControlName="city" placeholder="City" >
+          </div>
+          <div class="form-group">
+            
+            <label for="state">State</label>
+                  
+              
+                    <select class="form-select custom-dropdown" class="form-control" id="state" formControlName="state" #status style="height: fit-content;" >
+                      <option value="{{state}}" *ngFor="let state of stateList">{{state}}</option>
+                    
+                      
+                      
+                    </select>
+          </div>
+          <div class="form-group">
+            <label for="phoneNo" class="form-label">Zip Code</label>
+            <input type="number" class="form-control" formControlName="zipCode" placeholder="Zip Code" >
+          </div>
+          <div class="form-group">
+            <div class="mode">
+            <label for="card" class="form-label">
+              <input type="radio" formControlName="mode" id="card" value="card">
+              Credit or debit card
+              <div>
+              <img src="assets/mastercard.svg" alt="Mastercard" style="height: 40px; width: 40px;">
+              <img src="assets/visa.svg" alt="visa" style="height: 40px; width: 40px;">
+              <img src="assets/amex.svg" alt="amex" style="height: 40px; width: 40px;">
+              </div>
+            
+              
+            </label>
+          </div>
+          <br>
+          <div class="mode">
+          
+            <label for="paypal" class="form-label">
+              <input type="radio" formControlName="mode" id="card" value="paypal">
+              Paypal
+              <div>
+                <img src="assets/paypal.svg" alt="paypal" style="height: 50px; width: 50px;">
+              
+                </div>
+            </label>
+          </div>
+          </div>
+        
+          <button class="btn btn-primary">Submit</button>
+          </form>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+<!-- <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#addPerson">
+    Launch demo modal
+  </button>
+   -->
+  <!-- Modal -->
+  <div class="modal fade" id="addPerson" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h2 class="modal-title" id="exampleModalLongTitle">Total Amount</h2>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close" #closeBox>
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+            <table  style="width: 100%;">
+                <thead>
+                    <th style="text-align: center;">Total Person</th>
+                    <th style="text-align: center;">Subscription Type</th>
+                    <th style="text-align: center;">Amount</th>
+                    <th style="text-align: center;">Duration</th>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td style="text-align: center;">Person <button class="btn btn-light plus-minus-btn" (click)="removePerson()" ><span class="plus-minus">-</span></button><button class="btn btn-light" >{{person}}</button><button class="btn btn-light plus-minus-btn" (click)="addPerson()"><span class="plus-minus" >+</span></button> </td>
+                        <td style="text-align: center;"><span style=" background-color:#bac9bbeb; padding: 10px 10px; border-radius: 10px; " >Basic</span></td>
+                        <td style="text-align: center; font-size: 18px ;"  *ngIf="basicIsMonthly">${{person*curr_amount}}</td>
+                        <td style="text-align: center; font-size: 18px ;" *ngIf="!basicIsMonthly">${{person*curr_amount*12}}</td>
+                        <td style="text-align: center; font-size: 15px ;" *ngIf="basicIsMonthly">1 month</td>
+                        <td style="text-align: center; font-size: 15px ;" *ngIf="!basicIsMonthly">1 year</td>
+                    </tr>
+                    
+                </tbody>
+            </table>
+            <!-- <button class="btn btn-light plus-minus-btn" (click)="removePerson()" ><span class="plus-minus">-</span></button><input type="number" style="width: 50px;" min=1 [(ngModel)]="person"><button class="btn btn-light plus-minus-btn" (click)="addPerson()"><span class="plus-minus" >+</span></button> -->
+            <!-- <button class="btn btn-light plus-minus-btn" (click)="removePerson()" ><span class="plus-minus">-</span></button><button class="btn btn-light" >{{person}}</button><button class="btn btn-light plus-minus-btn" (click)="addPerson()"><span class="plus-minus" >+</span></button>  -->
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+          <button type="button" class="btn btn-primary" (click)="proceed()" (click)="closeBox.click()">Proceed</button>
+        </div>
+      </div>
+    </div>
+  </div>

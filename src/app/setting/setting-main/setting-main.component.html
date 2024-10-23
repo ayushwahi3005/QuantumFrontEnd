@@ -1,8 +1,9 @@
+<div style="background-color: #f5f5f5; height: 100vh">
 <ul class="nav justify-content-between header">
   
     <div class="header-centre">
       <!-- <img src='../../assets/logo.png'> -->
-      <h1>Quantum Maintenance</h1>
+      <h1>AssetYug</h1>
     </div>
   
   
@@ -42,6 +43,10 @@
     
 </ul>
 <div class="side-navbar"   >
+  <div class="back-button">
+    <a [routerLink]="['/dashboard']" style="margin-right: 30px; text-decoration: none; font-weight: bold ;" class="backarrow" >&larr; Back to Dashboard</a>
+  </div>
+  <!-- <hr> -->
     <h2 style="padding: 10px 15px;">Modules</h2>
     <ul class="nav-list"  >
     
@@ -61,12 +66,12 @@
 
   </ul>
 </div>
-<div class="content-area d-flex justify-content-center" >
-  
+<div class="content-area d-flex justify-content-center" style="height: 85vh; overflow-y: scroll;">
+
     <!-- <app-workorder *ngIf="current==1" ></app-workorder> -->
     <div *ngIf="current==1" >
      
-      <form class="row g-3" [formGroup]="companyInformationForm" (ngSubmit)="addCompanyInformation()">
+      <form class="row g-3" [formGroup]="companyInformationForm" (ngSubmit)="addCompanyInformation()" >
         <div class="col-md-12">
           <label for="companyName" class="form-label">Company Name</label>
           <input type="text" class="form-control" formControlName="companyName" [ngModel]="companyInformation ? companyInformation.companyName : ''">
@@ -79,7 +84,7 @@
         </div>
         <div class="col-12">
           <label for="accountId" class="form-label">Account Id</label><br>
-          <input value={{companyInformation?.id}} disabled style="width: 480px;">
+          <input value={{companyInformation?.id}} disabled style="width: 440px;">
           
         </div>
         <div class="col-12">
@@ -116,9 +121,14 @@
     <!-- <app-users *ngIf="current==6"></app-users> -->
     <!-- <div *ngIf="current==3" >
     Hello</div> -->
+    <app-location *ngIf="current==2"></app-location>
     <app-custom-fields-settings *ngIf="current==3"></app-custom-fields-settings>
-    <app-import *ngIf="current==4"></app-import>
-    <app-asset-qr *ngIf="current==9"></app-asset-qr>
+    <app-category *ngIf="current==4"></app-category>
+    <app-import *ngIf="current==5"></app-import>
+    <app-role-and-permission *ngIf="current==6"></app-role-and-permission>
+    <app-users *ngIf="current==7"></app-users>
+    <app-subscription *ngIf="current==9"></app-subscription>
+    <app-asset-qr *ngIf="current==10"></app-asset-qr>
 </div>
 <div class="modal fade" id="popup" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle" aria-hidden="true">
   <div class="modal-dialog" role="document">
@@ -136,4 +146,6 @@
       </div>
     </div>
   </div>
+</div>
+
 </div>

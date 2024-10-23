@@ -1,5 +1,5 @@
-import { Component, EventEmitter, Input, Output } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { Component, EventEmitter, Input, Output, ViewChild } from '@angular/core';
+import { ActivatedRoute, Route, Router } from '@angular/router';
 import { Assets } from './assets';
 import { AssetDetailsService } from './asset-details.service';
 import { AssetsService } from '../assets/assets.service';
@@ -16,6 +16,12 @@ import * as saveAs from 'file-saver';
 import { WorkOrder } from './workorder';
 import { ShowFieldsData } from './showFieldsData';
 import { MandatoryFields } from './mandatoryFields';
+import { User } from './user';
+import { QR } from './qr';
+import * as jspdf from 'jspdf';
+import html2canvas from 'html2canvas';
+import { CompanyCustomer } from './company-cutomer';
+import { CategoryName } from 'src/app/setting/asset-category/categoryName';
 
 @Component({
   selector: 'app-asset-details',
@@ -24,6 +30,7 @@ import { MandatoryFields } from './mandatoryFields';
 })
 export class AssetDetailsComponent {
 
+ 
   @Input() assetDetails!:Assets;
   @Output() backStatus = new EventEmitter<{ show: boolean }>();
   assetId:any='';
@@ -33,7 +40,7 @@ export class AssetDetailsComponent {
   currOption:number=1;
   extraFields!:ExtraFields[];
   checkInOut:CheckInOut[]=[];
-
+  assetCategoryList!:CategoryName[];
   extraFieldOption!:string;
   email:any;
   extraFieldName!:ExtraFieldName[];
@@ -57,11 +64,30 @@ export class AssetDetailsComponent {
   deleteFileId!:string;
   companyId!:any;
 
+  technicalUserList!:User[];
+  qr!:QR;
+  qrData!:string;
+  qrSize!:number;
 
-  
-  constructor(private activatedRoute:ActivatedRoute,private assetDetailService:AssetDetailsService,private assetComponent:AssetsComponent,private datePipe: DatePipe){}
+  companyCustomerList!:CompanyCustomer[];
+  companyCustomerArr!:string[];
+  selectedCompanyCustomer!:string;
+  selectedCustomerId!:string;
+
+  changedCustomerName!:string;
+  changedCustomerId!:string;
+  loading=false;
+  userRole:any;
+  userRoleDetails:any;
+  constructor(private activatedRoute:ActivatedRoute,private assetDetailService:AssetDetailsService,private assetComponent:AssetsComponent,private datePipe: DatePipe,private router:Router){}
   ngOnInit(){
+   
+    this.selectedCustomerId=this.assetDetails.customerId;
     
+      console.log("NULLLLLLLLLLLLLLL")
+    
+    console.log("----//////------------>>>>>>>>"+this.assetDetails.customerId)
+ 
     this.message='';
     this.progress=20;
     this.extraFieldString=[];
@@ -69,9 +95,11 @@ export class AssetDetailsComponent {
     this.mandatoryFieldsMap = new Map<string, boolean>();
     this.extraFieldMap = new Map<string, boolean>();
     this.showFieldsMap = new Map<string, boolean>();
+    this.qrSize=3;
     this.email=localStorage.getItem('user');
     this.companyId=localStorage.getItem('companyId');
     this.activatedRoute.paramMap.subscribe((data)=>{
+      console.log(this.assetDetails)
       this.assetId=data.get('id');
       this.assetId=this.assetDetails.id
       console.log("assetid",this.assetDetails.id);
@@ -79,6 +107,31 @@ export class AssetDetailsComponent {
       
       this.img=this.assetDetails.image;
     });
+    this.userRole=localStorage.getItem('role');
+    this.assetDetailService.getRoleAndPermission(this.companyId,this.userRole).subscribe((data)=>{
+      this.userRoleDetails=data;
+      console.log(this.userRoleDetails);
+    },
+    err=>{
+      console.log(err);
+    });
+    this.assetDetailService.getCompanyCustomerList(this.companyId).subscribe((data)=>{
+      this.companyCustomerList=data;
+      this.companyCustomerList.forEach((x)=>{
+        console.log(x.name+" "+(x.id===this.assetDetails.customerId))
+      })
+      console.log(this.companyCustomerList)
+    },
+    (err)=>{
+      console.log(err);
+    })
+   
+    this.assetDetailService.getAssetCategory(this.companyId).subscribe((data)=>{
+      this.assetCategoryList=data;
+    },
+    (err)=>{
+      console.log(err)
+    })
     this.assetDetailService.getWorkOrders(this.assetId).subscribe((data)=>{
       this.workOrderList=data;
       console.log("workorders",this.workOrderList)
@@ -151,7 +204,7 @@ export class AssetDetailsComponent {
     (err)=>{
       console.log(err);
     })
-    this,this.assetDetailService.getAllShowFields(this.companyId).subscribe((data)=>{
+    this.assetDetailService.getAllShowFields(this.companyId).subscribe((data)=>{
       this.showFieldsList=data;
       // console.log("show----------------------->",this.showFieldsList)
       this.showFieldsList.forEach((x)=>{
@@ -161,6 +214,26 @@ export class AssetDetailsComponent {
     (err)=>{
       console.log(err);
     })
+
+
+    this.assetDetailService.getTechnicalUsers(this.companyId).subscribe((data)=>{
+      this.technicalUserList=data;
+      console.log(this.technicalUserList);
+    }
+    ,(err)=>{
+      console.log(err);
+    })
+
+
+    this.assetDetailService.getQR(this.companyId).subscribe((data)=>{
+      this.qr=data;
+      
+    },
+    (err)=>{
+      console.log(err);
+    })
+
+    this.qrData="assets/id?"+this.assetDetails.id;
 
   }
   show(){
@@ -256,7 +329,11 @@ export class AssetDetailsComponent {
   if(mandatoryFlag==0){
     return;
   }
-  this.onSave()
+  // this.onSave()
+  if(this.userRoleDetails?.customer=='full'||this.userRoleDetails?.customer=="edit"||this.userRole=="ADMIN"){
+    this.onSave();
+
+    }
   }
   onSave(){
     
@@ -302,6 +379,15 @@ export class AssetDetailsComponent {
       })
 
     console.log(this.assetDetails);
+    this.selectedCompanyCustomer=this.assetDetails.customer
+    console.log(this.selectedCompanyCustomer);
+    if(this.changedCustomerName!=null&& this.changedCustomerId!=null){
+      
+      this.assetDetails.customer=this.changedCustomerName
+      this.assetDetails.customerId=this.changedCustomerId;
+      }
+      
+      console.log(this.assetDetails);
     this.assetDetailService.updateAsset(this.assetDetails).subscribe((data)=>{
       console.log(data);
       
@@ -314,6 +400,7 @@ export class AssetDetailsComponent {
     
   
     this.triggerAlert("Successfully Updated","success");
+    this.router.navigate(['/assets/'+this.assetDetails.id])
     
   }
   
@@ -344,19 +431,19 @@ export class AssetDetailsComponent {
 
     
     
-    this.progress=0;
+    
       this.assetDetailService.addAssetFile(this.currentFile,this.assetId).subscribe(event => {
-        
-        if (event.type === HttpEventType.UploadProgress) {
-          
-          this.progress = Math.round(100 * event.loaded / event.total);
-        } else if (event instanceof HttpResponse) {
-          
-          this.message = event.body.message;
-         
-          // this.currentFile
-          // this.fileInfos = this.assetDetailService.getAssetFile(this.assetId);
-          
+        if (event.status === 'progress') {
+          this.progress = event.message;
+          console.log(`Progress: ${this.progress}%`);
+        } else if (event.status === 'done') {
+          console.log('Upload Complete:', event.message);
+          this.progress = 100;
+          setTimeout(() => {
+            alert('Successfully uploaded');
+            this.currentFile = null;
+            this.ngOnInit();
+          }, 1500);
         }
       },
       err => {
@@ -457,7 +544,7 @@ export class AssetDetailsComponent {
   CheckInOutSubmit(employee:string,notes:string,location:string){
     let obj={};
     var today=new Date();
-    if(employee==null||employee==''||notes==null||notes==''||location==null||location==''){
+    if(employee==null||employee==''||notes==null||notes==''){
       // alert("Fields are Empty");
       this.triggerAlert("Check In/Out Fields are Empty","warning");
     }
@@ -469,17 +556,19 @@ export class AssetDetailsComponent {
           "date":this.datePipe.transform(today,'yyyy-MM-dd'),
           "employee":employee,
           "notes":notes,
-          "location":location
+          "location":location,
+          "companyId":this.companyId
         }
       }
-      else if(this.checkInOut[0].status=='CheckedIn'){
+      else if(this.checkInOut[0].status=='Checked In'){
         obj={
           "assetId":this.assetId,
           "status":"Checked Out",
           "date":this.datePipe.transform(today,'yyyy-MM-dd'),
           "employee":employee,
           "notes":notes,
-          "location":location
+          "location":location,
+          "companyId":this.companyId
         }
       }
       else{
@@ -489,15 +578,18 @@ export class AssetDetailsComponent {
           "date":this.datePipe.transform(today,'yyyy-MM-dd'),
           "employee":employee,
           "notes":notes,
-          "location":location
+          "location":location,
+          "companyId":this.companyId
         }
       }
       console.log(obj)
       this.assetDetailService.addCheckInOut(obj).subscribe((data)=>{
         console.log(data);
+
       },
       (err)=>{
         console.log(err);
+  
       },
       ()=>{
         this.ngOnInit()
@@ -541,6 +633,43 @@ export class AssetDetailsComponent {
 
   }
 
+  generatePdf(elementId: string, fileName: string) {
+    const element:any = document.getElementById(elementId);
+
+    html2canvas(element, {
+      scale: 2,  // Increase scale to improve quality
+      backgroundColor: null,  // Ensures no background color is added
+      logging: false,
+    }).then((canvas) => {
+      const imgData = canvas.toDataURL('image/png');
+      const pdfWidth = this.qrSize * 100;
+      const pdfHeight = this.qrSize * 100;
+      const pdf = new jspdf.jsPDF({
+        orientation: 'p',
+        unit: 'pt',
+        format: [pdfWidth, pdfHeight]
+      });
+      pdf.addImage(imgData, 'PNG', 0, 0, pdfWidth, pdfHeight);
+      pdf.save(fileName + '.pdf');
+    });
+    
+  }
+  downloadQR(){
+    this.generatePdf('myqr',this.assetDetails.name+"_"+this.assetDetails.serialNumber+"_QR");
+  }
+  customerChange(event:any) {
+    console.log("changed->"+event.target.value)
+    let myData:string=event.target.value;
+    if(myData!=null){
+      this.companyCustomerArr=myData.split(',');
+      this.changedCustomerName=this.companyCustomerArr[0];
+      this.changedCustomerId=this.companyCustomerArr[1];
+      }
+    }
+    preview(){
+      console.log("clicked")
+      this.router.navigate(['/assets/'+this.assetId])
+    }
   
 }
 

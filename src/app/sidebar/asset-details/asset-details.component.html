@@ -1,45 +1,111 @@
-<div *ngIf="showAlert" class="alert" [ngClass]="'alert-' + alertType" role="alert" style="margin: 5px; position: fixed; width: 95%; z-index: 100;">
+<div *ngIf="showAlert" class="alert" [ngClass]="'alert-' + alertType" role="alert" style="margin: 5px; position: fixed; width: 95%; z-index: 10000;">
   {{ alertMessage }}
   <!-- Optionally, add a close button -->
   <button type="button" class="btn-close" (click)="showAlert = false" aria-label="Close" style="float: right;"></button>
 </div>
-<div class="main" >
+<div class="main" *ngIf="!loading"  >
   
 <div class="back-button">
-  <a  (click)="onBack()" style="margin-right: 30px;"  >&larr; Back to Assets</a>
+  
+  <div class="d-flex justify-content-between" style="padding: 0px 50px;">
+    <div  style="margin-right: 30px;display: flex; justify-content: center;">
+      <a  (click)="onBack()" style="margin-right: 30px; font-size: large; font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;" id="asset-back" >&larr; Back to Assets</a>
+      <div class="v1"></div>
+      <div style="margin: 0px 10px; font-size: larger; color: black;"><b style="margin-left: 30px;">{{assetDetails.name|titlecase}}</b></div>
+    </div>
+  <!-- <div style="margin-right: 30px; font-size: large;">
+    <div class="back-button">
+      <a  (click)="onBack()" style="margin-right: 30px; font-size: large; font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;"  >&larr; Back to Assets</a>
+    </div>
+    <div class="v1"></div>
+    <div style="margin: 0px 10px; font-size: larger; color: black;"><b>{{assetDetails.name|titlecase}}</b></div>
+    
+  </div> -->
+   <div class="d-flex justify-content-around">
+    <button class="btn btn-light" style="margin: 5px; border: 1px solid lightgray;" (click)="preview()" >Cancel</button>
+    <button class="btn btn-primary" data-toggle="modal" data-target="#popup" style="margin: 5px;">Save</button>
+    
+    <!-- <button class="btn btn-primary" (click)="onBack()">Back</button> -->
+    <!-- <button class="btn btn-danger" data-toggle="modal" data-target="#assetdeleteModel" style="margin: 5px;">Delete</button> -->
+    <td>
+      <button mat-button id="matbutton" [matMenuTriggerFor]="menu"  style="padding-bottom: 10px;">
+        <mat-icon>more_vert</mat-icon>
+      </button>
+      
+      <mat-menu #menu="matMenu">
+       
+        <button mat-menu-item ><span class="text-danger" id="delete-button" data-toggle="modal" data-target="#assetdeleteModel" style="padding-top : 5px;" >Delete</span></button>
+      </mat-menu>
+    </td>
+  </div>
+  
+  </div>
 </div>
-<div style="margin-top: 10px; color:  #74777a;" >
+<div style="margin: 50px auto;  color:  #74777a;" >
   
   
   
     <div class="card row mt-2" >
-      <h1 style="display: flex; justify-content: center; margin-top: 10px;">Edit Asset Details</h1>
-      
-      
+      <div class="d-flex justify-content-around">
+        <h1 style="display: flex; justify-content: center; margin-top: 10px; width: 95%;">Edit Asset Details</h1>
+        <i class="bi bi-qr-code" style="display: flex; flex-direction: row-reverse; width: 5%; float: right; margin-top: 15px;font-size: x-large;" data-target="#qrPopUp" data-toggle="modal" ></i>
+      </div>
       <div class="d-flex justify-content-around" style="color: #717275;">
         <img src="../../../assets/asset_image.jpg" class="image" *ngIf="!assetDetails.image"  data-toggle="modal" data-target="#imageUploadModel1"><img src={{img}} class="image"  *ngIf="assetDetails.image"  data-toggle="modal" data-target="#imageUploadModel1">
         
         <div>
-          <p class="card-title">Name<span *ngIf="mandatoryFieldsMap.get('name')" class="text-danger">*</span> <br> <input type="text" value="{{assetDetails.name}}" class="title" [(ngModel)]="assetDetails.name" #name></p>
+          <p class="card-title">Name<span *ngIf="mandatoryFieldsMap.get('name')" class="text-danger">*</span> <br> <input type="text" id="asset-name" value="{{assetDetails.name}}" class="title" [(ngModel)]="assetDetails.name" #name></p>
           <p *ngIf="mandatoryFieldsMap.get('name') && assetDetails.name==''" class="text-danger">Mandatory</p>
           <hr>
-          <p class="card-text">Serial Number<span *ngIf="mandatoryFieldsMap.get('serialNumber')" class="text-danger">*</span> <br><input type="text" value="{{assetDetails.serialNumber}}" class="serialNumber" [(ngModel)]="assetDetails.serialNumber" [required]="mandatoryFieldsMap.get(assetDetails.name)==true"> </p>
+          <p class="card-text">Serial Number<span *ngIf="mandatoryFieldsMap.get('serialNumber')" class="text-danger">*</span> <br><input type="text" value="{{assetDetails.serialNumber}}" class="serialNumber" id="serialNumber" [(ngModel)]="assetDetails.serialNumber" [required]="mandatoryFieldsMap.get(assetDetails.name)==true"> </p>
           <p *ngIf="mandatoryFieldsMap.get('serialNumber') && assetDetails.serialNumber==''" class="text-danger">Mandatory</p>
           <hr>
-          <p class="card-text">Category<span *ngIf="mandatoryFieldsMap.get('category')" class="text-danger">*</span> <br><input type="text" value="{{assetDetails.category}}" class="category" [(ngModel)]="assetDetails.category" [required]="mandatoryFieldsMap.get(assetDetails.name)==true"></p>
+          <p class="card-text">Category<span *ngIf="mandatoryFieldsMap.get('category')" class="text-danger">*</span> <br>
+            <!-- <input type="text" value="{{assetDetails.category}}" class="category" [(ngModel)]="assetDetails.category" [required]="mandatoryFieldsMap.get(assetDetails.name)==true"> -->
+            <select class="form-select custom-dropdown" class="category" id="category"  #category style="height: fit-content;" [(ngModel)]="assetDetails.category" [required]="mandatoryFieldsMap.get(assetDetails.name)==true">
+              <option value="{{category.name}}" *ngFor="let category of assetCategoryList">{{category.name|titlecase}}</option>
+              <!-- <option value="{{[customer.name,customer.id]}}" *ngFor="let customer of companyCustomerList">{{customer.name}}</option> -->
+              <!-- <option value="outOfService" selected>Out Of Service</option> -->
+              
+              
+            </select>
+          </p>
           <p *ngIf="mandatoryFieldsMap.get('category') && assetDetails.category==''" class="text-danger">Mandatory</p>
         </div>
        <div>
-        <p class="card-text">Customer Name<span *ngIf="mandatoryFieldsMap.get('customer')" class="text-danger">*</span><br><input type="text" value="{{assetDetails.customer}}" class="customer" [(ngModel)]="assetDetails.customer" [required]="mandatoryFieldsMap.get(assetDetails.name)==true"></p>
+        <p class="card-text">Customer Name<span *ngIf="mandatoryFieldsMap.get('customer')" class="text-danger">*</span>
+          <!-- <select  id="customer"   class="customer"  [(ngModel)]="assetDetails.customer">
+            <option value="" [selected]="true">None</option>
+            <option value="{{customer.name}}" *ngFor="let customer of companyCustomerList" [selected]="assetDetails.customer===customer.name">{{customer.name}}</option>
+            
+          </select> -->
+          <select id="customer" class="customer" (change)="customerChange($event)">
+            <option value="" selected>None</option>
+            <option *ngFor="let customer of companyCustomerList" [value]="customer.name + ',' + customer.id" [selected]="selectedCustomerId==customer.id">
+              {{ customer.name }}
+            </option>
+          </select>
+        
+        
+        </p>
+          <!-- <input type="text" value="{{assetDetails.customer}}" class="customer" [(ngModel)]="assetDetails.customer" [required]="mandatoryFieldsMap.get(assetDetails.name)==true"></p> -->
         <p *ngIf="mandatoryFieldsMap.get('customer') && assetDetails.customer==''" class="text-danger">*Mandatory</p>
         <hr>
         
-        <p class="card-text">Location<span *ngIf="mandatoryFieldsMap.get('location')" class="text-danger">*</span><br><input type="text" value="{{assetDetails.location}}" class="location" [(ngModel)]="assetDetails.location" [required]="mandatoryFieldsMap.get(assetDetails.name)==true"></p>
+        <p class="card-text">Location<span *ngIf="mandatoryFieldsMap.get('location')" class="text-danger">*</span><br><input type="text" value="{{assetDetails.location}}" class="location" id="location" [(ngModel)]="assetDetails.location" [required]="mandatoryFieldsMap.get(assetDetails.name)==true"></p>
         <p *ngIf="mandatoryFieldsMap.get('location') && assetDetails.location==''" class="text-danger">*Mandatory</p>
         <hr>
        
         
-        <p class="card-text">Status<span *ngIf="mandatoryFieldsMap.get('status')" class="text-danger">*</span><br><input type="text" value="{{assetDetails.status}}" class="status" [(ngModel)]="assetDetails.status" [required]="mandatoryFieldsMap.get(assetDetails.name)==true"></p>
+        <p class="card-text">Status<span *ngIf="mandatoryFieldsMap.get('status')" class="text-danger">*</span><br>
+          <select  id="status"   [(ngModel)]=" assetDetails.status"   #mySelect >  
+       
+                  <option value="active" selected>Active</option>
+                  <option value="inactive" selected>In Active</option>
+                  <option value="outofservice" selected>Out Of Service</option>
+            
+          </select>
+          <!-- <input type="text" value="{{assetDetails.status}}" class="status" [(ngModel)]="assetDetails.status" [required]="mandatoryFieldsMap.get(assetDetails.name)==true"></p> -->
         <p *ngIf="mandatoryFieldsMap.get('status') && assetDetails.status==''" class="text-danger">*Mandatory</p>
       </div>
         
@@ -50,18 +116,18 @@
       </div>
     </div>
     <div class="option d-flex flex-row bd-highlight mb-3">
-      <span [ngClass]="{'selected-option':(currOption==1)}" (click)="onClick(1)">Check In/Out</span>
-      <span [ngClass]="{'selected-option':(currOption==2)}" (click)="onClick(2)">Files</span>
-      <span [ngClass]="{'selected-option':(currOption==3)}" (click)="onClick(3)">WOs</span>
-      <span [ngClass]="{'selected-option':(currOption==4)}" (click)="onClick(4)">Parts</span>
-      <span [ngClass]="{'selected-option':(currOption==5)}" (click)="onClick(5)">Custom</span>
+      <span [ngClass]="{'selected-option':(currOption==1),'subTab':(currOption!=1)}" (click)="onClick(1)">Check In/Out</span>
+      <span [ngClass]="{'selected-option':(currOption==2),'subTab':(currOption!=2)}" (click)="onClick(2)">Files</span>
+      <span [ngClass]="{'selected-option':(currOption==3),'subTab':(currOption!=3)}" (click)="onClick(3)">WOs</span>
+      <span [ngClass]="{'selected-option':(currOption==4),'subTab':(currOption!=4)}" (click)="onClick(4)">Parts</span>
+      <span [ngClass]="{'selected-option':(currOption==5),'subTab':(currOption!=5)}" (click)="onClick(5)">Custom</span>
     </div>
     <div class="card mt-2" *ngIf="currOption==1">
       
       <div class="card-body">
         <div class="d-flex justify-content-between">
-          <div><span style="margin-right: 5px;" >Status: </span> <span  [ngClass]="{'checkedIn-status':((checkInOut.length==0)||(checkInOut[0].status=='Checked In')),'checkedOut-status':((checkInOut.length>0)&&(checkInOut[0].status=='Checked Out'))}">{{(checkInOut.length==0) ? 'CheckedIn': checkInOut[0].status}}</span></div>
-          <button data-target="#checkInOut" [ngClass]="{'danger-button':((checkInOut.length==0)||(checkInOut[0].status=='Checked In')),'btn btn-primary':((checkInOut.length>0)&&(checkInOut[0].status=='Checked Out'))}"  data-toggle="modal">{{(checkInOut.length==0) ? 'Check Out': (checkInOut[0].status=='Checked In' ? 'Check Out':'Check In')}}</button>
+          <div><button class="btn btn-light" style="padding: 2px 5px; margin-right: 5px;">Current Status </button> <span  [ngClass]="{'checkedIn-status':((checkInOut.length==0)||(checkInOut[0].status=='Checked In')),'checkedOut-status':((checkInOut.length>0)&&(checkInOut[0].status=='Checked Out'))}">{{(checkInOut.length==0) ? 'CheckedIn': checkInOut[0].status}}</span></div>
+          <button data-target="#checkInOut" style="margin-bottom: 5px;" [ngClass]="{'danger-button':((checkInOut.length==0)||(checkInOut[0].status=='Checked In')),'btn btn-primary':((checkInOut.length>0)&&(checkInOut[0].status=='Checked Out'))}"  data-toggle="modal">{{(checkInOut.length==0) ? 'Check Out': (checkInOut[0].status=='Checked In' ? 'Check Out':'Check In')}}</button>
         </div>
         
         <div class="modal fade" id="checkInOut" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle" aria-hidden="true">
@@ -69,19 +135,25 @@
             <div class="modal-content">
               <div class="modal-header">
                 <h2 class="modal-title" id="exampleModalLongTitle">Check In/Out Details</h2>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close" #closeBox3>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close" style="border-radius: 5px;" #closeBox3>
                   <span aria-hidden="true">&times;</span>
                 </button>
               </div>
               <div class="modal-body">
-                <form >
-                  <label>Employee</label>
-                  <input type="text"  #employeeName>
-                  <label>Notes</label>
-                  <input type="text"  #notes>
+                <form id="checkForm">
+                  <label>Employee<span class="text-danger">*</span></label>
+                  <!-- <input type="text"  #employeeName> -->
+                  <select  id="technician"  #employeeName>
+                  
+                    <option value="{{technician.firstName}}  {{technician.lastName}}" *ngFor="let technician of technicalUserList">{{technician.firstName}} {{technician.lastName}}</option>
+                    
+                  </select>
+                  <!-- <input type="text"  id="technician"  #employeeName> -->
+                  <p><label>Notes<span class="text-danger">*</span></label></p>
+                  <textarea rows="4" cols="61" id="textArea" #notes placeholder="Write Your Notes Here!!" style="border-radius: 5px; border: 3px solid #aab1b8;"></textarea><br>
                   <label>Location</label>
                   <input type="text" #location>
-                  <button class="btn btn-danger" (click)="CheckInOutSubmit(employeeName.value,notes.value,location.value)" (click)="closeBox3.click()">Submit</button>
+                  <button class="btn btn-danger" (click)="CheckInOutSubmit(employeeName.value,notes.value,location.value)" (click)="closeBox3.click()" (click)="employeeName.value=''" (click)="notes.value=''" (click)="location.value=''">Submit</button>
                 </form>
       
                
@@ -107,7 +179,7 @@
                  
                   <td>{{item.status}}</td>
                  
-                  <td>{{item.date|titlecase}}</td>
+                  <td>{{item.date|date}}</td>
                   <td>{{item.employee|titlecase}}</td>
                   <td>{{item.notes|titlecase}}</td>
                   <td>{{item.location|titlecase}}</td>
@@ -123,7 +195,33 @@
       </div>
     </div>
     <div class="card mt-2" *ngIf="currOption==2">
-      <h1 style="display: flex; justify-content: center; margin-top: 10px;">Files</h1>
+      <!-- <h1 style="display: flex; justify-content: center; margin-top: 10px;">Files</h1> -->
+      <!-- <div class="d-flex justify-content-around qr" >
+       
+        
+        <div class="qr first"  *ngIf="qr.type=='1'" id="myqr">
+          <div class="inside">
+              <p style="display: flex; justify-content: center; padding-top: 5px;">{{qr.custom}}</p>
+              <qrcode [qrdata]="qrData" [width]="128" [errorCorrectionLevel]="'M'" style="display: flex; justify-content: center;"></qrcode>
+              <p style="display: flex; justify-content: center;">{{qr.optional}}</p>
+          </div>
+      </div>
+      <div class="qr second " *ngIf="qr.type=='2'"  id="myqr" style="display: flex;">
+          <div class="inside d-flex justify-content-around" >
+              <qrcode [qrdata]="qrData" [width]="128" [errorCorrectionLevel]="'M'" style="margin: auto 0px;"></qrcode>
+              <div style="margin: auto;" >
+                  <p style="font-family: Copperplate Gothic Light; font-weight: bolder;display: flex; justify-content: center; ">AssetMonk</p>
+                  <p style="display: flex; justify-content: center;">Serial #: <b> {{assetDetails.serialNumber}}</b></p>
+                  <p style="display: flex; justify-content: center;">{{qr.optional}}</p>
+
+              </div>
+          </div>
+      </div>
+
+
+
+        <button (click)="downloadQR()" class="btn btn-success" style="height: 50px; width: 100px; margin: auto 0px;">Download</button>
+      </div> -->
       <div class="card-body">
         <div>
           <input type="file" (change)="fileUpload($event)"  #imageFile>
@@ -157,9 +255,9 @@
       </div>
     </div>
     <div class="card mt-2" *ngIf="currOption==3">
-      <h1 style="display: flex; justify-content: center; margin-top: 10px;">WOs</h1>
-      <div class="card-body">WOs
-        <table class="table" id="asset-table">
+      <!-- <h1 style="display: flex; justify-content: center; margin-top: 10px;">WOs</h1> -->
+      <div class="card-body">
+        <table class="table" id="asset-table" *ngIf="workOrderList?.length">
           <thead class="table-dark">
               <tr>
                   <th scope="col">#</th>
@@ -201,12 +299,12 @@
     </div>
     <div class="card mt-2" *ngIf="currOption==4">
       <h1 style="display: flex; justify-content: center; margin-top: 10px;">Parts</h1>
-      <div class="card-body">Parts</div>
+      <!-- <div class="card-body">Parts</div> -->
     </div>
 
 
     <div class="card mt-2" *ngIf="currOption==5">
-      <h1 style="display: flex; justify-content: center; margin-top: 10px;">Custom Fields</h1>
+      <!-- <h1 style="display: flex; justify-content: center; margin-top: 10px;">Custom Fields</h1> -->
       <div class="card-body">
 
       
@@ -221,7 +319,7 @@
         </div>
        
       </div>
-      <div >
+      <div>
         <div *ngFor="let item of extraFields" >
             <div *ngIf="showFieldsMap.get(item.name)">
             <span>{{item.name|titlecase}}<span *ngIf="mandatoryFieldsMap.get(item.name) " class="text-danger">*</span></span>
@@ -270,7 +368,7 @@
           <div class="modal-body">
             <form class="d-flex justify-content-between">
               <input type="file" (change)="imageUpload($event)" (click)="closeBox2.click()" #imageFile>
-              <button class="btn btn-danger" (click)="removeTheImage()" (click)="closeBox2.click()">Remove</button>
+              <button class="btn btn-danger" style="width: 100px; height: 50px; margin: auto;" (click)="removeTheImage()" (click)="closeBox2.click()">Remove</button>
             </form>
   
            
@@ -290,7 +388,7 @@
           <div class="modal-body">
             <form>
             <button class="btn btn-primary" (click)="onDelete()" (click)="closeBox3.click()">DELETE</button>
-            <button class="btn btn-danger close" data-dismiss="modal" aria-label="Close" (click)="closeBox3.click()">CANCEL</button>
+            <button class="btn btn-danger close" data-dismiss="modal" aria-label="Close" (click)="closeBox3.click()"  >CANCEL</button>
             </form>
            
           </div>
@@ -299,15 +397,10 @@
     </div>
     
   </div>
-  <div class="nav-button" >
-   
-    <button class="btn btn-primary" data-toggle="modal" data-target="#popup" >Save</button>
-    
-    <!-- <button class="btn btn-primary" (click)="onBack()">Back</button> -->
-    <button class="btn btn-danger" data-toggle="modal" data-target="#assetdeleteModel">Delete</button>
-   
- 
-  </div>
+  
+
+</div>
+<div  class="loading" *ngIf="loading">
 
 </div>
 <div class="modal fade" id="popup2" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle" aria-hidden="true">
@@ -340,8 +433,70 @@
         <div class="modal-body">
           <form>
           <button class="btn btn-primary" (click)="deleteFile()" (click)="closeBox4.click()">DELETE</button>
-          <button class="btn btn-danger close" data-dismiss="modal" aria-label="Close" (click)="closeBox3.click()">CANCEL</button>
+          <button class="btn btn-danger close" data-dismiss="modal" aria-label="Close" (click)="closeBox4.click()">CANCEL</button>
           </form>
+         
+        </div>
+       
+        
+        
+       
+      </div>
+    </div>
+  </div>
+</div>
+<div class="modal fade" id="qrPopUp" tabindex="-1" role="dialog"  aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h1 style="display: flex; justify-content: center;">Download QR</h1>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close" #closeBox4>
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="d-flex ">
+        <div class="modal-body justify-content-around">
+          
+          <!-- <button class="btn btn-primary" (click)="deleteFile()" (click)="closeBox4.click()">DELETE</button>
+          <button class="btn btn-danger close" data-dismiss="modal" aria-label="Close" (click)="closeBox3.click()">CANCEL</button> -->
+          <div class="d-flex justify-content-around qr" >
+       
+        
+            <div class="qr first"  id="myqr" *ngIf="qr?.type=='1'">
+              <div class="inside">
+                  <p style="display: flex; justify-content: center; padding-top: 5px; margin-bottom: 0px;">{{qr.custom}}</p>
+                  <qrcode [qrdata]="qrData" [width]="200" [errorCorrectionLevel]="'M'" style="display: flex; justify-content: center;"></qrcode>
+                  <p style="display: flex; justify-content: center;">{{qr.optional}}</p>
+              </div>
+          </div>
+          <div class="qr second " *ngIf="qr?.type=='2'"  id="myqr" style="display: flex;">
+              <div class="inside d-flex justify-content-around" >
+                  <qrcode [qrdata]="qrData" [width]="200" [errorCorrectionLevel]="'M'" style="margin: auto 0px;"></qrcode>
+                  <div style="margin: auto; width: 70px; margin-left: 30px; " >
+                      <p style="font-family: Copperplate Gothic Light; font-weight: bolder;text-align: center;margin: auto; margin-bottom: 13px; ">AssetYug</p>
+                      <p style="width: 70px; justify-content: center;">Serial#: <b> {{assetDetails.serialNumber}}</b></p>
+                      <p style="width: 70px; justify-content: center;">{{qr.optional}}</p>
+    
+                  </div>
+              </div>
+          </div>
+    
+          
+          </div>
+         
+            <div class="d-flex justify-content-around">
+              <div>
+                <label>Please Select Size </label>
+                <select  [(ngModel)]="qrSize" #size>
+                  <option value="3">3 x 3</option>
+                  <option value="5">5 x 5</option>
+                  <option value="7">7 x 7</option>
+                </select>
+              </div>
+              <button (click)="downloadQR()" class="btn btn-success" style="float: right; align-self: center;" >Download</button>
+            </div>
+            
+         
          
         </div>
        

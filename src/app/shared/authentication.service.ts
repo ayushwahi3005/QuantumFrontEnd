@@ -11,13 +11,19 @@ export class AuthenticationService implements CanActivate {
 
   constructor(private auth:AuthService,private router:Router,private httpClient:HttpClient) { }
   canActivate(): boolean {
-    if(!this.auth.isLoggedIn){
-      this.router.navigate(['/login']);
-      
+    let token=null;
+    token=localStorage.getItem('authToken');
+    console.log(token)
+    if (token) {
+      return true;
+    } else {
+      this.router.navigate(['/login']); // Redirect to login if not authenticated
+      return false;
     }
     return this.auth.isLoggedIn;
     
   }
+ 
  
   
 

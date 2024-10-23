@@ -9,23 +9,28 @@ import { SettingHomeComponent } from './setting/setting-home/setting-home.compon
 import { InventoryComponent } from './sidebar/inventory/inventory.component';
 import { SettingMainComponent } from './setting/setting-main/setting-main.component';
 import { EditInventoryComponent } from './sidebar/edit-inventory/edit-inventory.component';
-import { TickAnimationComponent } from './tick-animation/tick-animation.component';
 import { AssetPreviewComponent } from './sidebar/asset-preview/asset-preview.component';
 import { InvitationComponent } from './invitation/invitation.component';
+import { CompanyCustomerDetailsComponent } from './sidebar/company-customer-details/company-customer-details.component';
+import { CompanyCustomerDetailsPreviewComponent } from './sidebar/company-customer-details-preview/company-customer-details-preview.component';
+import { AuthenticationService } from './shared/authentication.service';
 
 const routes: Routes = [
   {path: '', component:HomeComponent, pathMatch:'full'},
   {path:'login', component:LoginComponent},
   {path:'register', component:RegisterComponent},
- //{path:'dashboard', component:DashboardComponent,canActivate:[AuthenticationService]},
-  {path:'dashboard', component:DashboardComponent},
-  {path:'workorder/:id',component:WorkorderDetailsComponent},
-  {path:'inventory',component:InventoryComponent},
-  {path:'custom-setting',component:SettingHomeComponent},
-  {path:'edit-inventory/:id',component:EditInventoryComponent},
-  {path:'setting-home',component:SettingMainComponent},
-  {path:'assets/:id',component:AssetPreviewComponent},
-  {path:'invitation/:id/:details',component:InvitationComponent},
+ {path:'dashboard', component:DashboardComponent,canActivate:[AuthenticationService]},
+  // {path:'dashboard', component:DashboardComponent},
+  {path:'workorder/:id',component:WorkorderDetailsComponent,canActivate:[AuthenticationService]},
+  {path:'inventory',component:InventoryComponent,canActivate:[AuthenticationService]},
+  {path:'custom-setting',component:SettingHomeComponent,canActivate:[AuthenticationService]},
+  {path:'edit-inventory/:id',component:EditInventoryComponent,canActivate:[AuthenticationService]},
+  {path:'setting-home',component:SettingMainComponent,canActivate:[AuthenticationService]},
+  {path:'assets/:id',component:AssetPreviewComponent,canActivate:[AuthenticationService]},
+  {path:'invitation/:id/:details',component:InvitationComponent,canActivate:[AuthenticationService]},
+  {path:'customer/preview/:id',component:CompanyCustomerDetailsPreviewComponent,canActivate:[AuthenticationService]},
+  {path:'customer/:id',component:CompanyCustomerDetailsComponent,canActivate:[AuthenticationService]},
+  
 
 
  

@@ -20,6 +20,7 @@ export class InvitationComponent {
  showAlert: boolean = false; // Flag to toggle alert visibility
   alertMessage: string = ''; // Alert message
   alertType: string = 'success'; // Alert type: success, warning, error, etc.
+  checkAccount:any;
 
  ngOnInit(){
   this.activeRoute.paramMap.subscribe((data)=>{
@@ -41,33 +42,55 @@ export class InvitationComponent {
   })
   this.invitaionService.getUser(this.companyId,this.token).subscribe((data)=>{
     this.user=data as User;
+    // this.checkAccount=this.authService.checkAccountExistence(this.user?.email);
+    // this.authService.checkAccount(this.user?.email).then((data:boolean)=>{
+    //   this.authService.resetPassword(this.user?.email);
+    // })
+    // console.log(this.checkAccount);
     console.log(this.user)
   },
   (err)=>{
     console.log(err);
   })
+  
+  this.subscribeToService();
+  
+ 
+
  }
  register(){
   console.log(this.inviteForm.value);
   console.log(this.user);
   this.user.password=this.inviteForm.controls['password'].value,
- this.invitaionService.register(this.user).subscribe((data)=>{
-  console.log("Invitation successfully registered");
-  this.authService.registerForUser(this.user.email,this.inviteForm.controls['password'].value).then(()=>{
-    this.triggerAlert(" Password Reset Successful!!","success");
+
+
+
+  this.authService.registerForUser(this.user.email,this.inviteForm.controls['password'].value).then((data:boolean)=>{
+    if(data){
+    this.invitaionService.register(this.user).subscribe((data)=>{
+      console.log("Invitation successfully registered");
+      // this.triggerAlert(" Password Reset Successful!!","success");
     setInterval(() => {
       this.router.navigate(['/login']);
     }, 5000);
+     },
+     (err)=>{
+      console.log(err);
+     })
+    }
+    else{
+      // this.triggerAlert(" Some issue occured!!!!","danger");
+    }
     
-  },
-  (err)=>{
-    console.log(err);
-    this.triggerAlert(" The email address is already in use by another account","danger");
+    
+  })
+  .catch((error: any) => {
+    // Handle any errors that occur during registration
+    console.error('Error during registration:', error);
+    // You can display an error message or take other actions
   });
- },
- (err)=>{
-  console.log(err);
- })
+
+ 
  }
  triggerAlert(message: string, type: string) {
   this.alertMessage = message;
@@ -77,5 +100,12 @@ export class InvitationComponent {
   setTimeout(() => {
     this.showAlert = false;
   }, 5000); // Hide the alert after 5 seconds (adjust as needed)
+}
+
+subscribeToService() {
+  this.invitaionService.getTriggerFunctionSubjectRegister().subscribe((mydata:any) => {
+    console.log("trigger register in service vallleeddd2222")
+    this.triggerAlert(mydata.data,mydata.type); // Call your component function here
+  });
 }
 }

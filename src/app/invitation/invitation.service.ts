@@ -1,19 +1,29 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
+import { Observable, Subject } from 'rxjs';
+import { environment } from 'src/environments/environment';
 
 @Injectable({
   providedIn: 'root'
 })
 export class InvitationService {
-  
+  private triggerFunctionSubjectRegister = new Subject<void>();
   constructor(private httpClient:HttpClient) { }
-  
+ customerEndpoint=environment.endpoint+"customer/"
+ userEndpoint=environment.endpoint+"users/"
   register(data:any):Observable<any>{
   
-    return this.httpClient.post('http://localhost:8080/customer/addUser',data);
+    return this.httpClient.post(this.customerEndpoint+'addUser',data);
   }
   getUser(companyId:string,token:string){
-    return this.httpClient.get('http://localhost:8082/users/invite/getUser/'+companyId+'/'+token);
+    return this.httpClient.get(this.userEndpoint+'invite/getUser/'+companyId+'/'+token);
+  }
+  triggerComponentFunctionRegister(data:any) {
+    console.log("trigger register vallleeddd")
+    this.triggerFunctionSubjectRegister.next(data);
+  }
+
+  getTriggerFunctionSubjectRegister() {
+    return this.triggerFunctionSubjectRegister.asObservable();
   }
 }
