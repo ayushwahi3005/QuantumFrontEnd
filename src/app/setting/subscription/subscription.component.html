@@ -1,3 +1,5 @@
+<div class="loader" *ngIf="this.loading"></div>
+<div *ngIf="!this.loading">
 <div class="main-subscription d-flex justify-content-between container">
     <div class="card" *ngIf="curr_phase==1">
         <div class="logo d-flex justify-content-center" style=" background-color: #bac9bbeb;">
@@ -96,13 +98,32 @@
         <div class="curr-plan-card" >
          <span class="curr-plan-title">Your Current Plan</span>
          <span class="curr-plan">Basic</span>
-         <span class="curr-plan-person">{{person}} Person</span>
-         <span class="curr-plan-expiry">{{expiryDate| date: 'MMM d, y'}}</span>
+         <!-- <span class="curr-plan-person">Total Person: {{person}} Person</span>
+         <span class="curr-plan-expiry">Expiry Date: {{expiryDate| date: 'MMM d, y'}}</span> -->
         </div>
+        
+
+
         <div class="plan-details-card" >
          
-          <span class="curr-plan-person">{{person}} Person</span>
-         </div>
+          <!-- <span class="curr-plan-person">Total Person: {{person}} Person</span>
+          <span class="curr-plan-expiry">Expiry Date: {{expiryDate| date: 'MMM d, y'}}</span> -->
+          <table style="width: 30%;">
+            <tr>
+              <td >Total Person:</td>
+              <td>{{ person }} Person</td>
+            </tr>
+            <tr>
+              <td >Expiry Date:</td>
+              <td>{{ expiryDate | date: 'MMM d, y' }}</td>
+            </tr>
+            <tr>
+              <td class="curr-plan-totalAmount">Total Amount:</td>
+              <td>${{ res_amount }}</td>
+            </tr>
+          </table>
+          
+        </div>
         <div class="address" >
           
           <form [formGroup]="paymentForm" (ngSubmit)="addPaymentInformation()">
@@ -159,19 +180,137 @@
           </div>
           </div>
         
-          <button class="btn btn-primary">Submit</button>
+          <button class="btn btn-primary" [disabled]="!paymentForm.valid">Submit</button>
           </form>
         </div>
       </div>
     </div>
 
+    <div class=" d-flex justify-content-center" style="margin-top: 50px; width:100% ;" *ngIf="curr_phase==3" >
+    
+      <div  style="margin-right: 30px;display: flex; justify-content:center; display: flex; flex: none;">
+        <a  (click)="onBack()" style="margin-right: 30px; font-size: large; font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;" id="subscription-back" >&larr; Back</a>
+       
+      </div>
+      <div>
+        <h1>Payment</h1>
+        <div style="width: 50vw; border: 1px solid lightgray; background-color: white; padding: 30px 10px; border-radius: 10px;" class="card-details-form mat-elevation-z2 p-4 ">
+          <form [formGroup]="cardForm" (ngSubmit)="onSubmit()" class="mt-3" >
+            <!-- Name on Card and Expiry Date Row -->
+            <div class="row mb-3">
+              <mat-radio-group formControlName="cardType" aria-label="Select card type" class="d-flex">
+                <div class="me-3">
+                  <mat-radio-button value="creditCard">Credit Card</mat-radio-button>
+                </div>
+                <div>
+                  <mat-radio-button value="debitCard">Debit Card</mat-radio-button>
+                </div>
+              </mat-radio-group>
+            </div>
+            
+            <div class="row mb-3">
+              
+                <mat-form-field appearance="outline" class="w-100">
+                  <mat-label>Name on card</mat-label>
+                  <input matInput type="text" formControlName="cardName" placeholder="Olivia Rhye" required />
+                </mat-form-field>
+            
+            </div>
+              <!-- Card Number and CVV Row -->
+              <div class="row mb-3">
+            
+                <mat-form-field appearance="outline" class="w-100">
+                  <mat-label>Card number</mat-label>
+                  <input
+                    matInput
+                    type="text"
+                    formControlName="cardNumber"
+                    placeholder="1234 1234 1234 1234"
+                    maxlength="19"
+                    (input)="formatCardNumber()"
+                    required
+                  />
+                </mat-form-field>
+            
+            
+            </div>
+              <div class="row mb-3">
+                <div class="col-md-8">
+                  <mat-form-field appearance="outline" class="w-100">
+                    <mat-label>Expiry</mat-label>
+                    <input
+                      matInput
+                      type="text"
+                      formControlName="expiryDate"
+                      placeholder="MM/YY"
+                      maxlength="5"
+                      (input)="formatExpiryDate()"
+                      required
+                    />
+                  </mat-form-field>
+                </div>
+                <div class="col-md-4">
+                  <mat-form-field appearance="outline" class="w-100">
+                    <mat-label>CVV</mat-label>
+                    <input matInput type="password" formControlName="cvv" placeholder="•••" maxlength="3" required />
+                  </mat-form-field>
+                </div>
+            </div>
+          
+          
+          
+        
+          
+            <!-- Action Buttons -->
+            <div class="row mt-12">
+              <div class="col-md-12 d-flex justify-content-around">
+              
+                
+                  <button mat-stroked-button type="button" class="me-2">Cancel</button>
+                  <button mat-raised-button color="primary" type="submit" [disabled]="!cardForm.valid">Pay Now</button>
+              
+              </div>
+            </div>
+          </form>
+          
+          
+          
+          
+        </div>
+      </div>
+    </div>
+
+    <div class="payment-success-container" *ngIf="curr_phase==4">
+      <!-- Confetti elements -->
+      <div class="confetti-container">
+        <!-- Repeat .confetti divs for the confetti effect -->
+        <div class="confetti"></div>
+        <div class="confetti"></div>
+        <div class="confetti"></div>
+        <div class="confetti"></div>
+        <div class="confetti"></div>
+        <div class="confetti"></div>
+        <div class="confetti"></div>
+        <div class="confetti"></div>
+        <div class="confetti"></div>
+        <div class="confetti"></div>
+      </div>
+    
+      <!-- Payment success card -->
+      <div class="payment-success-card mat-elevation-z3">
+        <div class="icon-container">
+          <mat-icon color="primary" class="success-icon">check_circle</mat-icon>
+        </div>
+        <h2>Payment succeeded!</h2>
+        <p>Thank you for processing your most recent payment.</p>
+        <p>Your premium subscription will expire on {{ expiryDate | date: 'MMMM d, y' }}.</p>
+        <button mat-stroked-button color="primary" (click)="this.ngOnInit()">Your dashboard</button>
+      </div>
+    </div>
+
   </div>
 
-<!-- <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#addPerson">
-    Launch demo modal
-  </button>
-   -->
-  <!-- Modal -->
+
   <div class="modal fade" id="addPerson" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered" role="document">
       <div class="modal-content">
@@ -211,3 +350,8 @@
       </div>
     </div>
   </div>
+
+</div>
+
+
+

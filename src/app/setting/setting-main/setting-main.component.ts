@@ -46,6 +46,11 @@ export class SettingMainComponent {
     icon:'bi bi-journal-text'
   },
   {
+    number:11,
+    name:'Import History',
+    icon:'bi bi-clock-history'
+  },
+  {
     number:6,
     name:'Role and Permissions',
     icon:'bi bi-person'
@@ -111,6 +116,33 @@ constructor(private settingMainService:SettingMainService,private auth:AuthServi
     website:['',Validators.required],
     customerEmail:['']
    }))
+
+   this.settingMainService.dashboard(this.email).subscribe((data)=>{
+    
+    this.username=data.firstName+" "+data.lastName;
+    console.log("dashboard"+ this.username)
+   
+    if(this.username==''||this.username==null){
+      this.ngOnInit();
+    }
+    else{
+     
+      localStorage.setItem('name',this.username);
+    
+    }
+    
+  },
+  (err)=>{
+    console.log("myerr------------>",err.status);
+    
+    if(err.status=="403"){
+      localStorage.clear()
+      alert("Session expired");
+     
+      this.logout();
+
+    }
+  })
   }
 
 

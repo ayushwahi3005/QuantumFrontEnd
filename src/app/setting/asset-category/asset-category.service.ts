@@ -29,7 +29,9 @@ export class AssetCategoryService {
   getAssetCategory(companyId:any):Observable<any>{
     return this.httpClient.get(this.assetEndpoint+"getCategoryList/"+companyId,{headers:this.headers});
   }
-
+  getCustomerCategoryById(companyId:any,id:any):Observable<any>{
+    return this.httpClient.get(this.assetEndpoint+"getCategoryListById/"+companyId+"/"+id,{headers:this.headers});
+  }
   deleteAssetCategory(companyId:any):Observable<any>{
     return this.httpClient.delete(this.assetEndpoint+"deleteCategory/"+companyId,{headers:this.headers});
   }

@@ -71,6 +71,9 @@ import { AssetCategoryComponent } from './setting/asset-category/asset-category.
 import { WorkorderCategoryComponent } from './setting/workorder-category/workorder-category.component';
 import { InventoryCategoryComponent } from './setting/inventory-category/inventory-category.component';
 import { CustomerCategoryComponent } from './setting/customer-category/customer-category.component';
+import { ImportHistoryComponent } from './setting/import-history/import-history.component';
+import { MatSortModule } from '@angular/material/sort';
+import { MatRadioModule } from '@angular/material/radio';
 
 
 
@@ -113,7 +116,8 @@ import { CustomerCategoryComponent } from './setting/customer-category/customer-
     AssetCategoryComponent,
     WorkorderCategoryComponent,
     InventoryCategoryComponent,
-    CustomerCategoryComponent
+    CustomerCategoryComponent,
+    ImportHistoryComponent
     
     
  
@@ -146,7 +150,10 @@ import { CustomerCategoryComponent } from './setting/customer-category/customer-
     MatExpansionModule,
     MatPaginatorModule,
     MatCheckboxModule,
-    MatSnackBarModule
+    MatSnackBarModule,
+    MatTableModule,
+    MatSortModule,
+    MatRadioModule
   
     
     

@@ -30,14 +30,15 @@ export class AssetModuleComponent {
   isSubscribedToEmailsMessage!:boolean;
   companyId!:any;
   selectedExtraColums :string[]=[];
-  mandatoryFields=[{
+  mandatoryFields=[
+    {
+      name:"name",
+      type:"String"
+    },{
     name:"image",
     type:"file"
   },
-  {
-    name:"name",
-    type:"String"
-  },
+ 
   {
     name:"serialNumber",
     type:"Number"

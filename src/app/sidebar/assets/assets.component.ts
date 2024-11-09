@@ -197,7 +197,7 @@ export class AssetsComponent {
     
 
     this.assetForm=this.formBuilder.group({
-      name:[''],
+      name:['',Validators.required],
       customer:[''],
       customerId:[''],
       serialNumber:[''],
@@ -361,6 +361,11 @@ export class AssetsComponent {
       console.log(data);
       this.assetListWithExtraFields=[];
       this.paginationResult=data;
+      if(this.paginationResult.data.length==0&&this.pageIndex!=0){
+        this.pageIndex=0;
+        localStorage.setItem('assetPageInd',this.pageIndex.toString());
+        this.advanceFilterFunc();
+      }
       this.totalLength=this.paginationResult.totalRecords;
     this.assets=this.paginationResult.data;
     const jsonList:string[]=this.paginationResult.data;
@@ -596,7 +601,7 @@ export class AssetsComponent {
       // You can set a timeout to automatically hide the alert after a certain time
       setTimeout(() => {
         this.showAlert = false;
-      }, 50000); // Hide the alert after 5 seconds (adjust as needed)
+      }, 5000); // Hide the alert after 5 seconds (adjust as needed)
     }
     Echo(){
       console.log("ecgo")

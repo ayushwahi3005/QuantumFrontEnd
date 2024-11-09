@@ -27,8 +27,11 @@
             <td>{{item.name|titlecase}}</td>
             <td>{{item.type|titlecase}} </td>
             <td><mat-slide-toggle  color="primary" [ngModel]=true  disabled=""></mat-slide-toggle></td>
-            <td>
-              <mat-slide-toggle  color="primary" [ngModel]="getValueOfMandatoryMap(item.name)" (change)="mandatoryField(ch,item.name,item.type)"  #ch></mat-slide-toggle></td>
+            <td *ngIf="item.name=='name'"><mat-slide-toggle  color="primary" [ngModel]="true" disabled=""></mat-slide-toggle></td>
+            <td  *ngIf="item.name!='name'"><mat-slide-toggle  color="primary" [ngModel]="getValueOfMandatoryMap(item.name)" (change)="mandatoryField(ch,item.name,item.type)"  #ch></mat-slide-toggle></td>
+            <!-- <td>
+              <mat-slide-toggle  color="primary" [ngModel]="getValueOfMandatoryMap(item.name)" (change)="mandatoryField(ch,item.name,item.type)"  #ch></mat-slide-toggle>
+            </td> -->
             <td></td>
           </tr>
           <h2 *ngIf="extraFieldName.length>0" style="margin: 10px;">Custom Fields</h2>

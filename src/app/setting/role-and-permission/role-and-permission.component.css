@@ -7,6 +7,11 @@
     margin: 10px 0px;
     width: 8vw;
   }
+  /* .addTable tr{
+    border:solid lightgray 0.5px;
+    border-radius: 10px;
+    padding: 5px 10px;
+  } */
   .addTable tr:hover{
     background: none;
   }
@@ -48,13 +53,13 @@
   tr{
     height: 10px;
   }
-  #role-input{
+  #import-history-input{
     border-radius: 10px;
     border: 1px solid gray;
     height: 40px;
     outline: none;
   }
-  #role-input:focus{
+  #import-history-input:focus{
     border: 2px solid #1a65ab;
     
   }

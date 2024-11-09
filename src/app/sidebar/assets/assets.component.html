@@ -16,7 +16,7 @@
     <div class="row">
       <div class="col flex justify-content-between searchBar" style="float: left;" >
          <input type="text"  (keydown)="onKeyDown($event)" [(ngModel)]="searchData" placeholder="Search" >
-         <button class="btn btn-primary" (click)="onSearch()"    style="margin: 0px 5px;">Search</button>
+         <button class="btn btn-primary" (click)="onSearch()"    style="margin: 0px 5px; ">Search</button>
           <i class="bi bi-search"></i>
           <a class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="modal" data-target="#advanceFilterModule">
             <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" fill="currentColor" class="bi bi-funnel-fill" viewBox="0 0 16 16">
@@ -57,14 +57,16 @@
       
       </div>
     </div>
-    <div class="row" style="height: calc(100vh - 220px); overflow: scroll; width: 100%;">
-      <div class="col">
-         <button *ngIf="sortedBy" class="sort btn btn-secondary" (click)="removeSort()">Sorted By: {{sortedBy|titlecase}} &times;</button>
+    <div id="sort-and-search" >
+      <button *ngIf="sortedBy" class="sort btn btn-secondary"  (click)="removeSort()">Sorted By: {{sortedBy|titlecase}} &times;</button>
       <span *ngIf="appliedFilterListSize >0">
-      <button *ngFor="let item of appliedFilterList" class="sort btn btn-primary" (click)="removeSingleFilter(item)">{{(item=="assetId")?"Id":item|titlecase}}: {{appliedFilterListMap.get(item)|titlecase}} &times;</button>
+      <button *ngFor="let item of appliedFilterList" class="sort btn btn-primary"  (click)="removeSingleFilter(item)">{{(item=="assetId")?"Id":item|titlecase}}: {{appliedFilterListMap.get(item)|titlecase}} &times;</button>
       <button class="btn btn-warning" (click)="reset()">Clear All</button>
       </span>  
-    
+    </div>
+    <div class="row" style="height: calc(100vh - 260px); overflow: scroll; width: 100%;">
+      <div class="col">
+        
         <div class="extra-columns">
 
       </div>
@@ -153,7 +155,7 @@
             </div>
             <br>
             <div class="form-group">
-              <label for="name">Name<span *ngIf="mandatoryFieldsMap.get('name')" class="text-danger">*</span> </label>
+              <label for="name">Name<span  class="text-danger">*</span> </label>
               <input type="text" class="form-control" id="name" formControlName="name"  placeholder="Name" #name>
               
             </div>
@@ -210,7 +212,7 @@
                 <br>
               </div>
               <div class="modal-footer">
-                <button type="submit" class="btn btn-primary mt-3"  (click)="image.value=''">ADD</button>
+                <button type="submit" class="btn btn-primary mt-3"  (click)="image.value=''" [disabled]="assetForm.invalid">ADD</button>
               </div>
 
             

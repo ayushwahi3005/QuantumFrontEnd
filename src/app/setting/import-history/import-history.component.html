@@ -1,0 +1,75 @@
+<!-- <div  id="history-loader" *ngIf="loading"></div> -->
+<div class="import-history-container">
+  <div id="history-background">
+    <h2 class="mb-4 text-center">Import History</h2>
+    <div class="d-flex justify-content-between" style="width: 100%; margin: 20px 0px;">
+      <div style="margin-left: 30px;">
+        <input type="text" id="role-input" placeholder="Search By Name" style="margin: 0px 0px 10px 0px; height: 40px; " (keyup)="find($event)" #data>
+        <i class="bi bi-search searchIcon"></i>
+      </div>
+      <button class="btn btn-primary" (click)="refresh()" style="margin-right: 30px;" >Refresh</button>
+    </div>
+  
+
+    <div class="table-container history-table" >
+        <table mat-table [dataSource]="importHistory" matSort class="table table-bordered table-hover">
+          <!-- Date Column -->
+          <ng-container matColumnDef="fileName" >
+            <th mat-header-cell *matHeaderCellDef mat-sort-header>Filename</th>
+            <td mat-cell *matCellDef="let record">{{ record.fileName }}</td>
+          </ng-container>
+          <ng-container matColumnDef="date" >
+            <th mat-header-cell *matHeaderCellDef mat-sort-header>Date</th>
+            <td mat-cell *matCellDef="let record">{{ record.date | date: 'short' }}</td>
+          </ng-container>
+      
+          <!-- Record Type Column -->
+          <ng-container matColumnDef="recordType" >
+            <th mat-header-cell *matHeaderCellDef mat-sort-header>Record Type</th>
+            <td mat-cell *matCellDef="let record">{{ record.recordType }}</td>
+          </ng-container>
+      
+          <!-- Status Column -->
+          <ng-container matColumnDef="status">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header>Status</th>
+            <td mat-cell *matCellDef="let record" [ngClass]="getStatusClass(record.status)">
+              {{ record.status }}
+            </td>
+          </ng-container>
+      
+          <!-- % Complete Column -->
+          <ng-container matColumnDef="complete" >
+            <th mat-header-cell *matHeaderCellDef mat-sort-header>% Complete</th>
+            <td mat-cell *matCellDef="let record">{{ record.complete }}%</td>
+          </ng-container>
+      
+          <!-- Message Column -->
+          <ng-container matColumnDef="message" >
+            <th mat-header-cell *matHeaderCellDef mat-sort-header>Message</th>
+            <td mat-cell *matCellDef="let record">{{ record.message }}</td>
+          </ng-container>
+      
+          <!-- Executed By Column -->
+          <ng-container matColumnDef="executedBy" >
+            <th mat-header-cell *matHeaderCellDef mat-sort-header>Executed By</th>
+            <td mat-cell *matCellDef="let record">{{ record.executedBy }}</td>
+          </ng-container>
+      
+          <!-- Header and Row Definitions -->
+          <tr mat-header-row *matHeaderRowDef="displayedColumns;sticky:true" ></tr>
+          <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+        </table>
+      </div>
+
+      <mat-paginator [length]="totalLength"
+              (page)="handlePageEvent($event)"
+              [pageSize]="pageSize"
+              [pageIndex]="pageIndex"
+              [pageSizeOptions]="[5, 10, 25, 100]"
+              aria-label="Select page" style="z-index: 0; margin-top: 10px;">
+      </mat-paginator>
+
+  </div>
+      
+  </div>
+  

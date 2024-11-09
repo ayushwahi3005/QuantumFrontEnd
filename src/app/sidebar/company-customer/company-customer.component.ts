@@ -343,6 +343,11 @@ advanceFilterFunc() {
       // Reset customer list and populate with new data
       this.companyCustomerListWithExtraFields = [];
       this.paginationResult = data;
+      if(this.paginationResult.data.length==0&&this.pageIndex!=0){
+        this.pageIndex=0;
+        localStorage.setItem('customerPageInd',this.pageIndex.toString());
+        this.advanceFilterFunc();
+      }
       this.totalLength = this.paginationResult.totalRecords;
       this.companyCustomer = this.paginationResult.data;
 

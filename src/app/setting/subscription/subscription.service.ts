@@ -16,9 +16,21 @@ export class SubscriptionService {
   constructor(private httpClient:HttpClient) { }
 
  companyCustomerEndpoint=environment.endpoint+"companycustomer/"
+ subscriptionEndpoint=environment.endpoint+"subscription/"
+  paymentEndpoint=environment.endpoint+"payment/"
   stateList():Observable<any>{
 
     return this.httpClient.get(this.companyCustomerEndpoint+"statelist",{headers:this.headers});
+   
+  }
+  addPayment(payment:any):Observable<any>{
+
+    return this.httpClient.post(this.paymentEndpoint+"add",payment,{headers:this.headers});
+   
+  }
+  addSubscription(subscription:any):Observable<any>{
+
+    return this.httpClient.post(this.subscriptionEndpoint+"add",subscription,{headers:this.headers});
    
   }
 }

@@ -115,7 +115,7 @@ export class AssetsService {
       return this.httpClient.get(this.assetEndpoint+"getAsset/"+id,{headers:this.headers});
     }
     getAssetCategory(companyId:any):Observable<any>{
-      return this.httpClient.get(this.assetEndpoint+"getCategoryList/"+companyId,{headers:this.headers});
+      return this.httpClient.get(this.assetEndpoint+"getCategoryActiveList/"+companyId,{headers:this.headers});
     }
   
 }

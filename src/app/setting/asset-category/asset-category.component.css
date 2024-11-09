@@ -28,7 +28,12 @@ transition:  border-color 0.2s;
   transition:  border-color 0.2s; /* Define transition properties */
 }
 .bi-trash3{
-color: red;
+  color: red;
+  margin: 0px 5px;
+}
+.bi-pencil{
+  color: #828385ad;
+  margin: 0px 5px;
 }
 table{
 width: 95%;

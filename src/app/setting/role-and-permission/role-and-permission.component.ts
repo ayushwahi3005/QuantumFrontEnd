@@ -5,6 +5,7 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { count } from 'rxjs';
 import { AuthService } from 'src/app/shared/auth.service';
 import { Router } from '@angular/router';
+import { RoleAndPermissionEdit } from './RoleAndPermissionEdit';
 
 @Component({
   selector: 'app-role-and-permission',
@@ -13,6 +14,7 @@ import { Router } from '@angular/router';
 })
 export class RoleAndPermissionComponent {
   roleAndPermissionForm!:FormGroup;
+  roleAndPermissionFormEdit!:FormGroup;
   searchedRole!:any[];
   roleAndPermissionList!:any[];
   roleAndPermission!:any;
@@ -22,13 +24,14 @@ export class RoleAndPermissionComponent {
   showAlert: boolean = false; // Flag to toggle alert visibility
   alertMessage: string = ''; // Alert message
   alertType: string = 'success';
+  currItem!:RoleAndPermissionEdit;
   constructor(private roleAndPermissionService:RoleAndPermissionService,private formBuilder:FormBuilder,private auth:AuthService,private router:Router){}
 
   ngOnInit(){
     this.companyId=localStorage.getItem('companyId');
     this.roleAndCountMapping=new Map<String,Number>();
     this.roleAndPermission=new RoleAndPermission();
-
+    this.currItem=new RoleAndPermissionEdit();
     this.roleAndPermission.name='ADMIN';
       this.roleAndPermission.status='Active';
       this.roleAndPermission.type='Standard';
@@ -81,6 +84,27 @@ export class RoleAndPermissionComponent {
 
 
     })
+
+    this.roleAndPermissionFormEdit=this.formBuilder.group({
+      id:[''],
+      name:['',Validators.required],
+      status:['active',Validators.required],
+      assets:['none',Validators.required],
+      customers:['none',Validators.required],
+      workOrders:['none',Validators.required],
+      users:['none',Validators.required],
+      roleAndPermissions:['none',Validators.required],
+      imports:['none',Validators.required],
+      category:['none',Validators.required],
+      inventory:['none',Validators.required],
+      companyId:['']
+      
+  
+      
+
+
+
+    })
   }
 
   addRoleAndPermission() {
@@ -94,12 +118,14 @@ export class RoleAndPermissionComponent {
 
       this.roleAndPermissionService.addRoleAndPermission(this.roleAndPermissionForm.value).subscribe((data)=>{
         console.log(data);
+              this.triggerAlert("Roles Added!!","success")
       },
       err=>{
         console.log(err);
       },
       ()=>{
         this.ngOnInit();
+        this.triggerAlert("Role And Permission Added!!","success")
       })
     }
     }
@@ -131,6 +157,49 @@ export class RoleAndPermissionComponent {
         // return filterData;
       });
     }
+    edit(item:any){
+      this.currItem=item
+      this.roleAndPermissionFormEdit.controls['id'].setValue(this.currItem.id);
+      this.roleAndPermissionFormEdit.controls['name'].setValue(this.currItem.name);
+      this.roleAndPermissionFormEdit.controls['status'].setValue(this.currItem.status);
+      this.roleAndPermissionFormEdit.controls['assets'].setValue(this.currItem.assets);
+      this.roleAndPermissionFormEdit.controls['customers'].setValue(this.currItem.customers);
+      this.roleAndPermissionFormEdit.controls['workOrders'].setValue(this.currItem.workOrders);
+      this.roleAndPermissionFormEdit.controls['users'].setValue(this.currItem.users);
+      this.roleAndPermissionFormEdit.controls['roleAndPermissions'].setValue(this.currItem.roleAndPermissions);
+      this.roleAndPermissionFormEdit.controls['imports'].setValue(this.currItem.imports);
+      this.roleAndPermissionFormEdit.controls['category'].setValue(this.currItem.category);
+      this.roleAndPermissionFormEdit.controls['inventory'].setValue(this.currItem.inventory);
+      this.roleAndPermissionFormEdit.controls['companyId'].setValue(this.companyId);
+      
+    }
+    updateRoleAndPermission(){
+      console.log(this.currItem)
+      // this.roleAndPermissionForm.controls['companyId'].setValue(this.companyId);
+      let name=this.currItem.name;
+      if(name.trim()==''){
+        this.triggerAlert("Empty Name Field","warning")
+      }
+      else{
+
+
+      this.roleAndPermissionService.updateRoleAndPermission(this.roleAndPermissionFormEdit.value).subscribe((data)=>{
+        console.log(data);
+      },
+      err=>{
+        console.log(err);
+      },
+      ()=>{
+        this.triggerAlert("Role And Permission Updated","success")
+        this.ngOnInit();
+        
+      })
+    }
+    }
+    deleteRole(id:string){
+
+    }
+    
     logout(){
       this.auth.currUser=null;
       this.auth.isLoggedIn=false;

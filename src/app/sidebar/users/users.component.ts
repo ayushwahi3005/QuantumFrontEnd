@@ -71,9 +71,9 @@ export class UsersComponent {
       
       firstName:['',Validators.required],
       lastName:['',Validators.required],
-      jobTitle:['',Validators.required],
+      jobTitle:[''],
       email:['',Validators.required],
-      phoneNumber:['',Validators.required],
+      phoneNumber:[''],
       role:['',Validators.required]
     });
     this.registredUsersMap=new Map<String,Boolean>();

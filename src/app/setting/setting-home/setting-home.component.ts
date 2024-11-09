@@ -53,6 +53,30 @@ constructor(private settingHomeService:SettingHomeService,private auth:AuthServi
     this.settingHomeService.dashboard(this.email).subscribe((data)=>{
       this.username=data.firstName+" "+data.lastName;
     })
+    this.settingHomeService.dashboard(this.email).subscribe((data)=>{
+    
+      this.username=data.firstName+" "+data.lastName;
+      console.log("dashboard"+ this.username)
+     
+      if(this.username==''||this.username==null){
+        this.ngOnInit();
+      }
+      else{
+       
+        localStorage.setItem('name',this.username);
+      
+      }
+      
+    },
+    (err)=>{
+      console.log("myerr------------>",err.status);
+      
+      if(err.status=="403"){
+        alert("Session expired");
+        this.logout();
+
+      }
+    })
    
   }
   update(val:number){

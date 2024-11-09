@@ -23,10 +23,12 @@ export class AssetCategoryComponent {
   alertType: string = 'success'; // Alert type: success, warning, error, etc.
 
   companyId!:any;
-
+  editCurrCategory!:CategoryName;
+  editId:string='';
+  editName!:string;
   constructor(private assetCategoryService:AssetCategoryService){}
   ngOnInit(){
-
+    this.editCurrCategory=new CategoryName;
     this.email=localStorage.getItem('user');
     this.companyId=localStorage.getItem('companyId');
     this.assetCategoryService.getAssetCategory(this.companyId).subscribe((data)=>{
@@ -81,6 +83,9 @@ export class AssetCategoryComponent {
 
     })
   }
+  }
+  updateEditName(name:string){
+    this.editName=name;
   }
   updateField(event:any,name:string,id:string,companyId:string){
     // console.log(event.checked+" "+name+" "+id+" "+companyId)
@@ -171,5 +176,42 @@ export class AssetCategoryComponent {
       return filterData;
 
     });
+  }
+  updateEditId(id:string){
+    this.editId=id;
+    this.assetCategoryService.getCustomerCategoryById(this.companyId,id).subscribe((data)=>{
+      this.editCurrCategory=data;
+    },
+   (err)=>{
+    console.log(err);
+   })
+
+  }
+  updateCategory(){
+    console.log(this.editCurrCategory);
+    const obj={
+        "id":this.editCurrCategory.id,
+        "name":this.editCurrCategory.name.trim().toLowerCase(),
+       "status":this.editCurrCategory.status,
+       "companyId":this.companyId
+    }
+    this.assetCategoryService.updateAssetCategory(obj).subscribe((data)=>{
+      console.log(data);
+      this.triggerAlert("Successfully updated","success");
+      
+      this.ngOnInit();
+    },
+    (err)=>{
+      console.log(err.error);
+      
+      this.triggerAlert(err.error.message,"danger");
+    },
+    ()=>{
+      // this.editCurrCategory=ne;
+     
+      
+      this.ngOnInit();
+
+    })
   }
 }

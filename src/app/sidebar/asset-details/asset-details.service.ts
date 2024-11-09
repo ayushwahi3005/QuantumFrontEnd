@@ -138,7 +138,7 @@ export class AssetDetailsService {
     return this.httpClient.get('http://localhost:8080/customer/roleAndPermissionByName/get/'+id+'/'+name,{headers:this.headers});
   }
   getAssetCategory(companyId:any):Observable<any>{
-    return this.httpClient.get(this.assetEndpoint+"getCategoryList/"+companyId,{headers:this.headers});
+    return this.httpClient.get(this.assetEndpoint+"getCategoryActiveList/"+companyId,{headers:this.headers});
   }
   
 }

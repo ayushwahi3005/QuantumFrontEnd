@@ -94,16 +94,16 @@
           <form [formGroup]="userForm" (ngSubmit)="addUser()" id="userform">
             <div class="d-flex justify-content-between">
               <div >
-                <label>First Name</label>
+                <label>First Name<span  class="text-danger">*</span></label>
                 <input type="text" style="width: 93%" class="form-control"  formControlName="firstName">
               </div>
               <div style="padding-left: 20px;">
-                <label>Last Name</label>
+                <label>Last Name<span  class="text-danger">*</span></label>
                 <input type="text"  style="width: 93%" class="form-control"  formControlName="lastName">
               </div>
             </div>
             <div >
-              <label>Email</label><br>
+              <label>Email<span  class="text-danger">*</span></label><br>
                 <input type="email" style="width: 97%" class="form-control"  formControlName="email">
             </div>
             <div >
@@ -116,7 +116,7 @@
             </div>
             
             <div >
-              <label style="margin: 10px 0px;">Role</label><br>
+              <label style="margin: 10px 0px;">Role<span  class="text-danger">*</span></label><br>
                
                 <select class="form-select" class="form-control"  formControlName="role" style="width: 97%" #role>
                  
