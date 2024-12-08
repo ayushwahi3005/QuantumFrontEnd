@@ -1,5 +1,5 @@
 export enum SubscriptionPlan{
-    BASIC = 'BASIC',
+    MONTHLY = 'MONTHLY',
     ANNUAL = 'ANNUAL',
  
 

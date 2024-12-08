@@ -44,7 +44,7 @@ export class AuthService {
   }
 
 
-  login(email:string, password:string){
+  login(email:string, password:string,loggedData:any){
     this.tokenAuthenticationService.getAccountInfo(email).subscribe((data)=>{
       this.accountLockInfo=data;
       console.log(this.accountLockInfo)
@@ -66,7 +66,7 @@ export class AuthService {
           this.fireAuth.currentUser
           .then((user)=>{
             if(user?.emailVerified){
-                this.tokenAuthenticationService.loginToken(email).subscribe((data)=>{
+                this.tokenAuthenticationService.loginToken(email,loggedData.deviceId).subscribe((data)=>{
                   this.authDetails=data;
                   this.myToken=this.authDetails.token;
                   const token =  this.myToken; // Replace this with your actual JWT token
@@ -90,7 +90,16 @@ export class AuthService {
                       console.log("CompanyId"+this.companyId.id+" "+localStorage.getItem('user'))
                       this.isLoggedIn=true;
                       localStorage.setItem('isLoggedIn',"true");
-                    this.router.navigate(['dashboard']);
+                      //loggedIN data saving
+                      this.tokenAuthenticationService.addLoggedIn(loggedData).subscribe((data)=>{
+                        console.log("Logged Data added");
+                        localStorage.setItem('deviceId',loggedData.deviceId)
+                        this.router.navigate(['dashboard']);
+                      },
+                      (err)=>{
+                        console.log(err)
+                      })
+                    
                      },
                      (err)=>{
                       console.log(err);

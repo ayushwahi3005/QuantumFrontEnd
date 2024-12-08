@@ -1,0 +1,20 @@
+<div class="login-container">
+    <div class="login-box">
+      <h2>Welcome to <strong>Assetyug Admin</strong></h2>
+      
+      <form (ngSubmit)="onSubmit()">
+        <label for="email">Email</label>
+        <input id="email" type="email" placeholder="email@domain.com" [(ngModel)]="email" name="email" required />
+  
+        <label for="password">Password</label>
+        <input id="password" type="password" placeholder="********" [(ngModel)]="password"  name="password" required />
+  
+        <a href="/admin/reset" class="forgot-password">Forgot password?</a>
+  
+        <button type="submit" class="submit-button">SUBMIT</button>
+      </form>
+  
+      <p class="register-link">Don't have login? <a href="#">Register</a></p>
+    </div>
+  </div>
+  

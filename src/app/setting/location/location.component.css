@@ -52,6 +52,7 @@ span:hover{
 .selected-option{
     background-color: #12232E;
     color: white;
+    font-weight: bold;
     
 }
 .bi-search{

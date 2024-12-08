@@ -9,7 +9,8 @@ import { environment } from 'src/environments/environment';
 export class CompanyCustomerService {
   private headers = new HttpHeaders({
     'Authorization': `Bearer ${localStorage.getItem('authToken')}`,
-    'Content-Type': 'application/json'
+    'Content-Type': 'application/json',
+    'device-id': `${localStorage.getItem('deviceId')}`,
   });
 
   constructor(private httpClient:HttpClient) { }
@@ -23,7 +24,8 @@ export class CompanyCustomerService {
     // });
     const headers = new HttpHeaders({
       'Authorization': `Bearer ${localStorage.getItem('authToken')}`,
-      'Content-Type': 'application/json'
+      'Content-Type': 'application/json',
+      'device-id': `${localStorage.getItem('deviceId')}`,
     });
     return this.httpClient.post(this.companyCustomerEndpoint+"addCompanyCustomer",data,{headers});
     // return this.httpClient.post("/myCustomer/addCompanyCustomer",data,{headers});
@@ -31,7 +33,8 @@ export class CompanyCustomerService {
   getCompanyCustomer(companyId:string):Observable<any>{
     const headers = new HttpHeaders({
       'Authorization': `Bearer ${localStorage.getItem('authToken')}`,
-      'Content-Type': 'application/json'
+      'Content-Type': 'application/json',
+      'device-id': `${localStorage.getItem('deviceId')}`,
     });
     return this.httpClient.get(this.companyCustomerEndpoint+"allCompanyCustomer/"+companyId,{headers});
     // return this.httpClient.get("/myCustomer/allCompanyCustomer/"+companyId,{headers});
@@ -57,7 +60,8 @@ export class CompanyCustomerService {
   deleteCompanyCustomer(id:string):Observable<any>{
     const headers = new HttpHeaders({
       'Authorization': `Bearer ${localStorage.getItem('authToken')}`,
-      'Content-Type': 'application/json'
+      'Content-Type': 'application/json',
+      'device-id': `${localStorage.getItem('deviceId')}`,
     });
     // return this.httpClient.delete("/myCustomer/deleteCompanyCustomer/"+id,{headers});
     return this.httpClient.get(this.companyCustomerEndpoint+"deleteCompanyCustomer/"+id,{headers});
@@ -68,7 +72,8 @@ export class CompanyCustomerService {
     // });
     const headers = new HttpHeaders({
       'Authorization': `Bearer ${localStorage.getItem('authToken')}`,
-      'Content-Type': 'application/json'
+      'Content-Type': 'application/json',
+      'device-id': `${localStorage.getItem('deviceId')}`,
     });
     // return this.httpClient.post("/myCustomer/getAllMandatoryFields",companyId,{headers});
     return this.httpClient.get(this.companyCustomerEndpoint+"getAllMandatoryFields/"+companyId,{headers});
@@ -79,7 +84,8 @@ export class CompanyCustomerService {
     // });
     const headers = new HttpHeaders({
       'Authorization': `Bearer ${localStorage.getItem('authToken')}`,
-      'Content-Type': 'application/json'
+      'Content-Type': 'application/json',
+      'device-id': `${localStorage.getItem('deviceId')}`,
     });
     // return this.httpClient.post("/myCustomer/getAllShowFields",companyId,{headers});
     return this.httpClient.get(this.companyCustomerEndpoint+"getAllShowFields/"+companyId,{headers});
@@ -90,7 +96,8 @@ export class CompanyCustomerService {
     // });
     const headers = new HttpHeaders({
       'Authorization': `Bearer ${localStorage.getItem('authToken')}`,
-      'Content-Type': 'application/json'
+      'Content-Type': 'application/json',
+      'device-id': `${localStorage.getItem('deviceId')}`,
     });
     // return this.httpClient.post("/myCustomer/getExtraFieldName",id,{headers});
     return this.httpClient.get(this.companyCustomerEndpoint+"getExtraFieldName/"+id,{headers});
@@ -102,7 +109,8 @@ export class CompanyCustomerService {
     // });
     const headers = new HttpHeaders({
       'Authorization': `Bearer ${localStorage.getItem('authToken')}`,
-      'Content-Type': 'application/json'
+      'Content-Type': 'application/json',
+      'device-id': `${localStorage.getItem('deviceId')}`,
     });
     // return this.httpClient.post("/myCustomer/getExtraFieldNameValue",companyId,{headers});
     return this.httpClient.get(this.companyCustomerEndpoint+"getExtraFieldNameValue/"+companyId,{headers});
@@ -110,7 +118,8 @@ export class CompanyCustomerService {
   addExtraFields(data:any):Observable<any>{
     const headers = new HttpHeaders({
       'Authorization': `Bearer ${localStorage.getItem('authToken')}`,
-      'Content-Type': 'application/json'
+      'Content-Type': 'application/json',
+      'device-id': `${localStorage.getItem('deviceId')}`,
     });
     // return this.httpClient.post("/myCustomer/addfields",data,{headers});
     return this.httpClient.post(this.companyCustomerEndpoint+"addfields",data,{headers});
@@ -118,7 +127,8 @@ export class CompanyCustomerService {
   deleteWorkorderExtraField(id:String):Observable<any>{
     const headers = new HttpHeaders({
       'Authorization': `Bearer ${localStorage.getItem('authToken')}`,
-      'Content-Type': 'application/json'
+      'Content-Type': 'application/json',
+      'device-id': `${localStorage.getItem('deviceId')}`,
     });
     // return this.httpClient.delete("/myCustomer/deleteCompanyCustomerExtraFields/"+id,{headers:this.headers});
     return this.httpClient.delete(this.companyCustomerEndpoint+"deleteCompanyCustomerExtraFields/"+id,{headers});
@@ -127,7 +137,8 @@ export class CompanyCustomerService {
   getAllCompanyCustomerWithExtraColumn(companyId:string):Observable<any>{
     const headers = new HttpHeaders({
       'Authorization': `Bearer ${localStorage.getItem('authToken')}`,
-      'Content-Type': 'application/json'
+      'Content-Type': 'application/json',
+      'device-id': `${localStorage.getItem('deviceId')}`,
     });
     // return this.httpClient.get("/myCustomer/allCompanyCustomerWithExtraFields/"+companyId,{headers});
     return this.httpClient.get(this.companyCustomerEndpoint+"allCompanyCustomerWithExtraFields/"+companyId,{headers});
@@ -163,7 +174,8 @@ export class CompanyCustomerService {
     // });
     const headers = new HttpHeaders({
       'Authorization': `Bearer ${localStorage.getItem('authToken')}`,
-      'Content-Type': 'application/json'
+      'Content-Type': 'application/json',
+      'device-id': `${localStorage.getItem('deviceId')}`,
     });
     console.log(data)
     // return this.httpClient.post('/myCustomer/advanceFilter',obj,{headers}) .pipe(
@@ -175,15 +187,20 @@ export class CompanyCustomerService {
   working():Observable<any>{
     const headers = new HttpHeaders({
       'Authorization': `Bearer ${localStorage.getItem('authToken')}`,
-      'Content-Type': 'application/json'
+      'Content-Type': 'application/json',
+      'device-id': `${localStorage.getItem('deviceId')}`,
     });
     // return this.httpClient.get('/myCustomer/working',{headers, responseType: 'text'});
     return this.httpClient.get(this.companyCustomerEndpoint+"working",{headers,responseType: 'text'});
  
   }
   stateList():Observable<any>{
-
-    return this.httpClient.get(this.companyCustomerEndpoint+"statelist",{headers:this.headers});
+    const headers = new HttpHeaders({
+      'Authorization': `Bearer ${localStorage.getItem('authToken')}`,
+      'Content-Type': 'application/json',
+      'device-id': `${localStorage.getItem('deviceId')}`,
+    });
+    return this.httpClient.get(this.companyCustomerEndpoint+"statelist",{headers});
    
   }
 

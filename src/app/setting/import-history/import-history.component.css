@@ -24,12 +24,17 @@
     /* margin-bottom: 20px; */
     border-radius: 10px;
     height: 75%;
+ 
+
     
   }
 
   h2 {
     text-align: center;
   }
+  /* .table-bordered th, .table-bordered td {
+    border: 1px solid lightgray;
+  } */
   
   .table-bordered th {
     background-color: #252A33;

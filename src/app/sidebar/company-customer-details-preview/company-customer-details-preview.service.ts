@@ -9,7 +9,8 @@ import { environment } from 'src/environments/environment';
 export class CompanyCustomerDetailsPreviewService {
   private headers = new HttpHeaders({
     'Authorization': `Bearer ${localStorage.getItem('authToken')}`,
-    'Content-Type': 'application/json'
+    'Content-Type': 'application/json',
+    'Device-ID': `${localStorage.getItem('deviceId')}`
   });
 
   constructor(private httpClient:HttpClient) { }
@@ -62,9 +63,7 @@ export class CompanyCustomerDetailsPreviewService {
     });
   }
   deleteFile(id:string):Observable<any>{
-    const headers = new HttpHeaders({
-      'spring.cloud.function.definition': 'deleteFile'
-    });
+   
     return this.httpClient.post("myCustomer/deleteFile",id,{headers:this.headers});
   }
   // addCompanyCustomerFile(file:any,companyId:any):Observable<any>{
@@ -93,6 +92,7 @@ export class CompanyCustomerDetailsPreviewService {
   addCompanyCustomerFile(file: any, companyId: any): Observable<any> {
     let myHeaders = new HttpHeaders({
       'Authorization': `Bearer ${localStorage.getItem('authToken')}`,
+      'Device-ID': `${localStorage.getItem('deviceId')}`
       // Don't set 'Content-Type' here!
     });
   

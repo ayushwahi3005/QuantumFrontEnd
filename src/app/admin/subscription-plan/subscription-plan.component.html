@@ -1,0 +1,148 @@
+<h2 class="text-center">Subscription Plan</h2>
+<!-- <app-subscription-plan></app-subscription-plan> -->
+  
+
+  <div  class="d-flex justify-content-around" style="overflow-x: auto; ">
+    <div *ngFor="let plan of subscriptionList" >
+      <div  class="plan-preview" [style.backgroundColor]="plan.cardColor">
+        <h1>{{ plan.name }}</h1>
+        <p>Monthly: ${{ plan.monthly }}</p>
+        <p *ngIf="plan.monthlyDiscount">Monthly Discount: ${{ plan.monthlyDiscount }}</p>
+        <p>Yearly: ${{ plan.yearly }}</p>
+        <p *ngIf="plan.yearlyDiscount">Yearly Discount: ${{ plan.yearlyDiscount }}</p>
+        <p style="font-size: larger;"><b>Description</b></p>
+        <p *ngIf="plan.description1"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-check" viewBox="0 0 16 16">
+          <path d="M10.97 4.97a.75.75 0 0 1 1.07 1.05l-3.99 4.99a.75.75 0 0 1-1.08.02L4.324 8.384a.75.75 0 1 1 1.06-1.06l2.094 2.093 3.473-4.425z"/>
+        </svg>{{ plan.description1}}</p>
+        <p  *ngIf="plan.description2"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-check" viewBox="0 0 16 16">
+          <path d="M10.97 4.97a.75.75 0 0 1 1.07 1.05l-3.99 4.99a.75.75 0 0 1-1.08.02L4.324 8.384a.75.75 0 1 1 1.06-1.06l2.094 2.093 3.473-4.425z"/>
+        </svg>{{ plan.description2}}</p>
+        <p  *ngIf="plan.description3"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-check" viewBox="0 0 16 16">
+          <path d="M10.97 4.97a.75.75 0 0 1 1.07 1.05l-3.99 4.99a.75.75 0 0 1-1.08.02L4.324 8.384a.75.75 0 1 1 1.06-1.06l2.094 2.093 3.473-4.425z"/>
+        </svg>{{ plan.description3}}</p>
+        <p  *ngIf="plan.description4"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-check" viewBox="0 0 16 16">
+          <path d="M10.97 4.97a.75.75 0 0 1 1.07 1.05l-3.99 4.99a.75.75 0 0 1-1.08.02L4.324 8.384a.75.75 0 1 1 1.06-1.06l2.094 2.093 3.473-4.425z"/>
+        </svg>{{ plan.description4}}</p>
+        <p  *ngIf="plan.description5"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-check" viewBox="0 0 16 16">
+          <path d="M10.97 4.97a.75.75 0 0 1 1.07 1.05l-3.99 4.99a.75.75 0 0 1-1.08.02L4.324 8.384a.75.75 0 1 1 1.06-1.06l2.094 2.093 3.473-4.425z"/>
+        </svg>{{ plan.description5}}</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="d-flex justify-content-center mt-5">
+    <button class="btn btn-primary" data-toggle="modal" data-target="#add-subscription">Add Subscription</button>
+  </div>
+
+ <div class="modal fade" id="add-subscription" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+          <h2 class="modal-title" id="exampleModalLongTitle">Add Subscription</h2>
+          <button type="button" class="close ms-auto" data-dismiss="modal" aria-label="Close" style="border-radius: 5px;" #closeBox>
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        
+      <div>
+          <!-- <app-subscription-plan style="width: 100%;"></app-subscription-plan> -->
+          <div class="subscription-plan">
+            <h2>Add Subscription Plan</h2>
+            
+            <form [formGroup]="subscriptionForm">
+              <div style="width: 95%;">
+                <!-- Plan Name -->
+                <div class="form-group">
+                  <label for="name">Plan Name</label>
+                  <div class="d-flex justify-content-around">
+                    <input type="text" id="name" class="form-control" [(ngModel)]="subscription.name" formControlName="name" />
+                  </div>
+                  <br>
+                </div>
+            
+                <!-- Monthly Price -->
+                <div class="form-group" >
+                  <label for="monthly">Monthly Price ($)</label>
+                  <div class="d-flex justify-content-around">
+                    <input type="number" id="monthly" class="form-control"  [(ngModel)]="subscription.monthly" formControlName="monthly" />
+                  </div>
+                  <br>
+                </div>
+            
+                <!-- Monthly Discount -->
+                <div class="form-group" >
+                  <label for="monthlyDiscount">Monthly Discount (%)</label>
+                  <div class="d-flex justify-content-around">
+                    <input type="number" id="monthlyDiscount" class="form-control" [(ngModel)]="subscription.monthlyDiscount" formControlName="monthlyDiscount" />
+                  </div>
+                  <br>
+                </div>
+            
+                <!-- Yearly Price -->
+                <div class="form-group" >
+                  <label for="yearly">Yearly Price ($)</label>
+                  <div class="d-flex justify-content-around">
+                    <input type="number" id="yearly" class="form-control" [(ngModel)]="subscription.yearly" formControlName="yearly" />
+                  </div>
+                  <br>
+                </div>
+            
+                <!-- Yearly Discount -->
+                <div class="form-group" >
+                  <label for="yearlyDiscount">Yearly Discount (%)</label>
+                  <div class="d-flex justify-content-around">
+                    <input type="number" id="yearlyDiscount" class="form-control" [(ngModel)]="subscription.yearlyDiscount" formControlName="yearlyDiscount" />
+                  </div>
+                  <br>
+                </div>
+            
+                <!-- Card Color -->
+                <div class="form-group" >
+                  <label for="cardColor">Card Color</label>
+                  <div class="d-flex justify-content-around">
+                    <input type="color" id="cardColor" class="form-control" [(ngModel)]="subscription.cardColor" formControlName="cardColor" />
+                  </div>
+                  <br>
+                </div>
+            
+                <!-- Descriptions -->
+                <ng-container *ngFor="let desc of descriptionFields;  let i = index" >
+                  <div class="form-group">
+                    <label for="description{{ i + 1 }}">Description {{ i + 1 }}</label>
+                    <div class="d-flex justify-content-around">
+                      <textarea id="description{{ i + 1 }}" 
+                                class="form-control" 
+                                formControlName="description{{ i + 1 }}" 
+                                maxlength="50"   [(ngModel)]="subscription.descriptions[i]">
+                      </textarea>
+                    </div>
+                    <br>
+                  </div>
+                </ng-container>
+                <button  class="btn btn-primary ms-auto" (click)="preview()">Preview</button>
+                <button type="submit" class="btn btn-primary ms-auto" (click)="onSubmit()" [disabled]="subscriptionForm.invalid" (click)="closeBox.click()">Add Plan</button>
+              </div>
+            </form>
+            
+          
+            <div *ngIf="planAdded" class="plan-preview" [style.backgroundColor]="subscription.cardColor">
+              <h3>{{ subscription.planName }}</h3>
+              <p>Monthly: ${{ subscription.monthly }}</p>
+              <p>Yearly: ${{ subscription.yearly }}</p>
+              <p>{{ subscription.description }}</p>
+            </div>
+          </div>
+      </div>
+      <div class="d-flex justify-content-center">
+        
+      
+        <!-- <button class="btn btn-danger close" data-dismiss="modal" aria-label="Close" (click)="closeBox.click()" style="margin: 10px;" >Cancel</button> -->
+        
+       
+      </div>
+    </div>
+  </div>
+</div>
+
+
+  

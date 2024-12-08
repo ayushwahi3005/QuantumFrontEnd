@@ -9,7 +9,8 @@ import { environment } from 'src/environments/environment';
 export class AssetPreviewService {
   private headers = new HttpHeaders({
     'Authorization': `Bearer ${localStorage.getItem('authToken')}`,
-    'Content-Type': 'application/json'
+    'Content-Type': 'application/json',
+    'Device-ID': `${localStorage.getItem('deviceId')}`
   });
   constructor(private httpClient:HttpClient) { 
     
@@ -80,5 +81,8 @@ export class AssetPreviewService {
 
   addCheckInOut(data:any):Observable<any>{
     return this.httpClient.post(this.assetEndpoint+"addCheckInOut",data,{headers:this.headers});
+  }
+  getTechnicalUsers(companyId:string):Observable<any>{
+    return this.httpClient.get("http://localhost:8082/users/getTechnicalUser/"+companyId,{headers:this.headers});
   }
 }

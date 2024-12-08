@@ -10,7 +10,8 @@ import * as XLSX from 'xlsx';
 export class ImportService {
   private headers = new HttpHeaders({
     'Authorization': `Bearer ${localStorage.getItem('authToken')}`,
-    'Content-Type': 'application/json'
+    'Content-Type': 'application/json',
+    'Device-ID': `${localStorage.getItem('deviceId')}`
   });
   constructor(private httpClient:HttpClient) { }
    assetEndpoint=environment.endpoint+"assets/"
@@ -65,6 +66,7 @@ export class ImportService {
   addCustomer(myFile:any,companyId:string,email:string,columnMapping:any):Observable<any>{
     const myheaders = new HttpHeaders({
       'Authorization': `Bearer ${localStorage.getItem('authToken')}`,
+      'Device-ID': `${localStorage.getItem('deviceId')}`
     });
     
  
@@ -84,6 +86,7 @@ export class ImportService {
   updateCustomer(file:any,companyId:string,email:string):Observable<any>{
     const myheaders = new HttpHeaders({
       'Authorization': `Bearer ${localStorage.getItem('authToken')}`,
+      'Device-ID': `${localStorage.getItem('deviceId')}`
     });
     return this.httpClient.post(this.companyCustomerEndpoint+`importUpdation/${companyId}/${email}`,  file,{headers:myheaders});
   }

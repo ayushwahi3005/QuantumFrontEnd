@@ -12,7 +12,8 @@ import {MatSlideToggleModule} from '@angular/material/slide-toggle';
   ],
   imports: [
     CommonModule,
-    MatSlideToggleModule
+    MatSlideToggleModule,
+
   ]
 })
 export class SettingModule { }

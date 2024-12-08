@@ -64,7 +64,7 @@
       <button class="btn btn-warning" (click)="reset()">Clear All</button>
       </span>  
     </div>
-    <div class="row" style="height: calc(100vh - 260px); overflow: scroll; width: 100%;">
+    <div class="row" style="height: calc(100vh - 260px); overflow: auto; width: 100%;">
       <div class="col">
         
         <div class="extra-columns">
@@ -80,7 +80,7 @@
                     <th scope="col" *ngIf="showMandatoryBasicFields.get('assetId')">Id</th>
                    
                     <th scope="col" *ngIf="showMandatoryBasicFields.get('name')">Name</th>
-                    <th scope="col" *ngIf="showMandatoryBasicFields.get('serialNumber')">Serial #</th>
+                    <th scope="col" *ngIf="showMandatoryBasicFields.get('serialNumber')">Serial Number</th>
                     <th scope="col" *ngIf="showMandatoryBasicFields.get('category')">Category</th>
                     <th scope="col" *ngIf="showMandatoryBasicFields.get('customer')">Customer</th>
                     <th scope="col" *ngIf="showMandatoryBasicFields.get('location')">Location</th>
@@ -141,7 +141,7 @@
       <div class="modal-content">
         <div class="modal-header">
           <h2 class="modal-title" id="exampleModalLongTitle">Add Asset</h2>
-          <button type="button" class="close" data-dismiss="modal" aria-label="Close" #closeBox2>
+          <button type="button" class="close  ms-auto" data-dismiss="modal" aria-label="Close" #closeBox2>
             <span aria-hidden="true">&times;</span>
           </button>
         </div>
@@ -234,7 +234,7 @@
       <div class="modal-content">
         <div class="modal-header">
           <h2 class="modal-title" id="exampleModalLongTitle">Advance Filter</h2>
-          <button type="button" class="close" data-dismiss="modal" aria-label="Close" #closeBox3>
+          <button type="button" class="close  ms-auto" data-dismiss="modal" aria-label="Close" #closeBox3>
             <span aria-hidden="true">&times;</span>
           </button>
         </div>
@@ -335,7 +335,7 @@
       <div class="modal-content">
         <div class="modal-header">
           <h2 class="modal-title" id="exampleModalLongTitle">All Fields</h2>
-          <button type="button" class="close" data-dismiss="modal" aria-label="Close" #closeBox4>
+          <button type="button" class="close  ms-auto" data-dismiss="modal" aria-label="Close" #closeBox4>
             <span aria-hidden="true">&times;</span>
           </button>
         </div>

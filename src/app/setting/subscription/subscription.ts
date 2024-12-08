@@ -7,9 +7,10 @@ export class Subscription{
     status!: SubscriptionEnum;
     plan!: string;
     person!: number;
-    subscriptionDate!: Date;
-    expiryDate!:Date;
+    subscriptionDate!: any;
+    expiryDate!:any;
     subscriptionPlan!:SubscriptionPlan
+    amount!:number;
  
 
 

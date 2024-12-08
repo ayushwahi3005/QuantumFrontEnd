@@ -43,6 +43,7 @@ img{
 .selected-option{
     background-color: #12232E;
     color: white;
+    font-weight: bold;
     
 }
 input{

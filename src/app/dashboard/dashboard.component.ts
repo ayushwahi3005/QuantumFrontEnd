@@ -61,6 +61,7 @@ export class DashboardComponent  {
 
     //   }
     // });
+    console.log("deviceId->"+localStorage.getItem('deviceId'))
     this.email=localStorage.getItem('user');
     console.log(localStorage.getItem('role'))
     let storedCurr=localStorage.getItem('currOption');
@@ -87,7 +88,7 @@ export class DashboardComponent  {
     (err)=>{
       console.log("myerr------------>",err.status);
       
-      if(err.status=="403"){
+      if(err.status=="403"||err.status=="401"){
         alert("Session expired");
         this.logout();
 
@@ -118,6 +119,12 @@ console.log(localStorage.getItem('user'));
     //   localStorage.removeItem('user');
     //   localStorage.removeItem('selectedExtraColumsAssets')
     //   localStorage.removeItem("showMandatoryBasicFieldsAssets")
+      this.dashService.removeSession(this.email).subscribe((data)=>{
+        console.log("Session Removed")
+      },
+      (err)=>{
+        console.log("Session delete error ",err)
+      })
       localStorage.clear()
       localStorage.getItem('uploadProgress');
       localStorage.getItem('uploadInProgress');

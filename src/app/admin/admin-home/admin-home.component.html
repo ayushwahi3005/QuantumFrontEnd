@@ -1,0 +1,111 @@
+<div class="admin-dashboard">
+    <!-- Sidebar -->
+    <aside class="sidebar">
+      <div class="logo">
+        <h2>AssetYug Admin</h2>
+      </div>
+      <nav class="menu">
+        <a href="#" class="menu-item active">Home</a>
+        <a href="#" class="menu-item">Dashboard</a>
+        <a href="#" class="menu-item">Statistics</a>
+        <a href="#" class="menu-item">Settings</a>
+      </nav>
+      <div class="integration">
+        <h3>INTEGRATION</h3>
+        <a href="#">Slack</a>
+        <a href="#">Click Up</a>
+        <a href="#">Add new plugin</a>
+      </div>
+      <div class="theme-toggle">
+        <label for="themeSwitch">Light</label>
+        <input type="checkbox" id="themeSwitch" checked />
+        <label for="themeSwitch">Dark</label>
+      </div>
+    </aside>
+  
+    <!-- Main Content -->
+    <main class="main-content">
+      <header class="header">
+        <h1>Manage your projects</h1>
+        <p>Here you can track projects, task progress, and team activity.</p>
+        <div class="header-controls">
+          <button class="btn create">Create</button>
+          <!-- <img src="../../../assets/admin-profile.svg" alt="Profile" class="profile-pic" /> -->
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-person-fill" viewBox="0 0 16 16">
+            <path d="M3 14s-1 0-1-1 1-4 6-4 6 3 6 4-1 1-1 1zm5-6a3 3 0 1 0 0-6 3 3 0 0 0 0 6"/>
+          </svg>
+          <button class="btn" style="background-color: gainsboro;" (click)="logout()" >Logout</button>
+        </div>
+      </header>
+  
+      <section class="dashboard-content">
+        <!-- Team Earnings -->
+        <div class="card team-earnings">
+          <h2>Team Earnings</h2>
+          <p>In this section, you can find out the earnings of your team for a certain period of time.</p>
+          <div class="chart-controls d-flex justify-content-around" >
+            <button class="btn" [ngClass]="{'active':(earn_period=='week')}" (click)="updateEarnPeriod('week')">Week</button>
+            <button class="btn" [ngClass]="{'active':(earn_period=='month')}" (click)="updateEarnPeriod('month')">Month</button>
+            <button class="btn" [ngClass]="{'active':(earn_period=='year')}" (click)="updateEarnPeriod('year')">Year</button>
+          </div>
+          <!-- Chart placeholder -->
+          <div class="chart">[Chart goes here]</div>
+        </div>
+  
+        <!-- Task List -->
+        <div class="card task-list">
+          <!-- <h2>Subscription Plan</h2> -->
+          <!-- <app-subscription-plan></app-subscription-plan> -->
+           <!-- <button class="btn btn-primary" data-toggle="modal" data-target="#add-subscription">Add Subscription</button> -->
+           <app-subscription-plan style="width: 100%;"></app-subscription-plan> 
+           
+        </div>
+  
+        <!-- Team Rating -->
+        <div class="card team-rating">
+          <h2>Team Rating</h2>
+          <!-- Team members placeholder -->
+          <div class="members">[Team members go here]</div>
+        </div>
+  
+        <!-- Performance -->
+        <div class="card performance">
+          <h2>Performance</h2>
+          <!-- Performance chart placeholder -->
+          <div class="performance-chart">[Chart goes here]</div>
+        </div>
+  
+        <!-- Day Activity -->
+        <div class="card day-activity">
+          <h2>Day Activity</h2>
+          <!-- Day activity chart placeholder -->
+          <div class="activity-chart">[Activity chart goes here]</div>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <!-- <div class="modal fade" id="add-subscription" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+            <h2 class="modal-title" id="exampleModalLongTitle">Add Subscription</h2>
+            <button type="button" class="close ms-auto" data-dismiss="modal" aria-label="Close" style="border-radius: 5px;" #closeBox>
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          
+        <div>
+            <app-subscription-plan style="width: 100%;"></app-subscription-plan>
+        </div>
+        <div class="d-flex justify-content-center">
+          
+        
+         
+          
+         
+        </div>
+      </div>
+    </div>
+  </div>
+   -->

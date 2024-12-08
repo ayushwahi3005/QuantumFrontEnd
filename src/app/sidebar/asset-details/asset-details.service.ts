@@ -9,7 +9,8 @@ import { environment } from 'src/environments/environment';
 export class AssetDetailsService {
   private headers = new HttpHeaders({
     'Authorization': `Bearer ${localStorage.getItem('authToken')}`,
-    'Content-Type': 'application/json'
+    'Content-Type': 'application/json',
+    'Device-ID': `${localStorage.getItem('deviceId')}`
   });
 
   constructor(private httpClient:HttpClient) {
@@ -17,6 +18,7 @@ export class AssetDetailsService {
    }
    customerEndpoint=environment.endpoint+"customer/";
    assetEndpoint=environment.endpoint+"assets/"
+   userEndpoint=environment.endpoint+"users/";
   // assetEndpoint="http://localhost:8080/assets/"
   // companyCustomerEndpoint="http://localhost:8080/companycustomer/"
    companyCustomerEndpoint=environment.endpoint+"companycustomer/"
@@ -120,7 +122,7 @@ export class AssetDetailsService {
     return this.httpClient.get(this.assetEndpoint+"getAllShowFields/"+companyId,{headers:this.headers});
   }
   getTechnicalUsers(companyId:string):Observable<any>{
-    return this.httpClient.get("http://localhost:8082/users/getTechnicalUser/"+companyId,{headers:this.headers});
+    return this.httpClient.get(this.userEndpoint+"getTechnicalUser/"+companyId,{headers:this.headers});
   }
   getQR(companyId:string):Observable<any>{
     // console.log("companyId->",companyId);

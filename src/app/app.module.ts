@@ -22,7 +22,6 @@ import {MatSelectModule} from '@angular/material/select';
 import {MatFormFieldModule} from '@angular/material/form-field';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { HttpClientModule } from '@angular/common/http';
-import { PaymentComponent } from './payment/payment.component';
 import { AssetsComponent } from './sidebar/assets/assets.component';
 import {MatProgressSpinnerModule} from '@angular/material/progress-spinner';
 import {MatBadgeModule} from '@angular/material/badge';
@@ -74,8 +73,14 @@ import { CustomerCategoryComponent } from './setting/customer-category/customer-
 import { ImportHistoryComponent } from './setting/import-history/import-history.component';
 import { MatSortModule } from '@angular/material/sort';
 import { MatRadioModule } from '@angular/material/radio';
-
-
+import { NgxStripeModule } from 'ngx-stripe';
+import { AdminLoginComponent } from './admin/admin-login/admin-login.component';
+import { ResetPasswordAdminComponent } from './admin/reset-password-admin/reset-password-admin.component';
+import { AdminHomeComponent } from './admin/admin-home/admin-home.component';
+import { SubscriptionPlanComponent } from './admin/subscription-plan/subscription-plan.component';
+import { PaymentComponent } from './setting/payment/payment.component';
+import { MatCardModule } from '@angular/material/card'; 
+import { MatToolbarModule } from '@angular/material/toolbar'; 
 
 @NgModule({
   declarations: [
@@ -86,7 +91,6 @@ import { MatRadioModule } from '@angular/material/radio';
     DashboardComponent,
     UsersComponent,
     WorkorderComponent,
-    PaymentComponent,
     AssetsComponent,
     AssetDetailsComponent,
     SideNavComponent,
@@ -111,15 +115,17 @@ import { MatRadioModule } from '@angular/material/radio';
     CustomerModuleComponent,
     LocationComponent,
     SubscriptionComponent,
-    PaymentComponent,
     CategoryComponent,
     AssetCategoryComponent,
     WorkorderCategoryComponent,
     InventoryCategoryComponent,
     CustomerCategoryComponent,
-    ImportHistoryComponent
-    
-    
+    ImportHistoryComponent,
+    AdminHomeComponent,
+    AdminLoginComponent,
+    ResetPasswordAdminComponent,
+    SubscriptionPlanComponent,
+    PaymentComponent
  
     
    
@@ -153,10 +159,10 @@ import { MatRadioModule } from '@angular/material/radio';
     MatSnackBarModule,
     MatTableModule,
     MatSortModule,
-    MatRadioModule
-  
-    
-    
+    MatRadioModule,
+    MatCardModule,
+    MatToolbarModule,
+    NgxStripeModule.forRoot('pk_test_51QJEvHDbrtjFAyfvm2UQu2ohdlUl814jAftZVEW9IHnfd4YrVOfh5ZBJyfYahnJcOMxwjgK3WjA8tU8XPg5nGpbM00J9CxIx3A'),
   ],
   providers: [DatePipe,
     SecretService

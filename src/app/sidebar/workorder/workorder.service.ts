@@ -8,28 +8,32 @@ import { Observable } from 'rxjs';
 export class WorkOrderService {
   private headers = new HttpHeaders({
     'Authorization': `Bearer ${localStorage.getItem('authToken')}`,
-    'Content-Type': 'application/json'
+    'Content-Type': 'application/json',
+    'Device-ID': `${localStorage.getItem('deviceId')}`
   });
   constructor(private httpClient:HttpClient) { }
 
   addWorkOrder(data:any):Observable<any>{
     const headers = new HttpHeaders({
       'Authorization': `Bearer ${localStorage.getItem('authToken')}`,
-      'Content-Type': 'application/json'
+      'Content-Type': 'application/json',
+      'Device-ID': `${localStorage.getItem('deviceId')}`
     });
     return this.httpClient.post("http://localhost:8083/workorder/addorder",data,{headers});
   }
   getWorkOrder(companyId:string):Observable<any>{
     const headers = new HttpHeaders({
       'Authorization': `Bearer ${localStorage.getItem('authToken')}`,
-      'Content-Type': 'application/json'
+      'Content-Type': 'application/json',
+      'Device-ID': `${localStorage.getItem('deviceId')}`
     });
     return this.httpClient.get("http://localhost:8083/workorder/getallorder/"+companyId,{headers});
   }
   getSearchedWorkOrderList(companyId:string,data:any,category:any):Observable<any>{
     const headers = new HttpHeaders({
       'Authorization': `Bearer ${localStorage.getItem('authToken')}`,
-      'Content-Type': 'application/json'
+      'Content-Type': 'application/json',
+      'Device-ID': `${localStorage.getItem('deviceId')}`
     });
     return this.httpClient.get("http://localhost:8083/workorder/searchWorkorderlist/"+companyId+"?data="+data+"&category="+category,{headers});
   }

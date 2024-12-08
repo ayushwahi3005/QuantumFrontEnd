@@ -29,6 +29,7 @@ export class UsersComponent {
 
   
   userForm!:FormGroup;
+  editUserForm!:FormGroup;
   subscription!:any;
   email!:any;
   companyId!:any;
@@ -47,9 +48,9 @@ export class UsersComponent {
   selectDeleteUser!:string;
   app!:any
   roleAndPermissionList!:RoleAndPermission[];
-
-
-  
+  selectEditUser!:any;
+  role!:any;
+  detailedRole!:RoleAndPermission;
 
   constructor(private formBuilder:FormBuilder,private userService:UsersService,private authService:AuthService,private route:ActivatedRoute){}
 
@@ -59,6 +60,9 @@ export class UsersComponent {
     this.userList=[];
     this.email=localStorage.getItem('user');
     this.companyId=localStorage.getItem('companyId');
+    this.role=localStorage.getItem('role')
+    console.log("role->"+this.role)
+    console.log("role=>"+(this.role!='ADMIN'))
     this.isLoading=false;
     this.userService.getRoleAndPermission(this.companyId).subscribe((data)=>{
       this.roleAndPermissionList=data;
@@ -67,12 +71,29 @@ export class UsersComponent {
   err=>{
     console.log(err);
   });
+  
+      this.userService.getRoleAndPermissionByName(this.companyId,this.role).subscribe((data)=>{
+        this.detailedRole=data;
+      },
+      (err)=>
+      console.log(err)
+    )
+      
+
     this.userForm=this.formBuilder.group({
       
       firstName:['',Validators.required],
       lastName:['',Validators.required],
       jobTitle:[''],
       email:['',Validators.required],
+      phoneNumber:[''],
+      role:['',Validators.required]
+    });
+    this.editUserForm=this.formBuilder.group({
+      
+      firstName:['',Validators.required],
+      lastName:['',Validators.required],
+      jobTitle:[''],
       phoneNumber:[''],
       role:['',Validators.required]
     });
@@ -296,6 +317,39 @@ export class UsersComponent {
     }
     selectDeleteUserFunc(email:string){
       this.selectDeleteUser=email;
+    }
+    selectEditUserFunc(email:string){
+      this.userService.getUserDetails(this.companyId,email).subscribe((data)=>{
+        this.selectEditUser=data as User;
+        
+        console.log(this.selectEditUser)
+      },
+      (err)=>{
+        console.log(err);
+      })
+     
+    }
+    updateUser(){
+      let obj={
+        "firstName":this.editUserForm.controls['firstName'].value,
+        "lastName":this.editUserForm.controls['lastName'].value,
+        "email":this.selectEditUser.email,
+        "companyId":this.companyId,
+        "mobileNumber":this.editUserForm.controls['phoneNumber'].value,
+        "role":this.editUserForm.controls['role'].value,
+        "title":this.editUserForm.controls['jobTitle'].value
+      }
+      this.userService.updaterUser(obj).subscribe((data)=>{
+       console.log("User Updated")
+      },
+      (err)=>{
+        console.log(err);
+        this.selectEditUser=null;
+      },
+      ()=>{
+        this.selectEditUser=null;
+        this.ngOnInit()
+      })
     }
     deleteUser() {
 

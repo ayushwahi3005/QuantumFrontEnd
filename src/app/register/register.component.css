@@ -2,7 +2,7 @@ form{
     width: 500px;
     padding: 10px 10px;
     
-    margin-top: 100px;
+    margin-top: 50px;
     /* border: 1px solid grey; */
     
     
@@ -11,7 +11,10 @@ form{
     display: flex;
     justify-content: center;
     padding-top: 50px;
-    
+    border: 1px solid lightgray;
+    margin: 30px auto;
+    border-radius: 10px;
+    width: 600px;
 }
 h2{
     display: flex;

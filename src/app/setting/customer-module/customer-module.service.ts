@@ -9,12 +9,14 @@ import { environment } from 'src/environments/environment';
 export class CustomerModuleService {
   private headers = new HttpHeaders({
     'Authorization': `Bearer ${localStorage.getItem('authToken')}`,
-    'Content-Type': 'application/json'
+    'Content-Type': 'application/json',
+    'Device-ID': `${localStorage.getItem('deviceId')}`
   });
   constructor(private httpClient:HttpClient) { 
     const headers = new HttpHeaders({
       'Authorization': `Bearer ${localStorage.getItem('authToken')}`,
-      'Content-Type': 'application/json'
+      'Content-Type': 'application/json',
+      'Device-ID': `${localStorage.getItem('deviceId')}`
     });
   }
   // customerEndpoint="myCustomer/"

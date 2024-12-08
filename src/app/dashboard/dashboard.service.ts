@@ -50,10 +50,21 @@ export class DashboardService {
   dashboard(email:string):Observable<any>{
     const headers = new HttpHeaders({
       'Authorization': `Bearer ${localStorage.getItem('authToken')}`,
+      'Device-ID': `${localStorage.getItem('deviceId')}`,
       'Content-Type': 'application/json'
+      
     });
     
     return this.httpClient.get(this.endpoint+'customer/get/'+email, { headers });
+  }
+  removeSession(userId:string):Observable<any>{
+    const headers = new HttpHeaders({
+      'Authorization': `Bearer ${localStorage.getItem('authToken')}`,
+      'Content-Type': 'application/json',
+      'Device-ID': `${localStorage.getItem('deviceId')}`,
+    });
+    
+    return this.httpClient.delete(this.endpoint+'customer/removeSession/'+userId, { headers });
   }
  
   

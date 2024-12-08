@@ -9,7 +9,8 @@ import { environment } from 'src/environments/environment';
 export class AssetModuleService {
   private headers = new HttpHeaders({
     'Authorization': `Bearer ${localStorage.getItem('authToken')}`,
-    'Content-Type': 'application/json'
+    'Content-Type': 'application/json',
+    'Device-ID': `${localStorage.getItem('deviceId')}`,
   });
   constructor(private httpClient:HttpClient) { }
   customerEndpoint=environment.endpoint+"customer/";

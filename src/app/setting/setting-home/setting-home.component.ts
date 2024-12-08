@@ -71,7 +71,7 @@ constructor(private settingHomeService:SettingHomeService,private auth:AuthServi
     (err)=>{
       console.log("myerr------------>",err.status);
       
-      if(err.status=="403"){
+      if(err.status=="403"||err.status=="401"){
         alert("Session expired");
         this.logout();
 

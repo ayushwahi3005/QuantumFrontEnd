@@ -393,5 +393,5 @@ select{
   /* flex-wrap: wrap; */
   gap: 8px; /* Adjust gap between buttons if needed */
   align-items: center;
-  overflow: scroll;
+  overflow: auto;
 }

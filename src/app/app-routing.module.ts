@@ -14,6 +14,11 @@ import { InvitationComponent } from './invitation/invitation.component';
 import { CompanyCustomerDetailsComponent } from './sidebar/company-customer-details/company-customer-details.component';
 import { CompanyCustomerDetailsPreviewComponent } from './sidebar/company-customer-details-preview/company-customer-details-preview.component';
 import { AuthenticationService } from './shared/authentication.service';
+import { AdminLoginComponent } from './admin/admin-login/admin-login.component';
+import { ResetPasswordAdminComponent } from './admin/reset-password-admin/reset-password-admin.component';
+import { AdminHomeComponent } from './admin/admin-home/admin-home.component';
+import { AdminAuthenticationService } from './shared/admin-authentication.service';
+import { PaymentComponent } from './setting/payment/payment.component';
 
 const routes: Routes = [
   {path: '', component:HomeComponent, pathMatch:'full'},
@@ -30,6 +35,11 @@ const routes: Routes = [
   {path:'invitation/:id/:details',component:InvitationComponent,canActivate:[AuthenticationService]},
   {path:'customer/preview/:id',component:CompanyCustomerDetailsPreviewComponent,canActivate:[AuthenticationService]},
   {path:'customer/:id',component:CompanyCustomerDetailsComponent,canActivate:[AuthenticationService]},
+  {path:'payment',component:PaymentComponent,canActivate:[AuthenticationService]},
+  {path:'admin',component:AdminLoginComponent},
+  {path:'admin/reset',component:ResetPasswordAdminComponent},
+  {path:'admin/home',component:AdminHomeComponent,canActivate:[AdminAuthenticationService]}
+
   
 
 

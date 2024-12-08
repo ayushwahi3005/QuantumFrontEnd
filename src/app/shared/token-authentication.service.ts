@@ -11,13 +11,13 @@ export class TokenAuthenticationService {
   constructor(private httpClient:HttpClient) { }
   // endpoint="http://customer-lb2-1979550990.us-east-1.elb.amazonaws.com:8080/";
   endpoint=environment.endpoint;
-  loginToken(email:string):Observable<any>{
+  loginToken(email:string,deviceId:string):Observable<any>{
     // const headers = new HttpHeaders({
     //   // 'Authorization': `Bearer ${localStorage.getItem('authToken')}`,
     //   // 'Content-Type': 'application/json',
     //   'spring.cloud.function.definition': 'getLoginToken'
     // });
-    return this.httpClient.get(this.endpoint+'customer/getLoginToken/'+email);
+    return this.httpClient.get(this.endpoint+'customer/getLoginToken/'+email+'/'+deviceId);
   }
   getCompanyId(email:any):Observable<any>{
     
@@ -37,6 +37,11 @@ export class TokenAuthenticationService {
   updateAccountInfo(data:any):Observable<any>{
     
     return this.httpClient.post(this.endpoint+'customer/accountInfo/update',data);
+  }
+  addLoggedIn(data:any):Observable<any>{
+    console.log("Authrntication loggedIN data")
+    console.log(data)
+    return this.httpClient.post(this.endpoint+'customer/addLoggedIn',data);
   }
  
 }

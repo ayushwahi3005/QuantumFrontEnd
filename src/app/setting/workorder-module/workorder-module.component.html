@@ -7,31 +7,10 @@
         <!-- Optionally, add a close button -->
         <button type="button" class="btn-close" (click)="showAlert = false" aria-label="Close" style="float: right;"></button>
       </div>
-      <!-- <div class="extra-field-input">
-        <div style="margin-top: 50px;" *ngIf="extraFieldOption=='number'" class="d-flex justify-content-between">
-          <span style="margin-bottom: 10px;"><button class="btn btn-warning" >{{extraFieldOption|titlecase}}</button></span>
-          <label for="name">Field Name <input id="name" type="text" [(ngModel)]="addFieldName" #name></label>
-         
-          <i class="bi bi-trash3" (click)="removeFieldOption()">Remove</i>
-          
-        </div>
-        <div style="margin-top: 50px;" *ngIf="extraFieldOption=='text'" class="d-flex justify-content-between">
-          <span style="margin-bottom: 10px;"><button class="btn btn-warning">{{extraFieldOption|titlecase}}</button></span>
-          <label for="name">Field Name <input id="name" type="text" [(ngModel)]="addFieldName" #name></label>
-         
-          <i class="bi bi-trash3" (click)="removeFieldOption()">Remove</i>
-        </div>
-       
-        <div style="margin: 50px;" *ngIf="extraFieldOption=='date'" class="d-flex justify-content-between">
-          <span style="margin-bottom: 10px;"><button class="btn btn-warning">{{extraFieldOption|titlecase}}</button></span>
-          <label for="name">Field Name <input id="name" type="text" [(ngModel)]="addFieldName" #name></label>
- 
-          <i class="bi bi-trash3" (click)="removeFieldOption()">Remove</i>
-        </div>
-      </div> -->
+     
         
         
-        <button class="btn btn-primary" data-toggle="modal" data-target="#addField">New Field</button>
+        <button class="btn btn-primary" data-toggle="modal" data-target="#addField">+ Field</button>
      
         <!-- <div class="dropdown-menu" aria-labelledby="dropdownMenuButton" style="z-index: 10;">
           

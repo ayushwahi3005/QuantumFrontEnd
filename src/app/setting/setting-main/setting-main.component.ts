@@ -135,7 +135,7 @@ constructor(private settingMainService:SettingMainService,private auth:AuthServi
   (err)=>{
     console.log("myerr------------>",err.status);
     
-    if(err.status=="403"){
+    if(err.status=="403"||err.status=="401"){
       localStorage.clear()
       alert("Session expired");
      
@@ -165,6 +165,12 @@ constructor(private settingMainService:SettingMainService,private auth:AuthServi
   logout(){
     this.auth.currUser=null;
     this.auth.isLoggedIn=false;
+    this.settingMainService.removeSession(this.email).subscribe((data)=>{
+      console.log("Session Removed")
+    },
+    (err)=>{
+      console.log("Session delete error ",err)
+    })
     localStorage.removeItem('token');
       localStorage.removeItem('user');
    

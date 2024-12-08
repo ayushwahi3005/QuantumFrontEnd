@@ -68,10 +68,10 @@
           "builder": "@angular-devkit/build-angular:dev-server",
           "configurations": {
             "production": {
-              "browserTarget": "upkeep:build:production"
+              "buildTarget": "upkeep:build:production"
             },
             "development": {
-              "browserTarget": "upkeep:build:development"
+              "buildTarget": "upkeep:build:development"
             }
           },
           "defaultConfiguration": "development"
@@ -79,7 +79,7 @@
         "extract-i18n": {
           "builder": "@angular-devkit/build-angular:extract-i18n",
           "options": {
-            "browserTarget": "upkeep:build"
+            "buildTarget": "upkeep:build"
           }
         },
         "test": {

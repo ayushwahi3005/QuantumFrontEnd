@@ -9,7 +9,8 @@ import { environment } from 'src/environments/environment';
 export class UsersService {
   private headers = new HttpHeaders({
     'Authorization': `Bearer ${localStorage.getItem('authToken')}`,
-    'Content-Type': 'application/json'
+    'Content-Type': 'application/json',
+    'Device-ID': `${localStorage.getItem('deviceId')}`
   });
 
   customerEndpoint=environment.endpoint+"customer/";
@@ -32,6 +33,10 @@ export class UsersService {
   }
   registerUser(data:any){
     return this.httpClient.post(this.userEndpoint+'registerUser',data,{headers:this.headers});
+  }
+  updaterUser(data:any){
+
+    return this.httpClient.post(this.userEndpoint+'updateUserDetails',data,{headers:this.headers});
   }
   getRegisteredUsers(companyId:string):Observable<any>{
  
@@ -57,6 +62,9 @@ export class UsersService {
   }
   getRoleAndPermission(id:string):Observable<any>{
     return this.httpClient.get(this.customerEndpoint+'roleAndPermission/get/'+id,{headers:this.headers});
+  }
+  getRoleAndPermissionByName(id:string,name:string ):Observable<any>{
+    return this.httpClient.get(this.customerEndpoint+'roleAndPermission/get/'+id+'/'+name,{headers:this.headers});
   }
   
 }

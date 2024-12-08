@@ -217,7 +217,9 @@ export class AssetDetailsComponent {
 
 
     this.assetDetailService.getTechnicalUsers(this.companyId).subscribe((data)=>{
+      console.log("Userss=====>")
       this.technicalUserList=data;
+
       console.log(this.technicalUserList);
     }
     ,(err)=>{

@@ -361,7 +361,7 @@
         <div class="modal-content">
           <div class="modal-header">
             <h2 class="modal-title" id="exampleModalLongTitle">Select Image To Upload</h2>
-            <button type="button" class="close" data-dismiss="modal" aria-label="Close" #closeBox2>
+            <button type="button" class="close ms-auto" data-dismiss="modal" aria-label="Close" #closeBox2>
               <span aria-hidden="true">&times;</span>
             </button>
           </div>
@@ -381,7 +381,7 @@
         <div class="modal-content">
           <div class="modal-header">
             <h2 class="modal-title" id="exampleModalLongTitle">Do you want to delete Asset {{assetDetails.name}}!!</h2>
-            <button type="button" class="close" data-dismiss="modal" aria-label="Close" #closeBox3>
+            <button type="button" class="close ms-auto" data-dismiss="modal" aria-label="Close" #closeBox3>
               <span aria-hidden="true">&times;</span>
             </button>
           </div>
@@ -424,17 +424,17 @@
   <div class="modal-dialog" role="document">
     <div class="modal-content">
       <div class="modal-header d-flex justify-content-center">
-        Are you sure You Want to delete File
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close" #closeBox4>
+        Are you sure You Want to delete File !!
+        <button type="button" class="close ms-auto" data-dismiss="modal" aria-label="Close" #closeBox4>
           <span aria-hidden="true">&times;</span>
         </button>
       </div>
       <div class="d-flex justify-content-center">
         <div class="modal-body">
-          <form>
-          <button class="btn btn-primary" (click)="deleteFile()" (click)="closeBox4.click()">DELETE</button>
-          <button class="btn btn-danger close" data-dismiss="modal" aria-label="Close" (click)="closeBox4.click()">CANCEL</button>
-          </form>
+          
+          <button class="btn btn-primary" style="margin: 0px 10px;" (click)="deleteFile()" (click)="closeBox4.click()">DELETE</button>
+          <button class="btn btn-danger" style="margin: 0px 10px;" data-dismiss="modal" aria-label="Close" (click)="closeBox4.click()">CANCEL</button>
+    
          
         </div>
        
@@ -450,7 +450,7 @@
     <div class="modal-content">
       <div class="modal-header">
         <h1 style="display: flex; justify-content: center;">Download QR</h1>
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close" #closeBox4>
+        <button type="button" class="close ms-auto" data-dismiss="modal" aria-label="Close" #closeBox4>
           <span aria-hidden="true">&times;</span>
         </button>
       </div>
@@ -474,7 +474,7 @@
                   <qrcode [qrdata]="qrData" [width]="200" [errorCorrectionLevel]="'M'" style="margin: auto 0px;"></qrcode>
                   <div style="margin: auto; width: 70px; margin-left: 30px; " >
                       <p style="font-family: Copperplate Gothic Light; font-weight: bolder;text-align: center;margin: auto; margin-bottom: 13px; ">AssetYug</p>
-                      <p style="width: 70px; justify-content: center;">Serial#: <b> {{assetDetails.serialNumber}}</b></p>
+                      <p style="width: 70px; justify-content: center;">Serial Number: <b> {{assetDetails.serialNumber}}</b></p>
                       <p style="width: 70px; justify-content: center;">{{qr.optional}}</p>
     
                   </div>

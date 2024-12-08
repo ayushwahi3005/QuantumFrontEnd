@@ -33,7 +33,7 @@
   <table class="table" id="usertable" >
     <thead style="background-color: black; color: white;" id="usertablehead">
       <tr>
-        <th scope="col">#</th>
+        <th scope="col">ID</th>
         <th scope="col">Name</th>
         <th scope="col">Job Title</th>
         <th scope="col">Email</th>
@@ -60,8 +60,12 @@
           </button>
           
           <mat-menu #menu="matMenu">
-            <button mat-menu-item (click)="resendMail(item.email)">Resend Invite</button>
-            <button mat-menu-item [disabled]="lockedInfo.get(item.email)!=true" (click)="unlockAccount(item.email)">Unlock Item</button>
+            <button mat-menu-item [disabled]="registredUsersMap.get(item.email)==true" (click)="resendMail(item.email)">Resend Invite</button>
+            <button mat-menu-item [disabled]="lockedInfo.get(item.email)!=true" (click)="unlockAccount(item.email)">Unlock User</button>
+            <button mat-menu-item [disabled]="this?.role !== 'ADMIN' || !(this?.detailedRole === 'edit' || this?.detailedRole === 'full')" (click)="selectEditUserFunc(item.email)">
+              <span data-toggle="modal" data-target="#editpopup">Edit</span>
+            </button>
+            
             <button mat-menu-item (click)="selectDeleteUserFunc(item.email)"><span class="text-danger" data-toggle="modal" data-target="#deletepopup">Delete</span></button>
           </mat-menu>
         </td>
@@ -80,12 +84,70 @@
 
 
   
-<div class="modal fade" id="invitepopup" tabindex="-1" role="dialog"  aria-hidden="true">
+<div class="modal fade" id="editpopup" tabindex="-1" role="dialog"  aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h2 class="modal-title">Edit Employee</h2>
+          <button type="button" class="close  ms-auto" data-dismiss="modal" aria-label="Close" #closeBox>
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          
+          <form [formGroup]="editUserForm" (ngSubmit)="updateUser()" id="userform">
+            <div class="d-flex justify-content-between">
+              <div >
+                <label>First Name<span  class="text-danger">*</span></label>
+                <input type="text" style="width: 93%" class="form-control"  formControlName="firstName" [ngModel]="selectEditUser?.firstName">
+              </div>
+              <div style="padding-left: 20px;">
+                <label>Last Name<span  class="text-danger">*</span></label>
+                <input type="text"  style="width: 93%" class="form-control"  formControlName="lastName" [ngModel]="selectEditUser?.lastName">
+              </div>
+            </div>
+            <!-- <div >
+              <label>Email<span  class="text-danger">*</span></label><br>
+                <input type="email" style="width: 97%" class="form-control"  formControlName="email" [ngModel]="selectEditUser?.email"  disabled [disabled]="true">
+            </div> -->
+            <div >
+              <label>Phone</label><br>
+                <input type="number" style="width: 97%" class="form-control"  formControlName="phoneNumber" [ngModel]="selectEditUser?.mobileNumber">
+            </div>
+            <div >
+              <label>Job Title</label><br>
+                <input type="text" style="width: 97%" class="form-control"  formControlName="jobTitle" [ngModel]="selectEditUser?.title">
+            </div>
+            
+            <div >
+              <label style="margin: 10px 0px;">Role<span  class="text-danger">*</span></label><br>
+               
+                <select class="form-select" class="form-control"  formControlName="role" style="width: 97%" [ngModel]="selectEditUser?.role" #role>
+                 
+                  <option value="ADMIN" selected>Administration</option>
+                  
+                  <option value="{{role?.name}}" *ngFor="let role of roleAndPermissionList">{{role?.name}}</option>
+                 
+                  
+                 
+                </select>
+            </div>
+           <div style="display: flex; justify-content: center; margin: 10px 0px;">
+            <button type="submit" class="btn btn-primary" [disabled]="editUserForm.invalid"  (click)="closeBox.click()">Update</button>
+          </div>
+          </form>
+        </div>
+        
+      </div>
+    </div>
+  </div>
+
+  <div class="modal fade" id="invitepopup" tabindex="-1" role="dialog"  aria-hidden="true">
     <div class="modal-dialog" role="document">
       <div class="modal-content">
         <div class="modal-header">
           <h2 class="modal-title">Create Employee</h2>
-          <button type="button" class="close" data-dismiss="modal" aria-label="Close" #closeBox>
+          <button type="button" class="close  ms-auto" data-dismiss="modal" aria-label="Close" #closeBox>
             <span aria-hidden="true">&times;</span>
           </button>
         </div>
@@ -161,7 +223,7 @@
     <div class="modal-content">
       <div class="modal-header">
         <h2 class="modal-title" id="exampleModalLongTitle">Do you want to delete this user !!</h2>
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close" #closeBox2>
+        <button type="button" class="close  ms-auto" data-dismiss="modal" aria-label="Close" #closeBox2>
           <span aria-hidden="true">&times;</span>
         </button>
       </div>

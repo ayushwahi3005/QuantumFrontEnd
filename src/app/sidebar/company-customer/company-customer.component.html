@@ -11,7 +11,7 @@
       <div class="modal-content">
         <div class="modal-header">
           <h2 class="modal-title" id="exampleModalLabel">Advance Filter</h2>
-          <button type="button" class="close" data-dismiss="modal" aria-label="Close" #closeBox3>
+          <button type="button" class="close  ms-auto" data-dismiss="modal" aria-label="Close" #closeBox3>
             <span aria-hidden="true">&times;</span>
           </button>
         </div>
@@ -222,7 +222,7 @@
       
     
   </div>
-  <div class="row" style="height: calc(100vh - 220px); overflow: scroll; width: 100%;  position: relative;">
+  <div class="row" style="height: calc(100vh - 220px); overflow: auto; width: 100%;  position: relative;">
       <div class="col">
         <button *ngIf="searchDataBy" class="sort btn btn-secondary" (click)="removeSearchDataBy()">Search By: {{searchDataBy|titlecase}} &times;</button>
         <button *ngIf="sortedBy" class="sort btn btn-secondary" (click)="removeSort()">Sorted By: {{sortedBy|titlecase}} &times;</button>
@@ -305,7 +305,7 @@
         <div class="modal-content">
           <div class="modal-header">
             <h2 class="modal-title" id="exampleModalLongTitle">Add Customer</h2>
-            <button type="button" class="close" data-dismiss="modal" aria-label="Close"  #closeBox>
+            <button type="button" class="close  ms-auto" data-dismiss="modal" aria-label="Close"  #closeBox>
               <span aria-hidden="true">&times;</span>
             </button>
           </div>
@@ -411,7 +411,7 @@
       <div class="modal-content">
         <div class="modal-header">
           <h2 class="modal-title" id="exampleModalLongTitle">All Fields</h2>
-          <button type="button" class="close" data-dismiss="modal" aria-label="Close" #closeBox4>
+          <button type="button" class="close  ms-auto" data-dismiss="modal" aria-label="Close" #closeBox4>
             <span aria-hidden="true">&times;</span>
           </button>
         </div>

@@ -10,7 +10,8 @@ import * as XLSX from 'xlsx';
 export class AssetsService {
   private headers = new HttpHeaders({
     'Authorization': `Bearer ${localStorage.getItem('authToken')}`,
-    'Content-Type': 'application/json'
+    'Content-Type': 'application/json',
+    'Device-ID': `${localStorage.getItem('deviceId')}`
   });
   constructor(private httpClient:HttpClient) { }
   // customerEndpoint="http://customer-lb2-1979550990.us-east-1.elb.amazonaws.com:8080/customer/";
