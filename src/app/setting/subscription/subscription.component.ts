@@ -132,10 +132,15 @@ export class SubscriptionComponent {
    
 
     this.subcriptionSerive.getCurrSubscription(this.companyId).subscribe((data)=>{
-      console.log(data.expiryDate)
-      console.log(data.subscriptionDate)
-
       this.currSubscription=data;
+      if(data!=null){console.log(data.expiryDate)
+        console.log(data.subscriptionDate)
+  
+        
+        this.currSubscription.expiryDate=new Date(data.expiryDate);
+        this.currSubscription.subscriptionDate=new Date(data.subscriptionDate);
+      }
+      
       // console.log(this.currSubscription.expiryDate[0])
       // this.currSubscription.expiryDate = new Date(
       //   this.currSubscription.expiryDate[0], // Year
@@ -147,8 +152,7 @@ export class SubscriptionComponent {
       //   this.currSubscription.subscriptionDate[1] - 1, // Month (0-based in JavaScript)
       //   this.currSubscription.subscriptionDate[2] // Day
       // );
-      this.currSubscription.expiryDate=new Date(data.expiryDate);
-      this.currSubscription.subscriptionDate=new Date(data.subscriptionDate);
+
       
     },
     (err)=>{

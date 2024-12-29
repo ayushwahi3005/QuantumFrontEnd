@@ -17,6 +17,7 @@ export class AssetPreviewService {
   }
   assetEndpoint=environment.endpoint+"assets/";
   companyCustomerEndpoint=environment.endpoint+"companycustomer/";
+  userEndpoint=environment.endpoint+"users/";
   getAsset(id:string):Observable<any>{
    
     return this.httpClient.get(this.assetEndpoint+"getAsset/"+id,{headers:this.headers});
@@ -83,6 +84,9 @@ export class AssetPreviewService {
     return this.httpClient.post(this.assetEndpoint+"addCheckInOut",data,{headers:this.headers});
   }
   getTechnicalUsers(companyId:string):Observable<any>{
-    return this.httpClient.get("http://localhost:8082/users/getTechnicalUser/"+companyId,{headers:this.headers});
+    return this.httpClient.get(this.userEndpoint+"getTechnicalUser/"+companyId,{headers:this.headers});
+  }
+  deleteFile(id:string):Observable<any>{
+    return this.httpClient.delete(this.assetEndpoint+"deleteFile/"+id,{headers:this.headers});
   }
 }

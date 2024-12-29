@@ -132,12 +132,12 @@ export class AssetDetailsComponent {
     (err)=>{
       console.log(err)
     })
-    this.assetDetailService.getWorkOrders(this.assetId).subscribe((data)=>{
-      this.workOrderList=data;
-      console.log("workorders",this.workOrderList)
-    },(err)=>{
-      console.log(err);
-    });
+    // this.assetDetailService.getWorkOrders(this.assetId).subscribe((data)=>{
+    //   this.workOrderList=data;
+    //   console.log("workorders",this.workOrderList)
+    // },(err)=>{
+    //   console.log(err);
+    // });
     this.assetDetailService.getAssetFile(this.assetId).subscribe((data)=>{
       //console.log("total",data);
       this.fileInfos=data;
@@ -149,7 +149,7 @@ export class AssetDetailsComponent {
     this.assetDetailService.getExtraFields(this.assetDetails.id).subscribe((data)=>{
       
       this.extraFields=data;
-      this.extraFields.sort((a,b)=>(a.name<b.name)?-1:1)
+      this.extraFields?.sort((a,b)=>(a.name<b.name)?-1:1)
       if(this.extraFields!=null){
         this.extraFields.forEach((x)=>{
           this.extraFieldString.push(x.name);
@@ -428,18 +428,17 @@ export class AssetDetailsComponent {
     
     
 
-   
- 
-
-    
-    
-    
-      this.assetDetailService.addAssetFile(this.currentFile,this.assetId).subscribe(event => {
-        if (event.status === 'progress') {
-          this.progress = event.message;
-          console.log(`Progress: ${this.progress}%`);
-        } else if (event.status === 'done') {
-          console.log('Upload Complete:', event.message);
+    this.assetDetailService.addAssetFile(this.currentFile, this.assetId).subscribe(
+      event => {
+        if (event.type === HttpEventType.UploadProgress) {
+          // Progress event
+          if (event.total) {
+            this.progress = Math.round((100 * event.loaded) / event.total);
+            console.log(`Progress: ${this.progress}%`);
+          }
+        } else if (event.type === HttpEventType.Response) {
+          // Response event
+          console.log('Upload Complete:', event.body);
           this.progress = 100;
           setTimeout(() => {
             alert('Successfully uploaded');
@@ -452,17 +451,44 @@ export class AssetDetailsComponent {
         this.progress = 0;
         this.message = 'Could not upload the file!';
         console.log(this.message);
+      }
+    );
+    
+ 
+
+    
+    
+    
+      // this.assetDetailService.addAssetFile(this.currentFile,this.assetId).subscribe(event => {
+      //   console.log(event.status)
+      //   if (event.status === 'progress') {
+      //     this.progress = event.message;
+      //     console.log(`Progress: ${this.progress}%`);
+      //   } else if (event.status === 'done') {
+      //     console.log('Upload Complete:', event.message);
+      //     this.progress = 100;
+      //     setTimeout(() => {
+      //       alert('Successfully uploaded');
+      //       this.currentFile = null;
+      //       this.ngOnInit();
+      //     }, 1500);
+      //   }
+      // },
+      // err => {
+      //   this.progress = 0;
+      //   this.message = 'Could not upload the file!';
+      //   console.log(this.message);
        
-      },()=>{
-        if(this.progress==100){
-          setTimeout(()=>{
-            alert("successfully uploaded");
-            this.currentFile=null;
-          this.ngOnInit();
-          },1500);
+      // },()=>{
+      //   if(this.progress==100){
+      //     setTimeout(()=>{
+      //       alert("successfully uploaded");
+      //       this.currentFile=null;
+      //     this.ngOnInit();
+      //     },1500);
           
-        }
-      })
+      //   }
+      // })
      
     
   }

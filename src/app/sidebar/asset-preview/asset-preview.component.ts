@@ -9,6 +9,7 @@ import { MandatoryFields } from './mandatoryFields';
 import { ActivatedRoute, Route, Router } from '@angular/router';
 import { AssetDetailsService } from '../asset-details/asset-details.service';
 import { AssetsComponent } from '../assets/assets.component';
+import * as saveAs from 'file-saver';
 import { DatePipe } from '@angular/common';
 import { Assets } from './assets';
 import { AssetPreviewService } from './asset-preview.service';
@@ -18,6 +19,7 @@ import { AssetsService } from '../assets/assets.service';
 import { QR } from './qr';
 import html2canvas from 'html2canvas';
 import * as jspdf from 'jspdf';
+import { User } from './user';
 
 @Component({
   selector: 'app-asset-preview',
@@ -62,7 +64,9 @@ loading=true;
   qrSize!:number;
   showAlert: boolean = false; // Flag to toggle alert visibility
   alertMessage: string = ''; // Alert message
-  alertType: string = 'success'; // Alert type: success, warning, error, etc.
+  alertType: string = 'success';
+  deleteFileId!:string; // Alert type: success, warning, error, etc.
+  technicalUserList!:User[];
   sideBarOption=[{
     number:1,
     name:'Customers',
@@ -137,7 +141,15 @@ loading=true;
     ()=>{
       this.loading=false;
     })
-    
+    this.assetPreviewService.getTechnicalUsers(this.companyId).subscribe((data)=>{
+      console.log("Userss=====>")
+      this.technicalUserList=data;
+
+      console.log(this.technicalUserList);
+    }
+    ,(err)=>{
+      console.log(err);
+    })
     this.assetPreviewService.getCheckInOutList(this.assetId).subscribe((data)=>{
       this.loading=true;
       this.checkInOut=data;
@@ -168,17 +180,17 @@ loading=true;
       this.loading=false;
     })
 
-    this.assetPreviewService.getWorkOrders(this.assetId).subscribe((data)=>{
-      this.loading=true;
-      this.workOrderList=data;
-      console.log("workorders",this.workOrderList)
-    },(err)=>{
-      console.log(err);
-      this.loading=false;
-    },
-    ()=>{
-      this.loading=false;
-    });
+    // this.assetPreviewService.getWorkOrders(this.assetId).subscribe((data)=>{
+    //   this.loading=true;
+    //   this.workOrderList=data;
+    //   console.log("workorders",this.workOrderList)
+    // },(err)=>{
+    //   console.log(err);
+    //   this.loading=false;
+    // },
+    // ()=>{
+    //   this.loading=false;
+    // });
 
 
     this.assetPreviewService.getExtraFields(this.assetId).subscribe((data)=>{
@@ -413,4 +425,39 @@ offHover(){
   downloadQR(){
     this.generatePdf('myqr',this.assetDetails.name+"_"+this.assetDetails.serialNumber+"_QR");
   }
+
+    download(id:string,name:string){
+      this.assetPreviewService.download(id).subscribe((data:any)=>{
+  
+        console.log(name);
+        const blob:any=new Blob([data],{type:'text/json; charset=utf-8'});
+        const link=document.createElement("a");
+        const url=window.URL.createObjectURL(blob);
+        // link.download=name;
+        // link.click();
+        // window.URL.revokeObjectURL(link.href);
+        // link.remove();
+        saveAs(blob, name);
+      
+      },
+      (err)=>{
+        console.log(err);
+      })
+    }
+    itemDeleteDetails(id:string){
+      this.deleteFileId=id;
+  
+    }
+    deleteFile(){
+      this.assetPreviewService.deleteFile(this.deleteFileId).subscribe((data)=>{
+        console.log(data);
+      },
+      (err)=>{
+        console.log(err);
+      },
+      ()=>{
+        this.ngOnInit();
+        this.deleteFileId='';
+      })
+    }
 }

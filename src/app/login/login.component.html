@@ -5,25 +5,25 @@
   </div>
 </div>
 <div *ngIf="showAlert" class="alert" [ngClass]="'alert-' + alertType" role="alert">
-  {{ alertMessage }}
+  {{ alertMessage|titlecase }}
   <!-- Optionally, add a close button -->
   <button type="button" class="btn-close" (click)="showAlert = false" aria-label="Close" style="float: right;"></button>
 </div>
 <div class="login container" *ngIf="!loader">
-    <form>
+    <form class="form-border">
         <h1 id="log-in">Log in</h1>
         <div class="form-group">
          
           <mat-form-field>
             <mat-label>Email</mat-label>
-            <input matInput type="email" id="email" name="email"[(ngModel)]="email" required>
+            <input matInput type="email" id="email" name="email"[(ngModel)]="email" >
             
           </mat-form-field>
         </div>
         <div class="form-group">
           <mat-form-field>
           <mat-label>Password</mat-label>
-          <input matInput type="password" id="password" name="password"[(ngModel)]="password" required>
+          <input matInput type="password" id="password" name="password"[(ngModel)]="password" >
         </mat-form-field>
         </div>
        
@@ -36,9 +36,9 @@
           
             
             <div class="forget" >
-                <a href="" style="text-decoration: none;">Forget Password? </a>
+                <a [routerLink]="['/reset-password']" style="text-decoration: none;">Forget Password? </a>
             </div>
-
+            
             <hr>
             
            
@@ -53,6 +53,7 @@
 
         
       </form>
+      
 </div>
 <div class="dot-spinner d-flex justify-content-center" *ngIf="loader" >
   <div class="dot-spinner__dot"></div>
@@ -90,6 +91,13 @@
   </div>
 </div>
 
-
-
+<footer class="custom-footer">
+  <div class="footer-content">
+    <p>
+      <a href="#">Terms of Use</a> | 
+      <a href="#">Privacy Policy</a>
+    </p>
+    <p class="copyright">&copy; AssetYug</p>
+  </div>
+</footer>
 

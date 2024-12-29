@@ -1,4 +1,4 @@
-import { Component, ElementRef, inject, ViewChild, ViewEncapsulation } from '@angular/core';
+import { Component, ElementRef, inject, ViewChild, ViewEncapsulation,HostListener  } from '@angular/core';
 import { AssetsService } from './assets.service';
 import { AuthService } from 'src/app/shared/auth.service';
 import * as XLSX from 'xlsx'; 
@@ -110,9 +110,11 @@ export class AssetsComponent {
   checkBoxColor="primary"
   myArray=[]
   asc:Boolean=true;
+  filteredCustomerList:any=[];
   constructor(private assetService:AssetsService,private authService:AuthService,private formBuilder:FormBuilder){
    
    }
+   @ViewChild('dropdownContainer') dropdownContainer!: ElementRef;
   ngOnInit(){
    
     if(localStorage.getItem("assetIdDetail")!=null){
@@ -203,7 +205,7 @@ export class AssetsComponent {
       serialNumber:[''],
       category:[''],
       location:[''],
-      status:[''],
+      status:['active'],
       image:[''],
       email:[this.email],
       companyId:[this.companyId]
@@ -234,6 +236,7 @@ export class AssetsComponent {
     });
     this.assetService.getCompanyCustomerList(this.companyId).subscribe((data)=>{
       this.companyCustomerList=data;
+      this.filteredCustomerList = this.companyCustomerList;
       this.companyCustomerList.forEach((x)=>{
         this.customerIdNameMap.set(x.id,x.name);
       })
@@ -253,7 +256,7 @@ export class AssetsComponent {
     this.advanceFilterFunc();
     this.assetService.getAllMandatoryFields(this.companyId).subscribe((data)=>{
       this.mandatoryFieldsList=data;
-      // console.log("mandatory----------------------->",this.mandatoryFieldsList)
+      console.log("mandatory----------------------->",this.mandatoryFieldsList)
       if(this.mandatoryFieldsList.length>0){
       this.mandatoryFieldsList?.forEach((x)=>{
         this.mandatoryFieldsMap.set(x.name,x.mandatory);
@@ -351,6 +354,36 @@ export class AssetsComponent {
   get appliedFilterListSize(): number {
     return this.appliedFilterList.size;
   }
+
+
+
+  
+  dropdownOpen = false;
+  selectedCustomer: any = null;
+  selectedCustomerId:any=null;
+  toggleDropdown() {
+    console.log(this.filteredCustomerList)
+    this.dropdownOpen = !this.dropdownOpen;
+  }
+
+  filterCustomers(event: Event) {
+    const searchValue = (event.target as HTMLInputElement).value.toLowerCase();
+    this.filteredCustomerList = this.companyCustomerList.filter(customer =>
+      customer.name.toLowerCase().includes(searchValue)
+    );
+  }
+
+  selectCustomer(customer: any) {
+    console.log(customer)
+    this.selectedCustomer = customer;
+    this.selectedCustomerId=customer.companyCustomerId;
+    this.dropdownOpen = false;
+  }
+
+
+
+
+
 
   advanceFilterFunc(){
     this.loading=true;
@@ -489,6 +522,7 @@ export class AssetsComponent {
       let myAsset:Assets;
       let extraFieldValueMap=new Map<String,string>();
       let extraFieldTypeMap=new Map<String,string>();
+      this.assetForm.controls['customer'].setValue(this.selectedCustomer);
       this.showFieldsList?.forEach((x)=>{
         if(x.show==true){
         extraFieldValueMap.set(x.name,this.assetForm.get(x.name)?.value);
@@ -496,11 +530,16 @@ export class AssetsComponent {
         }
       })
       this.assetForm.controls['image'].setValue(this.myImage);
+      let name=this.assetForm.controls['name'].value;
+      if(name==null||name==''){
+        this.triggerAlert("Fill Mandatory Field '"+this.toCamelCase("name")+"'","warning");
+        return
+      }
       console.log(this.assetForm.value);
       let valid=1;
       console.log(this.mandatoryFieldsList)
       this.mandatoryFieldsList?.forEach((val)=>{
-        console.log("-============>",val.mandatory+" "+this.assetForm.get(val.name)?.value);
+        console.log("-======mandatory=====>",val.mandatory+" "+this.assetForm.get(val.name)?.value);
         if(this.showFieldsMap.get(val.name)==false){
           valid=1;
         }
@@ -528,11 +567,11 @@ export class AssetsComponent {
       if(valid==0){
         return;
       }
-      this.selectedCompanyCustomer=this.assetForm.controls['customer'].value;
-      if(this.selectedCompanyCustomer!=null){
-        this.companyCustomerArr=this.selectedCompanyCustomer.split(',');
-        this.assetForm.controls['customer'].setValue(this.companyCustomerArr[0]);
-        this.assetForm.controls['customerId'].setValue(this.companyCustomerArr[1]);
+      // this.selectedCompanyCustomer=this.assetForm.controls['customer'].value;
+      if(this.selectedCustomer!=null){
+        // this.companyCustomerArr=this.selectedCompanyCustomer.split(',');
+        this.assetForm.controls['customer'].setValue(this.selectedCustomer.name);
+        this.assetForm.controls['customerId'].setValue(this.selectedCustomer.id);
         }
 
         console.log("assetFormData - "+this.assetForm.value)
@@ -568,7 +607,21 @@ export class AssetsComponent {
         })
       })
     }
+    // @HostListener('document:click', ['$event'])
+    // onClickOutside(event: MouseEvent) {
+    //   // console.log("clicked")
+    //   // this.dropdownOpen = !this.dropdownOpen;
+    //   // Check if the click is outside the dropdown and input element
+    //   // const dropdownElement = document.querySelector('.dropdown');
+    //   // console.log(dropdownElement?.contains(event.target as Node))
+    //   // if (dropdownElement && !dropdownElement.contains(event.target as Node)) {
+    //   //   this.dropdownOpen = false; // Close the dropdown
+    //   // }
+    //   const clickedInsideDropdown = this.dropdownContainer?.nativeElement.contains(event.target);
+    
+    // console.log('Clicked inside dropdown:', clickedInsideDropdown);
 
+    // }
     changeAssetDetails(item:Assets){
       this.mainAsset=!this.mainAsset;
       this.detailedAsset=!this.detailedAsset;

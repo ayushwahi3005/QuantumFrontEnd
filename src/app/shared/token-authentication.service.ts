@@ -43,5 +43,9 @@ export class TokenAuthenticationService {
     console.log(data)
     return this.httpClient.post(this.endpoint+'customer/addLoggedIn',data);
   }
+  getCustomer(email:any):Observable<any>{
+    
+    return this.httpClient.get(this.endpoint+'customer/checkUserName/'+email);
+  }
  
 }

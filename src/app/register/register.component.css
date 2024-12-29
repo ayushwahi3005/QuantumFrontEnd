@@ -7,14 +7,24 @@ form{
     
     
 }
+.alert{
+  margin: 5px;
+}
 .register{
     display: flex;
     justify-content: center;
-    padding-top: 50px;
+    padding-top: 5px;
     border: 1px solid lightgray;
     margin: 30px auto;
     border-radius: 10px;
     width: 600px;
+    font-family: Arial, sans-serif;
+    z-index: 1000;
+    position: relative;
+    background-color: white;
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+    /* margin-top: calc(50vh - 400px); */
+
 }
 h2{
     display: flex;
@@ -60,7 +70,7 @@ form{
     
 } */
 a{
-    text-decoration: none; color: #2C1376; padding-left: 5px; font-weight: bolder;
+    text-decoration: none; color: #2C1376;  font-weight: bolder;
     
 }
 #reg{
@@ -77,6 +87,14 @@ a{
     
     
 }
+/* ::ng-deep.mat-form-field{
+    background-color: gray !important;
+  } */
+  mat-form-field {
+    mat-error {
+      color: inherit; /* Disable the default red color */
+    }
+  }
 .modal button{
     background-color: yellow;
     color: black;
@@ -87,3 +105,50 @@ a{
 /* .form-group{
     height: 60px;
 } */
+.custom-footer {
+    text-align: center;
+    font-family: 'Arial', sans-serif;
+    width: 100%;
+    font-size: 14px;
+    color: #4a148c; /* Purple color for links */
+    padding: 20px 0;
+    /* margin: 30px auto; */
+    position: absolute;
+    bottom: 0px;
+
+  }
+  
+  .custom-footer a {
+    color: #4a148c;
+    text-decoration: none;
+    font-weight: bold;
+  }
+  
+  .custom-footer a:hover {
+    text-decoration: underline;
+  }
+  
+  .custom-footer p {
+    margin: 5px 0;
+    line-height: 1.5;
+  }
+  .copyright{
+    color: black;
+  }
+  input{
+    text-decoration: none;
+  }
+  ::ng-deep .mat-form-field-infix input {
+    box-shadow: none !important; /* Removes the shadow */
+    outline: none !important;    /* Removes the blue outline */
+    border: none !important;     /* Removes any border */
+  }
+  
+  ::ng-deep .mat-form-field-infix {
+    background-color: transparent !important; /* Removes white background */
+  }
+  ::ng-deep .mat-input-element:focus {
+    outline: none !important; /* Remove the focus outline */
+    box-shadow: none !important; /* Remove any focus shadow */
+  }
+  

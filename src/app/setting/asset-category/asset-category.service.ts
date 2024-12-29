@@ -17,7 +17,7 @@ export class AssetCategoryService {
   constructor(private httpClient:HttpClient) {
     
    }
-  //  customerEndpoint=environment.endpoint+"customer/";
+   customerEndpoint=environment.endpoint+"customer/";
    assetEndpoint=environment.endpoint+"assets/"
   // assetEndpoint="http://localhost:8080/assets/"
   // companyCustomerEndpoint="http://localhost:8080/companycustomer/"
@@ -38,5 +38,14 @@ export class AssetCategoryService {
   }
   updateAssetCategory(data:any):Observable<any>{
     return this.httpClient.put(this.assetEndpoint+"updateCategory",data,{headers:this.headers});
+  }
+  removeSession(userId:string):Observable<any>{
+    const headers = new HttpHeaders({
+      'Authorization': `Bearer ${localStorage.getItem('authToken')}`,
+      'Content-Type': 'application/json',
+      'Device-ID': `${localStorage.getItem('deviceId')}`,
+    });
+    
+    return this.httpClient.delete(this.customerEndpoint+'customer/removeSession/'+userId, { headers });
   }
 }

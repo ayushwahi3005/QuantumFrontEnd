@@ -164,68 +164,85 @@ export class AuthService {
           
         },
         err=>{
-         
+          let userNotFoundFlag=0;
           this.errorMessage=err.message;
-          console.log("------------>"+this.errorMessage)
-         
-          if(err.code=="auth/invalid-credential"|| err.code == "auth/wrong-password"){
-           
-            let obj=null;
-            if(this.accountLockInfo==null){
-              obj={
-                "customerEmail":email,
-                "lockedStatus":false,
-                "incorrectAttemptCount":1
-              }
+          console.log("-----??------->"+this.errorMessage)
+          this.tokenAuthenticationService.getCustomer(email).subscribe((data)=>{
+            console.log("USer check data"+data)
+            if(data==null||data==''){
               let errorobj={
-                "data":"Wrong Credentials. 4 attempts left",
+                "data":"No User Found",
                 "type":"danger"
               }
               this.loginService.triggerComponentFunction(errorobj);
+              userNotFoundFlag=1;
             }
             else{
-              if(this.accountLockInfo.incorrectAttemptCount>=4){
-                obj={
-                  "id":this.accountLockInfo.id,
-                  "customerEmail":email,
-                  "lockedStatus":true,
-                  "incorrectAttemptCount":this.accountLockInfo.incorrectAttemptCount+1
+              if(err.code=="auth/invalid-credential"|| err.code == "auth/wrong-password"){
+           
+                let obj=null;
+                if(this.accountLockInfo==null){
+                  obj={
+                    "customerEmail":email,
+                    "lockedStatus":false,
+                    "incorrectAttemptCount":1
+                  }
+                  let errorobj={
+                    "data":"Wrong Credentials. 4 attempts left",
+                    "type":"danger"
+                  }
+                  this.loginService.triggerComponentFunction(errorobj);
                 }
-              }
-              else{
-                obj={
-                  "id":this.accountLockInfo.id,
-                  "customerEmail":email,
-                  "lockedStatus":false,
-                  "incorrectAttemptCount":this.accountLockInfo.incorrectAttemptCount+1
+                else{
+                  if(this.accountLockInfo.incorrectAttemptCount>=4){
+                    obj={
+                      "id":this.accountLockInfo.id,
+                      "customerEmail":email,
+                      "lockedStatus":true,
+                      "incorrectAttemptCount":this.accountLockInfo.incorrectAttemptCount+1
+                    }
+                  }
+                  else{
+                    obj={
+                      "id":this.accountLockInfo.id,
+                      "customerEmail":email,
+                      "lockedStatus":false,
+                      "incorrectAttemptCount":this.accountLockInfo.incorrectAttemptCount+1
+                    }
+                  }
                 }
+                console.log(obj);
+                this.tokenAuthenticationService.updateAccountInfo(obj).subscribe((data)=>{
+                  console.log("accountLockInfoUpdated")
+                },
+                (err)=>{
+                  console.log(err);
+                },
+                ()=>{
+                  // alert("Wrong Credentials");
+                  // alert(4-this.accountLockInfo.incorrectAttemptCount+" attempts left.");
+                  let myerror="Wrong Credentials !!";
+                
+                  myerror+=4-this.accountLockInfo.incorrectAttemptCount+" attempts left."
+                  if(this.accountLockInfo.incorrectAttemptCount==4){
+                    myerror = "Wrong Credentials. Account Locked !!"
+                  }
+                  console.log(myerror);
+                  let obj={
+                    "data":myerror,
+                    "type":"danger"
+                  }
+                  this.loginService.triggerComponentFunction(obj);
+                })
               }
+              this.router.navigate(['/login']);
             }
-            console.log(obj);
-            this.tokenAuthenticationService.updateAccountInfo(obj).subscribe((data)=>{
-              console.log("accountLockInfoUpdated")
-            },
-            (err)=>{
-              console.log(err);
-            },
-            ()=>{
-              // alert("Wrong Credentials");
-              // alert(4-this.accountLockInfo.incorrectAttemptCount+" attempts left.");
-              let myerror="Wrong Credentials !!";
-            
-              myerror+=4-this.accountLockInfo.incorrectAttemptCount+" attempts left."
-              if(this.accountLockInfo.incorrectAttemptCount==4){
-                myerror = "Wrong Credentials. Account Locked !!"
-              }
-              console.log(myerror);
-              let obj={
-                "data":myerror,
-                "type":"danger"
-              }
-              this.loginService.triggerComponentFunction(obj);
-            })
-          }
-          this.router.navigate(['/login']);
+          },
+          (err)=>{
+            console.log(err);
+          })
+          // if(userNotFoundFlag==1) return;
+          
         })
       }
       else{
