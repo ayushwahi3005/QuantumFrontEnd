@@ -87,24 +87,25 @@ export class CompanyCustomerComponent {
   }
 
   ngOnInit():void{
-    this.companyCustomerForm=this.formBuilder.group({
-      name:['',Validators.required],
-      companyId:[this.companyId],
-      category:[''],
-      status:['active'],
-      phone:['',Validators.pattern('^[ 0-9\(\)\-]{14}$')],
-      email:[''],
-      address:[''],
-      apartment:[''],
-      city:[''],
-      state:[''],
-      zipCode:['']
-  
-      
-
-
-
+    this.companyCustomerForm = this.formBuilder.group({
+      name: ['', Validators.required],
+      companyId: [this.companyId],
+      category: [''],
+      status: ['active'],
+      phone: ['', Validators.pattern('^[ 0-9\(\)\-]{14}$')],
+      email: [''],
+      address: [''],
+      apartment: [''],
+      city: [''],
+      state: [''],
+      zipCode: ['']
     });
+  
+    // Explicitly set the default value for status
+    this.companyCustomerForm.controls['status'].setValue('active');
+  
+    console.log(this.companyCustomerForm.value); // Check the form values
+  
     
       this.pageIndex=parseInt(localStorage.getItem('customerPageInd')||'0')
       this.pageSize=parseInt(localStorage.getItem('customerPageSize')||'10')
@@ -417,6 +418,7 @@ advanceFilterFunc() {
    
 
     this.companyCustomerForm.controls['companyId'].setValue(this.companyId);
+    console.log(this.companyCustomerForm.value);
     let extraFieldValueMap=new Map<String,string>();
       let extraFieldTypeMap=new Map<String,string>();
     this.showFieldsList?.forEach((x)=>{

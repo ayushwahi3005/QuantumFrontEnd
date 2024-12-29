@@ -81,6 +81,7 @@ import { SubscriptionPlanComponent } from './admin/subscription-plan/subscriptio
 import { PaymentComponent } from './setting/payment/payment.component';
 import { MatCardModule } from '@angular/material/card'; 
 import { MatToolbarModule } from '@angular/material/toolbar'; 
+import { CustomerResetPasswordComponent } from './customer-reset-password/customer-reset-password.component';
 
 @NgModule({
   declarations: [
@@ -125,7 +126,8 @@ import { MatToolbarModule } from '@angular/material/toolbar';
     AdminLoginComponent,
     ResetPasswordAdminComponent,
     SubscriptionPlanComponent,
-    PaymentComponent
+    PaymentComponent,
+    CustomerResetPasswordComponent
  
     
    

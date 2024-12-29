@@ -101,75 +101,78 @@
   </div>
 
   <div *ngIf="currOption==1">
-    <div class="card">
-      <div class="logo d-flex justify-content-center" style=" background-color: #bac9bbeb;">
-          <div style="display: flex; flex-direction: column;">
-          <label class="title" >{{this.currSubscription?.plan|titlecase}}</label>
-          <label class="price" style="font-weight: 400;" >${{this.currSubscription?.amount}}</label>
-          <label style="margin: 10px auto; font-size: large;" >{{this.currSubscription?.person}} person</label>
-          <ng-container *ngIf="this.currSubscription?.expiryDate > this.todayDate; else expiredTemplate">
-            <label>
-              Will Expire on {{ this.currSubscription?.expiryDate | date: 'dd/MM/yyyy' }}
-            </label>
-          </ng-container>
-          
-          <ng-template #expiredTemplate>
-            <label>
-              Subscription has expired.
-            </label>
-          </ng-template>
-          
-          </div>
-      </div>
-      <div class="tab-container">
-          <button class="tab tab--1" >{{this.currSubscription?.subscriptionPlan}}</button>
-          <!-- <button class="tab tab--2"   (click)="basicAnnualClick()" >Annual</button>
-          <div class="indicator" [ngClass]="{'selected-tab':!basicIsMonthly}"></div> -->
-      </div>
-      <div class="d-flex justify-content-center">
-          <button style="background-color: #bac9bbeb; border: #bac9bbeb; width: 70%;height: 30px; border-radius: 10px; bottom: 0; margin-bottom: 10px; position: absolute;"   data-toggle="modal" data-target="#manage">Manage</button>
-      </div>
-        <div>
-          <ul class="lists">
-              <li class="list">
-                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-check" viewBox="0 0 16 16">
-                      <path d="M10.97 4.97a.75.75 0 0 1 1.07 1.05l-3.99 4.99a.75.75 0 0 1-1.08.02L4.324 8.384a.75.75 0 1 1 1.06-1.06l2.094 2.093 3.473-4.425z"/>
-                    </svg>
-                  <div> Connect 80 websites </div>
-              </li>
-              <li class="list">
-                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-check" viewBox="0 0 16 16">
-                      <path d="M10.97 4.97a.75.75 0 0 1 1.07 1.05l-3.99 4.99a.75.75 0 0 1-1.08.02L4.324 8.384a.75.75 0 1 1 1.06-1.06l2.094 2.093 3.473-4.425z"/>
-                    </svg>
-                  <div> Track up to 50 credit cards </div>
-              </li>
-              <li class="list">
-                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-check" viewBox="0 0 16 16">
-                      <path d="M10.97 4.97a.75.75 0 0 1 1.07 1.05l-3.99 4.99a.75.75 0 0 1-1.08.02L4.324 8.384a.75.75 0 1 1 1.06-1.06l2.094 2.093 3.473-4.425z"/>
-                    </svg>
-                  <div> Export up to 12 months data </div>
-              </li>
-              <li class="list">
-                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-check" viewBox="0 0 16 16">
-                      <path d="M10.97 4.97a.75.75 0 0 1 1.07 1.05l-3.99 4.99a.75.75 0 0 1-1.08.02L4.324 8.384a.75.75 0 1 1 1.06-1.06l2.094 2.093 3.473-4.425z"/>
-                    </svg>
-                  <div> Cloud service 24/7 </div>
-              </li>
-              <li class="list">
-                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-check" viewBox="0 0 16 16">
-                      <path d="M10.97 4.97a.75.75 0 0 1 1.07 1.05l-3.99 4.99a.75.75 0 0 1-1.08.02L4.324 8.384a.75.75 0 1 1 1.06-1.06l2.094 2.093 3.473-4.425z"/>
-                    </svg>
-                  <div> Connect 80 websites </div>
-              </li>
-              <li class="list">
-                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-check" viewBox="0 0 16 16">
-                      <path d="M10.97 4.97a.75.75 0 0 1 1.07 1.05l-3.99 4.99a.75.75 0 0 1-1.08.02L4.324 8.384a.75.75 0 1 1 1.06-1.06l2.094 2.093 3.473-4.425z"/>
-                    </svg>
-                  <div> Connect up to 5 bank accounts  </div>
-              </li>
-            </ul>
+      <div class="card" *ngIf="this.currSubscription!=null">
+        <div class="logo d-flex justify-content-center" style=" background-color: #bac9bbeb;">
+            <div style="display: flex; flex-direction: column;">
+            <label class="title" >{{this.currSubscription?.plan|titlecase}}</label>
+            <label class="price" style="font-weight: 400;" >${{this.currSubscription?.amount}}</label>
+            <label style="margin: 10px auto; font-size: large;" >{{this.currSubscription?.person}} person</label>
+            <ng-container *ngIf="this.currSubscription?.expiryDate > this.todayDate; else expiredTemplate">
+              <label>
+                Will Expire on {{ this.currSubscription?.expiryDate | date: 'dd/MM/yyyy' }}
+              </label>
+            </ng-container>
+            
+            <ng-template #expiredTemplate>
+              <label>
+                Subscription has expired.
+              </label>
+            </ng-template>
+            
+            </div>
         </div>
-  </div>
+        <div class="tab-container">
+            <button class="tab tab--1" >{{this.currSubscription?.subscriptionPlan}}</button>
+            <!-- <button class="tab tab--2"   (click)="basicAnnualClick()" >Annual</button>
+            <div class="indicator" [ngClass]="{'selected-tab':!basicIsMonthly}"></div> -->
+        </div>
+        <div class="d-flex justify-content-center">
+            <button style="background-color: #bac9bbeb; border: #bac9bbeb; width: 70%;height: 30px; border-radius: 10px; bottom: 0; margin-bottom: 10px; position: absolute;"   data-toggle="modal" data-target="#manage">Manage</button>
+        </div>
+          <div>
+            <ul class="lists">
+                <li class="list">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-check" viewBox="0 0 16 16">
+                        <path d="M10.97 4.97a.75.75 0 0 1 1.07 1.05l-3.99 4.99a.75.75 0 0 1-1.08.02L4.324 8.384a.75.75 0 1 1 1.06-1.06l2.094 2.093 3.473-4.425z"/>
+                      </svg>
+                    <div> Connect 80 websites </div>
+                </li>
+                <li class="list">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-check" viewBox="0 0 16 16">
+                        <path d="M10.97 4.97a.75.75 0 0 1 1.07 1.05l-3.99 4.99a.75.75 0 0 1-1.08.02L4.324 8.384a.75.75 0 1 1 1.06-1.06l2.094 2.093 3.473-4.425z"/>
+                      </svg>
+                    <div> Track up to 50 credit cards </div>
+                </li>
+                <li class="list">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-check" viewBox="0 0 16 16">
+                        <path d="M10.97 4.97a.75.75 0 0 1 1.07 1.05l-3.99 4.99a.75.75 0 0 1-1.08.02L4.324 8.384a.75.75 0 1 1 1.06-1.06l2.094 2.093 3.473-4.425z"/>
+                      </svg>
+                    <div> Export up to 12 months data </div>
+                </li>
+                <li class="list">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-check" viewBox="0 0 16 16">
+                        <path d="M10.97 4.97a.75.75 0 0 1 1.07 1.05l-3.99 4.99a.75.75 0 0 1-1.08.02L4.324 8.384a.75.75 0 1 1 1.06-1.06l2.094 2.093 3.473-4.425z"/>
+                      </svg>
+                    <div> Cloud service 24/7 </div>
+                </li>
+                <li class="list">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-check" viewBox="0 0 16 16">
+                        <path d="M10.97 4.97a.75.75 0 0 1 1.07 1.05l-3.99 4.99a.75.75 0 0 1-1.08.02L4.324 8.384a.75.75 0 1 1 1.06-1.06l2.094 2.093 3.473-4.425z"/>
+                      </svg>
+                    <div> Connect 80 websites </div>
+                </li>
+                <li class="list">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-check" viewBox="0 0 16 16">
+                        <path d="M10.97 4.97a.75.75 0 0 1 1.07 1.05l-3.99 4.99a.75.75 0 0 1-1.08.02L4.324 8.384a.75.75 0 1 1 1.06-1.06l2.094 2.093 3.473-4.425z"/>
+                      </svg>
+                    <div> Connect up to 5 bank accounts  </div>
+                </li>
+              </ul>
+          </div>
+    </div>
+    <h2 class="d-flex justify-content-center" *ngIf="this.currSubscription==null">
+      No Subscription
+    </h2>
   </div>
   <div class=" d-flex justify-content-center" style="margin-top: 50px; width:100% ;" *ngIf="curr_phase==2" >
     <div  style="margin-right: 30px;display: flex; justify-content:center; display: flex; flex: none;">

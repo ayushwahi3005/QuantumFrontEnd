@@ -10,7 +10,7 @@ declare var bootstrap: any;
   styleUrls: ['./login.component.css']
 })
 export class LoginComponent {
-  private modalInstance: any;
+
   email:string='';
   password:string='';
   errorMessage:string='';
@@ -75,13 +75,15 @@ export class LoginComponent {
     this.loader=true;
     console.log(this.loader)
     if(this.email==''){
-      alert('Please enter email');
+      // alert('Please enter email');
+      this.triggerAlert("Please enter email","warning")
       this.loader=false;
       return;
       
     }
     if(this.password==''){
-      alert('Please enter password');
+      // alert('Please enter password');
+      this.triggerAlert("Please enter password","warning")
       this.loader=false;
       return;
 

@@ -67,6 +67,7 @@ export class AssetDetailsService {
     // myHeaders.append('Content-Type', 'multipart/form-data');
     let myHeaders = new HttpHeaders({
       'Authorization': `Bearer ${localStorage.getItem('authToken')}`,
+      //  'Device-ID': `${localStorage.getItem('deviceId')}`
       // Don't set 'Content-Type' here!
     });
     const formData: FormData = new FormData();
@@ -104,10 +105,10 @@ export class AssetDetailsService {
   deleteFile(id:string):Observable<any>{
     return this.httpClient.delete(this.assetEndpoint+"deleteFile/"+id,{headers:this.headers});
   }
-  getWorkOrders(id:string):Observable<any>{
+  // getWorkOrders(id:string):Observable<any>{
     
-    return this.httpClient.get("http://localhost:8083/workorder/getworkorderlist/"+id,{headers:this.headers});
-  }
+  //   return this.httpClient.get("http://localhost:8083/workorder/getworkorderlist/"+id,{headers:this.headers});
+  // }
   getMandatoryFields(name:any,companyId:any):Observable<any>{
     console.log("name",name)
     return this.httpClient.get(this.assetEndpoint+"getMandatoryFields/"+name+"/"+companyId,{headers:this.headers});

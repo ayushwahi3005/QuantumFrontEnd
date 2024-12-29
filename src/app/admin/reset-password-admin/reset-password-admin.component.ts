@@ -45,7 +45,7 @@ export class ResetPasswordAdminComponent  {
         error => {
           this.loading=false;
           console.log(JSON.parse(error.error).errorMessage)
-          // console.log(error.error.errorMessage)
+          console.log(error.error.errorMessage)
           // this.errorMessage = 'Error sending OTP. Please try again.';
           this.errorMessage=JSON.parse(error.error).errorMessage;
         }

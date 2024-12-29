@@ -1,6 +1,8 @@
 import { Component } from '@angular/core';
 import { CategoryName } from './categoryName';
 import { AssetCategoryService } from './asset-category.service';
+import { AuthService } from 'src/app/shared/auth.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-asset-category',
@@ -26,7 +28,7 @@ export class AssetCategoryComponent {
   editCurrCategory!:CategoryName;
   editId:string='';
   editName!:string;
-  constructor(private assetCategoryService:AssetCategoryService){}
+  constructor(private assetCategoryService:AssetCategoryService,private auth:AuthService,private router:Router){}
   ngOnInit(){
     this.editCurrCategory=new CategoryName;
     this.email=localStorage.getItem('user');
@@ -39,13 +41,43 @@ export class AssetCategoryComponent {
       //   console.log(x.companyId+" "+x.name+" "+x.email)
       // })
     },
-    (err)=>{
+    (err)=>{ this.handleError(err)
       console.log(err);
     })
 
 
 
     
+  }
+  logout(){
+    this.auth.currUser=null;
+    this.auth.isLoggedIn=false;
+    this.assetCategoryService.removeSession(this.email).subscribe((data)=>{
+      console.log("Session Removed")
+    },
+    (err)=>{ this.handleError(err)
+      console.log("Session delete error ",err)
+    })
+    localStorage.removeItem('token');
+      localStorage.removeItem('user');
+   
+    localStorage.removeItem('currOption');
+    localStorage.removeItem('authToken');
+    localStorage.removeItem('companyId');
+
+    this.router.navigate(['/login']);
+
+   
+  }
+  handleError(error: any) {
+    console.log(error);
+    if(error.status=="403"||error.status=="401"){
+      localStorage.clear()
+      alert("Session expired");
+     
+      this.logout();
+
+    }
   }
 
   onAddField(){
@@ -70,7 +102,7 @@ export class AssetCategoryComponent {
       
       this.ngOnInit();
     },
-    (err)=>{
+    (err)=>{ this.handleError(err)
       console.log(err.error.errorMessage);
       
       this.triggerAlert(err.error.errorMessage,"danger");
@@ -102,7 +134,7 @@ export class AssetCategoryComponent {
       
       this.ngOnInit();
     },
-    (err)=>{
+    (err)=>{ this.handleError(err)
       console.log(err.error);
       
       this.triggerAlert(err.error.message,"danger");
@@ -121,7 +153,7 @@ export class AssetCategoryComponent {
       console.log(data);
       this.deletionId='';
     },
-    (err)=>{
+    (err)=>{ this.handleError(err)
       console.log(err);
       this.triggerAlert(err.error.message,"danger");
     },
@@ -182,7 +214,7 @@ export class AssetCategoryComponent {
     this.assetCategoryService.getCustomerCategoryById(this.companyId,id).subscribe((data)=>{
       this.editCurrCategory=data;
     },
-   (err)=>{
+   (err)=>{ this.handleError(err)
     console.log(err);
    })
 
@@ -201,7 +233,7 @@ export class AssetCategoryComponent {
       
       this.ngOnInit();
     },
-    (err)=>{
+    (err)=>{ this.handleError(err)
       console.log(err.error);
       
       this.triggerAlert(err.error.message,"danger");

@@ -19,10 +19,12 @@ import { ResetPasswordAdminComponent } from './admin/reset-password-admin/reset-
 import { AdminHomeComponent } from './admin/admin-home/admin-home.component';
 import { AdminAuthenticationService } from './shared/admin-authentication.service';
 import { PaymentComponent } from './setting/payment/payment.component';
+import { CustomerResetPasswordComponent } from './customer-reset-password/customer-reset-password.component';
 
 const routes: Routes = [
   {path: '', component:HomeComponent, pathMatch:'full'},
   {path:'login', component:LoginComponent},
+  {path:'reset-password', component:  CustomerResetPasswordComponent},
   {path:'register', component:RegisterComponent},
  {path:'dashboard', component:DashboardComponent,canActivate:[AuthenticationService]},
   // {path:'dashboard', component:DashboardComponent},
@@ -39,6 +41,7 @@ const routes: Routes = [
   {path:'admin',component:AdminLoginComponent},
   {path:'admin/reset',component:ResetPasswordAdminComponent},
   {path:'admin/home',component:AdminHomeComponent,canActivate:[AdminAuthenticationService]}
+
 
   
 

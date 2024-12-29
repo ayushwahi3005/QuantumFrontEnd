@@ -1,5 +1,5 @@
 <div class="d-flex justify-content-center">
-  <div *ngIf="showAlert" class="alert" [ngClass]="'alert-' + alertType" role="alert" style="width: 95%; z-index: 10000; position:absolute;">
+  <div *ngIf="showAlert" class="alert" [ngClass]="'alert-' + alertType" role="alert" style="width: 95%; z-index: 20000; position:absolute;">
     {{ alertMessage }}
   
     <button type="button" class="btn-close" (click)="showAlert = false" aria-label="Close" style="float: right;"></button>
@@ -136,7 +136,7 @@
 
 
  
-  <div class="modal fade" id="addAssetPopup" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle" aria-hidden="true" data-backdrop="static" data-keyboard="false"  style="z-index :10000;">
+  <div class="modal fade" id="addAssetPopup" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle" aria-hidden="true" data-backdrop="static" data-keyboard="false"  style="z-index :10000; margin-top: 70px;">
     <div class="modal-dialog modal-xl" role="document">
       <div class="modal-content">
         <div class="modal-header">
@@ -181,12 +181,35 @@
               <br>
               <div class="form-group">
                 <label for="customer">Customer<span *ngIf="mandatoryFieldsMap.get('customer')" class="text-danger">*</span></label>
-                <select class="form-select" class="form-control" id="customer" formControlName="customer" #customer>
-                  <option value="" selected>None</option>
-                  <option value="{{[customer.name,customer.id]}}" *ngFor="let customer of companyCustomerList">{{customer.name}}</option>
+                <div class="dropdown">
+                  <div class="d-flex">
+                    <span class="dropdown-toggle-arrow">
+                      <i class="fa" [ngClass]="dropdownOpen ? 'fa-chevron-up' : 'fa-chevron-down'"></i>
+                    </span>
+                  <input
+                    type="text"
+                    placeholder="Search"
+                    class="form-control"
+                    (input)="filterCustomers($event)"
+                    [value]="selectedCustomer?.name || ''"
+                    (click)="toggleDropdown()"
+                  />
                   
-                </select>
+                </div>
+                  
+                  <ul class="dropdown-menu" [class.show]="dropdownOpen">
+                    <li
+                      *ngFor="let customer of filteredCustomerList"
+                      (click)="selectCustomer(customer)"
+                      class="dropdown-item"
+                    >
+                      {{ customer.name }}
+                    </li>
+                  </ul>
+                </div>
               </div>
+              
+              
               <br>
               <div class="form-group">
                 <label for="location">Location<span *ngIf="mandatoryFieldsMap.get('location')" class="text-danger">*</span></label>
@@ -195,14 +218,12 @@
               <br>
               <div class="form-group">
                 <label for="status">Status<span *ngIf="mandatoryFieldsMap.get('status')" class="text-danger">*</span></label>
-                <select class="form-select" class="form-control" id="status" formControlName="status" #status>
-                  <option value="active" selected>Active</option>
-                  <option value="inactive" selected>In Active</option>
-                  <option value="outofservice" selected>Out Of Service</option>
-                  
-                  
+                <select class="form-select" id="status" formControlName="status">
+                  <option value="active">Active</option>
+                  <option value="inactive">Inactive</option>
                 </select>
               </div>
+              
               <br>
               <div class="form-group" *ngFor="let item of showFieldsList" >
                 <div *ngIf="item.show">
@@ -212,7 +233,7 @@
                 <br>
               </div>
               <div class="modal-footer">
-                <button type="submit" class="btn btn-primary mt-3"  (click)="image.value=''" [disabled]="assetForm.invalid">ADD</button>
+                <button type="submit" class="btn btn-primary mt-3"  (click)="image.value=''">ADD</button>
               </div>
 
             

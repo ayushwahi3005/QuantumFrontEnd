@@ -32,7 +32,8 @@ export class AdminLoginComponent {
         this.router.navigate(['admin/home']);
       },
     (err)=>{
-      console.log("Login Failed"+err);
+      console.log("Login Failed");
+      console.log(err);
 
     })
     } else {

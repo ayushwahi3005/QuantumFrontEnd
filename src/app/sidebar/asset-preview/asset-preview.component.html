@@ -213,25 +213,37 @@
                     <div class="modal-content">
                       <div class="modal-header">
                         <h2 class="modal-title" id="exampleModalLongTitle">Check In/Out Details</h2>
-                        <button type="button" class="close" data-dismiss="modal" aria-label="Close" style="border-radius: 5px;" #closeBox3>
+                        <button type="button" class="close ms-auto" data-dismiss="modal" aria-label="Close" style="border-radius: 5px;" #closeBox3>
                           <span aria-hidden="true">&times;</span>
                         </button>
                       </div>
                       <div class="modal-body">
                         <form >
-                          <label>Employee<span class="text-danger">*</span></label>
-                          <input type="text"  #employeeName>
-                          <!-- <select  id="technician"  #employeeName>
+                          <!-- <label>Employee<span class="text-danger">*</span></label>
+                          <input type="text"  #employeeName> -->
+
+                          <label>Employee<span class="text-danger">*</span></label><br>
+                  <!-- <input type="text"  #employeeName> -->
+                  <!-- <select  id="technician"  #employeeName>
+                  
+                    <option value="{{technician.firstName}}  {{technician.lastName}}" *ngFor="let technician of technicalUserList">{{technician.firstName}} {{technician.lastName}}</option>
+                    
+                  </select> -->
+                          <select  id="technician"  #employeeName>
                           
                             <option value="{{technician.firstName}}  {{technician.lastName}}" *ngFor="let technician of technicalUserList">{{technician.firstName}} {{technician.lastName}}</option>
                             
-                          </select> -->
+                          </select>
                           <!-- <input type="text"  id="technician"  #employeeName> -->
                           <p><label>Notes<span class="text-danger">*</span></label></p>
                           <textarea rows="4" cols="61" id="textArea" #notes placeholder="Write Your Notes Here!!" style="border-radius: 5px; border: 3px solid #aab1b8;"></textarea><br>
                           <label>Location</label>
                           <input type="text" #location>
-                          <button class="btn btn-danger" (click)="CheckInOutSubmit(employeeName.value,notes.value,location.value)" (click)="closeBox3.click()" (click)="employeeName.value=''" (click)="notes.value=''" (click)="location.value=''">Submit</button>
+                          <div class="d-flex justify-content-around">
+                  
+                            <button class="btn btn-light" (click)="closeBox3.click()" (click)="employeeName.value=''" (click)="notes.value=''" (click)="location.value=''">Cancel</button>
+                            <button class="btn btn-primary" (click)="CheckInOutSubmit(employeeName.value,notes.value,location.value)" (click)="closeBox3.click()" (click)="employeeName.value=''" (click)="notes.value=''" (click)="location.value=''">Submit</button>
+                           </div> 
                         </form>
               
                        
@@ -296,12 +308,12 @@
                 <div class="d-flex justify-content-between" style="margin: 5px;">
                   
                   <span style="font-size: large;">{{item.fileName|titlecase}}</span>
-                  <!-- <div>
+                  <div>
                    
                     <a (click)="download(item.id,item.fileName)"  style="margin: 0px 5px;"><i class="bi bi-file-earmark-arrow-down"></i></a>
                     <a (click)="itemDeleteDetails(item.id)" data-target="#popupDelete" data-toggle="modal" style="margin: 0px 5px;"><i class="bi bi-trash-fill delete"></i></a>
                     
-                  </div> -->
+                  </div>
                 </div>
                 </div>
               </div>
@@ -481,20 +493,20 @@
         </div>
       </div>
     </div> -->
-    <!-- <div class="modal fade" id="popupDelete" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle" aria-hidden="true">
+    <div class="modal fade" id="popupDelete" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle" aria-hidden="true">
       <div class="modal-dialog" role="document">
         <div class="modal-content">
           <div class="modal-header d-flex justify-content-center">
-            Are you sure You Want to delete File
-            <button type="button" class="close" data-dismiss="modal" aria-label="Close" #closeBox4>
+            Are you sure You Want to delete File!
+            <button type="button" class="close ms-auto" data-dismiss="modal" aria-label="Close" #closeBox4>
               <span aria-hidden="true">&times;</span>
             </button>
           </div>
           <div class="d-flex justify-content-center">
             <div class="modal-body">
               <form>
-              <button class="btn btn-primary" (click)="deleteFile()" (click)="closeBox4.click()">DELETE</button>
-              <button class="btn btn-danger close" data-dismiss="modal" aria-label="Close" (click)="closeBox3.click()">CANCEL</button>
+              <button class="btn btn-primary" (click)="deleteFile()" style="margin: 0px 5px;" (click)="closeBox4.click()">DELETE</button>
+              <button class="btn btn-danger close" data-dismiss="modal" style="margin: 0px 5px;" aria-label="Close" (click)="closeBox4.click()">CANCEL</button>
               </form>
              
             </div>
@@ -505,7 +517,7 @@
           </div>
         </div>
       </div>
-    </div> -->
+    </div>
     <div class="modal fade" id="qrPopUp" tabindex="-1" role="dialog"  aria-hidden="true">
       <div class="modal-dialog" role="document">
         <div class="modal-content">

@@ -135,7 +135,7 @@
             <div class="modal-content">
               <div class="modal-header">
                 <h2 class="modal-title" id="exampleModalLongTitle">Check In/Out Details</h2>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close" style="border-radius: 5px;" #closeBox3>
+                <button type="button" class="close ms-auto " data-dismiss="modal" aria-label="Close" style="border-radius: 5px;" #closeBox3>
                   <span aria-hidden="true">&times;</span>
                 </button>
               </div>
@@ -153,7 +153,11 @@
                   <textarea rows="4" cols="61" id="textArea" #notes placeholder="Write Your Notes Here!!" style="border-radius: 5px; border: 3px solid #aab1b8;"></textarea><br>
                   <label>Location</label>
                   <input type="text" #location>
-                  <button class="btn btn-danger" (click)="CheckInOutSubmit(employeeName.value,notes.value,location.value)" (click)="closeBox3.click()" (click)="employeeName.value=''" (click)="notes.value=''" (click)="location.value=''">Submit</button>
+                  <div class="d-flex justify-content-around">
+                  
+                  <button class="btn btn-light" (click)="closeBox3.click()" (click)="employeeName.value=''" (click)="notes.value=''" (click)="location.value=''">Cancel</button>
+                  <button class="btn btn-primary" (click)="CheckInOutSubmit(employeeName.value,notes.value,location.value)" (click)="closeBox3.click()" (click)="employeeName.value=''" (click)="notes.value=''" (click)="location.value=''">Submit</button>
+                 </div>  
                 </form>
       
                
@@ -340,8 +344,8 @@
       <div class="modal-dialog" role="document">
         <div class="modal-content">
           <div class="modal-header">
-            <h2 class="modal-title" id="exampleModalLongTitle">Do you want to update details for {{assetDetails.name}}!!</h2>
-            <button type="button" class="close" data-dismiss="modal" aria-label="Close" #closeBox>
+            <h2 class="modal-title" id="exampleModalLongTitle">Do you want to update details for {{assetDetails.name}}!</h2>
+            <button type="button" class="close ms-auto" data-dismiss="modal" aria-label="Close" #closeBox>
               <span aria-hidden="true">&times;</span>
             </button>
           </div>
@@ -380,16 +384,17 @@
       <div class="modal-dialog" role="document">
         <div class="modal-content">
           <div class="modal-header">
-            <h2 class="modal-title" id="exampleModalLongTitle">Do you want to delete Asset {{assetDetails.name}}!!</h2>
+            <h2 class="modal-title" id="exampleModalLongTitle">Do you want to delete Asset {{assetDetails.name}}?</h2>
             <button type="button" class="close ms-auto" data-dismiss="modal" aria-label="Close" #closeBox3>
               <span aria-hidden="true">&times;</span>
             </button>
           </div>
           <div class="modal-body">
-            <form>
-            <button class="btn btn-primary" (click)="onDelete()" (click)="closeBox3.click()">DELETE</button>
-            <button class="btn btn-danger close" data-dismiss="modal" aria-label="Close" (click)="closeBox3.click()"  >CANCEL</button>
-            </form>
+            <div class="d-flex justify-content-around">
+           
+            <button class="btn btn-primary close" data-dismiss="modal" aria-label="Close" (click)="closeBox3.click()"  >CANCEL</button>
+            <button class="btn btn-danger" (click)="onDelete()" (click)="closeBox3.click()">DELETE</button>
+            </div>
            
           </div>
         </div>
@@ -424,7 +429,7 @@
   <div class="modal-dialog" role="document">
     <div class="modal-content">
       <div class="modal-header d-flex justify-content-center">
-        Are you sure You Want to delete File !!
+        Are you sure You Want to delete File !
         <button type="button" class="close ms-auto" data-dismiss="modal" aria-label="Close" #closeBox4>
           <span aria-hidden="true">&times;</span>
         </button>
