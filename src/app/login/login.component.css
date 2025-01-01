@@ -7,10 +7,15 @@ form{
     padding: 10px 10px;
     margin: 10px;
     
-    margin-top: 50px;
-    
-    
+    margin-top: 50px;   
 }
+
+body {
+  flex-direction: column;
+  height: 100%;
+  display: flex;
+}
+
 .login{
   width: 600px;
   height: auto;
@@ -20,17 +25,25 @@ form{
     justify-content: center;
     padding: 20px 5px;
    
-    margin: 100px auto;
+    margin: 10px auto;
    
     font-family: Arial, sans-serif;
     position: relative;
+    flex: 1;
    
       /* margin-top: calc(50vh - 350px); */
-
-      
-
-    
 }
+
+/* .login{
+  width: 600px;
+    display: flex;
+    justify-content: center;
+    padding: 50px 5px;
+    border: 1px solid lightgray;
+    margin: 30px auto;
+    border-radius: 10px;
+} */
+
 .form-border{
   box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
    border: 1px solid lightgray;
@@ -41,6 +54,7 @@ form{
     position: relative;
     padding : 20px 30px;
     /* margin-bottom: 40px; */
+    width: 550px;
 }
 
 h2{
@@ -76,21 +90,25 @@ h2{
 img{
     height: 48px;
 }
+
 .header-centre{
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    flex-direction: row;
-    padding: 1em;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: row;
+  padding: 1.5em;
 }
 .header-centre h1{
-    display: block;
-    font-size: 2em;
-    font-weight: bold;
-    padding-left: 15px;
-    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
-    -webkit-font-smoothing: antialiased;
+  display: block;
+  font-size: 2.25em;
+  font-weight: bold;
+  padding-left: 15px;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
+  -webkit-font-smoothing: antialiased;
+  padding: 0;
+  margin: 0;
 }
+
 mat-form-field {
     width: 100%;
     background-color: white;
@@ -99,17 +117,19 @@ form{
     border: 0px;
 }
 
-
 .forget{
-    display: flex;
-    justify-content: center;
+  display: flex;
+  justify-content: center;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
+}
 
-}
 .forget a{
-    color: #2C1376;
-    font-weight: bold;
-    padding-top: 10px;
+  color: #2C1376;
+  font-weight: bold;
+  padding-top: 10px;
+  font-size: 1rem;
 }
+
 #signup{
     width: 100px;
     background-color: #1876D2 ;
@@ -119,8 +139,9 @@ form{
    
     height: 40px;
     color: white;
-    margin-top: 30px;
+    /* margin-top: 30px; */
 }
+
 .form-group{
     height: 60px;
 }
@@ -259,4 +280,17 @@ form{
   }
   .copyright{
     color: black;
+  }
+
+  .inline-text {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
+    font-size: 1rem;
+    margin: 0 10px 0 0; /* Spacing between text and button */
+  }
+
+  .d-flex-row {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-top: 30px; /* Adjust as needed for spacing */
   }

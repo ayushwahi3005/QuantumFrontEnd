@@ -113,7 +113,7 @@ a{
     color: #4a148c; /* Purple color for links */
     padding: 20px 0;
     /* margin: 30px auto; */
-    position: absolute;
+    position: relative;
     bottom: 0px;
 
   }

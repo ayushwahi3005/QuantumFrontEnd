@@ -1,3 +1,4 @@
+<body  *ngIf="!loader">
 <div class="header">
   <div class="header-centre">
     <!-- <img src='../../assets/logo.png'> -->
@@ -9,7 +10,7 @@
   <!-- Optionally, add a close button -->
   <button type="button" class="btn-close" (click)="showAlert = false" aria-label="Close" style="float: right;"></button>
 </div>
-<div class="login container" *ngIf="!loader">
+<div class="login container">
     <form class="form-border">
         <h1 id="log-in">Log in</h1>
         <div class="form-group">
@@ -29,42 +30,33 @@
        
         <button class="btn btn-primary" (click)="login()" style=" width: 100%;
         margin-top: 10px;
-        background-color: #013365 ;
+        background-color: #013365;
         height: 40px;
         color: white;
-        margin-top: 30px;">LOGIN</button>
+        margin-top: 30px;">LOG IN</button>
+
+    <!-- background-color: rgb(0, 51, 102); -->
           
             
             <div class="forget" >
-                <a [routerLink]="['/reset-password']" style="text-decoration: none;">Forget Password? </a>
+                <a [routerLink]="['/reset-password']" style="text-decoration: none; margin-top: 10px;">Forgot Password? </a>
             </div>
             
             <hr>
             
            
-            <div class="d-flex justify-content-center">
-            <button id="signup" [routerLink]="['/register']" >SIGNUP</button>
-            <!-- <button data-toggle="modal" data-target="#removeLoggedIn">Sample</button> -->
-             <!-- <button class="btn btn-primary" (click)="demo()"></button> -->
-          </div>
+            <div class="d-flex-row">
+              <h3 class="inline-text">Don't have an Account?</h3>
+              <button id="signup" [routerLink]="['/register']" >SIGN UP</button>
+              <!-- <button data-toggle="modal" data-target="#removeLoggedIn">Sample</button> -->
+              <!-- <button class="btn btn-primary" (click)="demo()"></button> -->
+            </div>
             
-
-       
-
-        
-      </form>
-      
+      </form>      
 </div>
-<div class="dot-spinner d-flex justify-content-center" *ngIf="loader" >
-  <div class="dot-spinner__dot"></div>
-  <div class="dot-spinner__dot"></div>
-  <div class="dot-spinner__dot"></div>
-  <div class="dot-spinner__dot"></div>
-  <div class="dot-spinner__dot"></div>
-  <div class="dot-spinner__dot"></div>
-  <div class="dot-spinner__dot"></div>
-  <div class="dot-spinner__dot"></div>
-</div>
+
+
+
 
 
 <div class="modal fade" id="removeLoggedIn" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle" aria-hidden="true" data-backdrop="static" data-keyboard="false"  style="z-index :10000;">
@@ -80,8 +72,6 @@
        
         <p>Logout from all devices</p>
 
-
-       
       </div>
       <div class="modal-footer">
         <button class="btn btn-primary" (click)="logoutFromAllDevice()">Yes</button>
@@ -100,4 +90,15 @@
     <p class="copyright">&copy; AssetYug</p>
   </div>
 </footer>
+</body>
 
+<div class="dot-spinner d-flex justify-content-center" *ngIf="loader" >
+  <div class="dot-spinner__dot"></div>
+  <div class="dot-spinner__dot"></div>
+  <div class="dot-spinner__dot"></div>
+  <div class="dot-spinner__dot"></div>
+  <div class="dot-spinner__dot"></div>
+  <div class="dot-spinner__dot"></div>
+  <div class="dot-spinner__dot"></div>
+  <div class="dot-spinner__dot"></div>
+</div>
