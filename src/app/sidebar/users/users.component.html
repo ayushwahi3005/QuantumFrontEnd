@@ -124,7 +124,7 @@
                
                 <select class="form-select" class="form-control"  formControlName="role" style="width: 97%" [ngModel]="selectEditUser?.role" #role>
                  
-                  <option value="ADMIN" selected>Administration</option>
+                 
                   
                   <option value="{{role?.name}}" *ngFor="let role of roleAndPermissionList">{{role?.name}}</option>
                  
@@ -182,7 +182,7 @@
                
                 <select class="form-select" class="form-control"  formControlName="role" style="width: 97%" #role>
                  
-                  <option value="ADMIN" selected>Administration</option>
+              
                   
                   <option value="{{role.name}}" *ngFor="let role of roleAndPermissionList">{{role.name}}</option>
                  

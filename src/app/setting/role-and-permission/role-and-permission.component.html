@@ -12,7 +12,7 @@
   </div> -->
   <div class="background-tab">
     <div style="width: 100%;" class="d-flex justify-content-center">
-      <div style="display: flex; justify-content: space-between; width: 100%;">
+      <div style="display: flex; justify-content: space-between; width: 90%;">
         <div>
           <input type="text" id="import-history-input" placeholder="Search By Name" style="margin: 0px 0px 10px 0px; height: 40px; " (keyup)="find($event)" #data>
           <i class="bi bi-search searchIcon"></i>
@@ -25,7 +25,7 @@
       <table class="table roleTable">
         <thead class="table-dark" >
           <tr style="top: 0; position: sticky; z-index: 100;">
-            <th scope="col">ID</th>
+            <th scope="col">#</th>
             <th scope="col">Name</th>
             <th scope="col">Type</th>
             <th scope="col"># of Users</th>
@@ -37,7 +37,7 @@
           <tr *ngFor="let item of searchedRole" style="height: 10px;">
             <th scope="row">{{searchedRole.indexOf(item)+1}}</th>
             <td>{{item.name}}</td>
-            <td>{{item.type}}</td>
+            <td>{{item.type|titlecase}}</td>
             <td>{{item.ofUser}}</td>
             <td>{{item.status|titlecase}}</td>
             <td >
@@ -59,369 +59,364 @@
     </div>
   </div>
 
-<!-- Creating a new role -->
 
-<div class="modal fade" id="add-role" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle" aria-hidden="true">
-  <div class="modal-dialog  modal-lg" role="document">
-    <div class="modal-content">
-      <div class="modal-header" style="padding: 13px 15px">
-        <h2 class="modal-title" id="exampleModalLongTitle" style="margin:0; display: flex; justify-content: center;">Create Role</h2>
-        <button type="button" class="close ms-auto" data-dismiss="modal" aria-label="Close"  #closeBox>
-          <!-- <span aria-hidden="true">&times;</span> -->
-          <!-- <i class="bi bi-x-circle-fill"></i> -->
-          <i class="fa-solid fa-xmark"></i>
-        </button>
-      </div>
-      <div class="modal-body">
-        <form [formGroup]="roleAndPermissionForm" (ngSubmit)="addRoleAndPermission()">
-          <div class="form-group">
-            <label for="name">Name<span  class="text-danger"> *</span></label>
-            <input type="text" class="highlight-input" style="font-size: 16px; padding-left: 11px; width: 100%; margin-top: 10px; border-radius: 5px; height: 35px; border: 1px solid #c0c0c0; transition: border-color 0.3s, box-shadow 0.3s;" id="name"  formControlName="name"  placeholder="Name">
+
+
+
+  <div class="modal fade" id="add-role" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle" aria-hidden="true">
+    <div class="modal-dialog  modal-xl" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h2 class="modal-title" id="exampleModalLongTitle">Create Role</h2>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close"  #closeBox>
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <form [formGroup]="roleAndPermissionForm" (ngSubmit)="addRoleAndPermission()">
+            <div class="form-group">
+              <label for="name">Name<span  class="text-danger">*</span></label>
+              <input type="text" class="form-control" id="name"  formControlName="name"  placeholder="Name">
+             
+            </div>
+
            
-          </div>
-
-          <h2 class="mt-2">Permissions</h2>
-          <table class="addTable table " style="margin: 10px auto; border-radius: 10px;">
-            <thead class="table-dark">
-              <tr>
-                <th style="width: 50%; padding-left: 20%;">Name</th>
-                <th style="width: 50%; padding-left: 20%;">Level</th>
-              </tr>
-            </thead>
-            <tr class="form-group">
-        
-            
-            <td>
-            <label for="assets">Assets</label>
-            </td>
-            
-            <td>
-            <select class="form-select form-control" id="assets" formControlName="assets" #Asset >
-              <option value="none" selected>None</option>
-              <option value="view">View</option>
-              <option value="create" >Create</option>
-              <option value="edit" >Edit</option>
-              <option value="full" >Full</option>
+            <h2 class="mt-2">Permissions</h2>
+            <table class="addTable table " style="margin: 10px auto; border-radius: 10px;">
+              <thead class="table-dark">
+                <tr>
+                  <th style="width: 50%; padding-left: 20%;">Name</th>
+                  <th style="width: 50%; padding-left: 20%;">Level</th>
+                </tr>
+              </thead>
+              <tr class="form-group">
+          
               
-            </select>
-          </td>
-        
+              <td>
+              <label for="assets">Asset</label>
+              </td>
+              
+              <td>
+              <select class="form-select form-control" id="assets" formControlName="assets" #Asset >
+                <option value="none" selected>None</option>
+                <option value="view">View</option>
+                <option value="create" >Create</option>
+                <option value="edit" >Edit</option>
+                <option value="full" >Full</option>
+                
+              </select>
+            </td>
           
-        </tr>
-        <!-- <hr> -->
-          
-            <tr class="form-group">
-              <td>
-              <label for="customers">Customers</label>
-            </td>
-            <td>
-              <select class="form-select form-control" id="customers" formControlName="customers" #customers>
-                <option value="none" selected>None</option>
-                <option value="view" selected>View</option>
-                <option value="create" selected>Create</option>
-                <option value="edit" selected>Edit</option>
-                <option value="full" selected>Full</option>
-                
-              </select>
-            </td>
-            </tr>
-          
-            <!-- <hr> -->
-            <tr class="form-group">
-              <td>
-              <label for="workOrders">Work Orders</label>
-            </td>
-            <td>
-              <select class="form-select form-control" id="workOrders" formControlName="workOrders" #workOrders>
-                <option value="none" selected>None</option>
-                <option value="view" selected>View</option>
-                <option value="create" selected>Create</option>
-                <option value="edit" selected>Edit</option>
-                <option value="full" selected>Full</option>
-                
-              </select>
-            </td>
-            </tr>
-            <!-- <hr> -->
-            <tr class="form-group">
-              <td>
-              <label for="users">Users</label>
-            </td>
-            <td>
-                <select class="form-select form-control" id="users" formControlName="users" #users>
-                  <option value="none" selected>None</option>
-                <option value="view" selected>View</option>
-                <option value="create" selected>Create</option>
-                <option value="edit" selected>Edit</option>
-                <option value="full" selected>Full</option>
-                
-              </select>
-            </td>
-            </tr>
-            <!-- <hr> -->
-            <tr class="form-group">
-              <td>
-              <label for="roleAndPermissions">Roles And Permissions</label>
-            </td>
-            <td>
-                <select class="form-select form-control" id="roleAndPermissions" formControlName="roleAndPermissions" #roleAndPermissions>
-                  <option value="none" selected>None</option>
-                <option value="view" selected>View</option>
-                <option value="create" selected>Create</option>
-                <option value="edit" selected>Edit</option>
-                <option value="full" selected>Full</option>
-                
-              </select>
-            </td>
-            </tr>
-            <!-- <hr> -->
-            <tr class="form-group">
-              <td>
-              <label for="imports">Import</label>
-            </td>
-              <td>
-              <select class="form-select form-control" id="imports" formControlName="imports" #imports>
-                <option value="none" selected>None</option>
-                <option value="view" selected>View</option>
-                <option value="create" selected>Create</option>
-                <option value="edit" selected>Edit</option>
-                <option value="full" selected>Full</option>
-                
-              </select>
-            </td>
-            </tr>
-            <!-- <hr> -->
-            <tr class="form-group">
-            <td>
-              <label for="category">Category</label>
-            </td>
-          <td>
-               <select class="form-select form-control" id="category" formControlName="category" #category>
-                <option value="none" selected>None</option>
-                <option value="view" selected>View</option>
-                <option value="create" selected>Create</option>
-                <option value="edit" selected>Edit</option>
-                <option value="full" selected>Full</option>
-                
-              </select>
-            </td>
-            </tr>
-            <!-- <hr> -->
-            <tr class="form-group">
-            <td>
-              <label for="inventory">Inventory</label>
-            </td>
-          <td>
-                   <select class="form-select form-control" id="inventory" formControlName="inventory" #inventory>
-                    <option value="none" selected>None</option>
-                <option value="view" selected>View</option>
-                <option value="create" selected>Create</option>
-                <option value="edit" selected>Edit</option>
-                <option value="full" selected>Full</option>
-                
-              </select>
-            </td>
+            
           </tr>
+          <!-- <hr> -->
+            
+              <tr class="form-group">
+                <td>
+                <label for="customers">Customer</label>
+              </td>
+              <td>
+                <select class="form-select form-control" id="customers" formControlName="customers" #customers>
+                  <option value="none" selected>None</option>
+                  <option value="view" selected>View</option>
+                  <option value="create" selected>Create</option>
+                  <option value="edit" selected>Edit</option>
+                  <option value="full" selected>Full</option>
+                  
+                </select>
+              </td>
+              </tr>
+            
+              <!-- <hr> -->
+              <tr class="form-group">
+                <td>
+                <label for="workOrders">WorkOrders</label>
+              </td>
+              <td>
+                <select class="form-select form-control" id="workOrders" formControlName="workOrders" #workOrders>
+                  <option value="none" selected>None</option>
+                  <option value="view" selected>View</option>
+                  <option value="create" selected>Create</option>
+                  <option value="edit" selected>Edit</option>
+                  <option value="full" selected>Full</option>
+                  
+                </select>
+              </td>
+              </tr>
+              <!-- <hr> -->
+              <tr class="form-group">
+                <td>
+                <label for="users">Users</label>
+              </td>
+              <td>
+                  <select class="form-select form-control" id="users" formControlName="users" #users>
+                    <option value="none" selected>None</option>
+                  <option value="view" selected>View</option>
+                  <option value="create" selected>Create</option>
+                  <option value="edit" selected>Edit</option>
+                  <option value="full" selected>Full</option>
+                  
+                </select>
+              </td>
+              </tr>
+              <!-- <hr> -->
+              <tr class="form-group">
+                <td>
+                <label for="roleAndPermissions">Role And Permissions</label>
+              </td>
+              <td>
+                  <select class="form-select form-control" id="roleAndPermissions" formControlName="roleAndPermissions" #roleAndPermissions>
+                    <option value="none" selected>None</option>
+                  <option value="view" selected>View</option>
+                  <option value="create" selected>Create</option>
+                  <option value="edit" selected>Edit</option>
+                  <option value="full" selected>Full</option>
+                  
+                </select>
+              </td>
+              </tr>
+              <!-- <hr> -->
+              <tr class="form-group">
+                <td>
+                <label for="imports">Imports</label>
+              </td>
+                <td>
+                <select class="form-select form-control" id="imports" formControlName="imports" #imports>
+                  <option value="none" selected>None</option>
+                  <option value="view" selected>View</option>
+                  <option value="create" selected>Create</option>
+                  <option value="edit" selected>Edit</option>
+                  <option value="full" selected>Full</option>
+                  
+                </select>
+              </td>
+              </tr>
+              <!-- <hr> -->
+              <tr class="form-group">
+              <td>
+                <label for="category">Category</label>
+              </td>
+            <td>
+                 <select class="form-select form-control" id="category" formControlName="category" #category>
+                  <option value="none" selected>None</option>
+                  <option value="view" selected>View</option>
+                  <option value="create" selected>Create</option>
+                  <option value="edit" selected>Edit</option>
+                  <option value="full" selected>Full</option>
+                  
+                </select>
+              </td>
+              </tr>
+              <!-- <hr> -->
+              <tr class="form-group">
+              <td>
+                <label for="inventory">Inventory</label>
+              </td>
+            <td>
+                     <select class="form-select form-control" id="inventory" formControlName="inventory" #inventory>
+                      <option value="none" selected>None</option>
+                  <option value="view" selected>View</option>
+                  <option value="create" selected>Create</option>
+                  <option value="edit" selected>Edit</option>
+                  <option value="full" selected>Full</option>
+                  
+                </select>
+              </td>
+            </tr>
+           
+            </table>
+            
+            <!-- <button type="submit" class="btn btn-primary mt-3" (click)="closeBox.click()" [disabled]="workorderform.invalid">Submit</button> -->
+            <button type="submit" class="btn btn-primary mt-3" style="margin-left: 45%;" (click)="closeBox.click()" [disabled]="roleAndPermissionForm.invalid" >Submit</button>
+            <button class="btn btn-primary"  (click)="closeBox.click()"style="margin-left: 40%;">Cancel</button>
+          </form>
          
-          </table>
-          
-          <!-- <button type="submit" class="btn btn-primary mt-3" (click)="closeBox.click()" [disabled]="workorderform.invalid">Submit</button> -->
-          <div style="display: flex; justify-content: center; margin-top: 15px;">
-          
-          <button class="btn btn-light" data-dismiss="modal" aria-label="Close" (click)="closeBox.click()" style="margin: 10px; width: 100px; margin-right: 30px; border: 1px solid #c0c0c0" >Cancel</button>
-          <button type="submit" class="btn btn-primary mt-2" (click)="closeBox.click()" [disabled]="roleAndPermissionForm.invalid" style="margin: 10px; width: 100px;">Save</button>
-          </div>
-        </form>
-       
+        </div>
       </div>
     </div>
   </div>
-</div>
 
-<!-- Editing an existing Role -->
 
-<div class="modal fade" id="edit-role" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle" aria-hidden="true">
-  <div class="modal-dialog  modal-lg" role="document">
-    <div class="modal-content">
-      <div class="modal-header" style="padding: 13px 15px">
-        <h2 class="modal-title" id="exampleModalLongTitle" style="margin:0; display: flex; justify-content: center;">Edit Role</h2>
-        <button type="button" class="close ms-auto" data-dismiss="modal" aria-label="Close"  #closeBox2>
-          <span aria-hidden="true">&times;</span>
-        </button>
-      </div>
-      <div class="modal-body">
-        <form [formGroup]="roleAndPermissionFormEdit" (ngSubmit)="updateRoleAndPermission()">
-          <div class="form-group">
-            <label for="name">Name<span  class="text-danger"> *</span></label>
-            <input type="text" class="highlight-input" id="name" style="font-size: 16px; padding-left: 11px; width: 100%; margin-top: 10px; border-radius: 5px; height: 35px; border: 1px solid #c0c0c0; transition: border-color 0.3s, box-shadow 0.3s;" formControlName="name"  placeholder="Name" [ngModel]="this.currItem.name">
+  <div class="modal fade" id="edit-role" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle" aria-hidden="true">
+    <div class="modal-dialog  modal-xl" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h2 class="modal-title" id="exampleModalLongTitle">Edit Role</h2>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close"  #closeBox2>
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <form [formGroup]="roleAndPermissionFormEdit" (ngSubmit)="updateRoleAndPermission()">
+            <div class="form-group">
+              <label for="name">Name<span  class="text-danger">*</span></label>
+              <input type="text" class="form-control" id="name"  formControlName="name"  placeholder="Name" [ngModel]="this.currItem?.name">
+             
+            </div>
+
+            <div class="form-group">
+              <label for="status">Status<span  class="text-danger">*</span></label>
+              <select class="form-select form-control" id="status" formControlName="status" #Asset [ngModel]="this.currItem?.status" >
+               
+                <option value="active">Active</option>
+                <option value="inactive" >Inactive</option>
+               
+                
+              </select>
+            </div>
+
            
-          </div>
-
-          <div class="form-group" style="margin-top: 10px;">
-            <label for="status">Status<span  class="text-danger"> *</span></label>
-            <select class="form-select form-control" id="status" style="font-size: 16px; padding-left: 11px; width: 100%; margin-top: 10px; border-radius: 5px; height: 35px; border: 1px solid #c0c0c0; transition: border-color 0.3s, box-shadow 0.3s;" formControlName="status" #Asset [ngModel]="this.currItem.status" >
-             
-              <option value="active">Active</option>
-              <option value="inactive" >Inactive</option>
-             
-            </select>
-          </div>
-
-         
-          <h2 class="mt-2">Permissions</h2>
-          <table class="addTable table " style="margin: 10px auto; border-radius: 10px;">
-            <thead class="table-dark">
-              <tr>
-                <th style="width: 50%; padding-left: 20%;">Name</th>
-                <th style="width: 50%; padding-left: 20%;">Level</th>
-              </tr>
-            </thead>
-            <tr class="form-group">
-        
-            
-            <td>
-            <label for="assets">Assets</label>
-            </td>
-            
-            <td>
-            <select class="form-select form-control" id="assets" formControlName="assets" #Asset [ngModel]="this.currItem.assets" >
-              <option value="none" selected>None</option>
-              <option value="view">View</option>
-              <option value="create" >Create</option>
-              <option value="edit" >Edit</option>
-              <option value="full" >Full</option>
+            <h2 class="mt-2">Permissions</h2>
+            <table class="addTable table " style="margin: 10px auto; border-radius: 10px;">
+              <thead class="table-dark">
+                <tr>
+                  <th style="width: 50%; padding-left: 20%;">Name</th>
+                  <th style="width: 50%; padding-left: 20%;">Level</th>
+                </tr>
+              </thead>
+              <tr class="form-group">
+          
               
-            </select>
-          </td>
-        
-          
-        </tr>
-   
-          
-            <tr class="form-group">
               <td>
-              <label for="customers">Customers</label>
-            </td>
-            <td>
-              <select class="form-select form-control" id="customers" formControlName="customers" #customers [ngModel]="this.currItem.customers">
+              <label for="assets">Asset</label>
+              </td>
+              
+              <td>
+              <select class="form-select form-control" id="assets" formControlName="assets" #Asset [ngModel]="this.currItem?.assets" >
                 <option value="none" selected>None</option>
-                <option value="view" selected>View</option>
-                <option value="create" selected>Create</option>
-                <option value="edit" selected>Edit</option>
-                <option value="full" selected>Full</option>
+                <option value="view">View</option>
+                <option value="create" >Create</option>
+                <option value="edit" >Edit</option>
+                <option value="full" >Full</option>
                 
               </select>
             </td>
-            </tr>
           
-        
-            <tr class="form-group">
-              <td>
-              <label for="workOrders">Work Orders</label>
-            </td>
-            <td>
-              <select class="form-select form-control" id="workOrders" formControlName="workOrders" #workOrders [ngModel]="this.currItem.workOrders">
-                <option value="none" selected>None</option>
-                <option value="view" selected>View</option>
-                <option value="create" selected>Create</option>
-                <option value="edit" selected>Edit</option>
-                <option value="full" selected>Full</option>
-                
-              </select>
-            </td>
-            </tr>
+            
+          </tr>
      
-            <tr class="form-group">
+            
+              <tr class="form-group">
+                <td>
+                <label for="customers">Customer</label>
+              </td>
               <td>
-              <label for="users">Users</label>
-            </td>
-            <td>
-                <select class="form-select form-control" id="users" formControlName="users" #users  [ngModel]="this.currItem.users">
+                <select class="form-select form-control" id="customers" formControlName="customers" #customers [ngModel]="this.currItem?.customers">
                   <option value="none" selected>None</option>
-                <option value="view" selected>View</option>
-                <option value="create" selected>Create</option>
-                <option value="edit" selected>Edit</option>
-                <option value="full" selected>Full</option>
-                
-              </select>
-            </td>
-            </tr>
-  
-            <tr class="form-group">
-              <td>
-              <label for="roleAndPermissions">Roles And Permissions</label>
-            </td>
-            <td>
-                <select class="form-select form-control" id="roleAndPermissions" formControlName="roleAndPermissions" #roleAndPermissions [ngModel]="this.currItem.roleAndPermissions">
-                  <option value="none" selected>None</option>
-                <option value="view" selected>View</option>
-                <option value="create" selected>Create</option>
-                <option value="edit" selected>Edit</option>
-                <option value="full" selected>Full</option>
-                
-              </select>
-            </td>
-            </tr>
-
-            <tr class="form-group">
-              <td>
-              <label for="imports">Import</label>
-            </td>
-              <td>
-              <select class="form-select form-control" id="imports" formControlName="imports" #imports [ngModel]="this.currItem.imports">
-                <option value="none" selected>None</option>
-                <option value="view" selected>View</option>
-                <option value="create" selected>Create</option>
-                <option value="edit" selected>Edit</option>
-                <option value="full" selected>Full</option>
-                
-              </select>
-            </td>
-            </tr>
-
-            <tr class="form-group">
-            <td>
-              <label for="category">Category</label>
-            </td>
-          <td>
-               <select class="form-select form-control" id="category" formControlName="category" #category  [ngModel]="this.currItem.category">
-                <option value="none" selected>None</option>
-                <option value="view" selected>View</option>
-                <option value="create" selected>Create</option>
-                <option value="edit" selected>Edit</option>
-                <option value="full" selected>Full</option>
-                
-              </select>
-            </td>
-            </tr>
-   
-            <tr class="form-group">
-            <td>
-              <label for="inventory">Inventory</label>
-            </td>
-          <td>
-                   <select class="form-select form-control" id="inventory" formControlName="inventory" #inventory  [ngModel]="this.currItem.inventory">
-                    <option value="none" selected>None</option>
-                <option value="view" selected>View</option>
-                <option value="create" selected>Create</option>
-                <option value="edit" selected>Edit</option>
-                <option value="full" selected>Full</option>
-                
-              </select>
-            </td>
-          </tr>
-         
-          </table>
+                  <option value="view" selected>View</option>
+                  <option value="create" selected>Create</option>
+                  <option value="edit" selected>Edit</option>
+                  <option value="full" selected>Full</option>
+                  
+                </select>
+              </td>
+              </tr>
+            
           
-          <!-- <button type="submit" class="btn btn-primary mt-3" (click)="closeBox.click()" [disabled]="workorderform.invalid">Submit</button> -->
-          <div style="display: flex; justify-content: center; margin-top: 15px;">
-          <button class="btn btn-light" data-dismiss="modal" aria-label="Close" (click)="closeBox.click()" style="margin: 10px; width: 100px; margin-right: 30px; border: 1px solid #c0c0c0" >Cancel</button>
-          <button type="submit" class="btn btn-primary mt-2" (click)="closeBox2.click()" [disabled]="roleAndPermissionFormEdit.invalid" style="margin: 10px; width: 100px;">Save</button>
-          </div>
-        </form>
+              <tr class="form-group">
+                <td>
+                <label for="workOrders">WorkOrders</label>
+              </td>
+              <td>
+                <select class="form-select form-control" id="workOrders" formControlName="workOrders" #workOrders [ngModel]="this.currItem?.workOrders">
+                  <option value="none" selected>None</option>
+                  <option value="view" selected>View</option>
+                  <option value="create" selected>Create</option>
+                  <option value="edit" selected>Edit</option>
+                  <option value="full" selected>Full</option>
+                  
+                </select>
+              </td>
+              </tr>
        
+              <tr class="form-group">
+                <td>
+                <label for="users">Users</label>
+              </td>
+              <td>
+                  <select class="form-select form-control" id="users" formControlName="users" #users  [ngModel]="this.currItem?.users">
+                    <option value="none" selected>None</option>
+                  <option value="view" selected>View</option>
+                  <option value="create" selected>Create</option>
+                  <option value="edit" selected>Edit</option>
+                  <option value="full" selected>Full</option>
+                  
+                </select>
+              </td>
+              </tr>
+    
+              <tr class="form-group">
+                <td>
+                <label for="roleAndPermissions">Role And Permissions</label>
+              </td>
+              <td>
+                  <select class="form-select form-control" id="roleAndPermissions" formControlName="roleAndPermissions" #roleAndPermissions [ngModel]="this.currItem?.roleAndPermissions">
+                    <option value="none" selected>None</option>
+                  <option value="view" selected>View</option>
+                  <option value="create" selected>Create</option>
+                  <option value="edit" selected>Edit</option>
+                  <option value="full" selected>Full</option>
+                  
+                </select>
+              </td>
+              </tr>
+  
+              <tr class="form-group">
+                <td>
+                <label for="imports">Imports</label>
+              </td>
+                <td>
+                <select class="form-select form-control" id="imports" formControlName="imports" #imports [ngModel]="this.currItem?.imports">
+                  <option value="none" selected>None</option>
+                  <option value="view" selected>View</option>
+                  <option value="create" selected>Create</option>
+                  <option value="edit" selected>Edit</option>
+                  <option value="full" selected>Full</option>
+                  
+                </select>
+              </td>
+              </tr>
+  
+              <tr class="form-group">
+              <td>
+                <label for="category">Category</label>
+              </td>
+            <td>
+                 <select class="form-select form-control" id="category" formControlName="category" #category  [ngModel]="this.currItem?.category">
+                  <option value="none" selected>None</option>
+                  <option value="view" selected>View</option>
+                  <option value="create" selected>Create</option>
+                  <option value="edit" selected>Edit</option>
+                  <option value="full" selected>Full</option>
+                  
+                </select>
+              </td>
+              </tr>
+     
+              <tr class="form-group">
+              <td>
+                <label for="inventory">Inventory</label>
+              </td>
+            <td>
+                     <select class="form-select form-control" id="inventory" formControlName="inventory" #inventory  [ngModel]="this.currItem?.inventory">
+                      <option value="none" selected>None</option>
+                  <option value="view" selected>View</option>
+                  <option value="create" selected>Create</option>
+                  <option value="edit" selected>Edit</option>
+                  <option value="full" selected>Full</option>
+                  
+                </select>
+              </td>
+            </tr>
+           
+            </table>
+            
+            <!-- <button type="submit" class="btn btn-primary mt-3" (click)="closeBox.click()" [disabled]="workorderform.invalid">Submit</button> -->
+            <button type="submit" class="btn btn-primary mt-3" style="margin-left: 45%;" (click)="closeBox2.click()" [disabled]="roleAndPermissionFormEdit.invalid" >Update</button>
+          </form>
+         
+        </div>
       </div>
     </div>
   </div>
-</div>
 </div>

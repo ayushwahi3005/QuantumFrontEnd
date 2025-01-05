@@ -1,61 +1,43 @@
-.searchIcon {
-  position: relative;
-  left: -170px;
-   /* padding: 10px 12px; */
-  /* pointer-events: none; */   
+.searchIcon{
+    position: relative;
+    left: -190px;
+     /* padding: 10px 12px; */
+    /* pointer-events: none; */
+   
+  }
+  #category-input {
+    padding-left: 24px;
+    border: 1px solid gray;
+    outline: none;
+    transition:  border-color 0.2s; /* Apply transition to border properties */
 }
-
-#category-input {
-  padding-left: 24px;
+input{
   border: 1px solid gray;
   outline: none;
   transition:  border-color 0.2s; /* Apply transition to border properties */
 }
-
-input {
-  border: 1px solid gray;
-  outline: none;
-  transition:  border-color 0.2s; /* Apply transition to border properties */
-}
-
-input:focus {
+input:focus{
   border: 2.5px solid #1a65ab; /* Change in border width */
   -webkit-transition: border-width 0.2s, border-color 0.2s; /* Webkit for older browsers */
   transition:  border-color 0.2s; 
 }
 
 #category-input:focus {
-  border: 2.5px solid #1a65ab; /* Change in border width */
-  -webkit-transition: border-width 0.2s, border-color 0.2s; /* Webkit for older browsers */
-  transition:  border-color 0.2s; /* Define transition properties */
+    border: 2.5px solid #1a65ab; /* Change in border width */
+    -webkit-transition: border-width 0.2s, border-color 0.2s; /* Webkit for older browsers */
+    transition:  border-color 0.2s; /* Define transition properties */
 }
-
-.bi-trash3 {
+.bi-trash3{
   color: red;
   margin: 0px 5px;
 }
-
-.bi-pencil {
+.bi-pencil{
   color: #828385ad;
   margin: 0px 5px;
 }
-
-table {
+table{
   width: 95%;
-  margin: 10px auto;
-  border-radius: 10px;
-  border: 1px solid lightgray;
-}
-
-.form-group:focus {
-  border-color: #007bff; /* Change border color */
-  box-shadow: 0 0 5px rgba(0, 123, 255, 0.5); /* Add a glowing effect */
-  outline: none; /* Remove default outline */
-  transition: border-color 0.3s, box-shadow 0.3s;
-}
-
-.form-select:focus {
-  border-color: #007bff; /* Change border color */
-  box-shadow: 0 0 5px rgba(0, 123, 255, 0.5); /* Add a glowing effect */
-  outline: none; /* Remove default outline */
+    margin: 10px auto;
+    border-radius: 10px;
+    border: 1px solid lightgray;
 }

@@ -2,12 +2,13 @@
   margin: 5px;
   /* font-size: large; */
 }
+
 form{
     width: 500px;
     padding: 10px 10px;
     margin: 10px;
     
-    margin-top: 50px;   
+    margin-top: 50px;    
 }
 
 body {
@@ -19,61 +20,48 @@ body {
 .login{
   width: 600px;
   height: auto;
-    /* display: flex; */
-    /* margin-left:calc(100% - 300px) ; */
-    display: grid;
-    justify-content: center;
-    padding: 20px 5px;
-   
-    margin: 10px auto;
-   
-    font-family: Arial, sans-serif;
-    position: relative;
-    flex: 1;
-   
-      /* margin-top: calc(50vh - 350px); */
+  /* display: flex; */
+  /* margin-left:calc(100% - 300px) ; */
+  display: grid;
+  justify-content: center;
+  padding: 20px 5px; 
+  margin: 10px auto; 
+  font-family: Arial, sans-serif;
+  position: relative;
+  flex: 1;
+  /* margin-top: calc(50vh - 350px); */
 }
-
-/* .login{
-  width: 600px;
-    display: flex;
-    justify-content: center;
-    padding: 50px 5px;
-    border: 1px solid lightgray;
-    margin: 30px auto;
-    border-radius: 10px;
-} */
 
 .form-border{
   box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
-   border: 1px solid lightgray;
-   border-radius: 10px;
-   height: 450px;
-   background-color: white;
-    z-index: 1000;
-    position: relative;
-    padding : 20px 30px;
-    /* margin-bottom: 40px; */
-    width: 550px;
+  border: 1px solid lightgray;
+  border-radius: 10px;
+  height: 470px;
+  background-color: white;
+  z-index: 1000;
+  position: relative;
+  padding : 20px 30px;
+  /* margin-bottom: 40px; */
+  width: 550px;
 }
 
 h2{
     display: flex;
-    justify-content: center;
-    
+    justify-content: center;  
 }
-#log-in{
-    display: flex;
-    justify-content: center;
-  
-    font-size: 2em;
-    margin-block-start: 0.67em;
-    margin-block-end: 0.67em;
-    margin-inline-start: 0px;
-    margin-inline-end: 0px;
-    font-weight: bold;
 
+#log-in{
+  display: flex;
+  justify-content: center;
+  
+  font-size: 2em;
+  margin-block-start: 0.67em;
+  margin-block-end: 0.67em;
+  margin-inline-start: 0px;
+  margin-inline-end: 0px;
+  font-weight: bold;
 }
+
 /* button{
     width: 100%;
     margin-top: 10px;
@@ -96,11 +84,12 @@ img{
   justify-content: center;
   align-items: center;
   flex-direction: row;
-  padding: 1.5em;
+  padding: 1.25em;
 }
+
 .header-centre h1{
   display: block;
-  font-size: 2.25em;
+  font-size: 2em;
   font-weight: bold;
   padding-left: 15px;
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
@@ -112,7 +101,8 @@ img{
 mat-form-field {
     width: 100%;
     background-color: white;
-  }
+}
+
 form{
     border: 0px;
 }
@@ -131,15 +121,13 @@ form{
 }
 
 #signup{
-    width: 100px;
-    background-color: #1876D2 ;
-    border: 0px;
-   border-radius: 10px;
-
-   
-    height: 40px;
-    color: white;
-    /* margin-top: 30px; */
+  width: 100px;
+  background-color: #1876D2 ;
+  border: 0px;
+  border-radius: 10px;
+  height: 40px;
+  color: white;
+  /* margin-top: 30px; */
 }
 
 .form-group{
@@ -251,6 +239,7 @@ form{
       opacity: 1;
     }
   }
+
   .custom-footer {
     text-align: center;
     font-family: 'Arial', sans-serif;
@@ -259,7 +248,7 @@ form{
     color: #4a148c; /* Purple color for links */
     padding: 20px 0;
     /* margin: 30px auto; */
-    position: absolute;
+    position: relative;
     bottom: 0px;
 
   }
@@ -282,15 +271,57 @@ form{
     color: black;
   }
 
-  .inline-text {
-    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
-    font-size: 1rem;
-    margin: 0 10px 0 0; /* Spacing between text and button */
-  }
+.inline-text {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
+  font-size: 1rem;
+  margin: 0 10px 0 0; /* Spacing between text and button */
+}
 
-  .d-flex-row {
+.d-flex-row {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: 30px; /* Adjust as needed for spacing */
+}
+
+/* .login{
+  width: 600px;
     display: flex;
-    align-items: center;
     justify-content: center;
-    margin-top: 30px; /* Adjust as needed for spacing */
-  }
+    padding: 50px 5px;
+    border: 1px solid lightgray;
+    margin: 30px auto;
+    border-radius: 10px;
+} */
+
+/* button{
+    width: 100%;
+    margin-top: 10px;
+    background-color: #013365 ;
+    height: 40px;
+    color: white;
+    margin-top: 30px;
+} */
+
+.hr-with-text {
+  position: relative;
+  text-align: center;
+  margin: 30px 0; /* Adjust the margin as needed */
+}
+
+.hr-with-text hr {
+  border: none;
+  border-top: 1px solid gray;
+  margin: 0;
+}
+
+.hr-with-text .hr-text {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background-color: white; /* Match the background of your form */
+  padding: 0 10px; /* Add some padding around the text */
+  font-size: 10px; /* Adjust font size */
+  color: #666; /* Adjust text color */
+}

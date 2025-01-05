@@ -1,86 +1,66 @@
 @import '~@angular/material/prebuilt-themes/indigo-pink.css';
-
-.roleTable {
-  width: 100% ;
+.roleTable{
+  width:90% ;
   border: 1px solid lightgray;
-  margin: 20px 10px;
-}
+  }
+  .addTable select{
+    margin: 10px 0px;
+    width: 8vw;
+  }
+  /* .addTable tr{
+    border:solid lightgray 0.5px;
+    border-radius: 10px;
+    padding: 5px 10px;
+  } */
+  .addTable tr:hover{
+    background: none;
+  }
+  /* .addTable td{
+    padding: 10px;
+  } */
+  /* .addTable tr{
+    border: 2px lightgrey solid;
+    border-radius: 10px;
+  } */
+  .searchIcon{
 
-.addTable select {
-  margin: 10px 0px;
-  width: 8vw;
-}
 
-.addTable tr {
-  border:1px solid lightgray;
-  border-radius: 10px;
-  padding: 5px 10px;
-}
-
-.addTable tr:hover {
-  background: none;
-}
-
-/* .addTable td{
-  padding: 10px;
-} */
-
-.addTable td {
-  text-align: left;
-  font-size: 16px;
-  padding-left: 10px;
-  width: 50%;
-}
-
-/* .addTable tr{
-  border: 2px lightgrey solid;
-  border-radius: 10px;
-} */
-
-.searchIcon {
-  /* padding: 10px 12px; */
-  /* pointer-events: none; */
-  position: relative;
-  left: -90%;
-  pointer-events: none;
-}
+     /* padding: 10px 12px; */
+    /* pointer-events: none; */
+    position: relative;
+      left: -90%;
+      pointer-events: none;
+    
+   
+  }
+  input{
+    padding-left: 24px;
+   
+  }
+  .role-main{
+    width: calc(100vw - 300px);
+  }
+  .background-tab{
+    border-radius: 10px;
+    border: 1px solid lightgray;
+    /* margin-top: 10px; */
+    background-color: white;
+    height: 75vh;
+    width: 90%;
+    margin: 30px auto;
+    padding: 20px;
+  }
+  tr{
+    height: 10px;
+  }
+  #import-history-input{
+    border-radius: 10px;
+    border: 1px solid gray;
+    height: 40px;
+    outline: none;
+  }
+  #import-history-input:focus{
+    border: 2px solid #1a65ab;
+    
+  }
   
-input{
-  padding-left: 24px;   
-}
-
-.role-main{
-  width: calc(100vw - 300px);
-}
-
-.background-tab{
-  border-radius: 10px;
-  border: 1px solid lightgray;
-  /* margin-top: 10px; */
-  background-color: white;
-  height: 80vh;
-  width: 98%;
-  margin: 30px auto;
-  padding: 20px;
-}
-
-tr {
-  height: 10px;
-}
-
-#import-history-input{
-  border-radius: 10px;
-  border: 1px solid gray;
-  height: 40px;
-  outline: none;
-}
-
-#import-history-input:focus {
-  border: 2px solid #1a65ab;  
-}
-
-.highlight-input:focus {
-  border-color: #007bff; /* Change border color */
-  box-shadow: 0 0 5px rgba(0, 123, 255, 0.5); /* Add a glowing effect */
-  outline: none; /* Remove default outline */
-}

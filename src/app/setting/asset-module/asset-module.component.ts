@@ -111,7 +111,7 @@ export class AssetModuleComponent {
     else{
     const obj={
       
-      "name":this.addFieldName.trim(),
+      "name":this.addFieldName.trim().toLowerCase(),
       "email":this.email,
        "type":this.extraFieldOption,
        "companyId":this.companyId

@@ -6,6 +6,7 @@ import { ExtraFieldName } from './extraFieldName';
 import * as XLSX from 'xlsx';
 import { ColumnMapping } from './columnMapping';
 import { HttpEventType, HttpResponse } from '@angular/common/http';
+import * as saveAs from 'file-saver';
 
 
 @Component({
@@ -55,6 +56,7 @@ export class ImportComponent {
 
   progress: number = 0;
   uploadInProgress: boolean = false;
+  currExportModuel:any;
   constructor(private formBuilder:FormBuilder,private importService:ImportService,private assetService:AssetsService){
 
   }
@@ -460,6 +462,23 @@ export class ImportComponent {
       this.inventoryDatabaseColumns=this.inventoryDatabaseColumnsToUpdate;
       this.customerDatabaseColumns=this.customerDatabaseColumnsToUpdate;
       this.workorderDatabaseColumns=this.workorderDatabaseColumnsToUpdate;
+    }
+  }
+  exportModule(event:any){
+    this.currExportModuel=event.value;
+
+    console.log(this.currExportModuel)
+  }
+  exportModuleData(){
+    if(this.currExportModuel=="asset"){
+      this.importService.downloadAllAssets(this.companyId).subscribe((data:Blob)=>{
+        const blob = new Blob([data], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+        const fileName = `assets_${this.companyId}.xlsx`;
+        saveAs(blob, fileName);
+      },
+      (err)=>{
+        console.log(err)
+      })
     }
   }
 }

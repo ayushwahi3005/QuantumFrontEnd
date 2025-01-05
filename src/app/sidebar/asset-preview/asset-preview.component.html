@@ -269,7 +269,8 @@
                          
                           <td>{{item.status}}</td>
                          
-                          <td>{{item.date|date}}</td>
+                          <td>{{ item.updateTime | date: 'yyyy-MM-dd HH:mm:ss' }}
+                          </td>
                           <td>{{item.employee|titlecase}}</td>
                           <td>{{item.notes|titlecase}}</td>
                           <td>{{item.location|titlecase}}</td>

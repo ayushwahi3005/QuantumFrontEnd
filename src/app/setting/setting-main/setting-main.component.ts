@@ -136,10 +136,10 @@ constructor(private settingMainService:SettingMainService,private auth:AuthServi
     console.log("myerr------------>",err.status);
     
     if(err.status=="403"||err.status=="401"){
-      localStorage.clear()
-      alert("Session expired");
+      // localStorage.clear()
+      // alert("Session expired");
      
-      this.logout();
+      // this.logout();
 
     }
   })

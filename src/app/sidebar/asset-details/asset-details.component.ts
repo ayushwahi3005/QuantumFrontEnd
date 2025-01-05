@@ -33,6 +33,7 @@ export class AssetDetailsComponent {
  
   @Input() assetDetails!:Assets;
   @Output() backStatus = new EventEmitter<{ show: boolean }>();
+  username:any;
   assetId:any='';
   img:string=''
   newObjName:string='';
@@ -79,6 +80,7 @@ export class AssetDetailsComponent {
   loading=false;
   userRole:any;
   userRoleDetails:any;
+  // username:any;
   constructor(private activatedRoute:ActivatedRoute,private assetDetailService:AssetDetailsService,private assetComponent:AssetsComponent,private datePipe: DatePipe,private router:Router){}
   ngOnInit(){
    
@@ -87,7 +89,7 @@ export class AssetDetailsComponent {
       console.log("NULLLLLLLLLLLLLLL")
     
     console.log("----//////------------>>>>>>>>"+this.assetDetails.customerId)
- 
+    this.username= localStorage.getItem('name')
     this.message='';
     this.progress=20;
     this.extraFieldString=[];
@@ -109,6 +111,8 @@ export class AssetDetailsComponent {
     });
     this.userRole=localStorage.getItem('role');
     this.assetDetailService.getRoleAndPermission(this.companyId,this.userRole).subscribe((data)=>{
+      console.log("ROLE")
+      console.log( this.userRole)
       this.userRoleDetails=data;
       console.log(this.userRoleDetails);
     },
@@ -188,7 +192,7 @@ export class AssetDetailsComponent {
 
     this.assetDetailService.getCheckInOutList(this.assetDetails.id).subscribe((data)=>{
       this.checkInOut=data;
-   
+      console.log(this.checkInOut)
       console.log(this.checkInOut[0])
     },
     (err)=>{
@@ -569,7 +573,7 @@ export class AssetDetailsComponent {
     console.log(option)
     this.currOption=option;
   }
-  CheckInOutSubmit(employee:string,notes:string,location:string){
+  CheckInOutSubmit(employee:any,notes:string,location:string){
     let obj={};
     var today=new Date();
     if(employee==null||employee==''||notes==null||notes==''){
@@ -577,6 +581,12 @@ export class AssetDetailsComponent {
       this.triggerAlert("Check In/Out Fields are Empty","warning");
     }
     else{
+      if(this.userRole.toLowerCase()!='admin'){
+        if(localStorage.getItem('name')!=null){
+          employee=localStorage.getItem('name');
+        }
+        
+      }
       if(this.checkInOut.length==0){
         obj={
           "assetId":this.assetId,

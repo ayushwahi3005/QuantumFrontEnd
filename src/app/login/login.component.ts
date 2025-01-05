@@ -21,11 +21,9 @@ export class LoginComponent {
   loader=false;
   activeSessionDetails:any;
   currentyear:any;
-
   constructor(private auth:AuthService,private authService:AuthService,private loginService:LoginService,private router:Router){}
 
   async ngOnInit():Promise<void>{
-
     this.currentyear=new Date().getFullYear();
     // console.log("--------------AuthTokenIn------------------"+localStorage.getItem('authToken'));
     // console.log("--------------------------"+localStorage.getItem('companyId'));
