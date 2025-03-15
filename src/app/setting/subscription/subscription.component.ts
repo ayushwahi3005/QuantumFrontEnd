@@ -168,7 +168,6 @@ export class SubscriptionComponent {
         
         this.currSubscription.expiryDate=new Date(data.expiryDate);
         this.currSubscription.subscriptionDate=new Date(data.subscriptionDate);
-
         this.renewDate=new Date(data.expiryDate);
         this.renewDate.setDate(this.renewDate.getDate() + 1);
       }
@@ -180,7 +179,6 @@ export class SubscriptionComponent {
       (err)=>{
         console.log(err);
       });
-
       
       // console.log(this.currSubscription.expiryDate[0])
       // this.currSubscription.expiryDate = new Date(

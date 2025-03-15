@@ -41,7 +41,7 @@ export class TokenAuthenticationService {
     
     return this.httpClient.get(this.endpoint+'customer/checkUserName/'+email);
   }
-<<<<<<< HEAD
+
   removeSession(userId:string):Observable<any>{
     const headers = new HttpHeaders({
       'Authorization': `Bearer ${localStorage.getItem('authToken')}`,
@@ -51,7 +51,5 @@ export class TokenAuthenticationService {
     
     return this.httpClient.delete(this.endpoint+'customer/removeSession/'+userId, { headers });
   }
-=======
- 
->>>>>>> c76357d6ff37298b2abc3a005a33f527121f016e
+
 }

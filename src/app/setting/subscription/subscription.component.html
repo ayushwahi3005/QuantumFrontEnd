@@ -353,7 +353,6 @@
   </div>
 
   <div *ngIf="currOption==1">
-<!-- <<<<<<< HEAD -->
     <div class="card" *ngIf="this.currSubscription!=null">
       <div class="logo d-flex justify-content-center" style=" background-color: #bac9bbeb;">
           <div style="display: flex; flex-direction: column;">
@@ -437,130 +436,6 @@
             <span> {{ this.renewDate| date:'d MMMM, YYYY' }}</span>
           </div>
          
-<!-- =======
-      <div class="card" *ngIf="this.currSubscription!=null">
-        <div class="logo d-flex justify-content-center" style=" background-color: #bac9bbeb;">
-            <div style="display: flex; flex-direction: column;">
-            <label class="title" >{{this.currSubscription?.plan|titlecase}}</label>
-            <label class="price" style="font-weight: 400;" >${{this.currSubscription?.amount}}</label>
-            <label style="margin: 10px auto; font-size: large;" >{{this.currSubscription?.person}} person</label>
-            <ng-container *ngIf="this.currSubscription?.expiryDate > this.todayDate; else expiredTemplate">
-              <label>
-                Will Expire on {{ this.currSubscription?.expiryDate | date: 'dd/MM/yyyy' }}
-              </label>
-            </ng-container>
-            
-            <ng-template #expiredTemplate>
-              <label>
-                Subscription has expired.
-              </label>
-            </ng-template>
-            
-            </div>
-        </div>
-        <div class="tab-container">
-            <button class="tab tab--1" >{{this.currSubscription?.subscriptionPlan}}</button>
-            <!-- <button class="tab tab--2"   (click)="basicAnnualClick()" >Annual</button>
-            <div class="indicator" [ngClass]="{'selected-tab':!basicIsMonthly}"></div> -->
-        </div>
-        <div class="d-flex justify-content-center">
-            <button style="background-color: #bac9bbeb; border: #bac9bbeb; width: 70%;height: 30px; border-radius: 10px; bottom: 0; margin-bottom: 10px; position: absolute;"   data-toggle="modal" data-target="#manage">Manage</button>
-        </div>
-          <div>
-            <ul class="lists">
-                <li class="list">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-check" viewBox="0 0 16 16">
-                        <path d="M10.97 4.97a.75.75 0 0 1 1.07 1.05l-3.99 4.99a.75.75 0 0 1-1.08.02L4.324 8.384a.75.75 0 1 1 1.06-1.06l2.094 2.093 3.473-4.425z"/>
-                      </svg>
-                    <div> Connect 80 websites </div>
-                </li>
-                <li class="list">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-check" viewBox="0 0 16 16">
-                        <path d="M10.97 4.97a.75.75 0 0 1 1.07 1.05l-3.99 4.99a.75.75 0 0 1-1.08.02L4.324 8.384a.75.75 0 1 1 1.06-1.06l2.094 2.093 3.473-4.425z"/>
-                      </svg>
-                    <div> Track up to 50 credit cards </div>
-                </li>
-                <li class="list">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-check" viewBox="0 0 16 16">
-                        <path d="M10.97 4.97a.75.75 0 0 1 1.07 1.05l-3.99 4.99a.75.75 0 0 1-1.08.02L4.324 8.384a.75.75 0 1 1 1.06-1.06l2.094 2.093 3.473-4.425z"/>
-                      </svg>
-                    <div> Export up to 12 months data </div>
-                </li>
-                <li class="list">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-check" viewBox="0 0 16 16">
-                        <path d="M10.97 4.97a.75.75 0 0 1 1.07 1.05l-3.99 4.99a.75.75 0 0 1-1.08.02L4.324 8.384a.75.75 0 1 1 1.06-1.06l2.094 2.093 3.473-4.425z"/>
-                      </svg>
-                    <div> Cloud service 24/7 </div>
-                </li>
-                <li class="list">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-check" viewBox="0 0 16 16">
-                        <path d="M10.97 4.97a.75.75 0 0 1 1.07 1.05l-3.99 4.99a.75.75 0 0 1-1.08.02L4.324 8.384a.75.75 0 1 1 1.06-1.06l2.094 2.093 3.473-4.425z"/>
-                      </svg>
-                    <div> Connect 80 websites </div>
-                </li>
-                <li class="list">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-check" viewBox="0 0 16 16">
-                        <path d="M10.97 4.97a.75.75 0 0 1 1.07 1.05l-3.99 4.99a.75.75 0 0 1-1.08.02L4.324 8.384a.75.75 0 1 1 1.06-1.06l2.094 2.093 3.473-4.425z"/>
-                      </svg>
-                    <div> Connect up to 5 bank accounts  </div>
-                </li>
-              </ul>
-          </div>
-    </div>
-    <h2 class="d-flex justify-content-center" *ngIf="this.currSubscription==null">
-      No Subscription
-    </h2>
-  </div>
-  <div class=" d-flex justify-content-center" style="margin-top: 50px; width:100% ;" *ngIf="curr_phase==2" >
-    <div  style="margin-right: 30px;display: flex; justify-content:center; display: flex; flex: none;">
-      <a  (click)="onBack()" style="margin-right: 30px; font-size: large; font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;" id="subscription-back" >&larr; Back</a>
-     
-    </div>
-    <div>
-      <div class="curr-plan-card" >
-       <div class="curr-plan-title">Your Current Plan</div>
-       <div class="curr-plan">Basic</div>
- 
-      </div>
-      
-
-
-      <div class="plan-details-card" >
-       
-
-        <table style="width: 30%;">
-          <tr>
-            <td >Total Person:</td>
-            <td>{{ person }} Person</td>
-          </tr>
-          <tr>
-            <td >Subscription Type:</td>
-            <td>{{ (basicIsMonthly==true) ? 'Monthly' : 'Annual' }}</td>
-
-          </tr>
-          <tr>
-            <td >Expiry Date:</td>
-            <td>{{ expiryDate | date: 'MMM d, y' }}</td>
-          </tr>
-          <tr>
-            <td class="curr-plan-totalAmount">Total Amount:</td>
-            <td>${{ res_amount }}</td>
-          </tr>
-        </table>
-        
-      </div>
-      <div class="address" >
-        
-        <!-- <form [formGroup]="paymentForm" (ngSubmit)="addPaymentInformation()">
-        <div class="form-group" >
-          <label for="Address" class="form-label">Address</label>
-          <input type="text" class="form-control"  formControlName="address" placeholder="Address" >
-      </div >
-  
-        <div class="form-group">
-          <label for="phoneNo" class="form-label">City</label>
-          <input type="text" class="form-control" formControlName="city" placeholder="City" >
->>>>>>> c76357d6ff37298b2abc3a005a33f527121f016e -->
         </div>
         <button class="btn btn-primary" (click)="addCard()" id="card-add-btn" *ngIf="!myCard?.length">Add Card</button>
         <div id="add-card-div" *ngIf="displayAddCard">
@@ -842,8 +717,3 @@
 
 
 </div>
-
-
-
-
-
