@@ -30,18 +30,14 @@ export class RoleAndPermissionComponent {
   ngOnInit(){
     this.companyId=localStorage.getItem('companyId');
     this.roleAndCountMapping=new Map<String,Number>();
-    this.roleAndPermission=new RoleAndPermission();
-    this.currItem=new RoleAndPermissionEdit();
-    this.roleAndPermission.name='ADMIN';
-      this.roleAndPermission.status='Active';
-      this.roleAndPermission.type='Standard';
-      this.roleAndPermission.ofUser=1;
+    
     this.roleAndPermissionService.getRoleAndPermission(this.companyId).subscribe((data)=>{
       
       this.roleAndPermissionList=data;
+      console.log(this.roleAndPermissionList)
       
       this.roleAndPermissionList.forEach((x)=>{
-        x.type='Custom';
+      
         this.roleAndPermissionService.countByRoleAndCompanyId(x.name,this.companyId).subscribe((data)=>{
           let count;
           count=data as Number;
@@ -62,11 +58,12 @@ export class RoleAndPermissionComponent {
     }
       },
     ()=>{
-      this.roleAndPermissionList.unshift( this.roleAndPermission);
+      
       this.searchedRole=this.roleAndPermissionList;
     });
     this.roleAndPermissionForm=this.formBuilder.group({
       name:['',Validators.required],
+      type:['CUSTOM',Validators.required],
       status:['active',Validators.required],
       assets:['none',Validators.required],
       customers:['none',Validators.required],
@@ -88,6 +85,7 @@ export class RoleAndPermissionComponent {
     this.roleAndPermissionFormEdit=this.formBuilder.group({
       id:[''],
       name:['',Validators.required],
+      type:['CUSTOM',Validators.required],
       status:['active',Validators.required],
       assets:['none',Validators.required],
       customers:['none',Validators.required],
@@ -110,6 +108,7 @@ export class RoleAndPermissionComponent {
   addRoleAndPermission() {
       this.roleAndPermissionForm.controls['companyId'].setValue(this.companyId);
       let name=this.roleAndPermissionForm.controls['name'].value;
+
       if(name.trim()==''){
         this.triggerAlert("Empty Name Field","warning")
       }

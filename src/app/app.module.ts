@@ -21,7 +21,7 @@ import {MatInputModule} from '@angular/material/input';
 import {MatSelectModule} from '@angular/material/select';
 import {MatFormFieldModule} from '@angular/material/form-field';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { HttpClientModule } from '@angular/common/http';
+import { HTTP_INTERCEPTORS, HttpClientModule } from '@angular/common/http';
 import { AssetsComponent } from './sidebar/assets/assets.component';
 import {MatProgressSpinnerModule} from '@angular/material/progress-spinner';
 import {MatBadgeModule} from '@angular/material/badge';
@@ -82,6 +82,8 @@ import { PaymentComponent } from './setting/payment/payment.component';
 import { MatCardModule } from '@angular/material/card'; 
 import { MatToolbarModule } from '@angular/material/toolbar'; 
 import { CustomerResetPasswordComponent } from './customer-reset-password/customer-reset-password.component';
+import { UserModuleComponent } from './setting/user-module/user-module.component';
+import { SessionInterceptor } from './shared/SessionInterceptor';
 
 @NgModule({
   declarations: [
@@ -127,7 +129,8 @@ import { CustomerResetPasswordComponent } from './customer-reset-password/custom
     ResetPasswordAdminComponent,
     SubscriptionPlanComponent,
     PaymentComponent,
-    CustomerResetPasswordComponent
+    CustomerResetPasswordComponent,
+    UserModuleComponent
  
     
    
@@ -167,7 +170,8 @@ import { CustomerResetPasswordComponent } from './customer-reset-password/custom
     NgxStripeModule.forRoot('pk_test_51QJEvHDbrtjFAyfvm2UQu2ohdlUl814jAftZVEW9IHnfd4YrVOfh5ZBJyfYahnJcOMxwjgK3WjA8tU8XPg5nGpbM00J9CxIx3A'),
   ],
   providers: [DatePipe,
-    SecretService
+    SecretService,
+    { provide: HTTP_INTERCEPTORS, useClass: SessionInterceptor, multi: true }
   ],
   bootstrap: [AppComponent]
 })

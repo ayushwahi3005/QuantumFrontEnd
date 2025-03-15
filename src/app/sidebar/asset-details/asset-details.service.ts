@@ -67,7 +67,7 @@ export class AssetDetailsService {
     // myHeaders.append('Content-Type', 'multipart/form-data');
     let myHeaders = new HttpHeaders({
       'Authorization': `Bearer ${localStorage.getItem('authToken')}`,
-      //  'Device-ID': `${localStorage.getItem('deviceId')}`
+       'Device-ID': `${localStorage.getItem('deviceId')}`
       // Don't set 'Content-Type' here!
     });
     const formData: FormData = new FormData();
@@ -138,7 +138,7 @@ export class AssetDetailsService {
     return this.httpClient.get(this.companyCustomerEndpoint+"allCompanyCustomer/"+companyId,{headers:this.headers});
   }
   getRoleAndPermission(id:string,name:string):Observable<any>{
-    return this.httpClient.get('http://localhost:8080/customer/roleAndPermissionByName/get/'+id+'/'+name,{headers:this.headers});
+    return this.httpClient.get(this.customerEndpoint+'roleAndPermissionByName/get/'+id+'/'+name,{headers:this.headers});
   }
   getAssetCategory(companyId:any):Observable<any>{
     return this.httpClient.get(this.assetEndpoint+"getCategoryActiveList/"+companyId,{headers:this.headers});

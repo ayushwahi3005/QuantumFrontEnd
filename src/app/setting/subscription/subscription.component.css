@@ -429,8 +429,120 @@ h1 {
 ::ng-deep .mat-mdc-card-header-text{
     width: 100%;
 }
+.addCardsDetails{
+  width: 100%;
+  
+}
+.savedCard{
+  /* background-color: white; */
+  height: auto;
+  margin: 10px 0px;
+  padding: 5px;
+  width: 100%;
+
+}
+#card-span{
+   background-color: white;
+   width: 600px;
+   height: 70px;
+   margin: 10px 0px;
+   padding: 10px 10px;
+   border-radius: 10px;
+   border: 0.5px solid lightgray;
+   font-size: larger;
+   font-weight: 500;
+}
+#edit-card-span{
+  background-color: white;
+  width: 600px;
+  height: 120px;
+  margin: 10px 0px;
+  padding: 10px 10px;
+  border-radius: 10px;
+  border: 0.5px solid lightgray;
+  font-size: larger;
+  font-weight: 500;
+}
+#card-span:hover{
+  border: 1px solid darkgray;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+#card-add-btn{
+  display: flex;
+  place-self: end;
+  margin: 10px;
+
+}
+#add-card-div{
+  background-color: white;
+  width: 40%;
+  min-width: 300px;
+  height: auto;
+  margin: 10px auto;
+  border-radius: 10px;
+  border: 1px solid lightgray;
+  padding: 20px;
+}
+#add-card-div  input{
+  /* margin: 5px; */
+  /* width: 90%; */
+  margin: 5px 0px;
+}
+#add-card-div  label{
+  font-weight: 500;
+  margin: 2px 0px;
+}
+.billing-details{
+  background-color: white;
+  border-radius: 10px;
+  border: 0.5px solid lightgray;
+}
+.card-logo {
+  width: 40px;
+  height: auto;
+  margin-right: 8px;
+  vertical-align: middle;
+}
+.invoice-details{
+  width: 100%;
+  min-height: 100px;
+  margin-top: 20px;
+  background-color: white;
+  border-radius: 10px;
+  border: 1px solid lightgray;
+}
+#invoice-table thead{
+  position: sticky;
+  top: 0;
+  z-index: 1;
+  width: 100%;
+  /* margin-left: 10%; */
+ }
+ #invoice-table{
+  color: #5E6164;
+  width: 90%;
+  margin-left: 5%;
+  margin-top: 20px;
+  border-radius: 10px;
+  
 
 
+ 
+ 
+}
+#asset-table tr:hover{
+  box-shadow: 20px 10px 10px 5px black;
+ 
+}
+#asset-table{
+    
+  /* overflow: hidden; */
+  /* margin-top: 10px; */
+  border-radius: 10px;
+}
+.editoption{
+  opacity: 0;
+}
 /* .dots-container {
   display: flex;
   align-items: center;

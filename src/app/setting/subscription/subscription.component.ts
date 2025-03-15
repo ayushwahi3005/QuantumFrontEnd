@@ -9,15 +9,16 @@ import { SubscriptionPlan } from './SubscriptionPlan';
 import { SubscriptionEnum } from './SubscriptionEnum';
 import { format } from 'date-fns';
 
-import { StripeCardElementOptions, StripeElementsOptions } from '@stripe/stripe-js';
+import { StripeCardElement, StripeCardElementOptions, StripeElementsOptions } from '@stripe/stripe-js';
 import {
   injectStripe,
-
+  StripeService,
   StripePaymentElementComponent,
 
 } from 'ngx-stripe';
 import { Router } from '@angular/router';
 import { AuthService } from 'src/app/shared/auth.service';
+import { HttpClient } from '@angular/common/http';
 
 
 @Component({
@@ -47,6 +48,7 @@ export class SubscriptionComponent {
   companyId: any;
   cardForm!:FormGroup;
   checkoutForm!:FormGroup;
+  cardDetails!:FormGroup;
   subscription!:Subscription;
   payment!:Payment;
   loading:boolean=false;
@@ -55,6 +57,20 @@ export class SubscriptionComponent {
   todayDate!:Date;
   paymentIntiated:boolean=false;
   planId!:string;
+  displayAddCard:boolean=false;
+  alertMessage: string = '';
+  showAlert: boolean = false; // Flag to toggle alert visibility
+  alertType: string = 'success'; // Alert type: success, warning, error, etc.
+  myCard:any;
+  editCard:boolean=false;
+  selectedCard:any;
+  renewDate:any;
+  email:any;
+  cardholderName:any;
+  companyEmail:any;
+  InvoiceList:Payment[]=[];
+  editVisibility:boolean=false;
+  editButtonId:number=-1;
   readonly stripe = injectStripe("pk_test_51QJEvHDbrtjFAyfvm2UQu2ohdlUl814jAftZVEW9IHnfd4YrVOfh5ZBJyfYahnJcOMxwjgK3WjA8tU8XPg5nGpbM00J9CxIx3A");
   cardOptions: StripeCardElementOptions = {
     style: {
@@ -69,7 +85,8 @@ export class SubscriptionComponent {
           color: '#CFD7E0'
         }
       }
-    }
+    },
+    hidePostalCode: true
   }
   elementsOptions: StripeElementsOptions = {
     locale: 'en',
@@ -84,16 +101,28 @@ export class SubscriptionComponent {
   };
 
   paying = signal(false);
-  constructor(private subcriptionSerive:SubscriptionService,private formBuilder:FormBuilder,private router:Router,private auth:AuthService){}
+  savingCard=signal(false);
+  constructor(private subcriptionSerive:SubscriptionService,private formBuilder:FormBuilder,private router:Router,private auth:AuthService,private stripeService:StripeService, private http: HttpClient){}
 
   ngOnInit(){
     this.companyId=localStorage.getItem('companyId');
     this.expiryDate=new Date()
     this.loading=false;
     this.todayDate=new Date();
-    
+    this.displayAddCard=false;
+    this.email=localStorage.getItem('user');
+    this.companyEmail=localStorage.getItem('companyEmail');
     this. paymentIntiated=false;
     console.log("Paying->"+this.paying())
+    this.cardDetails = this.formBuilder.group({
+      companyId: [this.companyId],
+      firstName: ['', Validators.required],
+      lastName: ['', Validators.required],
+      cardNumber: ['', [Validators.required, Validators.pattern(/^\d{4} \d{4} \d{4} \d{4}$/)]],
+      expiry: ['', [Validators.required, Validators.pattern(/^\d{2}\/\d{2}$/)]],
+      cvv: ['', [Validators.required, Validators.pattern(/^\d{3}$/)]],
+    });
+    
     this.paymentForm=this.formBuilder.group({
     
       companyId:[this.companyId],
@@ -130,7 +159,7 @@ export class SubscriptionComponent {
     const amount = this.checkoutForm.get('amount')?.value;
 
    
-
+    this.editCard=false;
     this.subcriptionSerive.getCurrSubscription(this.companyId).subscribe((data)=>{
       this.currSubscription=data;
       if(data!=null){console.log(data.expiryDate)
@@ -139,7 +168,17 @@ export class SubscriptionComponent {
         
         this.currSubscription.expiryDate=new Date(data.expiryDate);
         this.currSubscription.subscriptionDate=new Date(data.subscriptionDate);
+        this.renewDate=new Date(data.expiryDate);
+        this.renewDate.setDate(this.renewDate.getDate() + 1);
       }
+      this.subcriptionSerive.getAllInvoice(this.companyId).subscribe((data)=>{
+        (this.companyId);
+        this.InvoiceList=data;
+        console.log(this.InvoiceList)
+      },
+      (err)=>{
+        console.log(err);
+      });
       
       // console.log(this.currSubscription.expiryDate[0])
       // this.currSubscription.expiryDate = new Date(
@@ -154,6 +193,14 @@ export class SubscriptionComponent {
       // );
 
       
+    },
+    (err)=>{
+      console.log(err);
+    })
+    this.subcriptionSerive.getCardDetailsFromStripe(this.companyId).subscribe((data)=>{
+      this.myCard=data;
+      // console.log(this.myCard)
+
     },
     (err)=>{
       console.log(err);
@@ -257,7 +304,7 @@ export class SubscriptionComponent {
           payment_method_data: {
             billing_details: {
               name: name as string,
-              email: email as string,
+              email: this.companyEmail as string,
               address: {
                 line1: address as string,
                 postal_code: zipcode as string,
@@ -315,6 +362,7 @@ export class SubscriptionComponent {
               });
             },
             (err)=>{
+              this.paying.set(false);
               console.log(err)
               this.loading=false;
             });
@@ -353,29 +401,79 @@ export class SubscriptionComponent {
     console.log(this.basicIsMonthly)
     console.log(this.expiryDate)
   }
- 
+ createSubscription(cardElement: any){
+  // Ensure cardElement is not null before using it
+// if (!cardElement || !cardElement.element) {
+//   console.error("❌ Stripe Card Element is not initialized.");
+//   return;
+// }
+    this.paying.set(true);
+      this.stripeService.createPaymentMethod({
+        type: 'card',
+        card: cardElement.element as StripeCardElement, // ✅ Ensure correct type
+        billing_details: {
+          name: this.checkoutForm.controls['name'].value,
+          email: this.companyEmail,
+          address: {
+            line1: this.checkoutForm.controls['address'].value,
+            postal_code: this.checkoutForm.controls['zipcode'].value,
+            state: this.checkoutForm.controls['state'].value,
+            city: this.checkoutForm.controls['city'].value,
+          },
+        },
+      }).subscribe((result) => {
+        if (result.paymentMethod) {
+          console.log("✅ Payment Method Created:", result.paymentMethod.id);
+          let plan=(this.basicIsMonthly==true)?"MONTHLY":"ANNUAL";
+          this.subcriptionSerive.createPaymentIntent(result.paymentMethod.id,localStorage.getItem('companyEmail'),localStorage.getItem('companyName'),this.companyId,this.person,plan,this.res_amount,this.checkoutForm.controls['name'].value).subscribe((data) => {
+            console.log(data);
+            console.log("Payment Done");
+            // this.triggerAlert("Payment Done Successfully", "success");
+            // this.ngOnInit();
+            this.curr_phase=3;
+            this.paying.set(false);
+          }, (err) => {
+            console.log(err.error.errorMessage);
+            this.paying.set(false);
+            this.triggerAlert(err.error.errorMessage, "danger");
+          });
+        } else {
+          console.error("❌ Error Creating Payment Method:", result.error);
+        }
+      });
+
+
+
+ }
 
   proceed(){
     console.log("Phase 2")
-    this.paymentIntiated=true;
+    // this.paymentIntiated=true;
     if(this.basicIsMonthly==true){
       this.res_amount=this.curr_amount*this.person;
     }
     else{
       this.res_amount=this.curr_amount*this.person*12;
     }
-    console.log("Total Amount"+this.res_amount);
-    this.checkoutForm.controls['amount'].setValue(this.res_amount);
-    this.subcriptionSerive
-    .createPaymentIntent({
-      amount:this.res_amount*100,
-      currency: 'usd',
-    })
-    .subscribe((pi) => {
-      console.log(pi)
-      this.elementsOptions.clientSecret = pi.clientSecret as string;
-      console.log( this.elementsOptions.clientSecret)
-    });
+    // console.log("Total Amount"+this.res_amount);
+    // this.checkoutForm.controls['amount'].setValue(this.res_amount);
+    // console.log("")
+    // this.subcriptionSerive
+    // .createPaymentIntent({
+    //   name:localStorage.getItem('companyName'),
+    //   email:localStorage.getItem('companyEmail'),
+    //   plan: this.basicIsMonthly ? "MONTHLY" : "ANNUAL",
+    //   companyId:this.companyId,
+    //   quantity:this.person
+
+
+
+    // })
+    // .subscribe((pi) => {
+    //   console.log(pi)
+    //   this.elementsOptions.clientSecret = pi.clientSecret as string;
+    //   console.log( this.elementsOptions.clientSecret)
+    // });
     // this.router.navigate(['/payment'], {
     //   queryParams: { person: this.person, plan: this.planId },
     // });
@@ -495,6 +593,111 @@ export class SubscriptionComponent {
   onClick(data:any){
     this.currOption=data;
   }
+  addCard(){
+    console.log("www")
+    this.displayAddCard=true;
+  }
+  closeAddCard(){
+    this.displayAddCard=false;
+    this.cardDetails.reset();
+  }
+  addCardDetails(){
+    // console.log(this.cardDetails.value)
+    // this.subcriptionSerive.addCardDetails(this.cardDetails.value).subscribe((data)=>{
+    //   console.log(data);
+    //   this.displayAddCard=false;
+    //   this.cardDetails.reset();
+    //   this.triggerAlert("Card Added Successfully","success")
+    //   this.ngOnInit()
+      
+    // },
+    // (err)=>{
+    //   console.log(err);
+    //   this.displayAddCard=false;
+    //   this.cardDetails.reset();
+    //   this.triggerAlert(err.errorMessage,"danger")
+    // })
+    console.log("Save Card")
+    // this.saveCard();
+  }
+  formatSavedCardNumber(event: Event): void {
+    const input = event.target as HTMLInputElement;
+    let value = input.value.replace(/\D/g, ''); // Remove non-digits
+    value = value.match(/.{1,4}/g)?.join(' ') ?? value; // Add spaces every 4 digits
+    input.value = value;
+    this.cardDetails.get('cardNumber')?.setValue(value);
+  }
+
+  formatExpiry(event: Event): void {
+    const input = event.target as HTMLInputElement;
+    let value = input.value.replace(/\D/g, ''); // Remove non-digits
+  
+    // Format as MM/YY
+    if (value.length > 2) {
+      value = value.slice(0, 2) + '/' + value.slice(2);
+    }
+    input.value = value;
+  
+    // Validate expiry date
+    const isValid = this.validateExpiry(value);
+    if (isValid) {
+      input.style.borderColor = ''; // Reset border color if valid
+      this.cardDetails.get('expiry')?.setValue(value);
+    } else {
+      input.style.borderColor = 'red'; // Highlight input in red if invalid
+    }
+  }
+  validateExpiry(expiry: string): boolean {
+    const [month, year] = expiry.split('/').map((val) => parseInt(val, 10));
+  
+    if (!month || !year || month < 1 || month > 12) {
+      return false; // Invalid month
+    }
+  
+    const currentYear = new Date().getFullYear() % 100; // Get last two digits of the current year
+    const currentMonth = new Date().getMonth() + 1;
+  
+    // Check if the year and month are in the future
+    if (year < currentYear || (year === currentYear && month < currentMonth)) {
+      return false; // Expiry is in the past
+    }
+  
+    return true; // Expiry is valid
+  }
+  validateCVV(event: Event): void {
+    const input = event.target as HTMLInputElement;
+    let value = input.value.replace(/\D/g, ''); // Remove non-digits
+    if (value.length > 3) {
+      value = value.slice(0, 3); // Limit to 3 digits
+    }
+    input.value = value;
+    this.cardDetails.get('cvv')?.setValue(value);
+  }
+  getLastFourDigits(cardNumber: string | undefined): string {
+    return cardNumber ? cardNumber.slice(-4) : '';
+  }
+  editCardFunc(id:any){
+    console.log("edit ")
+    this.selectedCard=id;
+    this.editCard=true;
+  }
+  deleteCardBack(){
+    this.editCard=false;
+  }
+  removeSaveCard(cardId:any){
+    console.log(cardId)
+    this.subcriptionSerive.deleteCardDetails( cardId).subscribe((data)=>{
+      console.log(data);
+      this.triggerAlert("Card Deleted Successfully","success")
+      this.ngOnInit()
+      this.editCard=false;
+    },
+    (err)=>{
+      console.log(err);
+      this.triggerAlert(err.errorMessage,"danger")
+    })
+    this.editCard=false;
+  }
   logout(){
     console.log("logging out")
     this.auth.currUser=null;
@@ -513,4 +716,88 @@ export class SubscriptionComponent {
 
    
   }
+  triggerAlert(message: string, type: string) {
+    console.log("triiger")
+    this.alertMessage = message;
+    this.alertType = type;
+    this.showAlert = true;
+    // You can set a timeout to automatically hide the alert after a certain time
+    setTimeout(() => {
+      this.showAlert = false;
+    }, 5000); // Hide the alert after 5 seconds (adjust as needed)
+  }
+  saveCard(cardElement: any, cardholderName: any) {
+    this.savingCard.set(true);
+    console.log(cardholderName.value)
+    if (!cardElement) {
+      console.error("Card Element is not initialized.");
+      return;
+    }
+  
+    this.stripeService.createPaymentMethod({
+      type: 'card',
+      card: cardElement.element,
+      billing_details: {
+        name: cardholderName, // ✅ Adding cardholder name
+      }
+    }).subscribe(result => {
+      if (result.paymentMethod) {
+        let companyEmail=localStorage.getItem("companyEmail");
+        console.log(companyEmail);
+        this.subcriptionSerive.cardSaveStripe(result,companyEmail,cardholderName,this.companyId).subscribe((data) => {
+          console.log(data);
+          console.log("Card Saved Successfully");
+          this.triggerAlert("Card Saved Successfully", "success");
+          this.savingCard.set(false);
+          this.ngOnInit();
+        }, (err) => {
+          console.log(err);
+          this.triggerAlert(err.errorMessage, "danger");
+          this.savingCard.set(false);
+        });
+      } else {
+        console.error(result.error);
+        this.savingCard.set(false);
+      }
+    });
+  }
+  
+  getCardLogo(brand: string): string {
+    const cardLogos: { [key: string]: string } = {
+      visa: 'assets/card-logos/visa.svg',
+      mastercard: 'assets/card-logos/mastercard.svg',
+      amex: 'assets/card-logos/amex.svg',
+      discover: 'assets/card-logos/discover.svg',
+      diners: 'assets/card-logos/diners.svg',
+      jcb: 'assets/card-logos/jcb.svg',
+      unionpay: 'assets/card-logos/unionpay.svg',
+      default: 'assets/card-logos/default-card.svg' // Generic card image
+    };
+    return cardLogos[brand.toLowerCase()] || cardLogos['default'];
+  }
+
+  editButtonVisibile(id:number){
+    //  console.log(id);
+        this.editButtonId=id;
+        this.editVisibility=true;
+     
+      }
+      editButtonNotVisible(){
+        
+        this.editVisibility=false;
+        this.editButtonId=-1;
+      }
+      downloadInvoice(id:any){
+        console.log(id)
+        // this.subcriptionSerive.downloadInvoice(id).subscribe((data)=>{
+        //   console.log(data);
+        //   var blob = new Blob([data], { type: 'application/pdf' });
+        //   var url= window.URL.createObjectURL(blob);
+        //   window.open(url);
+        // },
+        // (err)=>{
+        //   console.log(err);
+        // })  
+      }
+  
 }

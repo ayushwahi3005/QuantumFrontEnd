@@ -63,6 +63,7 @@
           <p class="card-text">Category<span *ngIf="mandatoryFieldsMap.get('category')" class="text-danger">*</span> <br>
             <!-- <input type="text" value="{{assetDetails.category}}" class="category" [(ngModel)]="assetDetails.category" [required]="mandatoryFieldsMap.get(assetDetails.name)==true"> -->
             <select class="form-select custom-dropdown" class="category" id="category"  #category style="height: fit-content;" [(ngModel)]="assetDetails.category" [required]="mandatoryFieldsMap.get(assetDetails.name)==true">
+              <option value="" selected>None</option>
               <option value="{{category.name}}" *ngFor="let category of assetCategoryList">{{category.name|titlecase}}</option>
               <!-- <option value="{{[customer.name,customer.id]}}" *ngFor="let customer of companyCustomerList">{{customer.name}}</option> -->
               <!-- <option value="outOfService" selected>Out Of Service</option> -->
@@ -143,10 +144,17 @@
                 <form id="checkForm">
                   <label>Employee<span class="text-danger">*</span></label>
                   <!-- <input type="text"  #employeeName> -->
-                  <select  id="technician"  #employeeName>
+                  <select  id="technician"  #employeeName *ngIf="userRole.toLowerCase()=='admin'">
                   
                     <option value="{{technician.firstName}}  {{technician.lastName}}" *ngFor="let technician of technicalUserList">{{technician.firstName}} {{technician.lastName}}</option>
                     
+                  </select>
+                  <select id="technician" #employeeName [disabled]="userRole.toLowerCase()!= 'admin'" *ngIf="userRole.toLowerCase()!='admin'">
+                    <option
+                      
+                      [value]="username">
+                      {{ username}}
+                    </option>
                   </select>
                   <!-- <input type="text"  id="technician"  #employeeName> -->
                   <p><label>Notes<span class="text-danger">*</span></label></p>
@@ -183,7 +191,8 @@
                  
                   <td>{{item.status}}</td>
                  
-                  <td>{{item.date|date}}</td>
+                  <td>{{ item.updateTime | date: 'yyyy-MM-dd HH:mm:ss' }}
+                  </td>
                   <td>{{item.employee|titlecase}}</td>
                   <td>{{item.notes|titlecase}}</td>
                   <td>{{item.location|titlecase}}</td>

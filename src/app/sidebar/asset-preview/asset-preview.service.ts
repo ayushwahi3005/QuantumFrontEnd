@@ -18,6 +18,7 @@ export class AssetPreviewService {
   assetEndpoint=environment.endpoint+"assets/";
   companyCustomerEndpoint=environment.endpoint+"companycustomer/";
   userEndpoint=environment.endpoint+"users/";
+  customerEndpoint=environment.endpoint+"customer/";
   getAsset(id:string):Observable<any>{
    
     return this.httpClient.get(this.assetEndpoint+"getAsset/"+id,{headers:this.headers});
@@ -25,6 +26,9 @@ export class AssetPreviewService {
 
   getExtraFields(id:string):Observable<any>{
     return this.httpClient.get(this.assetEndpoint+"getExtraFields/"+id,{headers:this.headers});
+  }
+  getRoleAndPermission(id:string,name:string):Observable<any>{
+    return this.httpClient.get(this.customerEndpoint+'roleAndPermissionByName/get/'+id+'/'+name,{headers:this.headers});
   }
 
   getExtraFieldName(id:string):Observable<any>{
@@ -88,5 +92,8 @@ export class AssetPreviewService {
   }
   deleteFile(id:string):Observable<any>{
     return this.httpClient.delete(this.assetEndpoint+"deleteFile/"+id,{headers:this.headers});
+  }
+  getUserDetail(companyId:string,email:string):Observable<any>{
+    return this.httpClient.get(this.userEndpoint+"getUserDetails/"+companyId+'/'+email,{headers:this.headers});
   }
 }

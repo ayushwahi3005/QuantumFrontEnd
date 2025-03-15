@@ -67,6 +67,9 @@ loading=true;
   alertType: string = 'success';
   deleteFileId!:string; // Alert type: success, warning, error, etc.
   technicalUserList!:User[];
+  userRole:any;
+  userRoleDetails:any;
+  selectEmployeeName:any
   sideBarOption=[{
     number:1,
     name:'Customers',
@@ -141,7 +144,9 @@ loading=true;
     ()=>{
       this.loading=false;
     })
-    this.assetPreviewService.getTechnicalUsers(this.companyId).subscribe((data)=>{
+    this.userRole=localStorage.getItem('role');
+    if(this.userRole=='ADMIN'){
+      this.assetPreviewService.getTechnicalUsers(this.companyId).subscribe((data)=>{
       console.log("Userss=====>")
       this.technicalUserList=data;
 
@@ -150,11 +155,41 @@ loading=true;
     ,(err)=>{
       console.log(err);
     })
+    }
+    else{
+      this.assetPreviewService.getUserDetail(this.companyId,this.email).subscribe((data)=>{
+        console.log("Userss=====>")
+        console.log(data)
+        let user=data as User
+        console.log(user)
+        let arr=[] as User[];
+        arr.push(user);
+        this.technicalUserList=arr;
+  
+        console.log(this.technicalUserList);
+      }
+      ,(err)=>{
+        console.log(err);
+      })
+    }
+
+    
+
+    
+    this.assetPreviewService.getRoleAndPermission(this.companyId,this.userRole).subscribe((data)=>{
+      console.log("ROLE")
+      console.log( this.userRole)
+      this.userRoleDetails=data;
+      console.log(this.userRoleDetails);
+    },
+    err=>{
+      console.log(err);
+    });
     this.assetPreviewService.getCheckInOutList(this.assetId).subscribe((data)=>{
       this.loading=true;
       this.checkInOut=data;
    
-      console.log("checkinout->"+this.checkInOut[0].detailsList)
+      console.log(this.checkInOut[0].detailsList)
       this.checkInOut[0].detailsList.forEach((ele)=>{
         console.log("checkinout->"+ele)
       })
@@ -198,7 +233,7 @@ loading=true;
       this.extraFields=data as ExtraFields[];
       console.log("extra fieldsss"+this.extraFields)
       console.log("extra fieldsss data"+data)
-      this.extraFields.sort((a,b)=>(a.name<b.name)?-1:1)
+      this.extraFields?.sort((a,b)=>(a.name<b.name)?-1:1)
       if(this.extraFields!=null){
         this.extraFields.forEach((x)=>{
           this.extraFieldString.push(x.name);
@@ -209,7 +244,8 @@ loading=true;
       else{
         console.log("empty ExtraField",data)
       }
-      console.log("extra field->"+this.extraFields[0].name);
+      // if()
+      // console.log("extra field->"+this.extraFields[0]?.name);
     },
     (err)=>{
       console.log(err);

@@ -127,4 +127,10 @@ export class ImportService {
   XLSX.writeFile(wb, `${fileName}.xlsx`);
 
   }
+  downloadAllAssets(companyId: string): Observable<Blob> {
+    return this.httpClient.get(this.assetEndpoint + "export-asset/" + companyId, {
+      headers: this.headers,
+      responseType: 'blob' // Specify blob as response type
+    });
+  }
 }

@@ -20,9 +20,11 @@ export class CustomerResetPasswordComponent {
   activeSessionDetails:any;
   otpArray: string[] = Array(6).fill('');
   myOtp: string[] = Array(6).fill('');
+  currentyear:any;
   constructor(private customerResetPasswordService:CustomerResetPasswordService,private router:Router){}
 
   async ngOnInit():Promise<void>{
+    this.currentyear=new Date().getFullYear();
     // console.log("--------------AuthTokenIn------------------"+localStorage.getItem('authToken'));
     // console.log("--------------------------"+localStorage.getItem('companyId'));
 

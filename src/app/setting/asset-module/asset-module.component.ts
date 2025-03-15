@@ -105,13 +105,14 @@ export class AssetModuleComponent {
     
    
     
-    if(this.addFieldName==''||this.addFieldName==null){
-      alert("Field Empty!!");
+    if(this.addFieldName?.trim()==''||this.addFieldName==null){
+      this.triggerAlert("Name Field Empty!","warning");
+      // alert("Field Empty!!");
     }
     else{
     const obj={
       
-      "name":this.addFieldName.trim(),
+      "name":this.addFieldName.trim().toLowerCase(),
       "email":this.email,
        "type":this.extraFieldOption,
        "companyId":this.companyId

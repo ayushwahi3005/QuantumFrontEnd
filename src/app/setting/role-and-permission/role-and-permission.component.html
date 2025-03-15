@@ -37,7 +37,7 @@
           <tr *ngFor="let item of searchedRole" style="height: 10px;">
             <th scope="row">{{searchedRole.indexOf(item)+1}}</th>
             <td>{{item.name}}</td>
-            <td>{{item.type}}</td>
+            <td>{{item.type|titlecase}}</td>
             <td>{{item.ofUser}}</td>
             <td>{{item.status|titlecase}}</td>
             <td >
@@ -250,13 +250,13 @@
           <form [formGroup]="roleAndPermissionFormEdit" (ngSubmit)="updateRoleAndPermission()">
             <div class="form-group">
               <label for="name">Name<span  class="text-danger">*</span></label>
-              <input type="text" class="form-control" id="name"  formControlName="name"  placeholder="Name" [ngModel]="this.currItem.name">
+              <input type="text" class="form-control" id="name"  formControlName="name"  placeholder="Name" [ngModel]="this.currItem?.name">
              
             </div>
 
             <div class="form-group">
               <label for="status">Status<span  class="text-danger">*</span></label>
-              <select class="form-select form-control" id="status" formControlName="status" #Asset [ngModel]="this.currItem.status" >
+              <select class="form-select form-control" id="status" formControlName="status" #Asset [ngModel]="this.currItem?.status" >
                
                 <option value="active">Active</option>
                 <option value="inactive" >Inactive</option>
@@ -282,7 +282,7 @@
               </td>
               
               <td>
-              <select class="form-select form-control" id="assets" formControlName="assets" #Asset [ngModel]="this.currItem.assets" >
+              <select class="form-select form-control" id="assets" formControlName="assets" #Asset [ngModel]="this.currItem?.assets" >
                 <option value="none" selected>None</option>
                 <option value="view">View</option>
                 <option value="create" >Create</option>
@@ -301,7 +301,7 @@
                 <label for="customers">Customer</label>
               </td>
               <td>
-                <select class="form-select form-control" id="customers" formControlName="customers" #customers [ngModel]="this.currItem.customers">
+                <select class="form-select form-control" id="customers" formControlName="customers" #customers [ngModel]="this.currItem?.customers">
                   <option value="none" selected>None</option>
                   <option value="view" selected>View</option>
                   <option value="create" selected>Create</option>
@@ -318,7 +318,7 @@
                 <label for="workOrders">WorkOrders</label>
               </td>
               <td>
-                <select class="form-select form-control" id="workOrders" formControlName="workOrders" #workOrders [ngModel]="this.currItem.workOrders">
+                <select class="form-select form-control" id="workOrders" formControlName="workOrders" #workOrders [ngModel]="this.currItem?.workOrders">
                   <option value="none" selected>None</option>
                   <option value="view" selected>View</option>
                   <option value="create" selected>Create</option>
@@ -334,7 +334,7 @@
                 <label for="users">Users</label>
               </td>
               <td>
-                  <select class="form-select form-control" id="users" formControlName="users" #users  [ngModel]="this.currItem.users">
+                  <select class="form-select form-control" id="users" formControlName="users" #users  [ngModel]="this.currItem?.users">
                     <option value="none" selected>None</option>
                   <option value="view" selected>View</option>
                   <option value="create" selected>Create</option>
@@ -350,7 +350,7 @@
                 <label for="roleAndPermissions">Role And Permissions</label>
               </td>
               <td>
-                  <select class="form-select form-control" id="roleAndPermissions" formControlName="roleAndPermissions" #roleAndPermissions [ngModel]="this.currItem.roleAndPermissions">
+                  <select class="form-select form-control" id="roleAndPermissions" formControlName="roleAndPermissions" #roleAndPermissions [ngModel]="this.currItem?.roleAndPermissions">
                     <option value="none" selected>None</option>
                   <option value="view" selected>View</option>
                   <option value="create" selected>Create</option>
@@ -366,7 +366,7 @@
                 <label for="imports">Imports</label>
               </td>
                 <td>
-                <select class="form-select form-control" id="imports" formControlName="imports" #imports [ngModel]="this.currItem.imports">
+                <select class="form-select form-control" id="imports" formControlName="imports" #imports [ngModel]="this.currItem?.imports">
                   <option value="none" selected>None</option>
                   <option value="view" selected>View</option>
                   <option value="create" selected>Create</option>
@@ -382,7 +382,7 @@
                 <label for="category">Category</label>
               </td>
             <td>
-                 <select class="form-select form-control" id="category" formControlName="category" #category  [ngModel]="this.currItem.category">
+                 <select class="form-select form-control" id="category" formControlName="category" #category  [ngModel]="this.currItem?.category">
                   <option value="none" selected>None</option>
                   <option value="view" selected>View</option>
                   <option value="create" selected>Create</option>
@@ -398,7 +398,7 @@
                 <label for="inventory">Inventory</label>
               </td>
             <td>
-                     <select class="form-select form-control" id="inventory" formControlName="inventory" #inventory  [ngModel]="this.currItem.inventory">
+                     <select class="form-select form-control" id="inventory" formControlName="inventory" #inventory  [ngModel]="this.currItem?.inventory">
                       <option value="none" selected>None</option>
                   <option value="view" selected>View</option>
                   <option value="create" selected>Create</option>

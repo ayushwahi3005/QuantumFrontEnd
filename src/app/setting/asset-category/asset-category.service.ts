@@ -39,6 +39,9 @@ export class AssetCategoryService {
   updateAssetCategory(data:any):Observable<any>{
     return this.httpClient.put(this.assetEndpoint+"updateCategory",data,{headers:this.headers});
   }
+  countAssetByCategory(data:any):Observable<any>{
+    return this.httpClient.get(this.assetEndpoint+"countAssetByCategory/"+data,{headers:this.headers});
+  }
   removeSession(userId:string):Observable<any>{
     const headers = new HttpHeaders({
       'Authorization': `Bearer ${localStorage.getItem('authToken')}`,
@@ -48,4 +51,5 @@ export class AssetCategoryService {
     
     return this.httpClient.delete(this.customerEndpoint+'customer/removeSession/'+userId, { headers });
   }
+
 }

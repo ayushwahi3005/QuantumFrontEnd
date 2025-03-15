@@ -33,7 +33,8 @@ export class RegisterComponent  {
   cpassword!:'';
   companyId!:''
   registerObj:any;
-
+  loader=false;
+  currentyear:any
   ngOnInit():void{
   this.registerForm=this.formBuilder.group({
     firstName:[''],
@@ -46,7 +47,7 @@ export class RegisterComponent  {
     companyId:['']
   })
   this.subscribeToService();
-
+  this.loader=false;
   this.registerObj={
     "firstName":'',
   "lastName":'',
@@ -57,6 +58,7 @@ export class RegisterComponent  {
   "cpassword":'',
   "companyId":''
   }
+  this.currentyear=new Date().getFullYear();
 
   }
 
@@ -95,6 +97,7 @@ export class RegisterComponent  {
       if(property=="mobileNumber"&&this.registerObj[property].length!=12){ 
         this.triggerAlert("Enter Valid Mobile Number", "warning");
         flag = 1;
+
         break;
       }
       if(property=="password"&&this.registerObj[property].length<10){ 
@@ -159,6 +162,7 @@ export class RegisterComponent  {
       "companyName":this.registerObj['companyName'],
 
     }
+    this.loader=true;
     this.registerService.addCompanyInformation(obj).subscribe((data)=>{
       console.log("Company Data uploaded");
       this.companyInformation=data;
@@ -169,22 +173,25 @@ export class RegisterComponent  {
         this.auth.register(this.registerObj['email'],this.registerObj['password']);
         
         // this.registerForm.reset();
+        this.loader=false;
         this.successMessage="Successfully registered"
       },
       (err)=>{
+        this.loader=false;
         this.errorMessage="Internal Error"
         this.errorMessage=err.error.errorMessage;
         this.registerForm.reset();
         this.openPopup();
       },
       ()=>{
-        
+        this.loader=false;
         if(this.errorMessage==''&&this.successMessage==''){
           console.log("Database Error");
         }
       })
     },
     (err)=>{
+      this.loader=false;
       console.log(err);
     })
     

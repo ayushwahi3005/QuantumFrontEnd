@@ -7,11 +7,11 @@ import { environment } from 'src/environments/environment';
   providedIn: 'root'
 })
 export class CompanyCustomerService {
-  private headers = new HttpHeaders({
-    'Authorization': `Bearer ${localStorage.getItem('authToken')}`,
-    'Content-Type': 'application/json',
-    'device-id': `${localStorage.getItem('deviceId')}`,
-  });
+  // private headers = new HttpHeaders({
+  //   'Authorization': `Bearer ${localStorage.getItem('authToken')}`,
+  //   'Content-Type': 'application/json',
+  //   'device-id': `${localStorage.getItem('deviceId')}`,
+  // });
 
   constructor(private httpClient:HttpClient) { }
   companyCustomerEndpoint=environment.endpoint+"companycustomer/"
@@ -144,7 +144,12 @@ export class CompanyCustomerService {
     return this.httpClient.get(this.companyCustomerEndpoint+"allCompanyCustomerWithExtraFields/"+companyId,{headers});
   }
   getRoleAndPermission(id:string,name:string):Observable<any>{
-    return this.httpClient.get(this.customerEndpoint+'roleAndPermissionByName/get/'+id+'/'+name,{headers:this.headers});
+    const headers = new HttpHeaders({
+      'Authorization': `Bearer ${localStorage.getItem('authToken')}`,
+      'Content-Type': 'application/json',
+      'device-id': `${localStorage.getItem('deviceId')}`,
+    });
+    return this.httpClient.get(this.customerEndpoint+'roleAndPermissionByName/get/'+id+'/'+name,{headers});
   }
 
   // advanceFilter(data:any,pageIndex:number,pageSize:number,category:any,searchData:any):Observable<any>{
@@ -205,6 +210,11 @@ export class CompanyCustomerService {
   }
 
   getCompanyCustomerCategory(companyId:any):Observable<any>{
-    return this.httpClient.get(this.companyCustomerEndpoint+"getCategoryActiveList/"+companyId,{headers:this.headers});
+    const headers = new HttpHeaders({
+      'Authorization': `Bearer ${localStorage.getItem('authToken')}`,
+      'Content-Type': 'application/json',
+      'device-id': `${localStorage.getItem('deviceId')}`,
+    });
+    return this.httpClient.get(this.companyCustomerEndpoint+"getCategoryActiveList/"+companyId,{headers});
   }
 }

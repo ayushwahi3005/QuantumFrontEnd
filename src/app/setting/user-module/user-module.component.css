@@ -1,0 +1,51 @@
+table i{
+    color: red;
+    margin-bottom: 2px;
+    font-size: larger;
+    margin-left: 20px;
+
+}
+table{
+  
+    width:95%;
+   margin: 10px auto;
+   border: 1px lightgray solid;
+   border-radius: 10px;
+}
+.card{
+    width: calc(100vw - 400px);
+    margin-right: 10px;
+    margin-left: 60px;
+    margin-bottom: 100px;
+    height: 75vh;
+    overflow-y: scroll;
+    overflow-x: hidden;
+}
+i{
+    color: red;
+    margin-bottom: 2px;
+    font-size: larger;
+    margin-left: 20px;
+    cursor: default;
+
+}
+.dropdown-menu i{
+    float: right;
+}
+.dropdown-menu{
+    width: 100px;
+}
+.extra-field-input input{
+    width: 100%;
+    border-radius: 5px;
+    border: 1px solid black;
+    margin-bottom: 10px;
+    height: 30px;
+}
+button{
+    float: inline-end;
+}
+.card-body{
+    flex: none;
+}
+

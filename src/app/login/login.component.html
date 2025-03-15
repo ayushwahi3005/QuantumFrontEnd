@@ -1,103 +1,109 @@
-<div class="header">
-  <div class="header-centre">
-    <!-- <img src='../../assets/logo.png'> -->
-    <h1>AssetYug</h1>
+<body *ngIf="!loader">
+  <div class="header">
+    <div class="header-centre">
+      <!-- <img src='../../assets/logo.png'> -->
+      <h1>AssetYug</h1>
+    </div>
   </div>
-</div>
-<div *ngIf="showAlert" class="alert" [ngClass]="'alert-' + alertType" role="alert">
-  {{ alertMessage|titlecase }}
-  <!-- Optionally, add a close button -->
-  <button type="button" class="btn-close" (click)="showAlert = false" aria-label="Close" style="float: right;"></button>
-</div>
-<div class="login container" *ngIf="!loader">
-    <form class="form-border">
-        <h1 id="log-in">Log in</h1>
-        <div class="form-group">
-         
-          <mat-form-field>
-            <mat-label>Email</mat-label>
-            <input matInput type="email" id="email" name="email"[(ngModel)]="email" >
-            
-          </mat-form-field>
-        </div>
-        <div class="form-group">
-          <mat-form-field>
-          <mat-label>Password</mat-label>
-          <input matInput type="password" id="password" name="password"[(ngModel)]="password" >
-        </mat-form-field>
-        </div>
-       
-        <button class="btn btn-primary" (click)="login()" style=" width: 100%;
-        margin-top: 10px;
-        background-color: #013365 ;
-        height: 40px;
-        color: white;
-        margin-top: 30px;">LOGIN</button>
-          
-            
-            <div class="forget" >
-                <a [routerLink]="['/reset-password']" style="text-decoration: none;">Forget Password? </a>
-            </div>
-            
-            <hr>
-            
+  <div *ngIf="showAlert" class="alert" [ngClass]="'alert-' + alertType" role="alert">
+    {{ alertMessage|titlecase }}
+    <!-- Optionally, add a close button -->
+    <button type="button" class="btn-close" (click)="showAlert = false" aria-label="Close" style="float: right;"></button>
+  </div>
+  <div class="login container" *ngIf="!loader">
+      <form class="form-border">
+          <h1 id="log-in">Log in</h1>
+          <div class="form-group" style="margin-top: 35px;">
            
-            <div class="d-flex justify-content-center">
-            <button id="signup" [routerLink]="['/register']" >SIGNUP</button>
-            <!-- <button data-toggle="modal" data-target="#removeLoggedIn">Sample</button> -->
-             <!-- <button class="btn btn-primary" (click)="demo()"></button> -->
+            <mat-form-field>
+              <mat-label>Email</mat-label>
+              <input matInput type="email" id="email" name="email"[(ngModel)]="email" >
+              
+            </mat-form-field>
           </div>
+          <div class="form-group">
+            <mat-form-field>
+            <mat-label>Password</mat-label>
+            <input matInput type="password" id="password" name="password"[(ngModel)]="password" >
+          </mat-form-field>
+          </div>
+         
+          <button class="btn btn-primary" (click)="login()" style=" width: 100%;
+          margin-top: 10px;
+          background-color: #013365 ;
+          height: 40px;
+          color: white;
+          margin-top: 30px;">LOG IN</button>
+  
+          <!-- background-color: rgb(0, 51, 102); -->
             
+              
+              <div class="forget" >
+                  <a [routerLink]="['/reset-password']" style="text-decoration: none; margin-top: 5px;">Forgot Password? </a>
+              </div>
+              
+              <!-- <hr> -->
 
-       
-
+              <div class="hr-with-text">
+                <hr>
+                <span class="hr-text">OR</span>
+              </div>
+              
+  
+            <div class="d-flex-row">
+              <h3 class="inline-text">Don't have an Account?</h3>
+              <button id="signup" [routerLink]="['/register']" >SIGN UP</button>
+              <!-- <button data-toggle="modal" data-target="#removeLoggedIn">Sample</button> -->
+              <!-- <button class="btn btn-primary" (click)="demo()"></button> -->
+            </div>
+          
+        </form>
         
-      </form>
-      
-</div>
-<div class="dot-spinner d-flex justify-content-center" *ngIf="loader" >
-  <div class="dot-spinner__dot"></div>
-  <div class="dot-spinner__dot"></div>
-  <div class="dot-spinner__dot"></div>
-  <div class="dot-spinner__dot"></div>
-  <div class="dot-spinner__dot"></div>
-  <div class="dot-spinner__dot"></div>
-  <div class="dot-spinner__dot"></div>
-  <div class="dot-spinner__dot"></div>
-</div>
-
-
-<div class="modal fade" id="removeLoggedIn" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle" aria-hidden="true" data-backdrop="static" data-keyboard="false"  style="z-index :10000;">
-  <div class="modal-dialog " role="document">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h2 class="modal-title" id="exampleModalLongTitle">Already Logged In From Other Device!</h2>
-        <button type="button" class="close  ms-auto" data-dismiss="modal" aria-label="Close" #closeBox (click)="routeToLogin()" >
-          <span aria-hidden="true">&times;</span>
-        </button>
-      </div>
-      <div class="modal-body">
-       
-        <p>Logout from all devices</p>
-
-
-       
-      </div>
-      <div class="modal-footer">
-        <button class="btn btn-primary" (click)="logoutFromAllDevice()">Yes</button>
-        <button class="btn btn-danger" (click)="closeBox.click()" (click)="routeToLogin()">No</button>
+  </div>
+ 
+  
+  
+  <div class="modal fade" id="removeLoggedIn" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle" aria-hidden="true" data-backdrop="static" data-keyboard="false"  style="z-index :10000;">
+    <div class="modal-dialog " role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h2 class="modal-title" id="exampleModalLongTitle">Already Logged In From Other Device!</h2>
+          <button type="button" class="close  ms-auto" data-dismiss="modal" aria-label="Close" #closeBox (click)="routeToLogin()" >
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+         
+          <p>Logout from all devices</p>
+         
+        </div>
+        <div class="modal-footer">
+          <button class="btn btn-primary" (click)="logoutFromAllDevice()">Yes</button>
+          <button class="btn btn-danger" (click)="closeBox.click()" (click)="routeToLogin()">No</button>
+        </div>
       </div>
     </div>
   </div>
-</div>
+  
+  
+  <footer class="custom-footer">
+    <div class="footer-content">
+      <p>
+        <a href="#">Terms of Use</a> | 
+        <a href="#">Privacy Policy</a>
+      </p>
+      <p class="copyright">&copy; {{currentyear}} AssetYug</p>
+    </div>
+  </footer>
+  </body>
 
-<footer class="custom-footer">
-  <div class="footer-content">
-    <p>
-      <a href="#">Terms of Use</a> | 
-      <a href="#">Privacy Policy</a>
-    </p>
-    <p class="copyright">&copy; AssetYug</p>
+  <div class="dot-spinner d-flex justify-content-center" *ngIf="loader" >
+    <div class="dot-spinner__dot"></div>
+    <div class="dot-spinner__dot"></div>
+    <div class="dot-spinner__dot"></div>
+    <div class="dot-spinner__dot"></div>
+    <div class="dot-spinner__dot"></div>
+    <div class="dot-spinner__dot"></div>
+    <div class="dot-spinner__dot"></div>
+    <div class="dot-spinner__dot"></div>
   </div>
-</footer>
-

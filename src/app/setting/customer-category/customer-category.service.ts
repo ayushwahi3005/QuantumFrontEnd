@@ -41,4 +41,7 @@ export class CustomerCategoryService {
   updateCustomerCategory(data:any):Observable<any>{
     return this.httpClient.put(this.companyCustomerEndpoint+"updateCategory",data,{headers:this.headers});
   }
+  countCompanyCustomerByCategory(data:any):Observable<any>{
+    return this.httpClient.get(this.companyCustomerEndpoint+"countCompanyCustomerByCategory/"+data,{headers:this.headers});
+  }
 }

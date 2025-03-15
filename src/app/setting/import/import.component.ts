@@ -6,6 +6,7 @@ import { ExtraFieldName } from './extraFieldName';
 import * as XLSX from 'xlsx';
 import { ColumnMapping } from './columnMapping';
 import { HttpEventType, HttpResponse } from '@angular/common/http';
+import * as saveAs from 'file-saver';
 
 
 @Component({
@@ -55,6 +56,7 @@ export class ImportComponent {
 
   progress: number = 0;
   uploadInProgress: boolean = false;
+  currExportModuel:any;
   constructor(private formBuilder:FormBuilder,private importService:ImportService,private assetService:AssetsService){
 
   }
@@ -112,14 +114,14 @@ export class ImportComponent {
       console.log(this.assetDatabaseColumns)
     })
 
-    this.importService.getInventoryExtraFields(this.companyId).subscribe((data)=>{
-      this.inventoryExtraFieldsColumns=data;
-      this.inventoryExtraFieldsColumns.forEach((x)=>{
-        this.inventoryDatabaseColumnsToUpdate.push(x.name);
-        this.inventoryDatabaseColumnsToAdd.push(x.name);
-      })
-      console.log(this.inventoryDatabaseColumns)
-    })
+    // this.importService.getInventoryExtraFields(this.companyId).subscribe((data)=>{
+    //   this.inventoryExtraFieldsColumns=data;
+    //   this.inventoryExtraFieldsColumns.forEach((x)=>{
+    //     this.inventoryDatabaseColumnsToUpdate.push(x.name);
+    //     this.inventoryDatabaseColumnsToAdd.push(x.name);
+    //   })
+    //   console.log(this.inventoryDatabaseColumns)
+    // })
 
     this.importService.getCustomerExtraFields(this.companyId).subscribe((data)=>{
       this.customerExtraFieldsColumns=data;
@@ -227,20 +229,20 @@ export class ImportComponent {
 
         this.progress=0;
         this.importService.addAssets(this.myFile,this.companyId,this.email,this.columnMappings).subscribe((event)=>{
-          console.log(event)
-          console.log(event.type)
-          if (event.type === HttpEventType.UploadProgress) {
+          // console.log(event)
+          // console.log(event.type)
+          // if (event.type === HttpEventType.UploadProgress) {
           
-            this.progress = Math.round(100 * event.loaded / event.total);
-            console.log("progress->"+this.progress)
-          } else if (event instanceof HttpResponse) {
+          //   this.progress = Math.round(100 * event.loaded / event.total);
+          //   console.log("progress->"+this.progress)
+          // } else if (event instanceof HttpResponse) {
             
-            // this.message = event.body.message;
+          //   // this.message = event.body.message;
            
-            // this.currentFile
-            // this.fileInfos = this.assetDetailService.getAssetFile(this.assetId);
+          //   // this.currentFile
+          //   // this.fileInfos = this.assetDetailService.getAssetFile(this.assetId);
             
-          }
+          // }
           // if (event.type === HttpEventType.UploadProgress && event.total) {
           //   this.progress = Math.round((100 * event.loaded) / event.total);
           //   localStorage.setItem('uploadProgress', this.progress.toString());
@@ -460,6 +462,23 @@ export class ImportComponent {
       this.inventoryDatabaseColumns=this.inventoryDatabaseColumnsToUpdate;
       this.customerDatabaseColumns=this.customerDatabaseColumnsToUpdate;
       this.workorderDatabaseColumns=this.workorderDatabaseColumnsToUpdate;
+    }
+  }
+  exportModule(event:any){
+    this.currExportModuel=event.value;
+
+    console.log(this.currExportModuel)
+  }
+  exportModuleData(){
+    if(this.currExportModuel=="asset"){
+      this.importService.downloadAllAssets(this.companyId).subscribe((data:Blob)=>{
+        const blob = new Blob([data], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+        const fileName = `assets_${this.companyId}.xlsx`;
+        saveAs(blob, fileName);
+      },
+      (err)=>{
+        console.log(err)
+      })
     }
   }
 }
