@@ -85,6 +85,7 @@ import { CustomerResetPasswordComponent } from './customer-reset-password/custom
 import { UserModuleComponent } from './setting/user-module/user-module.component';
 import { SessionInterceptor } from './shared/SessionInterceptor';
 
+
 @NgModule({
   declarations: [
     AppComponent,
@@ -131,6 +132,7 @@ import { SessionInterceptor } from './shared/SessionInterceptor';
     PaymentComponent,
     CustomerResetPasswordComponent,
     UserModuleComponent
+
  
     
    

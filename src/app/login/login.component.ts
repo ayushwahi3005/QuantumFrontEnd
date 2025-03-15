@@ -24,6 +24,7 @@ export class LoginComponent {
   constructor(private auth:AuthService,private authService:AuthService,private loginService:LoginService,private router:Router){}
 
   async ngOnInit():Promise<void>{
+<<<<<<< HEAD
     if(localStorage.getItem('isLoggedIn')!=null){
       this.authService.isLoggedIn = localStorage.getItem('isLoggedIn');
     }
@@ -33,6 +34,31 @@ export class LoginComponent {
    
     this.currentyear=new Date().getFullYear();
    
+=======
+    this.currentyear=new Date().getFullYear();
+    // console.log("--------------AuthTokenIn------------------"+localStorage.getItem('authToken'));
+    // console.log("--------------------------"+localStorage.getItem('companyId'));
+
+      // let response;
+      // console.log("start secret->")
+      // try {
+      //   response = await this.client.send(
+      //     new GetSecretValueCommand({
+      //       SecretId: this.secret_name,
+      //       VersionStage: "AWSCURRENT", // VersionStage defaults to AWSCURRENT if unspecified
+      //     })
+      //   );
+      //     } catch (error) {
+      //       // For a list of exceptions thrown, see
+      //       // https://docs.aws.amazon.com/secretsmanager/latest/apireference/API_GetSecretValue.html
+      //       console.log("error->"+error)
+      //       throw error;
+           
+      //     }
+
+      // const secret = response.SecretString;
+      // console.log("secret->"+secret)
+>>>>>>> c76357d6ff37298b2abc3a005a33f527121f016e
       console.log("Login KeyValue")
       const localStorageData: { [key: string]: string } = {};
 

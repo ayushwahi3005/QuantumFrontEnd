@@ -150,8 +150,22 @@ export class AssetCategoryComponent {
 
   }
   removeField(){
+// <<<<<<< HEAD
     this.assetCategoryService.countAssetByCategory(this.deletionName.toLowerCase()).subscribe((data)=>{
 
+// =======
+//     this.assetCategoryService.deleteAssetCategory(this.deletionId).subscribe((data)=>{
+//       console.log(data);
+//       this.deletionId='';
+//     },
+//     (err)=>{ this.handleError(err)
+//       console.log(err);
+//       this.triggerAlert(err.error.message,"danger");
+//     },
+//     ()=>{
+//       this.triggerAlert("Deleted Successfully","primary");
+//       this.ngOnInit();
+// >>>>>>> c76357d6ff37298b2abc3a005a33f527121f016e
       
       console.log(data);
       if(data>0){

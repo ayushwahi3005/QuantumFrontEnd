@@ -123,7 +123,18 @@ constructor(private settingMainService:SettingMainService,private auth:AuthServi
   },
   (err)=>{
     console.log("myerr------------>",err.status);
+// <<<<<<< HEAD
  
+// =======
+    
+//     if(err.status=="403"||err.status=="401"){
+//       // localStorage.clear()
+//       // alert("Session expired");
+     
+//       // this.logout();
+
+//     }
+// >>>>>>> c76357d6ff37298b2abc3a005a33f527121f016e
   })
   }
   fetchCompanyInformation(){
