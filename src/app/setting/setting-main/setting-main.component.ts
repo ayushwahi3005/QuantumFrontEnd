@@ -52,19 +52,19 @@ export class SettingMainComponent {
   },
   {
     number:6,
-    name:'Role and Permissions',
+    name:'Roles and Permissions',
     icon:'bi bi-person'
   },
   {
     number:7,
-    name:'Employees/Users',
+    name:'Users',
     icon:'bi bi-people-fill'
   },
-  {
-    number:8,
-    name:'Labor Rates',
-    icon:'bi bi-currency-dollar'
-  },
+  // {
+  //   number:8,
+  //   name:'Labor Rates',
+  //   icon:'bi bi-currency-dollar'
+  // },
   {
     number:9,
     name:'Subscription',

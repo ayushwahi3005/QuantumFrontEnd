@@ -1,6 +1,7 @@
 export class Location{
     id!:string;
     companyId!:string;
+    name!:string;
     parentLocation!:string;
     location!:string;
     apartment!:string;

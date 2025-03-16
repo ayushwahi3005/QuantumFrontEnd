@@ -9,62 +9,80 @@
     <!-- Locations -->
  
         <div class="d-flex justify-content-between">
-            <div>
-                <input type="text" placeholder="Search" (keyup)="locationSearch($event)" #location>
-                <i class="bi bi-search"></i>
+            <div class="search-bar">
+                <input type="text" placeholder="Search" class="location-search" style="margin: 10px 0; border-radius: 5px; height: 30px;" (keyup)="locationSearch($event)" #location>
+                <!-- <button class="search-button"> -->
+                  <i class="bi bi-search searchIcon"></i>
+                  <i *ngIf="searchData" class="bi bi-x-circle clearIcon" (click)="clearSearch()"></i>
+                <!-- </button> -->
             </div>
+
             <div>
-                <button class="btn btn-primary" id="dropdownMenuButton" data-toggle="modal" data-target="#addLocation">+ Locations</button>
+                <button class="btn btn-primary" id="dropdownMenuButton" data-toggle="modal" data-target="#addLocation">+ Location</button>
             </div>
         </div>
+
         <div class="location_table">
-            <table class="table">
+            <table class="table" >
                 <thead class="table-dark" >
                   <tr>
-                    <th scope="col">#</th>
-                    <th scope="col">Location Name</th>
-                    <th scope="col">Address</th>
-                    <th scope="col">Status</th>
-                    <th></th>
+                    <th scope="col" style="width: 10%;">ID</th>
+                    <th scope="col" style="width: 30%;">Location Name</th>
+                    <th scope="col" style="width: 30%;">Address</th>
+                    <th scope="col" style="width: 20%;">Status</th>
+                    <th style="width: 10%;"></th>
                   </tr>
-                </thead>
+                </thead>  
                 <tbody>
+                  <ng-container *ngIf="searchedLocationList && searchedLocationList.length > 0; else noLocations">
                   <tr *ngFor="let item of searchedLocationList" (mouseenter)="editButtonVisibile(searchedLocationList.indexOf(item)+1)" (mouseleave)="editButtonNotVisible()">
-                    <th scope="row">{{searchedLocationList.indexOf(item)+1}}</th>
-                    <td>{{item.city|titlecase}}</td>
+                    <!-- <th scope="row">{{searchedLocationList.indexOf(item)+1}}</th> -->
+                    <td scope="row">{{searchedLocationList.indexOf(item)+1}}</td>
+                    <td>{{item.name|titlecase}}</td>
                     <td>{{item.address|titlecase}}</td>
                     <td>{{item.status|titlecase}}</td>
                     <td>
+                      <div style="display: flex; align-items: center; gap: 15px;">
                         <!-- <img src="../../../assets/edit.svg" id="edit-button" [ngClass]="{'editoption':!(editVisibility&&(editButtonId==locationList.indexOf(item)+1))}" style="float: inline-start; height: 25px; width: 25px;"  > -->
-                        <i class="bi bi-pencil" [ngClass]="{'editoption':!(editVisibility&&(editButtonId==searchedLocationList.indexOf(item)+1))}"  style="float: inline-start; margin: 15px 5px;" ></i>
-                      <i class="bi bi-trash"  [ngClass]="{'editoption':!(editVisibility&&(editButtonId==searchedLocationList.indexOf(item)+1))}" style="color: red; float: inline-start; margin: 15px 5px;" (click)="deleteLocation(item.id)"></i>
+                        <i class="bi bi-pencil edit-icon" [ngClass]="{'editoption':!(editVisibility&&(editButtonId==searchedLocationList.indexOf(item)+1))}" style="float: inline-start; margin: 5px 5px;" ></i>
+                        <i class="bi bi-trash delete-icon"  [ngClass]="{'editoption':!(editVisibility&&(editButtonId==searchedLocationList.indexOf(item)+1))}" style="color: red; float: inline-start; margin: 5px 5px;" (click)="deleteLocation(item.id)"></i>
+                      </div>
                     </td>
                   </tr>
-                  
+                </ng-container>
                 </tbody>
+                
               </table>
-              
+              <ng-template #noLocations>
+                <tr>
+                  <td colspan="5" class="text-center">
+              <p *ngIf="searchedLocationList || searchedLocationList.length === 0" class="no-data">No locations available</p>
+            </td>
+                </tr>
+            </ng-template>
               
         </div>
  
   </div>
 
+<!-- Bins -->
+
   <div class="bins" *ngIf="currOption==2">
 
       <div class="d-flex justify-content-between">
-          <div>
-              <input type="text" placeholder="Search" (keyup)="binSearch($event)" #bin>
-              <i class="bi bi-search"></i>
+          <div class="search-bar">
+              <input type="text" placeholder="Search" class="location-search" style="margin: 10px 10px; border-radius: 5px; height: 30px;" (keyup)="binSearch($event)" #bin>
+              <i class="bi bi-search searchIcon"></i>
           </div>
           <div>
-              <button class="btn btn-primary" id="dropdownMenuButton" data-toggle="modal" data-target="#addBin">+ Bins</button>
+              <button class="btn btn-primary" id="dropdownMenuButton" data-toggle="modal" data-target="#addBin">+ Bin</button>
           </div>
       </div>
       <div class="location_table">
           <table class="table">
               <thead class="table-dark" >
                 <tr>
-                  <th scope="col">#</th>
+                  <th scope="col">ID</th>
                   <th scope="col">Bin Number</th>
                   <th scope="col">Location</th>
                   <th scope="col">Status</th>
@@ -72,6 +90,7 @@
                 </tr>
               </thead>
               <tbody>
+                <ng-container *ngIf="searchedBinList && searchedBinList.length > 0; else noBins">
                 <tr *ngFor="let item of searchedBinList" (mouseenter)="editButtonVisibile(searchedBinList.indexOf(item)+1)" (mouseleave)="editButtonNotVisible()">
                   <th scope="row">{{searchedBinList.indexOf(item)+1}}</th>
                   <td>{{item.binNumber|titlecase}}</td>
@@ -83,169 +102,133 @@
                     <i class="bi bi-trash"  [ngClass]="{'editoption':!(editVisibility&&(editButtonId==searchedBinList.indexOf(item)+1))}" style="color: red; float: inline-start; margin: 15px 5px;" (click)="deleteBin(item.id)"></i>
                   </td>
                 </tr>
-                
+              </ng-container>
               </tbody>
             </table>
-            
+            <ng-template #noBins>
+              <tr>
+                <td colspan="5" class="text-center">
+            <p *ngIf="searchedBinList || searchedBinList.length === 0" class="no-data">No bins available</p>
+          </td>
+              </tr>
+          </ng-template>            
             
       </div>
   
   </div>
+
+<!-- Creating a new location -->
+
   <div class="modal fade" id="addLocation" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle" aria-hidden="true">
     <div class="modal-dialog" role="document">
       <div class="modal-content">
-        <div class="modal-header">
-          <h2 class="modal-title" id="exampleModalLongTitle">Add Location</h2>
-          <button type="button" class="close ms-auto" data-dismiss="modal" aria-label="Close" #closeBox4>
-            <span aria-hidden="true" style="height: 20px; width: 10px; background-color: #f0f0f0; border:none; display:block; padding-top: 0px;  ">&times;</span>
+        <div class="modal-header" style="padding: 13px 15px">
+          <h2 class="modal-title" id="exampleModalLongTitle" style="margin:0; display: flex; justify-content: center;">Add Location</h2>
+          <button type="button" class="btn btn-light btn-sm ms-auto" data-dismiss="modal" aria-label="Close" style="border-radius: 10px;" #closeBox4>
+            <!-- <span aria-hidden="true" style="height: 20px; width: 10px; background-color: #f0f0f0; border:none; display:block; padding-top: 0px;  ">&times;</span> -->
+            <i class="bi bi-x-lg"></i>
           </button>
         </div>
         <div class="modal-body">
           <form [formGroup]="locationForm" >
 
-            <div style="width: 95%;">
-            <div class="form-group">
-              <label for="parentLocation">Parent Location</label>
-              <div class="">
-              <input type="text" class="form-control" id="parentLocation" formControlName="parentLocation"  #name>
+            <!-- <div style="width: 95%;"> -->
+              <div>
+                <label for="name">Name</label><br>
+                <input type="text" class="form-group" id="name" formControlName="name" style="font-size: 16px; padding-left: 11px; width: 100%; margin-top: 10px; border-radius: 5px; height: 35px; border: 1px solid #c0c0c0; transition: border-color 0.3s, box-shadow 0.3s;" #name>
+                <!-- <i class="bi bi-trash-fill delete" style="display: inline-flex; margin-top: 12px; margin-left: 10px; color: red; margin-right: 5px;" (click)="removeMandatoryFieldFilter('assetId')"></i> -->
+              </div>
+            
+              <div style="margin-top: 10px;">
+              <label for="parentLocation">Parent Location</label><br>
+              <input type="text" class="form-select form-control" id="parentLocation" formControlName="parentLocation" style="font-size: 16px; padding-left: 11px; width: 100%; margin-top: 10px; border-radius: 5px; height: 35px; border: 1px solid #c0c0c0; transition: border-color 0.3s, box-shadow 0.3s;" #name>
               <!-- <i class="bi bi-trash-fill delete" style="display: inline-flex; margin-top: 12px; margin-left: 10px; color: red; margin-right: 5px;" (click)="removeMandatoryFieldFilter('assetId')"></i> -->
-              </div>
-              <br>
             </div>
-            <div class="form-group" >
-              <label for="address">Address</label>
-              <div class="">
-              <input type="text" class="form-control" id="address" formControlName="address"   #name>
+
+            <div style="margin-top: 10px;">
+              <label for="address">Address</label><br>
+              <input type="text" placeholder="Address 1" class="form-group" id="address" formControlName="address" style="font-size: 16px; padding-left: 11px; width: 100%; margin-top: 10px; border-radius: 5px; height: 35px; border: 1px solid #c0c0c0; transition: border-color 0.3s, box-shadow 0.3s;" #name>
               <!-- <i class="bi bi-trash-fill delete" style="display: inline-flex; margin-top: 12px; margin-left: 10px; color: red; margin-right: 5px;" (click)="removeMandatoryFieldFilter('name')"></i> -->
-              </div>
-              <br>
             </div>
          
-              <div class="form-group">
-                <label for="apartment">Apartment</label>
-                <div class="">
-                <input type="text" class="form-control" id="apartment" formControlName="apartment"  >
+              <div>
+                <!-- <label for="apartment">Apartment</label> -->
+                <input type="text" placeholder="Address 2" class="form-group" id="apartment" formControlName="apartment" style="font-size: 16px; padding-left: 11px; width: 100%; margin-top: 10px; border-radius: 5px; height: 35px; border: 1px solid #c0c0c0; transition: border-color 0.3s, box-shadow 0.3s;" >
                 <!-- <i class="bi bi-trash-fill delete" style="display: inline-flex; margin-top: 12px; margin-left: 10px; color: red; margin-right: 5px;" (click)="removeMandatoryFieldFilter('serialNumber')"></i> -->
-                </div>
-                <br>
               </div>
               
-            
-              <div class="form-group" >
-                <label for="city" >City</label>
-                <div class="">
-                <input type="text" class="form-control" id="city" formControlName="city" >
+              <div class="d-flex justify-content-between">
+              <div>
+                <!-- <label for="city" >City</label> -->
+                <input type="text" placeholder="City" class="form-group" id="city" formControlName="city" style="font-size: 16px; padding-left: 11px; width: 100%; margin-top: 10px; border-radius: 5px; height: 35px; border: 1px solid #c0c0c0; transition: border-color 0.3s, box-shadow 0.3s;">
                 <!-- <i class="bi bi-trash-fill delete" style="display: inline-flex; margin-top: 12px; margin-left: 10px; color: red; margin-right: 5px;" (click)="removeMandatoryFieldFilter('category')"></i> -->
-                  </div>
-                  <br>
               </div>
               
-              <div class="form-group">
-                <label for="state">State</label>
-                <div class="">
-                <input type="text" class="form-control" id="state" formControlName="state" >
+              <div style="padding-left: 20px;">
+                <!-- <label for="state">State</label> -->
+                <input type="text" placeholder="State" class="form-group" id="state" formControlName="state" style="font-size: 16px; padding-left: 11px; width: 100%; margin-top: 10px; border-radius: 5px; height: 35px; border: 1px solid #c0c0c0; transition: border-color 0.3s, box-shadow 0.3s;">
                 <!-- <i class="bi bi-trash-fill delete" style="display: inline-flex; margin-top: 12px; margin-left: 10px; color: red; margin-right: 5px;" (click)="removeMandatoryFieldFilter('customer')"></i> -->
-                </div>
-                <br>
               </div>
               
-              <div class="form-group" >
-                <label for="zipCode">ZipCode</label>
-                <div class="">
-                <input type="text" class="form-control" id="zipCode" formControlName="zipCode"  >
+              <div style="padding-left: 20px;">
+                <!-- <label for="zipCode">ZipCode</label> -->
+                <input type="text" placeholder="Zip Code" class="form-group" id="zipCode" formControlName="zipCode" style="font-size: 16px; padding-left: 11px; width: 100%; margin-top: 10px; border-radius: 5px; height: 35px; border: 1px solid #c0c0c0; transition: border-color 0.3s, box-shadow 0.3s;">
                 <!-- <i class="bi bi-trash-fill delete" style="display: inline-flex; margin-top: 12px; margin-left: 10px; color: red; margin-right: 5px;" (click)="removeMandatoryFieldFilter('location')"></i> -->
-                </div>
                 <br>
               </div>
-              
-             
-
-              
-            
-
-
-        
-
-
-        </div>
+              </div>
        
-      </form>
-    
+              <div style="display: flex; justify-content: center; margin-top: 15px;">
+                <button  class="btn btn-light"  (click)="closeBox4.click()" style="margin: 10px; width: 100px; margin-right: 30px; border: 1px solid #c0c0c0">Cancel</button>
+                <button type="submit" class="btn btn-primary" (click)="closeBox4.click()" (click)="saveLocation()" style="margin: 10px; width: 100px;">Save</button>
+              </div>
 
-            
-         
-       
-        <div class="modal-footer d-flex justify-content-around">
-          <button  class="btn btn-light mt-3"  (click)="closeBox4.click()"  >Close</button>
-          <button type="submit" class="btn btn-primary mt-3" (click)="closeBox4.click()" (click)="saveLocation()">Save</button>
-          
-        </div>
+          </form>
         </div>
       </div>
     </div>
   </div>
 
+<!-- Creating a new Bin -->
+
   <div class="modal fade" id="addBin" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle" aria-hidden="true">
     <div class="modal-dialog" role="document">
       <div class="modal-content">
-        <div class="modal-header">
-          <h2 class="modal-title" id="exampleModalLongTitle">Add Bin</h2>
-          <button type="button" class="close ms-auto" data-dismiss="modal" aria-label="Close" #closeBox5 (click)="binNumber.value=''"  (click)="location.value=''">
-            <span aria-hidden="true" style="height: 20px; width: 10px; background-color: #f0f0f0; border:none; display:block; padding-top: 0px;  ">&times;</span>
+        <div class="modal-header" style="padding: 13px 15px">
+          <h2 class="modal-title" id="exampleModalLongTitle" style="margin:0; display: flex; justify-content: center;">Add Bin</h2>
+          <button type="button" class="btn btn-light btn-sm ms-auto" data-dismiss="modal" aria-label="Close" style="border-radius: 10px;" #closeBox5 (click)="binNumber.value=''"  (click)="location.value=''">
+            <!-- <span aria-hidden="true" style="height: 20px; width: 10px; background-color: #f0f0f0; border:none; display:block; padding-top: 0px;  ">&times;</span> -->
+            <i class="bi bi-x-lg"></i>
           </button>
         </div>
         <div class="modal-body">
             <form [formGroup]="binForm" >
 
-                <div style="width: 95%;">
-                  <div class="form-group" >
-                    <label for="binNumber">Bin Number<span style="border: none; background-color: white;display:contents;" class="text-danger">*</span></label>
-                    <div class="">
-                    <input type="text" class="form-control" id="binNumber" formControlName="binNumber" #binNumber>
+                <!-- <div style="width: 95%;"> -->
+                  <div>
+                    <label for="binNumber">Bin Number<span style="border: none; background-color: white;display:contents;" class="text-danger"> *</span></label>
+                    <input type="text" class="form-group" id="binNumber" formControlName="binNumber" style="font-size: 16px; padding-left: 11px; width: 100%; margin-top: 10px; border-radius: 5px; height: 35px; border: 1px solid #c0c0c0; transition: border-color 0.3s, box-shadow 0.3s;" #binNumber>
                     <!-- <i class="bi bi-trash-fill delete" style="display: inline-flex; margin-top: 12px; margin-left: 10px; color: red; margin-right: 5px;" (click)="removeMandatoryFieldFilter('name')"></i> -->
-                    </div>
-                    <br>
                   </div>
 
-                <div class="form-group">
-                  <label for="location">Location<span style="border: none; background-color: white;display:contents;" class="text-danger">*</span></label>
-                  <div class="">
+                <div style="margin-top: 10px;">
+                  <label for="location">Location<span style="border: none; background-color: white;display:contents;" class="text-danger"> *</span></label>
                   <!-- <input type="text" class="form-control" id="location" formControlName="location" > -->
                   <!-- <i class="bi bi-trash-fill delete" style="display: inline-flex; margin-top: 12px; margin-left: 10px; color: red; margin-right: 5px;" (click)="removeMandatoryFieldFilter('assetId')"></i> -->
-                  <select class="form-select custom-dropdown" class="form-control" id="state" formControlName="location" #location >
+                  <select class="form-select form-control" id="state" formControlName="location" style="font-size: 16px; padding-left: 11px; width: 100%; margin-top: 10px; border-radius: 5px; height: 35px; border: 1px solid #c0c0c0; transition: border-color 0.3s, box-shadow 0.3s;" #location >
                     <option value="{{location.city}}" *ngFor="let location of locationList">{{location.city}}</option>
                     <!-- <option value="{{[customer.name,customer.id]}}" *ngFor="let customer of companyCustomerList">{{customer.name}}</option> -->
                     <!-- <option value="outOfService" selected>Out Of Service</option> -->
-                    
-                    
                   </select>
                 </div>
-                  <br>
-                </div>
-                
-             
-                 
-                  
-                 
   
-                  
-                
-  
-  
-            
-  
-  
-            </div>
+            <!-- </div> -->
            
           </form>
-    
-
-            
-         
        
-        <div class="modal-footer d-flex justify-content-around">
-          <button  class="btn btn-light mt-3"  (click)="closeBox5.click()"  >Close</button>
-          <button type="submit" class="btn btn-primary mt-3" (click)="closeBox5.click()" (click)="saveBin()" [disabled]="binForm.invalid">Save</button>
+          <div style="display: flex; justify-content: center; margin-top: 15px;">
+          <button  class="btn btn-light"  (click)="closeBox5.click()" style="margin: 10px; width: 100px; margin-right: 30px; border: 1px solid #c0c0c0">Cancel</button>
+          <button type="submit" class="btn btn-primary" (click)="closeBox5.click()" (click)="saveBin()" [disabled]="binForm.invalid" style="margin: 10px; width: 100px;">Save</button>
           
         </div>
         </div>

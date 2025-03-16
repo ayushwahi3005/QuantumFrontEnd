@@ -73,7 +73,7 @@ export class LoginComponent {
     }, 5000); // Hide the alert after 5 seconds (adjust as needed)
   }
   login(){
-    this.loader=true;
+    //this.loader=true;
     console.log(this.loader)
     if(this.email==''){
       // alert('Please enter email');
@@ -126,7 +126,7 @@ export class LoginComponent {
         
         // this.triggerAlert(this.errorMessage,"danger");
         
-        // this.loader=false;
+        //this.loader=false;
         console.log(this.loader)
         this.subscribeToService();
         console.log(this.errorMessage+" in Login");

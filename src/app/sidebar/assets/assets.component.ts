@@ -49,6 +49,9 @@ export class AssetsComponent {
   selectedCompanyCustomer!:string;
   assetCategoryList!:CategoryName[];
   selectedItems = [];
+
+
+
   
 
   showFieldsList!:ShowFieldsData[];
@@ -95,7 +98,7 @@ export class AssetsComponent {
   selectedFilterList:any=[];
   selectFilter!:string;
   savedExtraColumn!:any
-  pageSize:number=10;
+  pageSize:number=50;
   totalLength:number=0;
   pageEvent!: PageEvent;
   pageIndex:number=0;
@@ -116,6 +119,7 @@ export class AssetsComponent {
    }
    @ViewChild('dropdownContainer') dropdownContainer!: ElementRef;
   ngOnInit(){
+
    
     if(localStorage.getItem("assetIdDetail")!=null){
       this.tempId=localStorage.getItem("assetIdDetail")
@@ -128,7 +132,7 @@ export class AssetsComponent {
      
     }
     this.pageIndex=parseInt(localStorage.getItem('assetPageInd')||'0')
-    this.pageSize=parseInt(localStorage.getItem('assetPageSize')||'10')
+    this.pageSize=parseInt(localStorage.getItem('assetPageSize')||'50')
     // this.assetService.componentMethodCalled$.subscribe((data:any) => {
     //   console.log("--------------------called "+ data)
     //   this.mainAsset=true;

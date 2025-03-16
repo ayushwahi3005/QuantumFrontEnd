@@ -1,20 +1,65 @@
 @import '~@angular/material/prebuilt-themes/indigo-pink.css';
-.roleTable{
-  width:90% ;
+/* .roleTable{
+  width:100%;
+  margin: 10px 10px;
   border: 1px solid lightgray;
-  }
+}
+
+.roleTable th {
+  position: sticky;
+  top: 0;
+  z-index: 2;
+} */
+
+.role_table{
+  margin-top: 20px;
+  width: 100%;
+  height: 80%;
+  border: 1px solid lightgray;
+  overflow-y: scroll;
+  border-radius: 10px;
+}
+
+.role_table tr:hover {
+  background-color: #f5f5f5;
+}
+
+.role_table tr:hover td{
+  background-color: inherit;
+}
+
+.role_table tbody{
+  font-size: 16px;
+}
+
+.addTable tr{
+  border: 1px lightgray solid;
+  border-radius: 10px;
+  padding: 5px 10px;
+}
+
+.addTable td{
+  text-align: left;
+  font-size: 16px;
+  padding-left: 20px;
+  width: 50%;
+}
+
   .addTable select{
     margin: 10px 0px;
     width: 8vw;
   }
+
   /* .addTable tr{
     border:solid lightgray 0.5px;
     border-radius: 10px;
     padding: 5px 10px;
   } */
+
   .addTable tr:hover{
     background: none;
   }
+
   /* .addTable td{
     padding: 10px;
   } */
@@ -23,44 +68,131 @@
     border-radius: 10px;
   } */
   .searchIcon{
-
-
      /* padding: 10px 12px; */
     /* pointer-events: none; */
     position: relative;
       left: -90%;
       pointer-events: none;
-    
-   
   }
+
   input{
     padding-left: 24px;
-   
   }
+
   .role-main{
     width: calc(100vw - 300px);
   }
+
   .background-tab{
     border-radius: 10px;
     border: 1px solid lightgray;
     /* margin-top: 10px; */
     background-color: white;
-    height: 75vh;
-    width: 90%;
+    height: 80vh;
+    width: 98%;
     margin: 30px auto;
     padding: 20px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   }
+
   tr{
     height: 10px;
   }
-  #import-history-input{
+
+  /* #import-history-input{
     border-radius: 10px;
     border: 1px solid gray;
     height: 40px;
     outline: none;
   }
+
   #import-history-input:focus{
     border: 2px solid #1a65ab;
     
+  } */
+
+  .highlight-input:focus {
+    border-color: #007bff; /* Change border color */
+    box-shadow: 0 0 5px rgba(0, 123, 255, 0.5); /* Add a glowing effect */
+    outline: none; /* Remove default outline */
   }
+
   
+  .form-select:focus {
+    border-color: #007bff; /* Change border color */
+    box-shadow: 0 0 5px rgba(0, 123, 255, 0.5); /* Add a glowing effect */
+    outline: none; /* Remove default outline */
+  }
+
+  .permissionlevel {
+    padding: 0 25%;
+  }
+
+  .role_table .table {
+    border-collapse: collapse;
+    /* border: 1px solid #ddd; Default border for the table */
+}
+
+.role_table .table tbody tr {
+    border-bottom: 1px solid #ddd;
+}
+
+.role_table .table:not(:has(tbody tr)) {
+    border: none;
+}
+
+.no-data {
+    text-align: center;
+    font-style: italic;
+    color: #888;
+    margin-top: 15px;
+    font-size: 16px;
+    /* padding: 10px; */
+}
+
+.role_table td{
+  vertical-align: middle;
+}
+
+.addTable tr:hover{
+  background-color: #f5f5f5;
+}
+
+.addTable tr:hover td{
+  background-color: inherit;
+}
+
+.search-bar {
+  display: flex;
+  align-items: center;
+  border: 2px solid #ddd;
+  border-radius: 10px;
+  overflow: hidden;
+  width: 100%;
+  height: 40px;
+  max-width: 250px;
+  background-color: #fff;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  position: relative;
+}
+
+/* Search Input Field */
+#import-history-input {
+  flex: 1;
+  /* padding: 6px 10px; */
+  padding: 0 0 0 25px;
+  border: none;
+  outline: none;
+  font-size: 16px;
+  color: #333;
+  /* padding-right: 10px; */
+  /* padding-left: 25px; */
+  background-color: transparent;
+}
+
+/* Highlight the search bar when input is focused */
+.search-bar:focus-within {
+  border-color: #007bff; /* Blue border for focus */
+  box-shadow: 0 0 5px rgba(0, 123, 255, 0.5); /* Subtle blue glow */
+  transition: border-color 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+}

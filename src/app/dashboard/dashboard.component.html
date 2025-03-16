@@ -6,39 +6,30 @@
     </div>
   
   
- 
-  
-    <li class="nav-item"  style="padding-right: 5px; margin-top: 10px;">
-    <b>Welcome</b> <span style="margin: 10px;">{{username}}</span>
-    <i class="bi bi-bell-fill" matBadge="15" matBadgeColor="warn"></i>
-    
-    <span class="dropdown">
-      <a class="dropdown-toggle" type="button" data-toggle="dropdown"><i class="bi bi-person-circle"></i>
-     
-      <span class="caret"></span></a>
-      <ul class="dropdown-menu">
-       
-        <li><a href="#" style="text-decoration: none; color: black;">Profile ({{email}})</a></li>
-        <hr>
-        <li>More Details</li>
-     
-       
-       
+    <li class="nav-item d-flex align-items-center"  style="padding-right: 5px; margin: 15px;gap: 25px;">
+    <b>Welcome</b> <span style="margin-left: -10px;">{{username}}</span>
 
+    <!-- Notification Icon -->
+    <i class="bi bi-bell-fill" matBadgeColor="warn" style="cursor: pointer; font-size: 20px;"></i>
+    <!-- matBadge="15" -->
+    
+      <a class="dropdown-toggle" type="button" data-toggle="dropdown" style="text-decoration: none;">
+      <i class="bi bi-person-circle" style="font-size: 20px;"></i>
+    </a>
+     
+      <!-- <span class="caret"></span></a> -->
+      <ul class="dropdown-menu" style="margin-top: 30px;padding: 8px;margin-right: 10px;font-size: 17px;">
+       
+        <b class="dropdown-item" href="#" style="text-decoration: none; color: black;">Profile ({{email}})</b>
+        <!-- <li>More Details</li> -->
+        <b class="dropdown-item">More Details</b>
+        <b class="dropdown-item">Contact Support</b>
+     
       </ul>
-      <a (click)="logout()" style="margin-left: 5px; cursor: pointer;">Logout</a>
-    </span>
-    
+
+      <a (click)="logout()" style="cursor: pointer;">Log out</a>
+    <!-- </span> -->
     </li>
-
-
-
-  
-
-
-
-    
-    
     
 </ul>
 
@@ -61,7 +52,7 @@
         </li>
       
 
-        <li  class="nav-list-item" style=" margin-top: 400px; margin-bottom: 0px; position: absolute; bottom: 0;" [routerLink]="['/setting-home']">
+        <li  class="nav-list-item" style=" margin-top: 400px; margin-bottom: 10px; position: absolute; bottom: 0;" [routerLink]="['/setting-home']">
           <i class="bi bi-gear-fill"></i>
           <span >Settings</span>
         </li>

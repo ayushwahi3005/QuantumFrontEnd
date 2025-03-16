@@ -111,7 +111,8 @@ export class AssetModuleComponent {
     else{
     const obj={
       
-      "name":this.addFieldName.trim().toLowerCase(),
+      // "name":this.addFieldName.trim().toLowerCase(),
+      "name":this.addFieldName.trim(),
       "email":this.email,
        "type":this.extraFieldOption,
        "companyId":this.companyId
@@ -120,6 +121,7 @@ export class AssetModuleComponent {
       console.log(data);
       const event = { checked: true }; 
       this.showField(event,this.addFieldName.trim().toLowerCase(),this.extraFieldOption)
+      // this.showField(event,this.addFieldName.trim(),this.extraFieldOption)
       this.ngOnInit();
     },
     (err)=>{

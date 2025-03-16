@@ -21,6 +21,7 @@ export class LocationComponent {
   searchedLocationList:any=[];
 
   binList:any=[];
+  searchData:any;
   searchedBinList:any=[];
   constructor(private locationService:LocationService,private formBuilder:FormBuilder){}
   ngOnInit(){
@@ -31,6 +32,7 @@ export class LocationComponent {
     this.locationList=[];
     this.searchedLocationList=[];
     this.locationForm=this.formBuilder.group({
+      name:[''],
       parentLocation:[''],
       address:[''],
       apartment:[''],
@@ -77,6 +79,12 @@ export class LocationComponent {
     console.log(data);
     this.currOption=data;
   }
+
+  clearSearch(): void {
+    this.searchData = '';
+    this.locationSearch(null); // Explicitly trigger the locationSearch method to update the table
+  }
+  
   editButtonVisibile(id:number){
   
         this.editButtonId=id;
