@@ -87,6 +87,7 @@
     padding-bottom: 10px;
   }
 
+
 /* .bi-search{
     position: absolute;
     left: 20.5rem;
@@ -183,3 +184,9 @@
   --bs-table-bg: #12232E;
   --bs-table-color: white;
 }
+
+  .dropdown-toggle{
+    margin: 10px;
+  }
+  
+

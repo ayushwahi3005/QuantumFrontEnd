@@ -61,6 +61,19 @@
         
   </div>
 
+
+  <div class="dot-spinner d-flex justify-content-center" *ngIf="loader" >
+    <div class="dot-spinner__dot"></div>
+    <div class="dot-spinner__dot"></div>
+    <div class="dot-spinner__dot"></div>
+    <div class="dot-spinner__dot"></div>
+    <div class="dot-spinner__dot"></div>
+    <div class="dot-spinner__dot"></div>
+    <div class="dot-spinner__dot"></div>
+    <div class="dot-spinner__dot"></div>
+  </div>
+
+
   
   
   <div class="modal fade" id="removeLoggedIn" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle" aria-hidden="true" data-backdrop="static" data-keyboard="false"  style="z-index :10000;">
@@ -95,7 +108,10 @@
       <p class="copyright">&copy; {{currentyear}} AssetYug</p>
     </div>
   </footer>
-  </body>
+
+
+  <!-- </body> -->
+
 
   <div class="dot-spinner d-flex justify-content-center" *ngIf="loader" >
     <div class="dot-spinner__dot"></div>
@@ -106,4 +122,9 @@
     <div class="dot-spinner__dot"></div>
     <div class="dot-spinner__dot"></div>
     <div class="dot-spinner__dot"></div>
+
   </div>
+
+  </body>
+
+

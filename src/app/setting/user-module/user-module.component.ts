@@ -2,15 +2,15 @@ import { Component } from '@angular/core';
 import { ExtraFieldName } from './extraFieldName';
 import { ShowFieldsData } from './showFieldsData';
 import { MandatoryFields } from './mandatoryFields';
-import { CustomerModuleService } from './customer-module.service';
+import { UserModuleService } from './user-module.service';
 
 @Component({
-  selector: 'app-customer-module',
-  templateUrl: './customer-module.component.html',
-  styleUrls: ['./customer-module.component.css']
+  selector: 'app-user-module',
+  templateUrl: './user-module.component.html',
+  styleUrl: './user-module.component.css'
 })
-export class CustomerModuleComponent {
-  extraFieldName!:ExtraFieldName[];
+export class UserModuleComponent {
+extraFieldName!:ExtraFieldName[];
   addFieldName!:string;
   showFieldsList!:ShowFieldsData[];
   mandatoryFieldsList!:MandatoryFields[];
@@ -28,49 +28,33 @@ export class CustomerModuleComponent {
   isSubscribedToEmailsMessage!:boolean;
   companyId!:any;
   mandatoryFields=[{
-    name:"name",
+    name:"Firstname",
     type:"String"
   },
   {
-    name:"email",
+    name:"Lastname",
     type:"String"
   },
   {
-    name:"phone",
+    name:"Phone",
     type:"String"
   },
   {
-    name:"address",
+    name:"Job Title",
     type:"String"
   },
   {
-    name:"city",
-    type:"String"
-  },
-  {
-    name:"state",
-    type:"String"
-  },
-  {
-    name:"zipCode",
-    type:"String"
-  },
-  {
-    name:"category",
-    type:"String"
-  },
-  {
-    name:"status",
+    name:"Role",
     type:"String"
   }]
-  constructor(private customerModuleService:CustomerModuleService){}
+  constructor(private userModuleService:UserModuleService){}
   ngOnInit(){
     this.extraFieldOption='number';
     this.mandatoryFieldsMap = new Map<string, boolean>();
     this.showFieldsMap = new Map<string, boolean>();
     this.email=localStorage.getItem('user');
     this.companyId=localStorage.getItem('companyId');
-    this.customerModuleService.getExtraFields(this.companyId).subscribe((data)=>{
+    this.userModuleService.getExtraFields(this.companyId).subscribe((data)=>{
       this.extraFieldName=data;
       console.log("--------extra------------->"+this.companyId+"---"+this.extraFieldName);
       this.extraFieldName.forEach((x)=>{
@@ -81,21 +65,21 @@ export class CustomerModuleComponent {
       console.log(err);
     })
 
-    this.customerModuleService.getAllMandatoryFields(this.companyId).subscribe((data)=>{
+    this.userModuleService.getAllMandatoryFields(this.companyId).subscribe((data)=>{
       this.mandatoryFieldsList=data;
       // console.log("mandatory----------------------->",this.mandatoryFieldsList)
       this.mandatoryFieldsList.forEach((x)=>{
-        this.mandatoryFieldsMap.set(x.name,x.mandatory);
+        this.mandatoryFieldsMap.set(x.name.toLowerCase(),x.mandatory);
       })
     },
     (err)=>{
       console.log(err);
     })
-    this.customerModuleService.getAllShowFields(this.companyId).subscribe((data)=>{
+    this.userModuleService.getAllShowFields(this.companyId).subscribe((data)=>{
       this.showFieldsList=data;
       // console.log("show----------------------->",this.showFieldsList)
       this.showFieldsList.forEach((x)=>{
-        this.showFieldsMap.set(x.name,x.show);
+        this.showFieldsMap.set(x.name.toLowerCase(),x.show);
       })
     },
     (err)=>{
@@ -123,16 +107,17 @@ export class CustomerModuleComponent {
        "email":this.email,
        "companyId":this.companyId
     }
-    this.customerModuleService.addExtraFields(obj).subscribe((data)=>{this.extraFieldOption
+    this.userModuleService.addExtraFields(obj).subscribe((data)=>{this.extraFieldOption
       console.log(data);
       const event = { checked: true }; 
-      this.showField(event,this.addFieldName.trim().toLowerCase(),this.extraFieldOption)
+      this.showField(event,this.addFieldName.trim(),this.extraFieldOption)
       this.ngOnInit();
     },
     (err)=>{
+      console.log(err)
       console.log(err.error);
       // alert(err.error.errorMessage)
-      this.triggerAlert(err.error.message,"danger");
+      this.triggerAlert(err.error.errorMessage,"danger");
     },
     ()=>{
       this.addFieldName='';
@@ -144,7 +129,7 @@ export class CustomerModuleComponent {
   }
   }
   removeExtraField(){
-    this.customerModuleService.removeExtraField(this.deletionId).subscribe((data)=>{
+    this.userModuleService.removeExtraField(this.deletionId).subscribe((data)=>{
       console.log(data);
       this.deletionId='';
     },
@@ -156,7 +141,7 @@ export class CustomerModuleComponent {
       
     }
     )
-    this.customerModuleService.deleteShowAndMandatoryFields(this.deletionName,this.companyId).subscribe((data)=>{
+    this.userModuleService.deleteShowAndMandatoryFields(this.deletionName,this.companyId).subscribe((data)=>{
       console.log("deleted extra fields mandate and show");
     },
     (err)=>{
@@ -186,7 +171,7 @@ export class CustomerModuleComponent {
   mandatoryField(event:any,name:string,type:string){
     console.log(event.checked);
     console.log(name);
-    this.customerModuleService.getMandatoryFields(name,this.companyId).subscribe((data)=>{
+    this.userModuleService.getMandatoryFields(name,this.companyId).subscribe((data)=>{
       let obj;
       console.log(data);
       if(data==null){
@@ -209,7 +194,7 @@ export class CustomerModuleComponent {
           "companyId":this.companyId
         }
       }
-      this.customerModuleService.mandatoryFields(obj).subscribe((data)=>{
+      this.userModuleService.mandatoryFields(obj).subscribe((data)=>{
         console.log("Updated");
         this.triggerAlert("SuccessFully Updated Field","success");
       },
@@ -236,7 +221,7 @@ export class CustomerModuleComponent {
     
     console.log(event.checked);
     console.log(name);
-    this.customerModuleService.getShowFields(name,this.companyId).subscribe((data)=>{
+    this.userModuleService.getShowFields(name,this.companyId).subscribe((data)=>{
       let obj;
       console.log(data);
       if(data==null){
@@ -260,7 +245,7 @@ export class CustomerModuleComponent {
         }
       }
       console.log(obj)
-      this.customerModuleService.showFields(obj).subscribe((data)=>{
+      this.userModuleService.showFields(obj).subscribe((data)=>{
         console.log("Updated");
         this.triggerAlert("SuccessFully Updated Field","success");
         this.ngOnInit();
@@ -281,14 +266,14 @@ export class CustomerModuleComponent {
     }, 5000); // Hide the alert after 5 seconds (adjust as needed)
   }
   getValueOfMandatoryMap(name:string):boolean{
-    if (this.mandatoryFieldsMap && this.mandatoryFieldsMap.has(name)) {
-      return this.mandatoryFieldsMap.get(name) || false;
+    if (this.mandatoryFieldsMap && this.mandatoryFieldsMap.has(name.toLowerCase())) {
+      return this.mandatoryFieldsMap.get(name.toLowerCase()) || false;
     }
     return false;
   }
   getValueOfShowMap(name:string):boolean{
-    if (this.showFieldsMap && this.showFieldsMap.has(name)) {
-      return this.showFieldsMap.get(name) || false;
+    if (this.showFieldsMap && this.showFieldsMap.has(name.toLowerCase())) {
+      return this.showFieldsMap.get(name.toLowerCase()) || false;
     }
     return false;
   }

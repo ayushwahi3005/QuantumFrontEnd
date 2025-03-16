@@ -66,8 +66,9 @@ export class CustomerCategoryComponent {
     
    
     
-    if(this.addFieldName==''||this.addFieldName==null){
-      alert("Field Empty!!");
+    if(this.addFieldName?.trim()==''||this.addFieldName==null){
+      // alert("Field Empty!!");
+      this.triggerAlert("Name Field Empty!","warning");
     }
     else{
     const obj={
@@ -128,20 +129,31 @@ export class CustomerCategoryComponent {
 
   }
   removeField(){
-    this.customerCategoryService.deleteCustomerCategory(this.deletionId).subscribe((data)=>{
-      console.log(data);
-      this.deletionId='';
-    },
-    (err)=>{
-      console.log(err);
-      this.triggerAlert(err.error.message,"danger");
-    },
-    ()=>{
-      this.triggerAlert("Deleted Successfully","primary");
-      this.ngOnInit();
+    this.customerCategoryService.countCompanyCustomerByCategory(this.deletionName.toLowerCase()).subscribe((data)=>{
       
-    }
-    )
+      console.log(data);
+      if(data>0){
+        this.triggerAlert("Cannot delete category as it is associated with "+data+" customers","danger");
+        return;
+      }
+      else{
+        this.customerCategoryService.deleteCustomerCategory(this.deletionId).subscribe((data)=>{
+          console.log(data);
+          this.deletionId='';
+        },
+        (err)=>{
+          console.log(err);
+          this.triggerAlert(err.error.message,"danger");
+        },
+        ()=>{
+          this.triggerAlert("Deleted Successfully","primary");
+          this.ngOnInit();
+          
+        }
+        )
+      }
+    });
+
 
   }
   updateDeletionName(name:string){

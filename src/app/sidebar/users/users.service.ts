@@ -66,5 +66,55 @@ export class UsersService {
   getRoleAndPermissionByName(id:string,name:string ):Observable<any>{
     return this.httpClient.get(this.customerEndpoint+'roleAndPermission/get/'+id+'/'+name,{headers:this.headers});
   }
+  getExtraFieldName(id:string):Observable<any>{
+    const headers = new HttpHeaders({
+      'Authorization': `Bearer ${localStorage.getItem('authToken')}`,
+      'Content-Type': 'application/json',
+      'device-id': `${localStorage.getItem('deviceId')}`,
+    });
+    return this.httpClient.get(this.customerEndpoint+"getExtraFieldName/"+id,{headers});
+  }
+  getExtraFieldNameValue(companyId:string):Observable<any>{
+    const headers = new HttpHeaders({
+      'Authorization': `Bearer ${localStorage.getItem('authToken')}`,
+      'Content-Type': 'application/json',
+      'device-id': `${localStorage.getItem('deviceId')}`,
+    });
+    return this.httpClient.get(this.customerEndpoint+"getExtraFieldNameValue/"+companyId,{headers});
+  }
+
+  getMandatoryFields(name:any,companyId:any):Observable<any>{
+    const headers = new HttpHeaders({
+      'Authorization': `Bearer ${localStorage.getItem('authToken')}`,
+      'Content-Type': 'application/json',
+      'device-id': `${localStorage.getItem('deviceId')}`,
+    });
+    console.log("name",name)
+    return this.httpClient.get(this.customerEndpoint+"getMandatoryFields/"+name+"/"+companyId,{headers});
+  }
+  getShowFields(name:any,companyId:any):Observable<any>{
+    const headers = new HttpHeaders({
+      'Authorization': `Bearer ${localStorage.getItem('authToken')}`,
+      'Content-Type': 'application/json',
+      'device-id': `${localStorage.getItem('deviceId')}`,
+    });
+    return this.httpClient.get(this.customerEndpoint+"getShowFields/"+name+"/"+companyId,{headers});
+  }
+  getAllMandatoryFields(companyId:any):Observable<any>{
+    const headers = new HttpHeaders({
+      'Authorization': `Bearer ${localStorage.getItem('authToken')}`,
+      'Content-Type': 'application/json',
+      'device-id': `${localStorage.getItem('deviceId')}`,
+    });
+    return this.httpClient.get(this.customerEndpoint+"getAllMandatoryFields/"+companyId,{headers});
+  }
+  getAllShowFields(companyId:any):Observable<any>{
+    const headers = new HttpHeaders({
+      'Authorization': `Bearer ${localStorage.getItem('authToken')}`,
+      'Content-Type': 'application/json',
+      'device-id': `${localStorage.getItem('deviceId')}`,
+    });
+    return this.httpClient.get(this.customerEndpoint+"getAllShowFields/"+companyId,{headers});
+  }
   
 }

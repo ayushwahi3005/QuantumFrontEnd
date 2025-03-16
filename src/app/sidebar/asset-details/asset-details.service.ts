@@ -138,7 +138,8 @@ export class AssetDetailsService {
     return this.httpClient.get(this.companyCustomerEndpoint+"allCompanyCustomer/"+companyId,{headers:this.headers});
   }
   getRoleAndPermission(id:string,name:string):Observable<any>{
-    return this.httpClient.get(this.customerEndpoint+'/roleAndPermissionByName/get/'+id+'/'+name,{headers:this.headers});
+    return this.httpClient.get(this.customerEndpoint+'roleAndPermissionByName/get/'+id+'/'+name,{headers:this.headers});
+
   }
   getAssetCategory(companyId:any):Observable<any>{
     return this.httpClient.get(this.assetEndpoint+"getCategoryActiveList/"+companyId,{headers:this.headers});

@@ -9,28 +9,22 @@ import { environment } from 'src/environments/environment';
 export class TokenAuthenticationService {
 
   constructor(private httpClient:HttpClient) { }
-  // endpoint="http://customer-lb2-1979550990.us-east-1.elb.amazonaws.com:8080/";
   endpoint=environment.endpoint;
-  loginToken(email:string,deviceId:string):Observable<any>{
-    // const headers = new HttpHeaders({
-    //   // 'Authorization': `Bearer ${localStorage.getItem('authToken')}`,
-    //   // 'Content-Type': 'application/json',
-    //   'spring.cloud.function.definition': 'getLoginToken'
-    // });
-    return this.httpClient.get(this.endpoint+'customer/getLoginToken/'+email+'/'+deviceId);
+  loginToken(email:string,password:string,deviceId:string):Observable<any>{
+
+    const obj={
+      email:email,
+      password:password,
+      deviceId:deviceId
+    }
+    return this.httpClient.post(this.endpoint+'customer/getLoginToken',obj);
   }
   getCompanyId(email:any):Observable<any>{
     
     return this.httpClient.get(this.endpoint+'customer/getCompanyId/'+email);
   }
   getAccountInfo(email:string):Observable<any>{
-    // const headers = new HttpHeaders({
-    //   // 'Authorization': `Bearer ${localStorage.getItem('authToken')}`,
-    //   // 'Content-Type': 'application/json',
-    //   'spring.cloud.function.definition': 'getAccountInfo'
-    // });
-    
-    // return this.httpClient.get('http://localhost:8080/customer/accountInfo/'+email);
+
     return this.httpClient.get(this.endpoint+'customer/accountInfo/'+email);
 
   }
@@ -47,5 +41,15 @@ export class TokenAuthenticationService {
     
     return this.httpClient.get(this.endpoint+'customer/checkUserName/'+email);
   }
- 
+
+  removeSession(userId:string):Observable<any>{
+    const headers = new HttpHeaders({
+      'Authorization': `Bearer ${localStorage.getItem('authToken')}`,
+      'Content-Type': 'application/json',
+      'Device-ID': `${localStorage.getItem('deviceId')}`,
+    });
+    
+    return this.httpClient.delete(this.endpoint+'customer/removeSession/'+userId, { headers });
+  }
+
 }

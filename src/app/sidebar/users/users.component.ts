@@ -12,6 +12,9 @@ import {environment} from 'src/environments/environment'
 import { FirebaseApp } from 'firebase/app';
 import { ActivatedRoute } from '@angular/router';
 import { RoleAndPermission } from './RoleAndPermission';
+import { MandatoryFields } from '../assets/mandatoryFields';
+import { ShowFieldsData } from '../assets/showFieldsData';
+import { ExtraFieldName } from '../assets/extraFieldName';
 // import { FirebaseApp } from 'firebase/app';
 
 
@@ -51,7 +54,24 @@ export class UsersComponent {
   selectEditUser!:any;
   role!:any;
   detailedRole!:RoleAndPermission;
-
+  selectedExtraColums :string[]=[];
+  savedExtraColumn!:any
+  selectedExtraColumsMap!:Map<string,Boolean>;
+  mandatoryFieldsList!:MandatoryFields[];
+  showFieldsList!:ShowFieldsData[];
+  mandatoryFieldsMap!:Map<string,boolean>;
+  showFieldsMap!:Map<string,boolean>;
+  selectedFilterList:any=[];
+  filterList:any=[];
+  extraFieldFilterList!:Map<String,String>;
+  extraFieldName!:ExtraFieldName[];
+  extraFieldNameMap!:Map<String,ExtraFieldName>;
+  extraFieldNameList!:string[];
+  checkBoxColor="primary"
+  showMandatoryBasicFields!:Map<string,Boolean>;
+  myList:string[]=[];
+  myArray=[]
+  mandatoryFieldFilterList!:Map<string,Boolean>;
   constructor(private formBuilder:FormBuilder,private userService:UsersService,private authService:AuthService,private route:ActivatedRoute){}
 
 
@@ -64,6 +84,41 @@ export class UsersComponent {
     console.log("role->"+this.role)
     console.log("role=>"+(this.role!='ADMIN'))
     this.isLoading=false;
+    this.showMandatoryBasicFields=new Map<string,Boolean>();
+    this.mandatoryFieldFilterList=new Map<string,Boolean>();
+    this.savedExtraColumn=localStorage.getItem("selectedExtraColumsUsers")
+    this.savedExtraColumn=localStorage.getItem("showMandatoryBasicFieldsAssets")
+    this.myArray=JSON.parse(this.savedExtraColumn)
+    console.log("MYARRAY"+this.myArray)
+
+    this.myList=['name','title','email','role','status'];
+    this.showMandatoryBasicFields.set('image',true);
+    this.showMandatoryBasicFields.set('assetId',true);
+    this.showMandatoryBasicFields.set('name',true);
+    this.myList.forEach((x)=>{
+      if(this.myArray!=null){
+        this.myArray.forEach((ele:any)=>{
+          if(x===ele){
+            this.showMandatoryBasicFields.set(x,true);
+          }
+        })
+     }
+     else{
+      this.showMandatoryBasicFields.set(x,true);
+     }
+      // if()
+      
+      this.mandatoryFieldFilterList.set(x,true);
+    });
+    if(this.savedExtraColumn!=null){
+      this.selectedExtraColums=JSON.parse(this.savedExtraColumn);
+      this.selectedExtraColums.forEach((data)=>{
+        this.selectedExtraColumsMap.set(data,true);
+      })
+    }
+    // this.selectedExtraColumsMap.forEach((ele,val)=>{
+    //   console.log(ele+"----"+val)
+    // })
     this.userService.getRoleAndPermission(this.companyId).subscribe((data)=>{
       this.roleAndPermissionList=data;
       console.log(this.roleAndPermissionList)
@@ -160,6 +215,76 @@ export class UsersComponent {
       // }
       console.log("//////////-------------->"+actionCode)
     });
+
+    this.userService.getAllMandatoryFields(this.companyId).subscribe((data)=>{
+      this.mandatoryFieldsList=data;
+      console.log("mandatory----------------------->",this.mandatoryFieldsList)
+      if(this.mandatoryFieldsList.length>0){
+      this.mandatoryFieldsList?.forEach((x)=>{
+        this.mandatoryFieldsMap.set(x.name,x.mandatory);
+      })
+    }
+    },
+    (err)=>{
+      console.log(err);
+    })
+    this.userService.getAllShowFields(this.companyId).subscribe((data)=>{
+      this.showFieldsList=data;
+      console.log("show----------------------->",this.showFieldsList)
+      this.selectedFilterList=[]
+      if(this.showFieldsList.length>0){
+      this.showFieldsList?.forEach((x)=>{
+        this.filterList.push(x.name);
+        this.selectedFilterList.push(x.name);
+        // this.filterForm.addControl(x.name,this.formBuilder.control('',Validators.required));
+        this.showFieldsMap.set(x.name,x.show);
+        if(x.show==true){
+          this.extraFieldFilterList.set(x.name,x.type);
+        }
+      })
+    }
+      
+      if(this.showFieldsList!=null){
+        if(this.showFieldsList.length>0){
+      // this.showFieldsList.forEach((x)=>{
+      //   if(x.show==true)
+      //   this.assetForm.addControl(x.name,this.formBuilder.control(''));
+      // })
+    }
+    }
+    
+    },
+    (err)=>{
+      console.log(err);
+    },
+    ()=>{
+      this.userService.getExtraFieldName(this.companyId).subscribe((data)=>{
+      
+     
+        this.extraFieldName=data;
+        let arr:string[]=[];
+      this.extraFieldName.forEach((x)=>{
+      
+        console.log(x.name+" "+this.showFieldsMap.get(x.name))
+        this.extraFieldNameMap?.set(x.name,x);
+          if(this.showFieldsMap.get(x.name)==true){
+          arr.push(x.name);
+          }
+        })
+     
+        this.extraFieldNameList=arr;
+        console.log(this.extraFieldNameList)
+        
+     
+       
+        
+        
+      },
+      (err)=>{
+        console.log(err);
+      })
+    })
+
    
   }
 
@@ -380,6 +505,50 @@ export class UsersComponent {
         this.ngOnInit();
         this.triggerAlert("User Deleted !!","success");
       })
+      }
+
+      onChange(value: string): void {
+        if (this.selectedExtraColums.includes(value)) {
+          this.selectedExtraColums = this.selectedExtraColums.filter((item) => item !== value);
+        } else {
+          this.selectedExtraColums.push(value);
+        }
+        console.log(this.selectedExtraColums)
+        this.selectedExtraColums.sort();
+    
+      }
+      customCheckBox(isChecked:any,item:string){
+        console.log(isChecked);
+       
+        if(isChecked){
+          this.selectedExtraColums.push(item);
+          this.selectedExtraColumsMap.set(item,true);
+        }
+        else{
+          this.selectedExtraColums=this.selectedExtraColums.filter((data)=> data!=item);
+          this.selectedExtraColumsMap?.set(item,false);
+        }
+         localStorage.setItem("selectedExtraColumsAssets",  JSON.stringify(this.selectedExtraColums));
+        console.log(this.selectedExtraColums);
+      }
+
+      mandatoryFieldCheckBox(isChecked:any,item:string){
+     
+        if(isChecked){
+          this.showMandatoryBasicFields.set(item,true);
+        }
+        else{
+          this.showMandatoryBasicFields.set(item,false);
+        }
+        const myArry:any=[];
+        this.showMandatoryBasicFields.forEach((val,ele)=>{
+          if(val==true){
+          myArry.push(ele)
+          }
+        })
+        // console.log(JSON.stringify(Object.fromEntries(this.showMandatoryBasicFields)));
+        localStorage.setItem("showMandatoryBasicFieldsAssets",  JSON.stringify(myArry));
+        console.log(item+" mandatory-"+localStorage.getItem("showMandatoryBasicFieldsAssets"));
       }
 
 }

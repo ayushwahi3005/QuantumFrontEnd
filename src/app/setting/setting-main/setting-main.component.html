@@ -93,15 +93,31 @@
         </div>
         <div class="col-md-4">
           
-          <input type="number" class="form-control" formControlName="zipCode" placeholder="Zip Code" [ngModel]="companyInformation ? companyInformation.zipCode : ''">
+          <input 
+          type="text" 
+          class="form-control" 
+          formControlName="zipCode" 
+          placeholder="Enter ZIP Code" 
+          [ngModel]="companyInformation ? companyInformation.zipCode : ''" 
+          maxlength="6"
+          pattern="^\d{6}$"
+        >
+        <div *ngIf="companyInformationForm.get('zipCode')?.invalid && companyInformationForm.get('zipCode')?.touched"  class="text-danger">
+          <span *ngIf="this.companyInformationForm.get('zipCode')?.errors?.required">ZIP Code is required.</span>
+          <span *ngIf="this.companyInformationForm.get('zipCode')?.errors?.pattern">Enter a valid ZIP Code (e.g., 12345 or 12345-6789).</span>
+        </div>
         </div>
         <div class="col-12">
           <label for="phoneNo" class="form-label">Phone Number</label>
-          <input type="number" class="form-control" formControlName="phoneNo" value="+1" [ngModel]="companyInformation ? companyInformation.phoneNo : ''">
+          <input type="tel" class="form-control" formControlName="phoneNo" value="+1" [ngModel]="companyInformation ? companyInformation.phoneNo : ''"   maxlength="10" pattern="[0-9]{10}" minlength="10" maxlength="10">
         </div>
         <div class="col-12">
           <label for="website" class="form-label" >Website</label>
-          <input type="text" class="form-control" formControlName="website" [ngModel]="companyInformation ? companyInformation.website : ''">
+          <input type="text" class="form-control" formControlName="website" pattern="^.+\.com$" [ngModel]="companyInformation ? companyInformation.website : ''">
+          <div *ngIf="companyInformationForm.get('website')?.invalid"  class="text-danger">
+            
+            <span *ngIf="this.companyInformationForm.get('website')?.errors?.pattern">Enter a valid Website Name.</span>
+          </div>
         </div>
         <button type="submit" class="btn btn-primary" data-toggle="modal" data-target="#popup" [disabled]="companyInformationForm.invalid">Submit</button>
       </form>

@@ -7,40 +7,12 @@
         <!-- Optionally, add a close button -->
         <button type="button" class="btn-close" (click)="showAlert = false" aria-label="Close" style="float: right;"></button>
       </div>
-      <!-- <div class="extra-field-input">
-        <div style="margin-top: 50px;" *ngIf="extraFieldOption=='number'" class="d-flex justify-content-between">
-          <span style="margin-bottom: 10px;"><button class="btn btn-warning" >{{extraFieldOption|titlecase}}</button></span>
-          <label for="name">Field Name <input id="name" type="text" [(ngModel)]="addFieldName" #name></label>
-         
-          <i class="bi bi-trash3" (click)="removeFieldOption()">Remove</i>
-          
-        </div>
-        <div style="margin-top: 50px;" *ngIf="extraFieldOption=='text'" class="d-flex justify-content-between">
-          <span style="margin-bottom: 10px;"><button class="btn btn-warning">{{extraFieldOption|titlecase}}</button></span>
-          <label for="name">Field Name <input id="name" type="text" [(ngModel)]="addFieldName" #name></label>
-         
-          <i class="bi bi-trash3" (click)="removeFieldOption()">Remove</i>
-        </div>
-       
-        <div style="margin: 50px;" *ngIf="extraFieldOption=='date'" class="d-flex justify-content-between">
-          <span style="margin-bottom: 10px;"><button class="btn btn-warning">{{extraFieldOption|titlecase}}</button></span>
-          <label for="name">Field Name <input id="name" type="text" [(ngModel)]="addFieldName" #name></label>
- 
-          <i class="bi bi-trash3" (click)="removeFieldOption()">Remove</i>
-        </div>
-      </div> -->
+     
         
         
         <button class="btn btn-primary" data-toggle="modal" data-target="#addField">+ Field</button>
      
-        <!-- <div class="dropdown-menu" aria-labelledby="dropdownMenuButton" style="z-index: 10;">
-          
-          <a class="dropdown-item" (click)="addFieldOption('number')">Number <i class="bi bi-123" style="color: black;"></i></a>
-          <a class="dropdown-item" (click)="addFieldOption('text')">Text <i class="bi bi-type" style="color: black;"></i></a>
-           <a class="dropdown-item" (click)="addFieldOption('checkbox')">CheckBox</a> 
-          <a class="dropdown-item" (click)="addFieldOption('date')">Date <i class="bi bi-calendar2" style="color: black;"></i></a>
-          
-        </div> -->
+        
       </div>
       <table class="table" *ngIf="extraFieldName">
         <thead class="table-dark">
@@ -54,17 +26,17 @@
         </thead>
         <tbody>
           <tr *ngFor="let item of mandatoryFields">
-            <td>{{ item.name === 'zipCode' ? 'Zip Code' : (item.name | titlecase) }}</td>
+            <td>{{ item.name}}</td>
             <td>{{item.type|titlecase}} </td>
             <td><mat-slide-toggle  color="primary" [ngModel]=true  disabled=""></mat-slide-toggle></td>
-            <td *ngIf="item.name=='name'"><mat-slide-toggle  color="primary" [ngModel]="true" disabled=""></mat-slide-toggle></td>
-            <td  *ngIf="item.name!='name'"><mat-slide-toggle  color="primary" [ngModel]="getValueOfMandatoryMap(item.name)" (change)="mandatoryField(ch,item.name,item.type)"  #ch></mat-slide-toggle></td>
+            <td *ngIf="item.name === 'Role' || item.name === 'Firstname' || item.name === 'Lastname'"><mat-slide-toggle  color="primary" [ngModel]="true" disabled=""></mat-slide-toggle></td>
+            <td   *ngIf="item.name !== 'Role' && item.name !== 'Firstname' && item.name !== 'Lastname'"><mat-slide-toggle  color="primary" [ngModel]="getValueOfMandatoryMap(item.name)" (change)="mandatoryField(ch,item.name,item.type)"  #ch></mat-slide-toggle></td>
             <td></td>
           </tr>
           <h2 *ngIf="extraFieldName.length>0" style="margin: 10px;">Custom Fields</h2>
           <tr *ngFor="let item of extraFieldName">
            
-            <td>{{item.name|titlecase}}</td>
+            <td>{{item.name}}</td>
             <td>{{item.type|titlecase}} </td>
             <td>
               <!-- <input type="checkbox" (change)="showField(sh,item.name,item.type)" [checked]="getValueOfShowMap(item.name)"  [disabled]="editOn" #sh> -->

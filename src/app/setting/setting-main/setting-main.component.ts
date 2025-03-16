@@ -84,31 +84,20 @@ constructor(private settingMainService:SettingMainService,private auth:AuthServi
     this.email=localStorage.getItem('user');
     console.log(this.email);
     this.companyId=localStorage.getItem('companyId');
-    this.settingMainService.getCompanyInformation(this.companyId).subscribe((data)=>{
-      
-      this.companyInformation=data;
-      this.companyImage=this.companyInformation?.comapanyLogo;
-      console.log(this.companyInformation)
-    },
-    (err)=>{
-      console.log(err);
-    },
-  ()=>{
-    
-  })
+   
     this.settingMainService.dashboard(this.email).subscribe((data)=>{
       this.username=data.firstName+" "+data.lastName;
     },(err)=>{
       console.log(err);
     
     })
-    
+    this.fetchCompanyInformation();
    this.companyInformationForm=this.formBuilder.group(({
     companyName:['',Validators.required],
     comapanyLogo:[''],
     id:[''],
     address1:['',Validators.required],
-    address2:['',Validators.required],
+    address2:[''],
     city:['',Validators.required],
     state:['',Validators.required],
     zipCode:['',Validators.required],
@@ -134,17 +123,31 @@ constructor(private settingMainService:SettingMainService,private auth:AuthServi
   },
   (err)=>{
     console.log("myerr------------>",err.status);
+// <<<<<<< HEAD
+ 
+// =======
     
-    if(err.status=="403"||err.status=="401"){
-      // localStorage.clear()
-      // alert("Session expired");
+//     if(err.status=="403"||err.status=="401"){
+//       // localStorage.clear()
+//       // alert("Session expired");
      
-      // this.logout();
+//       // this.logout();
 
-    }
+//     }
+// >>>>>>> c76357d6ff37298b2abc3a005a33f527121f016e
   })
   }
-
+  fetchCompanyInformation(){
+    this.settingMainService.getCompanyInformation(this.companyId).subscribe((data)=>{
+      
+      this.companyInformation=data;
+      this.companyImage=this.companyInformation?.comapanyLogo;
+      console.log(this.companyInformation)
+    },
+    (err)=>{
+      console.log(err);
+    })
+  }
 
   playLottieAnimation() {
     Lottie.loadAnimation({
@@ -205,7 +208,7 @@ constructor(private settingMainService:SettingMainService,private auth:AuthServi
     this.companyInformationForm.controls['id'].setValue(this.companyId);
     this.settingMainService.addCompanyInformation(this.companyInformationForm.value).subscribe((data)=>{
       console.log("Company Data Uploaded");
-      this.ngOnInit()
+      // this.ngOnInit()
     },
     (err)=>{
       console.log(err);
@@ -213,7 +216,8 @@ constructor(private settingMainService:SettingMainService,private auth:AuthServi
     }
     ,()=>{
       console.log("Update")
-      this.ngOnInit()
+      // this.ngOnInit()
+      this.fetchCompanyInformation();
     })
   }
 }

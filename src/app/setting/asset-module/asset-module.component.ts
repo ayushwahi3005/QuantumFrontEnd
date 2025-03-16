@@ -105,8 +105,9 @@ export class AssetModuleComponent {
     
    
     
-    if(this.addFieldName==''||this.addFieldName==null){
-      alert("Field Empty!!");
+    if(this.addFieldName?.trim()==''||this.addFieldName==null){
+      this.triggerAlert("Name Field Empty!","warning");
+      // alert("Field Empty!!");
     }
     else{
     const obj={

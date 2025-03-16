@@ -84,8 +84,9 @@ export class AssetCategoryComponent {
     
    
     
-    if(this.addFieldName==''||this.addFieldName==null){
-      alert("Field Empty!!");
+    if(this.addFieldName?.trim()==''||this.addFieldName==null){
+      // alert("Field Empty!!");
+      this.triggerAlert("Name Field Empty!","warning");
     }
     else{
     const obj={
@@ -149,20 +150,49 @@ export class AssetCategoryComponent {
 
   }
   removeField(){
-    this.assetCategoryService.deleteAssetCategory(this.deletionId).subscribe((data)=>{
+// <<<<<<< HEAD
+    this.assetCategoryService.countAssetByCategory(this.deletionName.toLowerCase()).subscribe((data)=>{
+
+// =======
+//     this.assetCategoryService.deleteAssetCategory(this.deletionId).subscribe((data)=>{
+//       console.log(data);
+//       this.deletionId='';
+//     },
+//     (err)=>{ this.handleError(err)
+//       console.log(err);
+//       this.triggerAlert(err.error.message,"danger");
+//     },
+//     ()=>{
+//       this.triggerAlert("Deleted Successfully","primary");
+//       this.ngOnInit();
+// >>>>>>> c76357d6ff37298b2abc3a005a33f527121f016e
+      
       console.log(data);
-      this.deletionId='';
+      if(data>0){
+        this.triggerAlert("Cannot delete category as it is associated with "+data+" assets","danger");
+        return;
+      }
+      else{
+        this.assetCategoryService.deleteAssetCategory(this.deletionId).subscribe((data)=>{
+          console.log(data);
+          this.deletionId='';
+        },
+        (err)=>{ this.handleError(err)
+          console.log(err);
+          this.triggerAlert(err.error.message,"danger");
+        },
+        ()=>{
+          this.triggerAlert("Deleted Successfully","primary");
+          this.ngOnInit();
+          
+        }
+        )
+      }
     },
     (err)=>{ this.handleError(err)
       console.log(err);
-      this.triggerAlert(err.error.message,"danger");
-    },
-    ()=>{
-      this.triggerAlert("Deleted Successfully","primary");
-      this.ngOnInit();
-      
-    }
-    )
+    });
+    
 
   }
   updateDeletionName(name:string){

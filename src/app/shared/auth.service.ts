@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { AngularFireAuth } from '@angular/fire/compat/auth';
 import { Router } from '@angular/router';
-import { Observable } from 'rxjs';
+import { BehaviorSubject, Observable } from 'rxjs';
 import { AuthenticationService } from './authentication.service';
 import { AuthDetail } from './AuthDetail';
 import { TokenAuthenticationService } from './token-authentication.service';
@@ -12,6 +12,7 @@ import { LoginService } from '../login/login.service';
 import { HttpClient } from '@angular/common/http';
 import { RegisterService } from '../register/register.service';
 import { InvitationService } from '../invitation/invitation.service';
+import { jwtDecode } from 'jwt-decode';
 
 
 
@@ -24,7 +25,7 @@ import { InvitationService } from '../invitation/invitation.service';
 })
 export class AuthService {
   currUser!:any;
-  isLoggedIn:boolean=false;
+  isLoggedIn:any;
   currModule:number=-1;
   authDetails!:AuthDetail;
   myToken!:string;
@@ -34,6 +35,10 @@ export class AuthService {
   showAlert: boolean = false; // Flag to toggle alert visibility
   alertMessage: string = ''; // Alert message
   alertType: string = 'success'; // Alert type: success, warning, error, etc.
+  email!:any;
+  private tokenCheckInterval: any;
+  private hasAlerted = false; 
+  sessionExpired$ = new BehaviorSubject<boolean>(false);
   constructor(private fireAuth: AngularFireAuth,private router:Router,private tokenAuthenticationService:TokenAuthenticationService,private loginService:LoginService,private http: HttpClient, private registerService:RegisterService,private invitationService:InvitationService) { }
  
 
@@ -43,6 +48,13 @@ export class AuthService {
     
   }
 
+
+  // Simulate session expiration
+  simulateSessionExpiration(): void {
+    setTimeout(() => {
+      this.sessionExpired$.next(true);
+    }, 5000); // Expire session after 5 seconds
+  }
 
   login(email:string, password:string,loggedData:any){
     this.tokenAuthenticationService.getAccountInfo(email).subscribe((data)=>{
@@ -66,16 +78,22 @@ export class AuthService {
           this.fireAuth.currentUser
           .then((user)=>{
             if(user?.emailVerified){
-                this.tokenAuthenticationService.loginToken(email,loggedData.deviceId).subscribe((data)=>{
+                this.tokenAuthenticationService.loginToken(email,password,loggedData.deviceId).subscribe((data)=>{
                   this.authDetails=data;
                   this.myToken=this.authDetails.token;
                   const token =  this.myToken; // Replace this with your actual JWT token
                   const decodedToken:any = jwt_decode.jwtDecode(token);
+                  const expTime=new Date(decodedToken.exp * 1000);
+                  console.log("Exp Time "+expTime);
+                  localStorage.setItem('expiry-time',expTime.toString());
                   if(decodedToken.Role){
                   localStorage.setItem('role',decodedToken.Role[0].authority);
                   }
                   console.log("mytoken->",this.myToken)
                   localStorage.setItem('authToken', this.myToken);
+                  
+                  
+                
                   // console.log(decodedToken.sub); // Access the subject (user ID)
                  
     
@@ -88,7 +106,7 @@ export class AuthService {
                       console.log(this.companyId)
                       localStorage.setItem('companyId',this.companyId.id);
                       console.log("CompanyId"+this.companyId.id+" "+localStorage.getItem('user'))
-                      this.isLoggedIn=true;
+                      this.isLoggedIn="true";
                       localStorage.setItem('isLoggedIn',"true");
                       //loggedIN data saving
                       this.tokenAuthenticationService.addLoggedIn(loggedData).subscribe((data)=>{
@@ -357,26 +375,96 @@ export class AuthService {
    
   }
   logout(){
-    this.fireAuth.signOut().then(()=>{
-      
-      localStorage.removeItem('token');
-      localStorage.removeItem('user');
-      localStorage.removeItem('companyId');
-      localStorage.removeItem('role');
-      localStorage.removeItem('isLoggedIn');
-      this.currUser=null;
-      this.isLoggedIn=false;
-    },err=>{
+    
+    return this.fireAuth.signOut().then(() => {
+      localStorage.clear();
+      // localStorage.removeItem('token');
+      // localStorage.removeItem('companyId');
+      //   localStorage.removeItem('role');
+      //   localStorage.removeItem('isLoggedIn');
+        this.currUser = null;
+
+      // this.email = localStorage.getItem('user');
+      // console.log("User=====>" + this.email);
+      // this.tokenAuthenticationService.removeSession(this.email).subscribe((data) => {
+      //   localStorage.clear();
+      //   // localStorage.removeItem('token');
+      //   localStorage.removeItem('user');
+      //   // localStorage.removeItem('companyId');
+      //   // localStorage.removeItem('role');
+      //   // localStorage.removeItem('isLoggedIn');
+      //   // this.currUser = null;
+
+      //   this.isLoggedIn = false;
+      //   console.log("Session Removed");
+      // },
+      //   (err) => {
+      //     console.log("Session delete error ", err);
+      //   });
+
+    }, err => {
       alert(err.message);
-      
-    })
+
+    });
+    // this.router.navigate(['/login']);
+    // this.ngOnInit();
   }
  getEmail():string{
   return this.currUser
  }
 
 
+ startTokenMonitoring(): void {
+  this.tokenCheckInterval = setInterval(() => {
+    const token = localStorage.getItem('authToken');
+    if (token) {
+      try {
+        const decodedToken: any = jwtDecode(token);
+        const expirationTime = decodedToken.exp * 1000; // Convert to milliseconds
+        const currentTime = Date.now();
+        const timeLeft = expirationTime - currentTime;
+        console.log('Time left:', timeLeft);
+        const timeLeftInMinutes = Math.floor(timeLeft / 60000); // Convert to minutes
+console.log(`Time left: ${timeLeftInMinutes} minutes`);
+        if (timeLeft <= 1 * 60 * 1000) {
+          // alert('Session has expired. Please log in again.');
+          this.email = localStorage.getItem('user');
+          this.tokenAuthenticationService.removeSession(this.email).subscribe((data) => {
+            localStorage.clear();
+            // localStorage.removeItem('token');
+            localStorage.removeItem('user');
+            // localStorage.removeItem('companyId');
+            // localStorage.removeItem('role');
+            // localStorage.removeItem('isLoggedIn');
+            // this.currUser = null;
+    
+            this.isLoggedIn = "false";
+            console.log("Session Removed");
+          },
+            (err) => {
+              console.log("Session delete error ", err);
+            });
+        alert('Session has expired. Please log in again.');
+        this.router.navigate(['/login']);
 
+          this.stopTokenMonitoring(); // Stop monitoring when session expires
+          // Optionally log the user out here
+        } else if (timeLeft <= 6 * 60 * 1000 && !this.hasAlerted) {
+          alert('Your session will expire in less than 5 minutes.');
+          this.hasAlerted = true; // Set the flag to avoid repeated alerts
+        }
+      } catch (error) {
+        console.error('Error decoding token:', error);
+      }
+    }
+  }, 10000)
+}
+
+stopTokenMonitoring(): void {
+  if (this.tokenCheckInterval) {
+    clearInterval(this.tokenCheckInterval);
+  }
+}
 
 
  

@@ -114,14 +114,14 @@ export class ImportComponent {
       console.log(this.assetDatabaseColumns)
     })
 
-    this.importService.getInventoryExtraFields(this.companyId).subscribe((data)=>{
-      this.inventoryExtraFieldsColumns=data;
-      this.inventoryExtraFieldsColumns.forEach((x)=>{
-        this.inventoryDatabaseColumnsToUpdate.push(x.name);
-        this.inventoryDatabaseColumnsToAdd.push(x.name);
-      })
-      console.log(this.inventoryDatabaseColumns)
-    })
+    // this.importService.getInventoryExtraFields(this.companyId).subscribe((data)=>{
+    //   this.inventoryExtraFieldsColumns=data;
+    //   this.inventoryExtraFieldsColumns.forEach((x)=>{
+    //     this.inventoryDatabaseColumnsToUpdate.push(x.name);
+    //     this.inventoryDatabaseColumnsToAdd.push(x.name);
+    //   })
+    //   console.log(this.inventoryDatabaseColumns)
+    // })
 
     this.importService.getCustomerExtraFields(this.companyId).subscribe((data)=>{
       this.customerExtraFieldsColumns=data;
@@ -229,20 +229,20 @@ export class ImportComponent {
 
         this.progress=0;
         this.importService.addAssets(this.myFile,this.companyId,this.email,this.columnMappings).subscribe((event)=>{
-          console.log(event)
-          console.log(event.type)
-          if (event.type === HttpEventType.UploadProgress) {
+          // console.log(event)
+          // console.log(event.type)
+          // if (event.type === HttpEventType.UploadProgress) {
           
-            this.progress = Math.round(100 * event.loaded / event.total);
-            console.log("progress->"+this.progress)
-          } else if (event instanceof HttpResponse) {
+          //   this.progress = Math.round(100 * event.loaded / event.total);
+          //   console.log("progress->"+this.progress)
+          // } else if (event instanceof HttpResponse) {
             
-            // this.message = event.body.message;
+          //   // this.message = event.body.message;
            
-            // this.currentFile
-            // this.fileInfos = this.assetDetailService.getAssetFile(this.assetId);
+          //   // this.currentFile
+          //   // this.fileInfos = this.assetDetailService.getAssetFile(this.assetId);
             
-          }
+          // }
           // if (event.type === HttpEventType.UploadProgress && event.total) {
           //   this.progress = Math.round((100 * event.loaded) / event.total);
           //   localStorage.setItem('uploadProgress', this.progress.toString());

@@ -68,6 +68,7 @@
           <p class="card-text">Category<span *ngIf="mandatoryFieldsMap.get('category')" class="text-danger">*</span> <br>
             <!-- <input type="text" value="{{assetDetails.category}}" class="category" [(ngModel)]="assetDetails.category" [required]="mandatoryFieldsMap.get(assetDetails.name)==true"> -->
             <select class="form-select custom-dropdown" class="category" id="category"  #category style="height: fit-content;" [(ngModel)]="assetDetails.category" [required]="mandatoryFieldsMap.get(assetDetails.name)==true">
+              <option value="" selected>None</option>
               <option value="{{category.name}}" *ngFor="let category of assetCategoryList">{{category.name|titlecase}}</option>
               <!-- <option value="{{[customer.name,customer.id]}}" *ngFor="let customer of companyCustomerList">{{customer.name}}</option> -->
               <!-- <option value="outOfService" selected>Out Of Service</option> -->

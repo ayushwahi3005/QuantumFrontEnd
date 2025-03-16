@@ -66,6 +66,10 @@ export class DashboardService {
     
     return this.httpClient.delete(this.endpoint+'customer/removeSession/'+userId, { headers });
   }
+  getCompanyInformation(email:any):Observable<any>{
+    const headers = new HttpHeaders().set('Authorization', `Bearer ${localStorage.getItem('authToken')}`).set('device-id', `${localStorage.getItem('deviceId')}`);;
+    return this.httpClient.get(this.endpoint+'customer/getCompanyInformation/'+email,{ headers });
+  }
  
   
 

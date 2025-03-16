@@ -120,7 +120,6 @@ export class AssetsComponent {
    @ViewChild('dropdownContainer') dropdownContainer!: ElementRef;
   ngOnInit(){
 
-   
     if(localStorage.getItem("assetIdDetail")!=null){
       this.tempId=localStorage.getItem("assetIdDetail")
       this.assetService.getAssetDetails( this.tempId).subscribe((data:Assets)=>{
@@ -231,6 +230,7 @@ export class AssetsComponent {
      
 
     });
+    this.advanceFilterFunc();
     this.assetService.getRoleAndPermission(this.companyId,this.userRole).subscribe((data)=>{
       this.userRoleDetails=data;
       console.log(this.userRoleDetails);
@@ -257,7 +257,7 @@ export class AssetsComponent {
     (err)=>{
       console.log(err);
     })
-    this.advanceFilterFunc();
+    
     this.assetService.getAllMandatoryFields(this.companyId).subscribe((data)=>{
       this.mandatoryFieldsList=data;
       console.log("mandatory----------------------->",this.mandatoryFieldsList)
