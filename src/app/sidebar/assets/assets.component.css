@@ -5,10 +5,15 @@
     /* overflow: hidden; */
     /* margin-top: 10px; */
     border-radius: 10px;
+    /* border: 1px solid lightgray; */
 }
 
 .row{
-    margin: 10px 10px;
+    /* margin: 10px 0px; */
+    margin-top: 20px;
+    margin-bottom: 0;
+    margin-left: 0;
+    margin-right: 0;
     
 }
 .filter{
@@ -49,20 +54,21 @@ font-size: x-small;
     width: 200px;
     border: none;
 }
-.searchBar input {
-    padding-left: 24px;
-    width: 250px; /* 200px - 30px */
-    border-radius: 5px;
-    height: 30px;
-}
+/* .searchBar input { */
+    /* padding-left: 24px; */
+    /* width: 250px; */
+    /* 200px - 30px */
+    /* border-radius: 5px; */
+    /* height: 30px; */
+/* } */
 
-.searchBar i {
-    position: absolute;
-    left: 16px;
+/* .searchBar i { */
+    /* position: absolute; */
+    /* left: 16px; */
      /* padding: 10px 12px; */
-    pointer-events: none;
-    top: 0.3rem;
-}
+    /* pointer-events: none; */
+    /* top: 0.3rem; */
+/* } */
 
 .searchBar a{
 
@@ -71,15 +77,32 @@ font-size: x-small;
 
     background-color: white;
     color: black;
-    padding: 0px 5px;
+    padding: 5px 5px;
 }
-.dropdown-menu a{
+
+/* .dropdown-menu a{
     cursor: default;
-}
+} */
+
 #asset-table tr:hover{
-    box-shadow: 20px 10px 10px 5px black;
-   
+    /* box-shadow: 20px 10px 10px 5px lightgray; */
+    background-color: #f5f5f5;
+    cursor: pointer;
 }
+
+#asset-table tr:hover td{
+  /* box-shadow: 20px 10px 10px 5px lightgray; */
+  background-color: #f5f5f5;
+}
+
+#asset-table tbody {
+  font-size: 16px;
+}
+
+#asset-table td {
+  vertical-align: middle;
+}
+
 app-asset-details  {
     width: calc(100vw - 85px);
     transition: width 150ms linear;
@@ -356,13 +379,18 @@ select{
     animation-delay: -0.1s;
   } */
 
-   
+
+.table-dark {
+  --bs-table-bg: #12232E;
+  --bs-table-color: white;
+}
 
 
    #asset-table thead{
     position: sticky;
     top: 0;
     z-index: 1;
+    border: 1px lightgray;
    }
    mat-form-field {
     z-index: 100000;
@@ -385,7 +413,8 @@ select{
 #sort-and-search{
    /* height: 30px; */
  /* background-color: gray; */
-  margin-left: 30px;
+  margin-left: 20px;
+  margin-top: 10px;
 }
 
 .filter-buttons-container {
@@ -396,12 +425,6 @@ select{
   overflow: auto;
 }
 
-
-
-
-
-
-
 .dropdown {
   position: relative;
   width: 100%;
@@ -409,17 +432,19 @@ select{
 
 .dropdown-menu {
   position: absolute;
-  width: 100%;
-  max-height: 200px;
+  width: auto;
+  height: auto;
+  /* max-height: 200px; */
   overflow-y: auto;
-  border: 1px solid #ccc;
-  border-radius: 4px;
+  /* border: 1px solid #ccc; */
+  border-radius: 5px;
   background-color: #fff;
   z-index: 1000;
   display: none;
   list-style: none;
   padding: 0;
   margin: 0;
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
 }
 
 .dropdown-menu.show {
@@ -427,12 +452,15 @@ select{
 }
 
 .dropdown-item {
-  padding: 8px 12px;
+  padding: 7px 12px;
   cursor: pointer;
+  padding-left: 34px;
+  padding-right: 34px;
 }
 
 .dropdown-item:hover {
   background-color: #f1f1f1;
+  border-radius: 5px;
 }
 
 .form-control {
@@ -446,6 +474,10 @@ select{
   transform: translateY(-50%);
   font-size: 16px;
   cursor: pointer;
+}
+.dropdown-toggle::after {
+  vertical-align: middle;
+  display: none;
 }
 .fa{
   position: absolute;
@@ -476,3 +508,150 @@ select{
 .arrow-up::before {
   content: "▲"; 
 } */
+
+.search-bar {
+  display: flex;
+  align-items: center;
+  border: 2px solid #ddd;
+  border-radius: 10px;
+  overflow: hidden;
+  width: 100%;
+  height: 40px;
+  max-width: 400px;
+  background-color: #fff;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  position: relative;
+}
+
+/* Search Input Field */
+.asset-search {
+  flex: 1;
+  padding: 0 33px 0 33px;
+  border: none;
+  outline: none;
+  font-size: 16px;
+  color: #333;
+  /* padding-right: 10px;
+  padding-left: 25px; */
+  background-color: transparent;
+}
+
+.asset-search:hover{
+  background-color: #fafafa;
+}
+
+.asset-search:focus{
+  background-color: #fafafa;
+}
+
+.searchIcon{
+  position: absolute;
+  /* left: -220px; */
+  left: 10px;
+  pointer-events: none;
+  /* top: 0.65rem; */
+  /* padding: 10px 12px; */
+  padding-left: 4px;
+  padding-right: 0px;
+  padding-top: 10px;
+  padding-bottom: 10px;
+}
+
+.clearIcon {
+  position: absolute;
+  right: 10px;
+  color: #888;
+  cursor: pointer;
+  font-size: 18px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+}
+
+.clearIcon:hover {
+  color: #000;
+}
+
+.form-control:focus {
+  border-color: #007bff; /* Change border color */
+  box-shadow: 0 0 5px rgba(0, 123, 255, 0.5); /* Add a glowing effect */
+  outline: none; /* Remove default outline */
+}
+
+#asset-table .table {
+  border-collapse: collapse;
+  /* border: 1px solid #ddd; Default border for the table */
+}
+
+#asset-table .table tbody tr {
+  border-bottom: 1px solid #ddd;
+}
+
+#asset-table .table:not(:has(tbody tr)) {
+  border: none;
+}
+
+#asset-table tbody tr .bi-pencil:hover {
+  color: lightgray !important;
+  transform: scale(1.2); /* Slightly increase size for better visibility */
+  transition: transform 0.2s ease-in-out, color 0.2s ease-in-out;
+}
+
+.no-data {
+  text-align: center;
+  font-style: italic;
+  color: #888;
+  margin-top: 15px;
+  font-size: 16px;
+  /* padding: 10px; */
+}
+
+.search-bar:focus-within {
+  border-color: #007bff; /* Blue border for focus */
+  box-shadow: 0 0 5px rgba(0, 123, 255, 0.5); /* Subtle blue glow */
+  transition: border-color 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+  /* outline: none; */
+}
+
+.close:hover {
+  background-color: #E9ECEF;
+}
+
+#sortButtonAsset::after{
+  display: none;
+}
+
+#asset-table tbody tr {
+  cursor: pointer; /* Ensures the cursor is always a pointer over the row */
+}
+
+/* #asset-table tbody tr td {
+  pointer-events: all;
+} */
+
+/* .dropdown-item {
+  position: relative;
+  padding-left: 25px;
+}
+
+.selected-indicator {
+  position: absolute;
+  left: 5px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  border: 2px solid #007bff;
+  background-color: transparent;
+}
+
+.dropdown-item.selected .selected-indicator {
+  background-color: #007bff;
+} */
+
+/* a[aria-expanded="true"] {
+  background-color: #e0e0e0;
+} */
+

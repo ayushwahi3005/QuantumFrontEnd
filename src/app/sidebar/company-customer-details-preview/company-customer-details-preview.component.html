@@ -99,9 +99,9 @@
                 
                 
                 
-                <div class="mainFields" >
+                <div class="mainFields" style="font-size: 16px;" >
                   
-                  <div >
+                  <div>
                       <div style="display: flex; flex-direction: row;" class="d-flex justify-content-center">
                           <div style="margin: 0px 2vw;">
                               <label for="name" style="color: black; font-weight: bold;">Customer Name<span *ngIf="mandatoryFieldsMap.get('name')" class="text-danger">*</span></label>
@@ -238,7 +238,7 @@
            
           
            
-            <div class="option d-flex flex-row mb-3">
+            <div class="option d-flex flex-row mb-4">
               <span [ngClass]="{'selected-option':(currOption==1),'subTab':(currOption!=1)}" (click)="onClick(1)" >Asset</span>
               <span [ngClass]="{'selected-option':(currOption==2),'subTab':(currOption!=2)}" (click)="onClick(2)" class="subTab">Files</span>
               <span [ngClass]="{'selected-option':(currOption==3),'subTab':(currOption!=3)}" (click)="onClick(3)" class="subTab">Work Order</span>

@@ -1,0 +1,423 @@
+<!-- <p>role-and-permission works!</p> -->
+<div *ngIf="showAlert" class="alert" [ngClass]="'alert-' + alertType" role="alert"
+    style="margin: 10px 2%; height: 60px; position: fixed; width: calc(95vw - 250px); z-index: 100; left: 250px; ">
+    {{ alertMessage }}
+
+    <button type="button" class="btn-close" (click)="showAlert = false" aria-label="Close"
+        style="float: right;"></button>
+</div>
+<div class="inspection-main">
+    <!-- <div *ngIf="showAlert" class="alert" [ngClass]="'alert-' + alertType" role="alert" style="margin-top: 10px; position: fixed; width: calc(100vw - 300px); z-index: 100;">
+      {{ alertMessage }}
+   
+      <button type="button" class="btn-close" (click)="showAlert = false" aria-label="Close" style="float: right;"></button>
+    </div> -->
+    <div class="background-tab">
+        <div style="width: 100%;" class="d-flex justify-content-center">
+            <div class="d-flex justify-content-between" style="width: 100%;">
+                <div class="search-bar">
+                    <input type="text" id="import-history-input" placeholder="Search"
+                        style="margin: 10px 10px; border-radius: 5px; height: 30px;" (keyup)="find($event)" #data>
+                    <i class="bi bi-search searchIcon"></i>
+                </div>
+                <button class="btn btn-primary" style="max-width: 120px; width: 100%;" data-toggle="modal"
+                    data-target="#add-inspection">+ Inspection</button>
+            </div>
+        </div>
+
+        <!-- <div style="width: 100%; overflow-y: scroll; max-height: 80%;" class="d-flex justify-content-center" > -->
+        <div style="max-height: 90%; display: flex; justify-content: center;" class="inspection_table">
+
+            <table class="table inspectionTable">
+                <thead class="table-dark">
+                    <!-- <tr style="top: 0; position: sticky; z-index: 100;"> -->
+                    <tr>
+                        <th scope="col">ID</th>
+                        <th scope="col">Name</th>
+                        <th scope="col">Asset Category</th>
+                        <th scope="col">Status</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <ng-container *ngIf="searchedInspection && searchedInspection.length > 0; else noInspection">
+                        <tr *ngFor="let item of searchedInspection" (mouseenter)="editButtonVisibile(searchedInspection.indexOf(item)+1)" (mouseleave)="editButtonNotVisible()">
+                            <!-- <th scope="row">{{searchedRole.indexOf(item)+1}}</th> -->
+                            <td scope="row">{{searchedInspection.indexOf(item)+1}}</td>
+                            <td>{{item.name}}</td>
+                            <td>{{item.categoryName}}</td>
+                            <td>{{item.status|titlecase}}</td>
+                            <td>
+
+                                <!-- <img src="../../../assets/edit.svg" id="edit-button" [ngClass]="{'editoption':!(editVisibility&&(editButtonId==assetListWithExtraFields.indexOf(item)+1))}" style="float: inline-start; height: 25px; width: 25px;" (click)="changeAssetDetails(item)" *ngIf="!(userRoleDetails?.assets!='full'&&userRoleDetails?.assets!='edit' &&userRole!='ADMIN')"> -->
+                                <!-- <i class="bi bi-pencil"   [ngClass]="{'editoption':!(editVisibility&&(editButtonId==assetListWithExtraFields.indexOf(item)+1))}" style="float: inline-start; height: 40px; width: 40px;" (click)="changeAssetDetails(item)" *ngIf="!(userRoleDetails?.assets!='full'&&userRoleDetails?.assets!='edit' &&userRole!='ADMIN')"></i> -->
+
+                                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="currentColor"
+                                    class="bi bi-pencil" viewBox="0 0 16 16"
+                                    style="margin-top: 4px; margin-bottom: 4px; color:gray "
+                                    [ngClass]="{'editoption':!(editVisibility&&(editButtonId==searchedInspection.indexOf(item)+1))}"
+                                    (click)="changeAssetDetails(item)"
+                                    >
+                                    <path
+                                        d="M12.146.146a.5.5 0 0 1 .708 0l3 3a.5.5 0 0 1 0 .708l-10 10a.5.5 0 0 1-.168.11l-5 2a.5.5 0 0 1-.65-.65l2-5a.5.5 0 0 1 .11-.168zM11.207 2.5 13.5 4.793 14.793 3.5 12.5 1.207zm1.586 3L10.5 3.207 4 9.707V10h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.293zm-9.761 5.175-.106.106-1.528 3.821 3.821-1.528.106-.106A.5.5 0 0 1 5 12.5V12h-.5a.5.5 0 0 1-.5-.5V11h-.5a.5.5 0 0 1-.468-.325" />
+                                </svg>
+<!-- 
+                                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="currentColor"
+                                    class="bi bi-trash3" viewBox="0 0 16 16"
+                                    style="margin-top: 4px; margin-bottom: 4px; color:gray "
+                                    [ngClass]="{'editoption':!(editVisibility&&(editButtonId==searchedInspection.indexOf(item)+1))}"
+                                    (click)="changeAssetDetails(item)"
+                                    >
+                                    <path
+                                        d="M12.146.146a.5.5 0 0 1 .708 0l3 3a.5.5 0 0 1 0 .708l-10 10a.5.5 0 0 1-.168.11l-5 2a.5.5 0 0 1-.65-.65l2-5a.5.5 0 0 1 .11-.168zM11.207 2.5 13.5 4.793 14.793 3.5 12.5 1.207zm1.586 3L10.5 3.207 4 9.707V10h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.293zm-9.761 5.175-.106.106-1.528 3.821 3.821-1.528.106-.106A.5.5 0 0 1 5 12.5V12h-.5a.5.5 0 0 1-.5-.5V11h-.5a.5.5 0 0 1-.468-.325" />
+                                </svg> -->
+                                <i class="bi bi-trash3" [ngClass]="{'editoption':!(editVisibility&&(editButtonId==searchedInspection.indexOf(item)+1))}"
+                                (click)="setDeleteInspectionId(item.id)"  data-target="#delete-inspection" data-toggle="modal" style="margin: 4px 8px; "></i>
+                            </td>
+                        </tr>
+                    </ng-container>
+                </tbody>
+            </table>
+            <ng-template #noInspection>
+                <tr>
+                    <td colspan="5" class="text-center">
+                        <p *ngIf="searchedInspection || searchedInspection.length === 0" class="no-data">No Inspections
+                            available</p>
+                    </td>
+                </tr>
+            </ng-template>
+        </div>
+    </div>
+
+
+    <!-- Creating a new role -->
+
+    <div class="modal fade" id="add-inspection" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle"
+        aria-hidden="true">
+        <div class="modal-dialog  modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header" style="padding: 13px 15px">
+                    <h2 class="modal-title" id="exampleModalLongTitle"
+                        style="margin:0; display: flex; justify-content: center;">Create Inspection</h2>
+                    <button type="button" class="close ms-auto" data-dismiss="modal" aria-label="Close" #closeBox>
+                        <!-- <span aria-hidden="true">&times;</span> -->
+                        <i class="bi bi-x-lg"></i>
+                        <!-- <i class="fa-solid fa-xmark"></i> -->
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form>
+                        <div >
+                            <label for="name">Name<span class="text-danger"> *</span></label>
+                            <input type="text" class="highlight-input"
+                                style="font-size: 16px; padding-left: 11px; width: 100%; margin-top: 10px; border-radius: 5px; height: 35px; border: 1px solid #c0c0c0; transition: border-color 0.3s, box-shadow 0.3s;"
+                                name="name" id="name" placeholder="Name" [(ngModel)]="inspectionForm.name">
+
+                        </div>
+                        <div >
+                            <label for="categoryName">
+                              Asset Category<span class="text-danger"> *</span>
+                            </label>
+                            <select class="form-select" name="categoryName" id="categoryName" [(ngModel)]="inspectionForm.categoryName" #categoryName >
+                              <option value="none" selected>None</option>
+                              <option *ngFor="let category of assetCategoryList" [value]="category.name">
+                                {{ category.name }}
+                              </option>
+                            </select>
+                          </div>
+                          
+                        <div class="d-flex justify-content-between">
+                        <h2 class="mt-2">Instructions</h2>
+                        <span style="padding-top: 15px; color: rgb(41, 181, 228);cursor: pointer; font-size: large;" (click)="addInspectionStep()">Instructions+</span>
+                        </div>
+                        <table class="addTable table " style="margin: 10px auto; border-radius: 10px;">
+                            <thead class="table-dark">
+                                <tr>
+                                    <th style="width: 50%; padding-left: 20%;">Name</th>
+                                    <th style="width: 50%; padding-left: 20%;">Input</th>
+                                    <th style="width: 50%; padding-left: 20%;"></th>
+                                </tr>
+                            </thead>
+                
+                            <!-- <tr  *ngFor="let step of inspectionSteps; let i = index">
+
+
+                                <td>
+                                   
+                                     <input [(ngModel)]="inspectionSteps[i].name" type="text" name="name"  id="name">
+                                </td>
+
+                                <td>
+                                    <div class="permissionlevel">
+                                        <select class="form-select" id="inspectionType" name="inspectionType"
+                                        [(ngModel)]="inspectionSteps[i].inspectionStepType"  #inspectionType>
+                                        
+                                            <option value="checkbox" selected>CHECKBOX</option>
+                                            <option value="number">NUMBER</option>
+                                            <option value="text">TEXT</option>
+                                           
+
+                                        </select>
+                                    </div>
+                                </td>
+
+
+                            </tr> -->
+                       
+                            
+                            <tr *ngFor="let step of inspectionSteps; let i = index">
+                              <td>
+                                <input [(ngModel)]="step.name" type="text" name="name{{i}}" id="name{{i}}" class="inspection-step-input">
+                              </td>
+                            
+                              <td>
+                                <div class="permissionlevel">
+                                  <select class="form-select" id="inspectionType{{i}}" name="inspectionType{{i}}"
+                                    [(ngModel)]="step.type" #type>
+                                    
+                                    <option value="CHECKBOX">CHECKBOX</option>
+                                    <option value="NUMBER">NUMBER</option>
+                                    <option value="TEXT">TEXT</option>
+                            
+                                  </select>
+                                </div>
+                              </td>
+                              <td>
+                                <i  class="bi bi-trash3" (click)="removeStep(i)"></i>
+                              </td>
+                            </tr>
+                            
+
+                        </table>
+                        <!-- <button class="btn btn-primary" (click)="addInspectionStep()">Add Field</button> -->
+
+                        <div style="display: flex; justify-content: center; margin-top: 15px;">
+
+                            <button class="btn btn-light" data-dismiss="modal" aria-label="Close"
+                                (click)="closeBox.click()" 
+                                style="margin: 10px; width: 100px; margin-right: 30px; border: 1px solid #c0c0c0">Cancel</button>
+                            <button type="submit" class="btn btn-primary mt-2" (click)="closeBox.click()"
+                         
+                                style="margin: 10px; width: 100px;" (click)="addInspection()">Save</button>
+                        </div>
+                    </form>
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Editing an existing Role -->
+
+    <div class="modal fade" id="edit-inspection" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle"
+        aria-hidden="true">
+        <div class="modal-dialog  modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h2 class="modal-title" id="exampleModalLongTitle">Edit Inspection</h2>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close" #closeBox2>
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <!-- <form [formGroup]="roleAndPermissionFormEdit" (ngSubmit)="updateRoleAndPermission()">
+              <div class="form-group">
+                <label for="name">Name<span  class="text-danger">*</span></label>
+                <input type="text" class="form-control" id="name"  formControlName="name"  placeholder="Name" [ngModel]="this.currItem?.name">
+               
+              </div>
+  
+              <div class="form-group">
+                <label for="status">Status<span  class="text-danger">*</span></label>
+                <select class="form-select form-control" id="status" formControlName="status" #Asset [ngModel]="this.currItem?.status" >
+                 
+                  <option value="active">Active</option>
+                  <option value="inactive" >Inactive</option>
+                 
+                  
+                </select>
+              </div>
+  
+             
+              <h2 class="mt-2">Permissions</h2>
+              <table class="addTable table " style="margin: 10px auto; border-radius: 10px;">
+                <thead class="table-dark">
+                  <tr>
+                    <th style="width: 50%; padding-left: 20%;">Name</th>
+                    <th style="width: 50%; padding-left: 20%;">Level</th>
+                  </tr>
+                </thead>
+                <tr class="form-group">
+            
+                
+                <td>
+                <label for="assets">Asset</label>
+                </td>
+                
+                <td>
+                <select class="form-select form-control" id="assets" formControlName="assets" #Asset [ngModel]="this.currItem?.assets" >
+                  <option value="none" selected>None</option>
+                  <option value="view">View</option>
+                  <option value="create" >Create</option>
+                  <option value="edit" >Edit</option>
+                  <option value="full" >Full</option>
+                  
+                </select>
+              </td>
+            
+              
+            </tr>
+       
+              
+                <tr class="form-group">
+                  <td>
+                  <label for="customers">Customer</label>
+                </td>
+                <td>
+                  <select class="form-select form-control" id="customers" formControlName="customers" #customers [ngModel]="this.currItem?.customers">
+                    <option value="none" selected>None</option>
+                    <option value="view" selected>View</option>
+                    <option value="create" selected>Create</option>
+                    <option value="edit" selected>Edit</option>
+                    <option value="full" selected>Full</option>
+                    
+                  </select>
+                </td>
+                </tr>
+              
+            
+                <tr class="form-group">
+                  <td>
+                  <label for="workOrders">WorkOrders</label>
+                </td>
+                <td>
+                  <select class="form-select form-control" id="workOrders" formControlName="workOrders" #workOrders [ngModel]="this.currItem?.workOrders">
+                    <option value="none" selected>None</option>
+                    <option value="view" selected>View</option>
+                    <option value="create" selected>Create</option>
+                    <option value="edit" selected>Edit</option>
+                    <option value="full" selected>Full</option>
+                    
+                  </select>
+                </td>
+                </tr>
+         
+                <tr class="form-group">
+                  <td>
+                  <label for="users">Users</label>
+                </td>
+                <td>
+                    <select class="form-select form-control" id="users" formControlName="users" #users  [ngModel]="this.currItem?.users">
+                      <option value="none" selected>None</option>
+                    <option value="view" selected>View</option>
+                    <option value="create" selected>Create</option>
+                    <option value="edit" selected>Edit</option>
+                    <option value="full" selected>Full</option>
+                    
+                  </select>
+                </td>
+                </tr>
+      
+                <tr class="form-group">
+                  <td>
+                  <label for="roleAndPermissions">Role And Permissions</label>
+                </td>
+                <td>
+                    <select class="form-select form-control" id="roleAndPermissions" formControlName="roleAndPermissions" #roleAndPermissions [ngModel]="this.currItem?.roleAndPermissions">
+                      <option value="none" selected>None</option>
+                    <option value="view" selected>View</option>
+                    <option value="create" selected>Create</option>
+                    <option value="edit" selected>Edit</option>
+                    <option value="full" selected>Full</option>
+                    
+                  </select>
+                </td>
+                </tr>
+    
+                <tr class="form-group">
+                  <td>
+                  <label for="imports">Imports</label>
+                </td>
+                  <td>
+                  <select class="form-select form-control" id="imports" formControlName="imports" #imports [ngModel]="this.currItem?.imports">
+                    <option value="none" selected>None</option>
+                    <option value="view" selected>View</option>
+                    <option value="create" selected>Create</option>
+                    <option value="edit" selected>Edit</option>
+                    <option value="full" selected>Full</option>
+                    
+                  </select>
+                </td>
+                </tr>
+    
+                <tr class="form-group">
+                <td>
+                  <label for="category">Category</label>
+                </td>
+              <td>
+                   <select class="form-select form-control" id="category" formControlName="category" #category  [ngModel]="this.currItem?.category">
+                    <option value="none" selected>None</option>
+                    <option value="view" selected>View</option>
+                    <option value="create" selected>Create</option>
+                    <option value="edit" selected>Edit</option>
+                    <option value="full" selected>Full</option>
+                    
+                  </select>
+                </td>
+                </tr>
+       
+                <tr class="form-group">
+                <td>
+                  <label for="inventory">Inventory</label>
+                </td>
+              <td>
+                       <select class="form-select form-control" id="inventory" formControlName="inventory" #inventory  [ngModel]="this.currItem?.inventory">
+                        <option value="none" selected>None</option>
+                    <option value="view" selected>View</option>
+                    <option value="create" selected>Create</option>
+                    <option value="edit" selected>Edit</option>
+                    <option value="full" selected>Full</option>
+                    
+                  </select>
+                </td>
+              </tr>
+             
+              </table>
+              
+              
+              <button type="submit" class="btn btn-primary mt-3" style="margin-left: 45%;" (click)="closeBox2.click()" [disabled]="roleAndPermissionFormEdit.invalid" >Update</button>
+            </form> -->
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="delete-inspection" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle"
+    aria-hidden="true">
+    <div class="modal-dialog  modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="modal-title" id="exampleModalLongTitle"> Are you sure You Want to delete Inspection Template !</h2>
+                <!-- <button type="button" class="close" data-dismiss="modal" aria-label="Close" #closeBox2>
+                    <span aria-hidden="true">&times;</span>
+                </button> -->
+                <button type="button" class="btn btn-light btn-sm ms-auto" data-dismiss="modal" aria-label="Close" style="border-radius: 10px;" #closeBox2>
+                  <!-- <span aria-hidden="true" style="height: 20px; width: 10px; background-color: #f0f0f0; border:none; display:block; padding-top: 0px;  ">&times;</span> -->
+                  <i class="bi bi-x-lg"></i>
+                </button>
+            </div>
+            <div class="modal-body">
+                
+              <button class="btn btn-primary" style="margin: 0px 10px;" (click)="closeBox2.click()" (click)="deleteInspection()" data-dismiss="modal" aria-label="Close">DELETE</button>
+              <button class="btn btn-danger" style="margin: 0px 10px;" data-dismiss="modal" aria-label="Close" (click)="closeBox2.click()">CANCEL</button>
+          
+          
+     
+
+            </div>
+        </div>
+    </div>
+</div>
+
+</div>

@@ -1,83 +1,75 @@
 <ul class="nav justify-content-between header">
-  
-    <div class="header-centre">
-      <!-- <img src='../../assets/logo.png'> -->
-      <h1>AssetYug</h1>
-    </div>
-  
-  
- 
-  
-    <li class="nav-item"  style="padding-right: 5px; margin-top: 10px;">
-    <b>Welcome</b> <span style="margin: 10px;">{{username}}</span>
-    <i class="bi bi-bell-fill" matBadge="15" matBadgeColor="warn"></i>
-    
-    <span class="dropdown">
-      <a class="dropdown-toggle" type="button" data-toggle="dropdown"><i class="bi bi-person-circle"></i>
-     
-      <span class="caret"></span></a>
-      <ul class="dropdown-menu">
-       
-        <li><a href="#" style="text-decoration: none; color: black;">Profile ({{email}})</a></li>
-        <hr>
-        <li>More Details</li>
-     
-       
-       
 
-      </ul>
-      <a (click)="logout()" style="margin-left: 5px; cursor: pointer;">Logout</a>
-    </span>
-    
-    </li>
+  <div class="header-centre">
+    <!-- <img src='../../assets/logo.png'> -->
+    <h1>AssetYug</h1>
+  </div>
 
 
+  <li class="nav-item d-flex align-items-center" style="padding-right: 5px; margin: 15px;gap: 25px;">
+    <b>Welcome</b> <span style="margin-left: -10px;">{{username}}</span>
 
-  
+    <!-- Notification Icon -->
+    <i class="bi bi-bell-fill" matBadgeColor="warn" style="cursor: pointer; font-size: 20px;"></i>
+    <!-- matBadge="15" -->
 
+    <a class="dropdown-toggle" type="button" data-toggle="dropdown" style="text-decoration: none;">
+      <i class="bi bi-person-circle" style="font-size: 20px;"></i>
+    </a>
 
+    <!-- <span class="caret"></span></a> -->
+    <ul class="dropdown-menu" style="margin-top: 30px;padding: 8px;margin-right: 10px;font-size: 17px;">
 
-    
-    
-    
+      <b class="dropdown-item" href="#" style="text-decoration: none; color: black;">Profile ({{email}})</b>
+      <!-- <li>More Details</li> -->
+      <b class="dropdown-item">More Details</b>
+      <b class="dropdown-item">Contact Support</b>
+
+    </ul>
+
+    <a (click)="logout()" style="cursor: pointer;">Log out</a>
+    <!-- </span> -->
+  </li>
+
 </ul>
 
 <div class="main">
 
-  <div class="side-navbar"  (mouseover)="onHover()" (mouseleave)="offHover()" [ngClass]="{'nav-list-open':hoverOverSidebar}" >
-        <ul class="nav-list"  >
-        <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="currentColor" class="bi bi-list" viewBox="0 0 16 16" style="margin-left: 10px;"> 
-          <path fill-rule="evenodd" d="M2.5 12a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5zm0-4a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5zm0-4a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5z"/>
-        </svg>
-        <hr>
-        <li class="nav-list-item" *ngFor="let item of sideBarOption"  [ngClass]="{'selected':(current==item.number)}" (click)="update(item.number)" >
-          
-          <i class={{item.icon}}></i>
-          <span >
-            
-            {{item.name}}
-          </span>
-        
-        </li>
-      
+  <div class="side-navbar" (mouseover)="onHover()" (mouseleave)="offHover()"
+    [ngClass]="{'nav-list-open':hoverOverSidebar}">
+    <ul class="nav-list">
+      <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="currentColor" class="bi bi-list"
+        viewBox="0 0 16 16" style="margin-left: 10px;">
+        <path fill-rule="evenodd"
+          d="M2.5 12a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5zm0-4a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5zm0-4a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5z" />
+      </svg>
+      <hr>
+      <li class="nav-list-item" *ngFor="let item of sideBarOption" [ngClass]="{'selected':(current==item.number)}"
+        (click)="update(item.number)">
 
-        <li  class="nav-list-item" style=" margin-top: 400px; margin-bottom: 0px; position: absolute; bottom: 0;" [routerLink]="['/setting-home']">
-          <i class="bi bi-gear-fill"></i>
-          <span >Settings</span>
-        </li>
-      </ul>
+        <i class={{item.icon}}></i>
+        <span>
+
+          {{item.name}}
+        </span>
+
+      </li>
+
+
+      <li class="nav-list-item" style=" margin-top: 400px; margin-bottom: 10px; position: absolute; bottom: 0;"
+        [routerLink]="['/setting-home']">
+        <i class="bi bi-gear-fill"></i>
+        <span>Settings</span>
+      </li>
+    </ul>
   </div>
-<div class="content-area" [ngClass]="{'content-area-onhover':!hoverOverSidebar}">
-  <app-workorder *ngIf="current==5" [ngClass]="{'app-assets-open':!hoverOverSidebar}"></app-workorder>
-  <app-assets *ngIf="current==2" [ngClass]="{'app-assets-open':!hoverOverSidebar}"></app-assets>
-  <app-inventory *ngIf="current==3" [ngClass]="{'app-assets-open':!hoverOverSidebar}"></app-inventory>
- <app-company-customer *ngIf="current==1" [ngClass]="{'app-assets-open':!hoverOverSidebar}"></app-company-customer>
- <!-- <app-company-customer-details *ngIf="current==6" [ngClass]="{'app-assets-open':!hoverOverSidebar}"></app-company-customer-details> -->
-
- 
- 
-</div>
+  <div class="content-area" [ngClass]="{'content-area-onhover':!hoverOverSidebar}">
+    <app-workorder *ngIf="current==5" [ngClass]="{'app-assets-open':!hoverOverSidebar}"></app-workorder>
+    <app-assets *ngIf="current==2" [ngClass]="{'app-assets-open':!hoverOverSidebar}"></app-assets>
+    <app-inventory *ngIf="current==3" [ngClass]="{'app-assets-open':!hoverOverSidebar}"></app-inventory>
+    <app-company-customer *ngIf="current==1" [ngClass]="{'app-assets-open':!hoverOverSidebar}"></app-company-customer>
+    <!-- <app-company-customer-details *ngIf="current==6" [ngClass]="{'app-assets-open':!hoverOverSidebar}"></app-company-customer-details> -->
 
 
 
-
+  </div>

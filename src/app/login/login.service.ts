@@ -37,15 +37,15 @@ export class LoginService {
     
     return this.httpClient.delete(this.endpoint+'customer/removeSession/'+userId);
   }
-  demo():Observable<any>{
+  // demo():Observable<any>{
     
-    const headers = new HttpHeaders({
-      'Authorization': `Bearer ${localStorage.getItem('authToken')}`,
-      'Content-Type': 'application/json',
-      'device-id':'6876f415-7575-4499-a53f-2530003efbb1'
-    });
-    return this.httpClient.get(this.endpoint+'customer/working',{ headers, responseType: 'text' as 'json' });
-  }
+  //   const headers = new HttpHeaders({
+  //     'Authorization': `Bearer ${localStorage.getItem('authToken')}`,
+  //     'Content-Type': 'application/json',
+  //     'device-id':'6876f415-7575-4499-a53f-2530003efbb1'
+  //   });
+  //   return this.httpClient.get(this.endpoint+'customer/working',{ headers, responseType: 'text' as 'json' });
+  // }
 
   
 

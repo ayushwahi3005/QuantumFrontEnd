@@ -54,7 +54,7 @@
         </thead>
         <tbody>
           <tr *ngFor="let item of mandatoryFields">
-            <td>{{item.name|titlecase}}</td>
+            <td>{{ item.name === 'zipCode' ? 'Zip Code' : (item.name | titlecase) }}</td>
             <td>{{item.type|titlecase}} </td>
             <td><mat-slide-toggle  color="primary" [ngModel]=true  disabled=""></mat-slide-toggle></td>
             <td *ngIf="item.name=='name'"><mat-slide-toggle  color="primary" [ngModel]="true" disabled=""></mat-slide-toggle></td>
@@ -118,7 +118,7 @@
           </button>
         </div>
         <div  class="modal-body">
-          <label>Select Type</label>
+          <label>Select Type<span class="text-danger">*</span></label>
           <select  style="width: 100%; margin-top: 10px; border-radius: 5px; height: 30px;"  (change)="addFieldType(mySelect.value)"  #mySelect>
        
             <option value="number" >Number <i class="bi bi-123" style="color: black;"></i></option>
@@ -130,7 +130,7 @@
           <div class="extra-field-input">
             <div style="margin-top: 30px;" *ngIf="(extraFieldOption=='number')||(extraFieldOption==null)">
               
-              <label for="name" style="margin-bottom: 10px;">Field Name</label>
+              <label for="name" style="margin-bottom: 10px;">Field Name<span class="text-danger">*</span></label>
               <input id="name" type="text" [(ngModel)]="addFieldName" #name>
               <!-- <label for="name">Field Value <input id="value" type="number" [(ngModel)]="addFieldValue" #value></label> -->
               <!-- <i class="bi bi-trash3" (click)="removeFieldOption()">Remove</i> -->

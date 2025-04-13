@@ -11,7 +11,7 @@ import { AssetsComponent } from '../sidebar/assets/assets.component';
 })
 export class DashboardComponent  {
   email:any='';
-  current:number=1;
+  current:number=2;
   username:any='';
   hoverOverSidebar=true;
   sideBarOption=[{
@@ -29,16 +29,16 @@ export class DashboardComponent  {
     name:'Inventory',
     icon:'bi bi-journal-text'
   },
-  {
-    number:4,
-    name:'Preventive Maintainance',
-    icon:'bi bi-speedometer2'
-  },
-  {
-    number:5,
-     name:'Work Order',
-    icon:'bi bi-bookshelf'
-  }
+  // {
+  //   number:4,
+  //   name:'Preventive Maintainance',
+  //   icon:'bi bi-speedometer2'
+  // },
+  // {
+  //   number:5,
+  //    name:'Work Order',
+  //   icon:'bi bi-bookshelf'
+  // }
   // {
   //   number:6,
   //   name:'People',
@@ -61,6 +61,8 @@ export class DashboardComponent  {
 
     //   }
     // });
+  
+    console.log("isLoggedIn->"+localStorage.getItem('isLoggedIn'))
     console.log("deviceId->"+localStorage.getItem('deviceId'))
     this.email=localStorage.getItem('user');
     console.log(localStorage.getItem('role'))
@@ -88,14 +90,21 @@ export class DashboardComponent  {
     (err)=>{
       console.log("myerr------------>",err.status);
       
-      if(err.status=="403"||err.status=="401"){
-        alert("Session expired");
-        this.logout();
+      // if(err.status=="403"||err.status=="401"){
+      //   alert("Session expired");
+      //   this.logout();
 
-      }
+      // }
     })
-
-    
+    let companyId=localStorage.getItem('companyId');
+    console.log(companyId);
+    this.dashService.getCompanyInformation(companyId).subscribe((data)=>{
+      console.log("Company Information",data)
+      localStorage.setItem('companyEmail',data.customerEmail)
+      localStorage.setItem('companyName',data.companyName)
+    },(err)=>{
+      console.log("Company Information Error",err)
+    });
    
   }
   update(val:number){
@@ -108,7 +117,8 @@ export class DashboardComponent  {
   find(){
 console.log(localStorage.getItem('user'));
   }
-  logout(){
+  async logout(): Promise<void>{
+    this.router.navigate(['/login']);
     console.log("logging out")
     this.auth.currUser=null;
     this.auth.isLoggedIn=false;
@@ -126,9 +136,9 @@ console.log(localStorage.getItem('user'));
         console.log("Session delete error ",err)
       })
       localStorage.clear()
-      localStorage.getItem('uploadProgress');
-      localStorage.getItem('uploadInProgress');
-    this.router.navigate(['/login']);
+      // localStorage.getItem('uploadProgress');
+      // localStorage.getItem('uploadInProgress');
+    
 
    
   }
@@ -142,6 +152,10 @@ console.log(localStorage.getItem('user'));
 
     // console.log(this.hoverOverSidebar);
   }
+
+  
+
+  
   
 
 

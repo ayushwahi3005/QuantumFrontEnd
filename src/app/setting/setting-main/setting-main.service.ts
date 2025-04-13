@@ -17,16 +17,16 @@ export class SettingMainService {
   // endpoint="http://localhost:8080/";
   dashboard(email:string):Observable<any>{
    
-    const headers = new HttpHeaders().set('Authorization', `Bearer ${this.myToken}`) .set('device-id', `${localStorage.getItem('deviceId')}`);
+    const headers = new HttpHeaders().set('Authorization', `Bearer ${localStorage.getItem('authToken')}`) .set('device-id', `${localStorage.getItem('deviceId')}`);
     console.log("------->"+headers.get('Authorization'))
     return this.httpClient.get(this.customerEndpoint+'customer/get/'+email,{headers});
   }
   addCompanyInformation(data:any):Observable<any>{
-    const headers = new HttpHeaders().set('Authorization', `Bearer ${this.myToken}`).set('device-id', `${localStorage.getItem('deviceId')}`);;
+    const headers = new HttpHeaders().set('Authorization', `Bearer ${localStorage.getItem('authToken')}`).set('device-id', `${localStorage.getItem('deviceId')}`);;
     return this.httpClient.post(this.customerEndpoint+'customer/updateCompanyInformation',data,{headers});
   }
   getCompanyInformation(email:any):Observable<any>{
-    const headers = new HttpHeaders().set('Authorization', `Bearer ${this.myToken}`).set('device-id', `${localStorage.getItem('deviceId')}`);;
+    const headers = new HttpHeaders().set('Authorization', `Bearer ${localStorage.getItem('authToken')}`).set('device-id', `${localStorage.getItem('deviceId')}`);;
     return this.httpClient.get(this.customerEndpoint+'customer/getCompanyInformation/'+email,{ headers });
   }
   removeSession(userId:string):Observable<any>{

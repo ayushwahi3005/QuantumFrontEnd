@@ -24,29 +24,16 @@ export class LoginComponent {
   constructor(private auth:AuthService,private authService:AuthService,private loginService:LoginService,private router:Router){}
 
   async ngOnInit():Promise<void>{
+
+    if(localStorage.getItem('isLoggedIn')!=null){
+      this.authService.isLoggedIn = localStorage.getItem('isLoggedIn');
+    }
+    else{
+      this.authService.isLoggedIn = false;
+    }
+   
     this.currentyear=new Date().getFullYear();
-    // console.log("--------------AuthTokenIn------------------"+localStorage.getItem('authToken'));
-    // console.log("--------------------------"+localStorage.getItem('companyId'));
 
-      // let response;
-      // console.log("start secret->")
-      // try {
-      //   response = await this.client.send(
-      //     new GetSecretValueCommand({
-      //       SecretId: this.secret_name,
-      //       VersionStage: "AWSCURRENT", // VersionStage defaults to AWSCURRENT if unspecified
-      //     })
-      //   );
-      //     } catch (error) {
-      //       // For a list of exceptions thrown, see
-      //       // https://docs.aws.amazon.com/secretsmanager/latest/apireference/API_GetSecretValue.html
-      //       console.log("error->"+error)
-      //       throw error;
-           
-      //     }
-
-      // const secret = response.SecretString;
-      // console.log("secret->"+secret)
       console.log("Login KeyValue")
       const localStorageData: { [key: string]: string } = {};
 
@@ -73,7 +60,7 @@ export class LoginComponent {
     }, 5000); // Hide the alert after 5 seconds (adjust as needed)
   }
   login(){
-    this.loader=true;
+
     console.log(this.loader)
     if(this.email==''){
       // alert('Please enter email');
@@ -126,7 +113,7 @@ export class LoginComponent {
         
         // this.triggerAlert(this.errorMessage,"danger");
         
-        // this.loader=false;
+        //this.loader=false;
         console.log(this.loader)
         this.subscribeToService();
         console.log(this.errorMessage+" in Login");

@@ -66,7 +66,7 @@ export class CompanyCustomerComponent {
 
   userRoleDetails!: RoleAndPermission;
   myList:string[]=[];
-  pageSize:number=10;
+  pageSize:number=15;
   totalLength!:number;
   pageEvent!: PageEvent;
   pageIndex:number=0;
@@ -108,7 +108,7 @@ export class CompanyCustomerComponent {
   
     
       this.pageIndex=parseInt(localStorage.getItem('customerPageInd')||'0')
-      this.pageSize=parseInt(localStorage.getItem('customerPageSize')||'10')
+      this.pageSize=parseInt(localStorage.getItem('customerPageSize')||'15')
 
 
     

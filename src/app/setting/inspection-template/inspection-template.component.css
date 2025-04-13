@@ -1,17 +1,17 @@
 @import '~@angular/material/prebuilt-themes/indigo-pink.css';
-/* .roleTable{
+/* .inspectionTable{
   width:100%;
   margin: 10px 10px;
   border: 1px solid lightgray;
 }
 
-.roleTable th {
+.inspectionTable th {
   position: sticky;
   top: 0;
   z-index: 2;
 } */
 
-.role_table{
+.inspectionTable{
   margin-top: 20px;
   width: 100%;
   height: 80%;
@@ -20,15 +20,15 @@
   border-radius: 10px;
 }
 
-.role_table tr:hover {
+.inspectionTable tr:hover {
   background-color: #f5f5f5;
 }
 
-.role_table tr:hover td{
+.inspectionTable tr:hover td{
   background-color: inherit;
 }
 
-.role_table tbody{
+.inspectionTable tbody{
   font-size: 16px;
 }
 
@@ -47,7 +47,7 @@
 
   .addTable select{
     margin: 10px 0px;
-    width: 8vw;
+    /* width: 8vw; */
   }
 
   /* .addTable tr{
@@ -79,7 +79,7 @@
     padding-left: 24px;
   }
 
-  .role-main{
+  .inspection-main{
     width: calc(100vw - 300px);
   }
 
@@ -127,17 +127,20 @@
   .permissionlevel {
     padding: 0 25%;
   }
+  #inspectionType{
+    width: 100%;
+  }
 
-  .role_table .table {
+  .inspectionTable .table {
     border-collapse: collapse;
     /* border: 1px solid #ddd; Default border for the table */
 }
 
-.role_table .table tbody tr {
+.inspectionTable .table tbody tr {
     border-bottom: 1px solid #ddd;
 }
 
-.role_table .table:not(:has(tbody tr)) {
+.inspectionTable .table:not(:has(tbody tr)) {
     border: none;
 }
 
@@ -150,13 +153,17 @@
     /* padding: 10px; */
 }
 
-.role_table td{
+.inspectionTable td{
   vertical-align: middle;
 }
 
-.addTable tr:hover{
+/* .addTable tr:hover{
   background-color: #f5f5f5;
-}
+} */
+/* .addTable tr{
+    background-color: #f5f5f5;
+  } */
+  
 
 .addTable tr:hover td{
   background-color: inherit;
@@ -195,4 +202,20 @@
   border-color: #007bff; /* Blue border for focus */
   box-shadow: 0 0 5px rgba(0, 123, 255, 0.5); /* Subtle blue glow */
   transition: border-color 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+}
+.inspection-step-input{
+  border-radius: 5px;
+  border: 1px solid lightgray;
+}
+.inspection-step-input:focus{
+  border-radius: 5px;
+  border:1px solid #007bff; /* Change border color */
+  box-shadow: 0 0 5px rgba(0, 123, 255, 0.5); 
+  outline: none;
+}
+.bi-trash3{
+  color: red;
+}
+.editoption{
+  opacity: 0;
 }

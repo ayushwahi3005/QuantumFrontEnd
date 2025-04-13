@@ -105,13 +105,15 @@ export class AssetModuleComponent {
     
    
     
-    if(this.addFieldName==''||this.addFieldName==null){
-      alert("Field Empty!!");
+    if(this.addFieldName?.trim()==''||this.addFieldName==null){
+      this.triggerAlert("Name Field Empty!","warning");
+      // alert("Field Empty!!");
     }
     else{
     const obj={
       
-      "name":this.addFieldName.trim().toLowerCase(),
+      // "name":this.addFieldName.trim().toLowerCase(),
+      "name":this.addFieldName.trim(),
       "email":this.email,
        "type":this.extraFieldOption,
        "companyId":this.companyId
@@ -120,6 +122,7 @@ export class AssetModuleComponent {
       console.log(data);
       const event = { checked: true }; 
       this.showField(event,this.addFieldName.trim().toLowerCase(),this.extraFieldOption)
+      // this.showField(event,this.addFieldName.trim(),this.extraFieldOption)
       this.ngOnInit();
     },
     (err)=>{

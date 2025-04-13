@@ -44,7 +44,7 @@ img{
     background-color: #12232E;
     color: white;
     font-weight: bold;
-    
+    margin: 0 1px;
 }
 input{
     margin: 10px 2px;
@@ -119,8 +119,8 @@ input{
     margin-bottom: 30px;
 }
 .card{
-    width: 75vw;
-    margin-right: 10px;
+    width: 80vw;
+    /* margin-right: 10px; */
     margin-bottom: 100px;
 }
 input:focus {
@@ -135,7 +135,6 @@ input:focus {
     text-decoration: none;
     color: #8c8e91;
     font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
-    
     /* margin-top: 10px; */
     font-size: larger;
     float: inline-start;
@@ -150,13 +149,9 @@ input:focus {
     position: sticky;
     top: 0;
     z-index: 1000;
-
-    
-    
-    
-   
-    
+    overflow: visible;    
 }
+
 #asset-back:hover{
     color: #1a65ab;
     
@@ -167,9 +162,23 @@ body{
 i{
     display: inline-flex;
 }
-tr:hover{
-    box-shadow: 5px 5px 20px grey;
+
+tr {
+    border: 1px solid lightgray;
 }
+
+tr:hover{
+    background-color: #f5f5f5;
+}
+
+tr:hover td{
+    background-color: inherit;
+}
+
+/* tr:hover{
+    box-shadow: 5px 5px 20px grey;
+} */
+
 .checkedIn-status{
     background-color: green;
     padding: 5px 5px;
@@ -286,9 +295,14 @@ i:hover{
     border-left: 2px solid lightgray;
     height: 25px;
 }
-.mat-mdc-button>.mat-icon {
+/* .mat-mdc-button>.mat-icon {
     margin-top: 20px;
+} */
+
+#matbutton {
+    top: 10px;
 }
+
 .subTab{
     /* border: 1px solid #8c8e91; */
     border: 1px solid #c2c7cf;

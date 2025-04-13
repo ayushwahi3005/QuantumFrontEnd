@@ -24,7 +24,8 @@
         </thead>
         <tbody>
           <tr *ngFor="let item of mandatoryFields">
-            <td>{{item.name|titlecase}}</td>
+            <td>{{ item.name === 'serialNumber' ? 'Serial Number' : (item.name | titlecase) }}</td>
+
             <td>{{item.type|titlecase}} </td>
             <td><mat-slide-toggle  color="primary" [ngModel]=true  disabled=""></mat-slide-toggle></td>
             <td *ngIf="item.name=='name'"><mat-slide-toggle  color="primary" [ngModel]="true" disabled=""></mat-slide-toggle></td>
