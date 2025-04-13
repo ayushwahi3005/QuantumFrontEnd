@@ -1,27 +1,45 @@
 .main{
-   
-    width: calc(100vw - 400px);
-    /* margin-left: 140px; */
-    height: 75vh;
-    margin-top: 5%;
-    
-    
-    
+  width: calc(100vw - 300px);
+  /* margin-left: 140px; */
+  height: 75vh;
+  /* margin-top: 5%; */
 }
+
 .container{
-    border: 2px solid #f6f6f6dc;
-    border-radius: 10px;
-    background-color: white;
-    border: 1px solid lightgray;
+  border: 2px solid #f6f6f6dc;
+  border-radius: 10px;
+  background-color: white;
+  border: 1px solid lightgray;
+  width: 98%;
+  height: 80vh;
+  margin-top: 30px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  padding: 45px;
+  /* overflow: auto; */
 }
+
+.assistant{
+  border: 1px solid #f6f6f6dc;
+  border-radius: 10px;
+  background-color: white;
+  border: 1px solid lightgray;
+  width: 45%;
+  height: 500px;
+  margin-top: 10px;
+  padding: 20px 20px 20px 40px;
+  overflow: auto;
+}
+
 .alert{
-    width: calc(100vw - 290px);
-    margin-left: 120px;
-    margin-top: 5px;
+  width: calc(100vw - 300px);
+  margin-left: 10px;
+  margin-right: 10px;
+  margin-top: 5px;
 }
+
 h1{
     font-family: Sans-serif;
-    margin-top: 40px;
+    margin-top: 20px;
     font-weight: bold;
     font-size: xx-large;
 }
@@ -44,31 +62,43 @@ h1{
     color: #0D6EFD;
 }
 .mapping{
-    width: 40%;
-    height: 65vh;
-    overflow-y: scroll;
-    margin-top: 5%;
+  width: 40%;
+  overflow-y: auto;
+  margin-top: 5%;
+  border: 1px solid #f6f6f6dc;
+  border-radius: 10px;
+  background-color: white;
+  border: 1px solid lightgray;
+  width: 49%;
+  height: 500px;
+  margin-top: 10px;
+  padding: 20px;
+  /* overflow: hidden; */
+  flex-direction: column;
+  max-height: 500px;
 }
 /* .mapping label{
     margin-right: 50%;
 } */
-/* table{
-    height: 500px;
-} */
+.table-container{
+  max-height: 500px;
+  overflow-y: auto;
+  display: block;
+}
 thead{
     position: sticky;
     top: 0;
-    background-color: black;
+    background-color: #12232E;
     color: white;
-    z-index: 1000; 
+    z-index: 100; 
   }
   h2{
     display: flex;
     justify-content: center;
   }
-  table{
+  /* table{
     overflow-y: hidden;
-  }
+  } */
 /* thead, tbody {
     display: block;
   } */
@@ -178,6 +208,8 @@ thead{
     display: inline;
   }
   
-
-
+.table-dark {
+  --bs-table-bg: #12232E;
+  --bs-table-color: white;
+}
   

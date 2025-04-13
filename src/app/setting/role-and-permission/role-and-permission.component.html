@@ -13,8 +13,8 @@
   <div class="background-tab">
     <div style="width: 100%;" class="d-flex justify-content-center">
       <div class="d-flex justify-content-between" style="width: 100%;">
-        <div class="search-bar">
-          <input type="text" id="import-history-input" placeholder="Search" style="margin: 10px 10px; border-radius: 5px; height: 30px;" (keyup)="find($event)" #data>
+        <div class="search-bar" style="margin: 0 5px;">
+          <input type="text" id="import-history-input" placeholder="Search" style="margin: 0 0; border-radius: 5px; height: 30px;" (keyup)="find($event)" #data>
           <i class="bi bi-search searchIcon"></i>
         </div>
       <button class="btn btn-primary" style="max-width: 100px; width: 100%;" data-toggle="modal" data-target="#add-role">+ Role</button>
@@ -46,7 +46,7 @@
             <td>{{item.ofUser}}</td>
             <td>{{item.status|titlecase}}</td>
             <td >
-              <button mat-icon-button [matMenuTriggerFor]="appMenu" [disabled]="item.name=='ADMIN'">
+              <button mat-button [matMenuTriggerFor]="appMenu" [disabled]="item.name=='ADMIN'">
                 <mat-icon>more_vert</mat-icon>
               </button>
               <div>
@@ -75,20 +75,19 @@
   </div>
 
 
-  <!-- Creating a new role -->
+<!-- Creating a new role -->
 
-  <div class="modal fade" id="add-role" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle" aria-hidden="true">
-    <div class="modal-dialog  modal-lg" role="document">
-      <div class="modal-content">
-        <div class="modal-header" style="padding: 13px 15px">
+  <div class="modal fade" id="add-role" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle" aria-hidden="true" style="z-index :10000;">
+    <div class="modal-dialog modal-lg" role="document">
+      <div class="modal-content" style="max-height: 90vh;">
+        <div class="modal-header" style="padding: 13px 15px; position: sticky; top: 0; z-index: 100; background-color: white;">
           <h2 class="modal-title" id="exampleModalLongTitle" style="margin:0; display: flex; justify-content: center;">Create Role</h2>
-          <button type="button" class="close ms-auto" data-dismiss="modal" aria-label="Close"  #closeBox>
-            <!-- <span aria-hidden="true">&times;</span> -->
+          <button type="button" class="btn btn-light btn-sm ms-auto" data-dismiss="modal" aria-label="Close" style="border-radius: 10px;" #closeBox>
             <i class="bi bi-x-lg"></i>
-            <!-- <i class="fa-solid fa-xmark"></i> -->
+            
           </button>
         </div>
-        <div class="modal-body">
+        <div class="modal-body" style="overflow-y: auto;">
           <form [formGroup]="roleAndPermissionForm" (ngSubmit)="addRoleAndPermission()">
             <div class="form-group">
               <label for="name">Name<span  class="text-danger"> *</span></label>
@@ -104,12 +103,12 @@
                   <th style="width: 50%; padding-left: 20%;">Level</th>
                 </tr>
               </thead>
-              <tr class="form-group">
-          
-              
+
+              <tr>
               <td>
               <label for="assets">Assets</label>
               </td>
+              <!-- <td>Assets</td> -->
               
               <td>
                 <div class="permissionlevel">
@@ -123,8 +122,6 @@
               </select>
                 </div>
             </td>
-          
-            
           </tr>
           <!-- <hr> -->
             
@@ -188,7 +185,6 @@
                 <label for="roleAndPermissions">Roles And Permissions</label>
               </td>
               <td>
-                <div class="permissionlevel">
                   <select class="form-select form-control" id="roleAndPermissions" formControlName="roleAndPermissions" #roleAndPermissions>
                     <option value="none" selected>None</option>
                   <option value="view" selected>View</option>
@@ -197,7 +193,6 @@
                   <option value="full" selected>Full</option>
                   
                 </select>
-                </div>
               </td>
               </tr>
               <!-- <hr> -->
@@ -272,26 +267,26 @@
 
 <!-- Editing an existing Role -->
 
-  <div class="modal fade" id="edit-role" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle" aria-hidden="true">
-    <div class="modal-dialog  modal-lg" role="document">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h2 class="modal-title" id="exampleModalLongTitle">Edit Role</h2>
-          <button type="button" class="close" data-dismiss="modal" aria-label="Close"  #closeBox2>
-            <span aria-hidden="true">&times;</span>
+  <div class="modal fade" id="edit-role" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle" aria-hidden="true" style="z-index :10000;">
+    <div class="modal-dialog modal-lg" role="document">
+      <div class="modal-content" style="max-height: 90vh;">
+        <div class="modal-header" style="padding: 13px 15px; position: sticky; top: 0; z-index: 100; background-color: white;">
+          <h2 class="modal-title" id="exampleModalLongTitle" style="margin:0; display: flex; justify-content: center;">Edit Role</h2>
+          <button type="button" class="btn btn-light btn-sm ms-auto" data-dismiss="modal" aria-label="Close" style="border-radius: 10px;" #closeBox2>
+            <i class="bi bi-x-lg"></i>
           </button>
         </div>
-        <div class="modal-body">
+        <div class="modal-body" style="overflow-y: auto;">
           <form [formGroup]="roleAndPermissionFormEdit" (ngSubmit)="updateRoleAndPermission()">
             <div class="form-group">
               <label for="name">Name<span  class="text-danger">*</span></label>
-              <input type="text" class="form-control" id="name"  formControlName="name"  placeholder="Name" [ngModel]="this.currItem?.name">
+              <input type="text" class="form-control" id="name"  formControlName="name"  placeholder="Name" [ngModel]="this.currItem?.name" style="font-size: 16px; padding-left: 11px; width: 100%; margin-top: 10px; border-radius: 5px; height: 35px; border: 1px solid #c0c0c0; transition: border-color 0.3s, box-shadow 0.3s;">
              
             </div>
 
-            <div class="form-group">
+            <div class="form-group" style="margin-top: 10px;">
               <label for="status">Status<span  class="text-danger">*</span></label>
-              <select class="form-select form-control" id="status" formControlName="status" #Asset [ngModel]="this.currItem?.status" >
+              <select class="form-select form-control" id="status" formControlName="status" #Asset [ngModel]="this.currItem?.status" style="font-size: 16px; padding-left: 11px; width: 100%; margin-top: 10px; border-radius: 5px; height: 35px; border: 1px solid #c0c0c0; transition: border-color 0.3s, box-shadow 0.3s;">
                
                 <option value="active">Active</option>
                 <option value="inactive" >Inactive</option>
@@ -446,8 +441,11 @@
            
             </table>
             
+            <div style="display: flex; justify-content: center; margin-top: 15px;">
+              <button class="btn btn-light" data-dismiss="modal" aria-label="Close" (click)="closeBox.click()" style="margin: 10px; width: 100px; margin-right: 30px; border: 1px solid #c0c0c0" >Cancel</button>
+              <button type="submit" class="btn btn-primary" (click)="closeBox2.click()" [disabled]="roleAndPermissionFormEdit.invalid" style="margin: 10px; width: 100px;">Save</button>
+            </div>
             
-            <button type="submit" class="btn btn-primary mt-3" style="margin-left: 45%;" (click)="closeBox2.click()" [disabled]="roleAndPermissionFormEdit.invalid" >Update</button>
           </form>
          
         </div>

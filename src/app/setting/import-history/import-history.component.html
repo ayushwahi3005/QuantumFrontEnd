@@ -1,17 +1,17 @@
 <!-- <div  id="history-loader" *ngIf="loading"></div> -->
-<div class="import-history-container">
+<div id="import-history-container" class="d-flex justify-content-center">
   <div id="history-background">
-    <h2 class="mb-4 text-center">Import History</h2>
-    <div class="d-flex justify-content-between" style="width: 100%; margin: 20px 0px;">
-      <div style="margin-left: 30px;">
-        <input type="text" id="role-input" placeholder="Search By Name" style="margin: 0px 0px 10px 0px; height: 40px; " (keyup)="find($event)" #data>
-        <i class="bi bi-search searchIcon"></i>
+    <!-- <h2 class="mb-4 text-center">Import History</h2> -->
+    <div class="d-flex justify-content-between" style="width: 100%;">
+      <div class="search-bar" style="margin: 0 5px;">
+        <input type="text" id="role-input" placeholder="Search" style="margin: 0px 0px; height: 40px; " (keyup)="find($event)" #data>
+        <i class="bi bi-search" id="searchIcon"></i>
       </div>
-      <button class="btn btn-primary" (click)="refresh()" style="margin-right: 30px;" >Refresh</button>
+      <button class="btn btn-primary" (click)="refresh()" style="max-width: 100px; width: 100%;" >Refresh</button>
     </div>
   
 
-    <div class="table-container history-table" >
+    <div class="table-container history-table" style="margin-top: 20px;" >
         <!-- Component HTML -->
 <table mat-table [dataSource]="importHistory" matSort class="table table-bordered table-hover">
   <!-- Date Column -->

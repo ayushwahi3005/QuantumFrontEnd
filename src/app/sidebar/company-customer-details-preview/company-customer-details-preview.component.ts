@@ -84,16 +84,16 @@ export class CompanyCustomerDetailsPreviewComponent {
     name:'Inventory',
     icon:'bi bi-journal-text'
   },
-  {
-    number:4,
-    name:'Preventive Maintainance',
-    icon:'bi bi-speedometer2'
-  },
-  {
-    number:5,
-     name:'Work Order',
-    icon:'bi bi-bookshelf'
-  }
+  // {
+  //   number:4,
+  //   name:'Preventive Maintainance',
+  //   icon:'bi bi-speedometer2'
+  // },
+  // {
+  //   number:5,
+  //    name:'Work Order',
+  //   icon:'bi bi-bookshelf'
+  // }
   // {
   //   number:6,
   //   name:'People',

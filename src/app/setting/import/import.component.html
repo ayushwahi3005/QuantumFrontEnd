@@ -4,10 +4,11 @@
     <button type="button" class="btn-close" (click)="showAlert = false" aria-label="Close" style="float: right;"></button>
   </div>
 <div class="main" *ngIf="loading==false">
-    <div class="container d-flex justify-content-between">
-        <div>
-        <h1>Import Assistant</h1>
-        <label style="font-size: large;margin-top: 10px;">Record Type</label>
+    <div class="container ">
+      <div class="d-flex justify-content-between">
+        <div class="assistant">
+        <h1 class="mb-5">Import Assistant</h1>
+        <label style="font-size: large;margin-top: 30px;">Record Type</label>
         <br>
         <form [formGroup]="importForm" (ngSubmit)="onSubmit()">
             <div class="form-group">
@@ -20,18 +21,19 @@
                 </select>
             </div>
 
-            <div class="form-group" style="margin-top: 100px;">
+            <!-- Import Type -->
+            <div class="form-group" style="margin-top: 50px;">
                 <input type="radio" id="add" value="add" name="importType" formControlName="importType" (click)="updateType('add')">
                 <label for="add" style="margin-left: 10px;">ADD</label><br>
                 <input type="radio" id="update" value="update" name="importType" formControlName="importType" (click)="updateType('update')">
                 <label for="update" style="margin-left: 10px;">UPDATE</label>
             </div>
             
-            <div class="mt-5">
+            <div class="mt-5" style="font-size: 16px;">
                 <span class="downloadTemplate">Download Template</span> | <span class="exportList"  data-toggle="modal" data-target="#exportTable">Export Current List</span>
             </div>
             
-            <div class="form-group" class="form-control" (change)="FileUpload($event)" style="border: 0px;">
+            <div class="form-group" class="form-control" (change)="FileUpload($event)" style="border: 0px; margin-top: 40px;">
               
                     <label style="font-size: x-large;margin-top: 50px;">CSV File</label><br>
                     <input type="file" class="mt-1" formControlName="file" #myFile>
@@ -42,13 +44,14 @@
     </div>
         <div *ngIf="excelColumns.length && assetDatabaseColumns.length" style="float: right;" class="mapping">
             <h2 >Column Mapping</h2>
+            <div class="table-container">
             <table class="table" >
                 <thead class="table-dark">
                     <th style="padding-left: 10%;">Excel Column</th>
                     <th  style="padding-left: 10%;">Database Column</th>
                 </thead>
                 
-                <tbody >
+                <tbody>
                     
             <tr *ngFor="let excelCol of excelColumns; let i = index" >
                 
@@ -92,11 +95,19 @@
         </tr>
         </tbody>
         </table>
+      </div>
             <button class="btn btn-primary" style="margin-left: 15%; margin-top: 20px; " (click)="saveMappings()" >Save Mappings</button>
           </div>
 
-
           
+        </div>
+
+        <div style="display: flex; margin-top: 20px; float: right; margin-right: 50px;">
+            
+          <button class="btn btn-light" data-dismiss="modal" aria-label="Close" (click)="closeBox.click()" style="margin: 10px; width: 100px; margin-right: 30px; border: 1px solid #c0c0c0" >Cancel</button>
+          <!-- <button type="submit" class="btn btn-primary" [disabled]="importForm.invalid" (click)="myFile.value=''" style="margin: 10px; width: 100px">Submit</button> -->
+        </div>
+
     </div>
 </div>
 

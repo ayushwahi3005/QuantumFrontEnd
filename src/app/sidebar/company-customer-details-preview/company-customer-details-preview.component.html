@@ -11,41 +11,29 @@
       </div>
     
     
-    
-    
-      <li class="nav-item"  style="padding-right: 5px; margin-top: 10px;">
-      <b>Welcome</b> <span style="margin: 10px;">{{username}}</span>
-      <i class="bi bi-bell-fill" matBadge="15" matBadgeColor="warn"></i>
+      <li class="nav-item d-flex align-items-center"  style="padding-right: 5px; margin: 15px; gap: 25px;">
+      <b>Welcome</b> <span style="margin-left: -10px;">{{username}}</span>
+      <i class="bi bi-bell-fill" matBadgeColor="warn" style="cursor: pointer; font-size: 20px;"></i>
       
-      <span class="dropdown">
-        <a class="dropdown-toggle" type="button" data-toggle="dropdown" style="text-decoration: none; color: white;"><i class="bi bi-person-circle"></i>
+      <a class="dropdown-toggle" type="button" data-toggle="dropdown" style="text-decoration: none;">
+        <i class="bi bi-person-circle" style="font-size: 20px;"></i>
+      </a>
        
-        <span class="caret"></span></a>
-        <ul class="dropdown-menu">
+
+        <ul class="dropdown-menu" style="margin-top: 30px;padding: 8px;margin-right: 10px;font-size: 17px;">
          
-          <li><a href="#" style="text-decoration: none; color: black;">Profile ({{email}})</a></li>
-          <hr>
-          <li>More Details</li>
-       
-         
-         
+          <b class="dropdown-item"><a href="#" style="text-decoration: none; color: black;">Profile ({{email}})</a></b>
+          <b class="dropdown-item">More Details</b>
+          <b class="dropdown-item">Contact Support</b>
     
         </ul>
-        <a (click)="logout()" style="margin-left: 5px; cursor: pointer;">Logout</a>
-      </span>
+        <a (click)="logout()" style="cursor: pointer;">Log out</a>
       
       </li>
-    
-    
-    
-    
-    
-    
-    
-      
-      
       
     </ul>
+
+
     <div class="side-navbar"  (mouseover)="onHover()" (mouseleave)="offHover()" [ngClass]="{'nav-list-open':hoverOverSidebar}" >
       <ul class="nav-list"  >
       <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="currentColor" class="bi bi-list" viewBox="0 0 16 16" style="margin-left: 10px;"> 
@@ -69,33 +57,54 @@
       </li>
     </ul>
   </div>
-  <div class="content-area" [ngClass]="{'content-area-onhover':!hoverOverSidebar}"  style="overflow-y:scroll; height: calc(100vh - 100px);">
+
+  
+  <!-- <div class="content-area" [ngClass]="{'content-area-onhover':!hoverOverSidebar}"  style="overflow-y:scroll; height: calc(100vh - 100px);"> -->
+  <div class="content-area" [ngClass]="{'content-area-onhover':!hoverOverSidebar}">
     <div *ngIf="!loadingScreen">
 
-        <div class="main" >
+        <!-- <div class="main" > -->
   
      
   
-            <div class="mainform" style="width: calc(100vw - 90px);">
-              <div class="d-flex justify-content-around"  style="position: sticky; top: 0px; z-index: 1000; border: 1px solid lightgray;border-radius:10px ; padding: 10px 10px; background-color: white;">
-              <div style="display: flex; flex-direction: row; width: 80vw; height: 50px;">
-                <div class="back-button" style="    padding: 0px 50px;">
-                  <a [routerLink]="['/dashboard']" style="margin-right: 30px; text-decoration: none; font-weight: bold ;"  >&larr; Back to Customer</a>
-                </div>
-                <div class="v1"></div>
-                <div style="margin: 0px 10px; font-size: larger; color: black;"><b>{{companyCustomer.name|titlecase}}</b></div>
+            <!-- <div class="mainform" style="width: calc(100vw - 90px);"> -->
+              <!-- <div class="d-flex justify-content-around"  style="position: sticky; top: 0px; z-index: 1000; border: 1px solid lightgray;border-radius:10px ; padding: 10px 10px; background-color: white;"> -->
+              
+              
+                <div style="display: flex; flex-direction: column; width: calc(100vw - 90px);">
+                  <div class="back-button" style="padding: 0">
+                    <div class="d-flex justify-content-between" style="padding: 3px 20px 5px 20px;">
+                      <div style="margin-right: 30px;display: flex; justify-content: center; align-items: center;">
+                        <a [routerLink]="['/dashboard']" style="margin-right: 20px; text-decoration: none; font-weight: bold ;">&larr;
+                          Back to Customers</a>
+                      </div>
+                      <div class="v1"></div>
+                      <div style="margin: 0; font-size: larger; color: black;"><b style="margin-left: 20px;">{{companyCustomer.name|titlecase}}</b></div>
+                    <!-- </div> -->
                 
-              </div>
-              <div class="d-flex justify-content-around">
+                  <!-- </div> -->
                 
-                <div class="button-container" >
-                  <button type="submit" class="centered-button btn btn-primary submit" style="padding:7px 28px ;" [routerLink]="['/customer/',companyCustomerId]"  *ngIf="!(userRoleDetails?.customers!='full'&&userRoleDetails?.customers!='edit' &&userRole!='ADMIN')">Edit</button>
-                </div>
                 
-              </div>
+                  <!-- <div class="d-flex justify-content-around"> -->
+                
+                  <div class="button-container">
+                    <button type="submit" class="centered-button btn btn-primary submit" style="margin: 5px; padding:7px 28px ;" [routerLink]="['/customer/',companyCustomerId]"
+                      *ngIf="!(userRoleDetails?.customers!='full'&&userRoleDetails?.customers!='edit' &&userRole!='ADMIN')">Edit</button>
+                  </div>
+                  </div>
+                  </div>
+                
+                <!-- </div> -->
+                
+              <!-- </div> -->
             </div> 
                 <!-- <hr> -->
-                <h2 style="display: flex; justify-content: center;color: black; font-size: x-large;">Customer Details</h2>
+                
+                <!-- <div class="d-flex justify-content-center" *ngIf="!loading" style="margin-top: 15px;"> -->
+                <div style="margin-top: 10px; color:  #74777a;" >
+                <div class="card mt-2" style="margin-bottom: 40px;">
+                
+                <h2 style="display: flex; justify-content: center;color: black;">Customer Details</h2>
                 
                 
                 
@@ -223,29 +232,30 @@
                   
                  
                   </div>
-                </div> 
-                <hr>
+                </div>
+              </div>
                 
                 
                   
-              </div>
+              <!-- </div> -->
           
           
           
               
              
-            </div>
+            <!-- </div> -->
            
           
            
             <div class="option d-flex flex-row mb-4">
               <span [ngClass]="{'selected-option':(currOption==1),'subTab':(currOption!=1)}" (click)="onClick(1)" >Asset</span>
               <span [ngClass]="{'selected-option':(currOption==2),'subTab':(currOption!=2)}" (click)="onClick(2)" class="subTab">Files</span>
-              <span [ngClass]="{'selected-option':(currOption==3),'subTab':(currOption!=3)}" (click)="onClick(3)" class="subTab">Work Order</span>
-              <span [ngClass]="{'selected-option':(currOption==4),'subTab':(currOption!=4)}" (click)="onClick(4)" class="subTab">Invoices</span>
+              <!-- <span [ngClass]="{'selected-option':(currOption==3),'subTab':(currOption!=3)}" (click)="onClick(3)" class="subTab">Work Order</span>
+              <span [ngClass]="{'selected-option':(currOption==4),'subTab':(currOption!=4)}" (click)="onClick(4)" class="subTab">Invoices</span> -->
               <span [ngClass]="{'selected-option':(currOption==5),'subTab':(currOption!=5)}" (click)="onClick(5)" class="subTab">Custom</span>
-              
             </div>
+
+
             <div class="card mt-2" *ngIf="currOption==1"  >
               <!-- <h1 style="display: flex; justify-content: center; margin-top: 10px;">Assets</h1> -->
               <div class="card-body">
@@ -261,9 +271,6 @@
                           <th scope="col">Customer</th>
                           <th scope="col">Location</th>
                           <th scope="col">Status</th>
-                         
-                         
-                          
                         </tr>
                   </thead>
                   <tbody>
@@ -283,9 +290,6 @@
                     <td *ngIf="item.status=='inactive'">In Active</td>
                     <td *ngIf="item.status=='outofservice'">Out Of Service</td>
                          
-                         
-                          
-                          
                         </tr>
                        
                   </tbody>
@@ -297,11 +301,10 @@
                 aria-label="Select page">
                 </mat-paginator>
           
-          
-          
-          
               </div>
             </div>
+
+
             <div class="card mt-2" *ngIf="currOption==2">
               <!-- <h1 style="display: flex; justify-content: center; margin-top: 10px;">Files</h1> -->
              
@@ -337,6 +340,8 @@
                 </div>
               </div>
             </div>
+
+
             <div class="card mt-2" *ngIf="currOption==3"  style="overflow-y:scroll; height: 200px;">
               <!-- <h1 style="display: flex; justify-content: center; margin-top: 10px;">Work Order</h1> -->
               <div class="card-body">
@@ -352,9 +357,6 @@
                           <th scope="col">Assigned Technician</th>
                           <th scope="col">Asset Details</th>
                           <th scope="col">Last Update</th>
-                         
-                         
-                          
                         </tr>
                   </thead>
                   <tbody>
@@ -373,20 +375,14 @@
                           <td>{{item.assetDetails|titlecase}}</td>
                           <td>{{item.lastUpdate|titlecase}}</td>
                          
-                         
-                          
-                          
                         </tr>
                        
                   </tbody>
                 </table>
-          
-          
-          
-          
-          
               </div>
             </div>
+
+
             <div class="card mt-2" *ngIf="currOption==5">
               <!-- <h1 style="display: flex; justify-content: center; margin-top: 10px;">Customs</h1> -->
               <div class="card-body">
@@ -419,13 +415,12 @@
                    <input type="text"  id="technician"  [ngModel]="entry.value.value"  disabled>
                  </div>
           
-          
-          
-          
-          
               </div>
             </div>
-               
+
+
+          <!-- </div> -->
+        </div>
     </div>
   </div>
        

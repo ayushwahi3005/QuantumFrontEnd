@@ -22,9 +22,9 @@
 }
 
 .searchIcon{
-  position: relative;
-  left: -220px;
-  padding: 10px 12px;
+  position: absolute;
+  left: 10px;
+  padding: 10px 0 10px 4px;
   pointer-events: none;
 }
   /* #category-input {
@@ -85,10 +85,15 @@ table{
   background-color: inherit;
 }
 
+.table-dark {
+  --bs-table-bg: #12232E;
+  --bs-table-color: white;
+}
+
 .form-group:focus {
-  border-color: #007bff; /* Change border color */
-  box-shadow: 0 0 5px rgba(0, 123, 255, 0.5); /* Add a glowing effect */
-  outline: none; /* Remove default outline */
+  border-color: #1a65ab; /* Change border color */
+  box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
+  outline: none;
   transition: border-color 0.3s, box-shadow 0.3s;
 }
 
@@ -116,38 +121,30 @@ table{
   overflow: hidden;
   width: 100%;
   height: 40px;
-  max-width: 250px;
+  max-width: 275px;
   background-color: #fff;
   /* background-color: lightgray; */
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  position: relative;
 }
 
 /* Search Input Field */
 #category-input {
   flex: 1;
+  padding: 0 33px 0 33px;
   /* padding: 0px 20px; */
   border: none;
   outline: none;
   font-size: 16px;
   color: #333;
-  padding-right: 10px;
-  padding-left: 25px;
+  /* padding-right: 10px;
+  padding-left: 25px; */
 }
 
-/* Search Button */
-.search-button {
-  /* background-color: #4CAF50; Green color */
-  border: none;
-  color: #fff;
-  padding: 6px 10px;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.search-button:hover {
-  background-color: #45a049; /* Darker green */
+.search-bar:focus-within {
+  border-color: #007bff; /* Blue border for focus */
+  box-shadow: 0 0 5px rgba(0, 123, 255, 0.5); /* Subtle blue glow */
+  transition: border-color 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
 }
 
 /* Icon in Search Button */

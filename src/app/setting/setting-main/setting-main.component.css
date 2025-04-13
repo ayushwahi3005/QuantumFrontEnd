@@ -58,7 +58,7 @@ img{
     align-items: center;
     flex-direction: row;
     /* padding: 1.25em; */
-    padding: 14px;
+    padding: 12.5px;
 }
 
 .header-centre h1{
@@ -78,7 +78,7 @@ img{
     left: 0rem;
     width: 250px;
     /* height: calc(100vh - 76px); */
-    height: calc(100vh - 63px);
+    height: calc(100vh - 53px);
     /* background-color: #FAFAFA; */
     background-color: #FFFFFF;
     box-shadow:rgba(255, 255, 255, 0.5);
@@ -151,7 +151,7 @@ a{
     /* width: calc(100vw - 120px); */
     padding-left: 250px;    
     /* height: calc(100vh - 80px); */
-    height: calc(100vh - 63px);
+    height: calc(100vh - 53px);
 }
 
 form{
@@ -226,7 +226,7 @@ body{
   list-style: none;
   padding: 0;
   margin: 0;
-  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 16px 32px rgba(0, 0, 0, 0.2);
 }
 
 .dropdown-menu.show {
@@ -234,12 +234,15 @@ body{
 }
 
 .dropdown-item {
-  padding: 8px 100px 8px 12px;
+  /* padding: 8px 100px 8px 12px; */
+  padding: 10px 90px 10px 7px;
   cursor: pointer;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
 }
 
 .dropdown-item:hover {
   background-color: #f1f1f1;
+  border-radius: 5px;
 }
 
 .dropdown-toggle::after {

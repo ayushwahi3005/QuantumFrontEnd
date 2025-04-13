@@ -63,6 +63,8 @@
   </li>
 </ul>
 </div>
+
+
 <div class="content-area" [ngClass]="{'content-area-onhover':!hoverOverSidebar}">
   <div *ngIf="showAlert" class="alert" [ngClass]="'alert-' + alertType" role="alert" style="margin: 5px; position: fixed; width: 95%; z-index: 10000;">
     {{ alertMessage }}
@@ -82,9 +84,6 @@
       <div class="button-container">
         <button class="centered-button btn btn-primary submit" style="margin: 5px; border: 1px solid lightgray; padding: 7px 28px;" (click)="edit()" >Edit</button>
         <!-- <button class="btn btn-primary" data-toggle="modal" data-target="#popup" style="margin: 5px;">Save</button> -->
-        
-  
-      
       </div>
       
       </div>
