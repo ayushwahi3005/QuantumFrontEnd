@@ -44,6 +44,7 @@ export class SubscriptionComponent {
   basicAnnualChargeInMonth!: number;
   basicAnnualCharge!: number;
   basicAnnualDiscount!: number;
+  startPerson: number = 1;
   person: number = 1;
   stateList = [];
   paymentForm!: FormGroup;
@@ -65,7 +66,7 @@ export class SubscriptionComponent {
   alertMessage: string = '';
   showAlert: boolean = false; // Flag to toggle alert visibility
   alertType: string = 'success'; // Alert type: success, warning, error, etc.
-  myCard: any;
+  myCard: any[] = [];
   editCard: boolean = false;
   selectedCard: any;
   renewDate: any;
@@ -75,7 +76,10 @@ export class SubscriptionComponent {
   InvoiceList: Payment[] = [];
   editVisibility: boolean = false;
   editButtonId: number = -1;
-  popUpModel:any;
+  popUpModel: any;
+  displayEditCard: boolean = false;
+  showSavedCard: boolean = true;
+  editCardId: any;
   readonly stripe = injectStripe(
     'pk_test_51QJEvHDbrtjFAyfvm2UQu2ohdlUl814jAftZVEW9IHnfd4YrVOfh5ZBJyfYahnJcOMxwjgK3WjA8tU8XPg5nGpbM00J9CxIx3A'
   );
@@ -117,7 +121,7 @@ export class SubscriptionComponent {
     private stripeService: StripeService,
     private http: HttpClient
   ) {}
-  refresh(){
+  refresh() {
     this.subcriptionSerive.getCurrSubscription(this.companyId).subscribe(
       (data) => {
         console.log(data);
@@ -170,21 +174,24 @@ export class SubscriptionComponent {
       }
     );
     this.subcriptionSerive
-    .getAllSubscription(this.companyId)
-    .subscribe((data) => {
-      console.log(data);
+      .getAllSubscription(this.companyId)
+      .subscribe((data) => {
+        console.log(data);
 
-      this.subscriptionList = data;
-      this.subscriptionList.forEach((element) => {
-        if (element.status == SubscriptionEnum.UPCOMING) {
-          this.upcomingSubscription = element;
-        }
+        this.subscriptionList = data;
+        this.upcomingSubscription = null; // Reset the upcoming subscription
+        this.subscriptionList.forEach((element) => {
+          if (element.status == SubscriptionEnum.UPCOMING) {
+            this.upcomingSubscription = element;
+          }
+        });
       });
-    });
     this.curr_phase = 1;
   }
   ngOnInit() {
     this.companyId = localStorage.getItem('companyId');
+    this.displayEditCard = false;
+    this.showSavedCard = true;
     this.expiryDate = new Date();
     this.loading = false;
     this.todayDate = new Date();
@@ -255,6 +262,7 @@ export class SubscriptionComponent {
       (data) => {
         console.log(data);
         this.currSubscription = data;
+
         if (data != null) {
           console.log(data.expiryDate);
           console.log(data.subscriptionDate);
@@ -296,7 +304,7 @@ export class SubscriptionComponent {
     this.subcriptionSerive.getCardDetailsFromStripe(this.companyId).subscribe(
       (data) => {
         this.myCard = data;
-        // console.log(this.myCard)
+        console.log(this.myCard);
       },
       (err) => {
         console.log(err);
@@ -482,7 +490,6 @@ export class SubscriptionComponent {
   }
   basicMonthClick() {
     this.basicIsMonthly = true;
-
     this.curr_amount = this.basicMonthlyCharge;
     this.expiryDate = new Date();
     this.expiryDate.setMonth(this.expiryDate.getMonth() + 1);
@@ -698,11 +705,13 @@ export class SubscriptionComponent {
     this.currOption = data;
   }
   addCard() {
-    console.log('www');
+  
     this.displayAddCard = true;
   }
   closeAddCard() {
     this.displayAddCard = false;
+    // console.log("display "+this.displayAddCard)
+    this.showSavedCard = true;
     this.cardDetails.reset();
   }
   addCardDetails() {
@@ -788,21 +797,24 @@ export class SubscriptionComponent {
   deleteCardBack() {
     this.editCard = false;
   }
-  removeSaveCard(cardId: any) {
+  editSaveCard(cardId: any) {
     console.log(cardId);
-    this.subcriptionSerive.deleteCardDetails(cardId).subscribe(
-      (data) => {
-        console.log(data);
-        this.triggerAlert('Card Deleted Successfully', 'success');
-        this.ngOnInit();
-        this.editCard = false;
-      },
-      (err) => {
-        console.log(err);
-        this.triggerAlert(err.errorMessage, 'danger');
-      }
-    );
-    this.editCard = false;
+    this.editCardId = cardId;
+    this.showSavedCard = false;
+    this.displayAddCard = true;
+    // this.subcriptionSerive.deleteCardDetails(cardId).subscribe(
+    //   (data) => {
+    //     console.log(data);
+    //     this.triggerAlert('Card Deleted Successfully', 'success');
+    //     this.ngOnInit();
+    //     this.editCard = false;
+    //   },
+    //   (err) => {
+    //     console.log(err);
+    //     this.triggerAlert(err.errorMessage, 'danger');
+    //   }
+    // );
+    // this.editCard = false;
   }
   logout() {
     console.log('logging out');
@@ -860,19 +872,46 @@ export class SubscriptionComponent {
             .subscribe(
               (data) => {
                 console.log(data);
-                console.log('Card Saved Successfully');
-                this.triggerAlert('Card Saved Successfully', 'success');
-                this.savingCard.set(false);
-                this.ngOnInit();
+                if(this.editCardId!=null){
+                  this.subcriptionSerive.deleteCardDetails(this.editCardId).subscribe(
+                    (data) => {
+                      console.log(data);
+                      this.triggerAlert('Updated Card Successfully', 'success');
+                      this.ngOnInit();
+                      this.editCard = false;
+                      this.savingCard.set(false);
+                      this.cardholderName=null;
+                    },
+                    (err) => {
+                      console.log(err);
+                      this.triggerAlert(err.errorMessage, 'danger');
+                      this.editCard = false;
+                      this.savingCard.set(false);
+                      this.cardholderName=null;
+                    }
+                  );
+                }
+                else{
+                  console.log('Card Saved Successfully');
+                  this.triggerAlert('Card Saved Successfully', 'success');
+                  this.savingCard.set(false);
+                  this.ngOnInit();
+                  this.cardholderName=null;
+                }
+                 
+               
               },
               (err) => {
                 console.log(err);
                 this.triggerAlert(err.errorMessage, 'danger');
                 this.savingCard.set(false);
+                this.cardholderName=null;
+                this.ngOnInit();
               }
             );
         } else {
           console.error(result.error);
+          this.cardholderName=null;
           this.savingCard.set(false);
         }
       });
@@ -913,29 +952,29 @@ export class SubscriptionComponent {
     //   console.log(err);
     // })
   }
-  closeAddPlan(){
-    console.log("Closing Add Plan");
+  closeAddPlan() {
+    console.log('Closing Add Plan');
     // const modalElement = document.getElementById('addPerson');
     // console.log(modalElement);
-  
+
     this.popUpModel.hide();
   }
-  checkUpcomingPlan(){
-    if(this.upcomingSubscription){
-      console.log("Cancel Upcoming Plan");
-      this.triggerAlert("You have an upcoming plan. Please cancel it to proceed","warning");
+  checkUpcomingPlan() {
+    if (this.upcomingSubscription) {
+      console.log('Cancel Upcoming Plan');
+      this.triggerAlert(
+        'You have an upcoming plan. Please cancel it to proceed',
+        'warning'
+      );
       return;
     }
-    console.log("Add Plan");
+    console.log('Add Plan');
     const modalElement = document.getElementById('addPerson');
     this.popUpModel = new bootstrap.Modal(modalElement);
     this.popUpModel.show();
-        // setTimeout(()=>{
-        //   modalInstance.hide();
-        // },5000)
-
-
-    
+    // setTimeout(()=>{
+    //   modalInstance.hide();
+    // },5000)
   }
   deleteUpcomingPlan() {
     this.loading = true;
@@ -950,18 +989,20 @@ export class SubscriptionComponent {
           console.log('Upcoming plan deleted:', data);
           this.triggerAlert('Upcoming Plan Deleted Successfully', 'success');
           this.loading = false;
-  
+
           // Explicitly refresh the data
-          this.subcriptionSerive.getAllSubscription(this.companyId).subscribe((data) => {
-            console.log('Refreshed subscription list:', data);
-            this.subscriptionList = data;
-            this.upcomingSubscription = null; // Reset the upcoming subscription
-            this.subscriptionList.forEach((element) => {
-              if (element.status == SubscriptionEnum.UPCOMING) {
-                this.upcomingSubscription = element;
-              }
+          this.subcriptionSerive
+            .getAllSubscription(this.companyId)
+            .subscribe((data) => {
+              console.log('Refreshed subscription list:', data);
+              this.subscriptionList = data;
+              this.upcomingSubscription = null; // Reset the upcoming subscription
+              this.subscriptionList.forEach((element) => {
+                if (element.status == SubscriptionEnum.UPCOMING) {
+                  this.upcomingSubscription = element;
+                }
+              });
             });
-          });
         },
         (err) => {
           console.log(err);
@@ -970,58 +1011,69 @@ export class SubscriptionComponent {
         }
       );
   }
-  startUpcomingPlan(){
-
-    this.subcriptionSerive.startUpcomingSubscription(this.companyId,localStorage.getItem('companyName'),localStorage.getItem('companyEmail')).subscribe((data)=>{
-      console.log(data);
-     
-      
-      this.triggerAlert("Upcoming Plan Started Successfully","success");
-      this.ngOnInit();
-    }
-    ,
-    (err)=>{
-      console.log(err);
-      this.triggerAlert(err.error.errorMessage,"danger");
-    }
-    )
+  startUpcomingPlan() {
+    this.loading = true;
+    this.subcriptionSerive
+      .startUpcomingSubscription(
+        this.companyId,
+        localStorage.getItem('companyName'),
+        localStorage.getItem('companyEmail')
+      )
+      .subscribe(
+        (data) => {
+          console.log(data);
+          this.loading = false;
+          this.triggerAlert('Upcoming Plan Started Successfully', 'success');
+          this.refresh();
+          this.ngOnInit();
+        },
+        (err) => {
+          console.log(err);
+          this.loading = false;
+          this.triggerAlert(err.error.errorMessage, 'danger');
+        }
+      );
   }
-  payWithSavedCard(cardId: any) {
+  payWithSavedCard() {
+    let cardId = this.myCard[0].id;
     console.log(cardId);
     this.paying.set(true);
     let plan = this.basicIsMonthly == true ? 'MONTHLY' : 'ANNUAL';
     this.subcriptionSerive
-            .createPaymentIntent(
-              cardId,
-              localStorage.getItem('companyEmail'),
-              localStorage.getItem('companyName'),
-              this.companyId,
-              this.person,
-              plan,
-              this.res_amount,
-              this.checkoutForm.controls['name'].value
-            )
-            .subscribe(
-              (data) => {
-                
-                console.log(data);
-                console.log('Payment Done');
-                // this.triggerAlert("Payment Done Successfully", "success");
-                // this.ngOnInit();
-                this.curr_phase = 3;
-                this.paying.set(false);
-              },
-              (err) => {
-                console.log(err.error.errorMessage);
-                console.log(err);
-                this.paying.set(false);
-                this.triggerAlert(err.error.errorMessage, 'danger');
-              }
-            );
+      .createPaymentIntent(
+        cardId,
+        localStorage.getItem('companyEmail'),
+        localStorage.getItem('companyName'),
+        this.companyId,
+        this.person,
+        plan,
+        this.res_amount,
+        this.checkoutForm.controls['name'].value
+      )
+      .subscribe(
+        (data) => {
+          console.log(data);
+          console.log('Payment Done');
+          this.triggerAlert("Subscription Updated Sucessfully", "success");
+          this.ngOnInit();
+          this.refresh();
+          this.currOption=1;
+          this.paying.set(false);
+        },
+        (err) => {
+          console.log(err.error.errorMessage);
+          console.log(err);
+          this.paying.set(false);
+          this.triggerAlert(err.error.errorMessage, 'danger');
+        }
+      );
   }
-  goToManageTab(){
+  goToManageTab() {
     this.ngOnInit();
-    this.currOption=1;
-    
+    this.currOption = 1;
+  }
+  closeEditCard() {
+    this.editCard = false;
+    this.displayEditCard = false;
   }
 }
