@@ -46,15 +46,18 @@
             <td>{{item.ofUser}}</td>
             <td>{{item.status|titlecase}}</td>
             <td >
-              <button mat-icon-button [matMenuTriggerFor]="appMenu" [disabled]="item.name=='ADMIN'">
+              <!-- <button mat-icon-button [matMenuTriggerFor]="appMenu" [disabled]="item.name=='ADMIN'">
                 <mat-icon>more_vert</mat-icon>
-              </button>
+              </button> -->
               <div>
-              <mat-menu #appMenu="matMenu">
+              <!-- <mat-menu #appMenu="matMenu">
                 <button mat-menu-item (click)="edit(item)" data-toggle="modal" data-target="#edit-role">Edit</button>
                 <button mat-menu-item (click)="deleteRole(item.id)">Delete</button>
-              </mat-menu>
-              
+              </mat-menu> -->
+              <a  (click)="edit(item)" data-toggle="modal" data-target="#edit-role" *ngIf="item.type!='STANDARD'"><i class="bi bi-pencil"></i></a>
+              <a  (click)="selectIdDeleteRole(item.id)" data-toggle="modal" data-target="#delete-role" style="  margin-left: 5px;" *ngIf="item.type!='STANDARD'"><i class="bi bi-trash-fill delete"></i></a>
+
+               
               <!-- <button mat-icon-button [matMenuTriggerFor]="appMenu" [disabled]="item.name=='ADMIN'">
                 <mat-icon>more_vert</mat-icon>
               </button> -->
@@ -82,10 +85,10 @@
       <div class="modal-content">
         <div class="modal-header" style="padding: 13px 15px">
           <h2 class="modal-title" id="exampleModalLongTitle" style="margin:0; display: flex; justify-content: center;">Create Role</h2>
-          <button type="button" class="close ms-auto" data-dismiss="modal" aria-label="Close"  #closeBox>
+        
+          <button type="button" class="btn btn-light btn-sm ms-auto" data-dismiss="modal" aria-label="Close" style="border-radius: 10px; border: 1px solid #c0c0c0;--bs-btn-bg: white" #closeBox>
             <!-- <span aria-hidden="true">&times;</span> -->
             <i class="bi bi-x-lg"></i>
-            <!-- <i class="fa-solid fa-xmark"></i> -->
           </button>
         </div>
         <div class="modal-body">
@@ -277,8 +280,9 @@
       <div class="modal-content">
         <div class="modal-header">
           <h2 class="modal-title" id="exampleModalLongTitle">Edit Role</h2>
-          <button type="button" class="close" data-dismiss="modal" aria-label="Close"  #closeBox2>
-            <span aria-hidden="true">&times;</span>
+          <button type="button" class="btn btn-light btn-sm ms-auto" data-dismiss="modal" aria-label="Close" style="border-radius: 10px; border: 1px solid #c0c0c0;--bs-btn-bg: white" #closeBox2>
+            <!-- <span aria-hidden="true">&times;</span> -->
+            <i class="bi bi-x-lg"></i>
           </button>
         </div>
         <div class="modal-body">
@@ -450,6 +454,28 @@
             <button type="submit" class="btn btn-primary mt-3" style="margin-left: 45%;" (click)="closeBox2.click()" [disabled]="roleAndPermissionFormEdit.invalid" >Update</button>
           </form>
          
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal fade" id="delete-role" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLabel"> Are you sure you want to delete this role?</h5>
+          <!-- <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button> -->
+          <button type="button" class="btn btn-light btn-sm ms-auto" data-dismiss="modal" aria-label="Close" style="border-radius: 10px; border: 1px solid #c0c0c0;--bs-btn-bg: white" >
+            <!-- <span aria-hidden="true">&times;</span> -->
+            <i class="bi bi-x-lg"></i>
+          </button>
+        </div>
+       
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+          <button type="button" class="btn btn-primary" (click)="deleteRole()">Delete</button>
         </div>
       </div>
     </div>

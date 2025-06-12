@@ -23,6 +23,27 @@ export class CustomerResetPasswordComponent {
   currentyear:any;
   constructor(private customerResetPasswordService:CustomerResetPasswordService,private router:Router){}
 
+  @ViewChildren('otp1, otp2, otp3, otp4, otp5, otp6')
+  otpInputs!: QueryList<ElementRef>;
+
+  // Moves to the next input when a character is typed
+  onOtpInput(event: Event, index: number) {
+    const input = event.target as HTMLInputElement | null;
+    if (input && input.value.length === 1 && index < 5) {
+      const nextInput = this.otpInputs.toArray()[index + 1].nativeElement;
+      nextInput.focus();
+    }
+  }
+  
+  onOtpKeyDown(event: KeyboardEvent, index: number) {
+    const input = event.target as HTMLInputElement | null;
+    if (input && event.key === 'Backspace' && !input.value && index > 0) {
+      const previousInput = this.otpInputs.toArray()[index - 1].nativeElement;
+      previousInput.focus();
+    }
+  }
+  
+
   async ngOnInit():Promise<void>{
     this.currentyear=new Date().getFullYear();
     // console.log("--------------AuthTokenIn------------------"+localStorage.getItem('authToken'));
@@ -50,24 +71,24 @@ export class CustomerResetPasswordComponent {
       this.state=1;
    
   }
-  @ViewChildren('otp') otpInputs!: QueryList<ElementRef>;
+  // @ViewChildren('otp') otpInputs!: QueryList<ElementRef>;
 
-  onOtpInput(event: Event, index: number) {
-    const input = event.target as HTMLInputElement;
-    console.log(input.value)
-    if (input.value.length === 1) {
-      // this.otpInputs.toArray()[index + 1].nativeElement.focus();
-      this.otpArray[index]=input.value
-      // console.log(this.otpArray[index])
-    }
-  }
+  // onOtpInput(event: Event, index: number) {
+  //   const input = event.target as HTMLInputElement;
+  //   console.log(input.value)
+  //   if (input.value.length === 1) {
+  //     // this.otpInputs.toArray()[index + 1].nativeElement.focus();
+  //     this.otpArray[index]=input.value
+  //     // console.log(this.otpArray[index])
+  //   }
+  // }
 
-  onOtpKeyDown(event: KeyboardEvent, index: number) {
-    if (event.key === 'Backspace') {
+  // onOtpKeyDown(event: KeyboardEvent, index: number) {
+  //   if (event.key === 'Backspace') {
       
-      this.otpArray[index]=''
-    }
-  }
+  //     this.otpArray[index]=''
+  //   }
+  // }
   triggerAlert(message: string, type: string,redirectToLogin:boolean) {
     this.alertMessage = message;
     this.alertType = type;
@@ -112,8 +133,13 @@ export class CustomerResetPasswordComponent {
         return input;
       })
       .join(''); // Combine all values into a single string
-    // console.log('OTP:', otpValue);
-    return otpValue;
+    console.log('OTP:', otpValue);
+
+    return this.otpInputs
+    .toArray()
+    .map(input => (input.nativeElement as HTMLInputElement).value)
+    .join('');
+    // return otpValue;
   }
   changePassword(){
     
@@ -125,6 +151,7 @@ export class CustomerResetPasswordComponent {
 
     }
     const otp = this.getOtpValue();
+    console.log("otp"+otp)
     if(otp.length!=6&&this.state==2){
       // alert('Please enter password');
       this.triggerAlert("Please enter OTP","warning",false)

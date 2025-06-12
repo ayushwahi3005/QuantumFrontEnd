@@ -21,6 +21,9 @@ export class LoginComponent {
   loader=false;
   activeSessionDetails:any;
   currentyear:any;
+  showPassword!:boolean;
+  showPasswordType!:string;
+  showPasswordIconClass!:string;
   constructor(private auth:AuthService,private authService:AuthService,private loginService:LoginService,private router:Router){}
 
   async ngOnInit():Promise<void>{
@@ -31,7 +34,9 @@ export class LoginComponent {
     else{
       this.authService.isLoggedIn = false;
     }
-   
+    this.showPassword=false;
+    this.showPasswordType='password'
+    this.showPasswordIconClass='bi bi-eye-fill';
     this.currentyear=new Date().getFullYear();
 
       console.log("Login KeyValue")
@@ -60,8 +65,10 @@ export class LoginComponent {
     }, 5000); // Hide the alert after 5 seconds (adjust as needed)
   }
   login(){
-
-    console.log(this.loader)
+    this.loader=true;
+    
+    console.log("---------login loader"+this.loader)
+    
     if(this.email==''){
       // alert('Please enter email');
       this.triggerAlert("Please enter email","warning")
@@ -121,8 +128,9 @@ export class LoginComponent {
       },
       (err)=>{
         console.log("Error->"+err)
+        this.loader=false;
       })
-    
+  
    
   }
   firstNameAutofilled!: boolean;
@@ -192,6 +200,19 @@ export class LoginComponent {
         keyboard: false
       });
       myModal.show();
+    }
+  }
+  showPasswordFunc(){
+    if(this.showPassword==true){
+      this.showPassword=false;
+      this.showPasswordType='password';
+      this.showPasswordIconClass='bi bi-eye-fill';
+     }
+    else{
+      this.showPassword=true;
+      this.showPasswordType='text';
+      this.showPasswordIconClass='bi bi-eye-slash-fill';
+      
     }
   }
 // demo(){

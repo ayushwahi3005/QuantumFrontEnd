@@ -67,14 +67,14 @@
                 <br>
               </div>
               
-              <div class="form-group" >
+              <!-- <div class="form-group" >
                 <label for="location">apartment</label>
                 <div class="d-flex justify-content-around">
                 <input type="text" class="form-control" id="apartment" formControlName="apartment"  >
-                <!-- <i class="bi bi-trash-fill delete" style="display: inline-flex; margin-top: 12px; margin-left: 10px; color: red; margin-right: 5px;" (click)="removeMandatoryFieldFilter('location')"></i> -->
+               
                 </div>
                 <br>
-              </div>
+              </div> -->
 
               <div class="form-group" >
                 <label for="city">City</label>
@@ -88,8 +88,15 @@
               <div class="form-group" >
                 <label for="state">State</label>
                 <div class="d-flex justify-content-around">
-                <input type="text" class="form-control" id="state" formControlName="state"  >
+                <!-- <input type="text" class="form-control" id="state" formControlName="state"  > -->
                 <!-- <i class="bi bi-trash-fill delete" style="display: inline-flex; margin-top: 12px; margin-left: 10px; color: red; margin-right: 5px;" (click)="removeMandatoryFieldFilter('location')"></i> -->
+                <select class="form-select custom-dropdown" class="form-control" id="state" formControlName="state" #status style="height: fit-content;" >
+                  <option value="{{state}}" *ngFor="let state of stateList">{{state}}</option>
+                  <!-- <option value="{{[customer.name,customer.id]}}" *ngFor="let customer of companyCustomerList">{{customer.name}}</option> -->
+                  <!-- <option value="outOfService" selected>Out Of Service</option> -->
+                  
+                  
+                </select>
                 </div>
                 <br>
               </div>
@@ -116,7 +123,7 @@
       
               <h1 *ngIf="this.selectedFilterList?.length>0" style="margin-left: 33%; margin-top: 5px;">Custom Fields</h1>
               <div *ngFor="let input of selectedFilterList; let i = index" style="margin-top: 5px;">
-                <label for={{input}}>{{input|titlecase}}</label>
+                <label for={{input}}>{{input}}</label>
                 <input [formControlName]="input" type={{extraFieldFilterList.get(input)}} class="extraFieldInput"> <!-- Since each form group is wrapped in a form array -->
                 <!-- <i class="bi bi-trash-fill delete" style="display: inline-flex; margin-top: 25px; margin-left: 10px; color: red; margin-right: 5px;" (click)="removeInputField(input)"></i> -->
               </div>
@@ -256,7 +263,7 @@
                     <th scope="col" *ngIf="showMandatoryBasicFields.get('category')">Category</th>
                     <th scope="col" *ngIf="showMandatoryBasicFields.get('status')">Status</th>
                     
-                    <th scope="col" *ngFor="let col of selectedExtraColums">{{col|titlecase}}</th>
+                    <th scope="col" *ngFor="let col of selectedExtraColums">{{col}}</th>
                     <th></th>
                 </tr>
             </thead>
@@ -323,7 +330,8 @@
               <span aria-hidden="true">&times;</span>
             </button>
           </div>
-          <div class="modal-body">
+          <div class="modal-body"  *ngIf="companyCustomerForm">
+           
             <form [formGroup]="companyCustomerForm" (ngSubmit)="addCompanyCustomer()">
               <div >
                 <label for="name">Name<span class="text-danger">*</span></label>
@@ -348,7 +356,7 @@
               
               <div class="form-group">
                 <label for="status">Status<span *ngIf="mandatoryFieldsMap.get('status')" class="text-danger">*</span></label>
-                <select class="form-select" class="form-control" id="status" formControlName="status" [ngModel]="this.companyCustomerForm.status">
+                <select class="form-select" class="form-control" id="status" formControlName="status">
                   <option value="active" active>Active</option>
                   <option value="inactive" >In Active</option>     
                 </select>
@@ -400,14 +408,14 @@
                 </div>
                 <div class="form-group" *ngFor="let item of showFieldsList" >
                   <div *ngIf="item.show">
-                  <label for={{item.name}}>{{item.name|titlecase}}<span *ngIf="mandatoryFieldsMap.get(item.name)" class="text-danger">*</span></label>
+                  <label for={{item.name}}>{{item.name}}<span *ngIf="mandatoryFieldsMap.get(item.name)" class="text-danger">*</span></label>
                   <input type={{item.type}} class="form-control" id="{{item.name}}" formControlName={{item.name}}  placeholder={{item.name|titlecase}}>
                   </div>
                   <br>
                 </div>
               
               <!-- <button type="submit" class="btn btn-primary mt-3" (click)="closeBox.click()" [disabled]="workorderform.invalid">Submit</button> -->
-              <button type="submit" class="btn btn-primary mt-3"  [disabled]="companyCustomerForm.invalid" style="float: right;">Submit</button>
+              <button type="submit" class="btn btn-primary mt-3"  [disabled]="companyCustomerForm.invalid" style="float: right;" (click)="closeBox.click()">Submit</button>
             </form>
            
           </div>
@@ -449,7 +457,7 @@
                 </div>
                 <br>
               </div> -->
-              <mat-checkbox  [color]="checkBoxColor" [checked]="selectedExtraColumsMap.get(item)"  (change)="customCheckBox($event.checked,item)">{{item|titlecase}}</mat-checkbox>
+              <mat-checkbox  [color]="checkBoxColor" [checked]="selectedExtraColumsMap.get(item)"  (change)="customCheckBox($event.checked,item)">{{item}}</mat-checkbox>
              
 
                 

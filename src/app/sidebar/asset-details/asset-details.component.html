@@ -98,7 +98,74 @@
         <p *ngIf="mandatoryFieldsMap.get('customer') && assetDetails.customer==''" class="text-danger">*Mandatory</p>
         <hr>
         
-        <p class="card-text">Location<span *ngIf="mandatoryFieldsMap.get('location')" class="text-danger">*</span><br><input type="text" value="{{assetDetails.location}}" class="location" id="location" [(ngModel)]="assetDetails.location" [required]="mandatoryFieldsMap.get(assetDetails.name)==true"></p>
+        <p class="card-text" style="margin-bottom: 0px;">Location<span *ngIf="mandatoryFieldsMap.get('location')" class="text-danger">*</span><br>
+          <!-- <input type="text" value="{{assetDetails.location}}" class="location" id="location" [(ngModel)]="assetDetails.location" [required]="mandatoryFieldsMap.get(assetDetails.name)==true"></p> -->
+          <div class="d-flex justify-content-around">
+            <!-- <input type="text" class="form-control" id="location" formControlName="location"  > -->
+            <div class="dropdown" #dropdownContainer>
+              <span class="dropdown-toggle-arrow">
+                <i class="fa" [ngClass]="dropdownOpenLocation ? 'fa-chevron-up' : 'fa-chevron-down'"></i>
+              </span>
+            <input
+            type="text"
+            placeholder="Search"
+            class="form-control"
+            (input)="filterLocations($event)"
+            [value]="selectedLocation || ''"
+            (click)="toggleDropdownLocation()"
+            id="location"
+            />
+            <ul *ngIf="dropdownOpenLocation" class="dropdown-menu show scrollable-dropdown">
+              <ng-container *ngFor="let loc of filteredLocationOrBinList">
+            
+                <li class="dropdown-item font-weight-bold" (click)="selectLocationOrBin('location:' + loc.id,loc.name)" >
+                  {{ loc.name }}
+                </li>
+            
+              
+                <li
+                  *ngFor="let bin of loc.bins"
+                  class="dropdown-item pl-4"
+                  (click)="selectLocationOrBin('bin:' + bin.id,bin.binNumber)" >
+               
+                  {{ loc.name }} -> {{ bin.binNumber }}
+                </li>
+              </ng-container>
+            </ul>
+          
+            </div>
+            <!-- <div class="dropdown-wrapper" #dropdownContainer>
+              <div class="dropdown">
+                <span class="dropdown-toggle-arrow">
+                  <i class="fa" [ngClass]="dropdownOpenLocation ? 'fa-chevron-up' : 'fa-chevron-down'"></i>
+                </span>
+                <input
+                  type="text"
+                  placeholder="Search"
+                  class="form-control"
+                  (input)="filterLocations($event)"
+                  [value]="selectedLocation || ''"
+                  (click)="toggleDropdownLocation()"
+                />
+              </div>
+            
+              <ul *ngIf="dropdownOpenLocation" class="dropdown-menu show scrollable-dropdown">
+                <ng-container *ngFor="let loc of filteredLocationOrBinList">
+                  <li class="dropdown-item font-weight-bold" (click)="selectLocationOrBin('location:' + loc.id, loc.name)">
+                    {{ loc.name }}
+                  </li>
+                  <li
+                    *ngFor="let bin of loc.bins"
+                    class="dropdown-item pl-4"
+                    (click)="selectLocationOrBin('bin:' + bin.id, bin.binNumber)"
+                  >
+                    {{ loc.name }} -> {{ bin.binNumber }}
+                  </li>
+                </ng-container>
+              </ul>
+            </div> -->
+               
+          </div>
         <p *ngIf="mandatoryFieldsMap.get('location') && assetDetails.location==''" class="text-danger">*Mandatory</p>
         <hr>
        
@@ -107,7 +174,7 @@
           <select  id="status"   [(ngModel)]=" assetDetails.status"   #mySelect >  
        
                   <option value="active" selected>Active</option>
-                  <option value="inactive" selected>In Active</option>
+                  <option value="inActive" selected>In Active</option>
                   <option value="outofservice" selected>Out Of Service</option>
             
           </select>
@@ -124,6 +191,7 @@
     <!-- <div class="option d-flex flex-row bd-highlight mb-3" style="color: black;margin: 30px;"> -->
     <div class="option d-flex flex-row bd-highlight " style="width: 100%; margin: 30px auto;color: black;">
       <span [ngClass]="{'selected-option':(currOption==1),'subTab':(currOption!=1)}" (click)="onClick(1)">Check In/Out</span>
+      <span [ngClass]="{'selected-option':(currOption==6),'subTab':(currOption!=6)}" (click)="onClick(6)">Inspection</span>
       <span [ngClass]="{'selected-option':(currOption==2),'subTab':(currOption!=2)}" (click)="onClick(2)">Files</span>
       <span [ngClass]="{'selected-option':(currOption==3),'subTab':(currOption!=3)}" (click)="onClick(3)">WOs</span>
       <span [ngClass]="{'selected-option':(currOption==4),'subTab':(currOption!=4)}" (click)="onClick(4)">Parts</span>
@@ -134,10 +202,11 @@
       <div class="card-body">
         <div class="d-flex justify-content-between align-items-center">
           <div>
-            <!-- <button class="btn btn-light" style="padding: 2px 5px; margin-right: 5px;">Current Status </button> -->
-            <label style="padding: 5px 5px; margin-right: 5px;">Current Status :</label> <span  [ngClass]="{'checkedIn-status':((checkInOut.length==0)||(checkInOut[0].status=='Checked In')),'checkedOut-status':((checkInOut.length>0)&&(checkInOut[0].status=='Checked Out'))}">{{(checkInOut.length==0) ? 'CheckedIn': checkInOut[0].status}}</span></div>
-            <button data-target="#checkInOut" style="margin-bottom: 5px;" [ngClass]="{'danger-button':((checkInOut.length==0)||(checkInOut[0].status=='Checked In')),'btn btn-primary':((checkInOut.length>0)&&(checkInOut[0].status=='Checked Out'))}"  data-toggle="modal">{{(checkInOut.length==0) ? 'Check Out': (checkInOut[0].status=='Checked In' ? 'Check Out':'Check In')}}</button>
+            <!-- <button class="btn btn-light" style="padding: 2px 5px; margin-right: 5px;">Current Status : </button> -->
+            <label style="padding: 5px 5px; margin-right: 5px;">Current Status :</label> <span  [ngClass]="{'checkedIn-status':((checkInOut.length==0)||(checkInOut[0].status=='Checked In')),'checkedOut-status':((checkInOut.length>0)&&(checkInOut[0].status=='Checked Out'))}">{{(checkInOut.length==0) ? 'Checked In': checkInOut[0].status}}</span>
           </div>
+            <button data-target="#checkInOut" [ngClass]="{'danger-button':((checkInOut.length==0)||(checkInOut[0].status=='Checked In')),'btn btn-primary':((checkInOut.length>0)&&(checkInOut[0].status=='Checked Out'))}"  data-toggle="modal">{{(checkInOut.length==0) ? 'Check Out': (checkInOut[0].status=='Checked In' ? 'Check Out':'Check In')}}</button>
+        </div>
         
         <div class="modal fade" id="checkInOut" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle" aria-hidden="true">
           <div class="modal-dialog" role="document">
@@ -152,27 +221,27 @@
                 <form id="checkForm">
                   <label>Employee<span class="text-danger">*</span></label>
                   <!-- <input type="text"  #employeeName> -->
-                  <select  id="technician"  #employeeName *ngIf="userRole.toLowerCase()=='admin'">
-                  
-                    <option value="{{technician.firstName}}  {{technician.lastName}}" *ngFor="let technician of technicalUserList">{{technician.firstName}} {{technician.lastName}}</option>
+                  <select  id="technician"   *ngIf="userRole.toLowerCase()=='admin'" (change)="onTechnicianChange($event)" #empName>
+                    <option  value="{{username}}" >{{username}}</option>
+                    <option value="{{technician.firstName}} {{technician.lastName}}" *ngFor="let technician of technicalUserList">{{technician.firstName}} {{technician.lastName}}</option>
                     
                   </select>
-                  <select id="technician" #employeeName [disabled]="userRole.toLowerCase()!= 'admin'" *ngIf="userRole.toLowerCase()!='admin'">
+                  <select id="technician"  [disabled]="userRole.toLowerCase()!= 'admin'" *ngIf="userRole.toLowerCase()!='admin'" #empName>
                     <option
                       
                       [value]="username">
                       {{ username}}
                     </option>
                   </select>
-                  <!-- <input type="text"  id="technician"  #employeeName> -->
+                  <!-- <input type="text"  id="technician"  #empName> -->
                   <p><label>Notes<span class="text-danger">*</span></label></p>
                   <textarea rows="4" cols="61" id="textArea" #notes placeholder="Write Your Notes Here!!" style="border-radius: 5px; border: 3px solid #aab1b8;"></textarea><br>
                   <label>Location</label>
                   <input type="text" #location>
                   <div class="d-flex justify-content-around">
                   
-                  <button class="btn btn-light" (click)="closeBox3.click()" (click)="employeeName.value=''" (click)="notes.value=''" (click)="location.value=''">Cancel</button>
-                  <button class="btn btn-primary" (click)="CheckInOutSubmit(employeeName.value,notes.value,location.value)" (click)="closeBox3.click()" (click)="employeeName.value=''" (click)="notes.value=''" (click)="location.value=''">Submit</button>
+                  <button class="btn btn-light" (click)="closeBox3.click()" (click)="empName.value=''" (click)="notes.value=''" (click)="location.value=''">Cancel</button>
+                  <button class="btn btn-primary"  (click)="handleSubmit(empName?.value, notes?.value, location?.value)" (click)="closeBox3.click()" >Submit</button>
                  </div>  
                 </form>
       
@@ -195,7 +264,7 @@
                 </tr>
           </thead>
           <tbody>
-              <tr *ngFor="let item of checkInOut[0].detailsList">
+              <tr *ngFor="let item of checkInOut[0]?.detailsList">
                  
                   <td>{{item.status}}</td>
                  
@@ -351,6 +420,49 @@
        
        
       </div>
+        
+      </div>
+    </div>
+
+    <div class="card mt-2" *ngIf="currOption==6">
+      <!-- <h1 style="display: flex; justify-content: center; margin-top: 10px;">Custom Fields</h1> -->
+      <div class="card-body">
+        <button class="btn btn-primary" style="float: right; margin: 5px;" data-target="#inspection-popup" data-toggle="modal">+Inspection</button>
+        <table class="table" id="asset-detial table" >
+          <thead class="table-dark">
+              <tr >
+                 
+                  
+                  <th scope="col">Date</th>
+                 
+                  <th scope="col">Inspection Template</th>
+                  <th scope="col">Performed By</th>
+                  <th scope="col">Notes</th>
+                  <th> </th>
+                 
+   
+                </tr>
+          </thead>
+          <tbody>
+              <tr *ngFor="let instance of allInspectionInstance" (click)="selectedInspectionInstanceFunc(instance)">
+                 
+                  <td>{{instance.date| date: 'yyyy-MM-dd HH:mm:ss'}}</td>
+                 
+                  <td>{{ instance.assetCategoryInspectionName  }}
+                  </td>
+                  <td>{{instance.actionPerformedBy|titlecase}}</td>
+                  <td>{{instance.notes|titlecase}}</td>
+                  <td><i class="bi bi-eye" data-target="#inspection-view-popup" data-toggle="modal"></i></td>
+                  
+                  
+                  
+                  
+                </tr>
+               
+          </tbody>
+        </table>
+        
+      
         
       </div>
     </div>
@@ -539,6 +651,180 @@
         
        
       </div>
+    </div>
+  </div>
+</div>
+
+<!--Inspection Add PopUp-->
+
+<div class="modal fade" id="inspection-popup" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header" style="padding: 13px 15px;">
+        <h2 class="modal-title" style="margin:0; display: flex; justify-content: center;" id="exampleModalLongTitle">Add Inspection</h2>
+        <button type="button" class="close ms-auto" data-dismiss="modal" aria-label="Close" style="border-radius: 10px; border: 1px solid #c0c0c0;--bs-btn-bg: white" #closeBox>
+          <i class="bi bi-x-lg"></i>
+        </button>
+      </div>
+      <!-- <div class="d-flex justify-content-center"> -->
+        <div class="modal-body">
+          <select  id="inspection" [(ngModel)]="currentInspection" (change)="inspectionChanged()">
+            <!-- <option value="none">None</option> -->
+            <option [ngValue]="inspection" *ngFor="let inspection of allInspection">{{inspection.name}}</option>
+            
+          </select>
+          <div *ngIf="currentInspection">
+            <table class="table" id="asset-detial table" >
+              <thead class="table-dark text-center">
+                  <tr >
+                     
+                      
+                      <th scope="col">#Step</th>
+                     
+                      <th scope="col">Name</th>
+                      <th scope="col">Value</th>
+                     
+       
+                    </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let step of currentInspection.steps; let i = index" style="height:50px">
+                  <td>{{ step.stepNumber + 1 }}</td>
+                  <td>{{ step.name }}</td>
+                  <td>
+                    <ng-container *ngIf="step.type === 'CHECKBOX'; else elseBlock">
+                      
+                      <!-- <input
+                        type="checkbox"
+                        [checked]="inspectionInstance.steps[i]?.value"
+                        (change)="handleStepCheckox($event,i,step.type)"> -->
+
+                        <mat-checkbox  [color]="checkBoxColor"  (change)="handleStepCheckox($event.checked,i,step.type)" ></mat-checkbox>
+
+                    </ng-container>
+                    
+                    <ng-template #elseBlock>
+                      <input 
+                      [type]="step.type || 'TEXT'" 
+                     
+                     
+                      (change)="handleStepChange($event, i, step.type)"
+                    />
+                    </ng-template>
+                    
+                  </td>
+                </tr>
+                
+                
+                   
+              </tbody>
+            </table>
+            Notes<input type="text" (change)="addNote($event)">
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+          <button type="button" class="btn btn-primary" (click)="saveInpectionValue()" (click)="closeBox.click()">Save changes</button>
+        </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal fade" id="inspection-view-popup" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header" style="padding: 13px 15px;">
+        <h2 class="modal-title" style="margin:0; display: flex; justify-content: center;" id="exampleModalLongTitle">{{selectedInspectionInstance?.assetCategoryInspectionName }} Inspection Steps</h2>
+        <!-- <button type="button" class="close ms-auto" data-dismiss="modal" aria-label="Close" #closeBox>
+          <span aria-hidden="true">&times;</span>
+        </button> -->
+
+        <button type="button" class="btn btn-light btn-sm ms-auto" data-dismiss="modal" aria-label="Close" style="border-radius: 10px; border: 1px solid #c0c0c0;--bs-btn-bg: white" #closeBox>
+          <!-- <span aria-hidden="true">&times;</span> -->
+          <i class="bi bi-x-lg"></i>
+        </button>
+      </div>
+      <!-- <div class="d-flex justify-content-center"> -->
+        <div class="modal-body">
+          <!-- <select  id="inspection" [(ngModel)]="currentInspection" (change)="inspectionChanged()">
+            <option [ngValue]="inspection" *ngFor="let inspection of allInspection">{{inspection.name}}</option>
+            
+          </select> -->
+          <div >
+            <table class="table" id="asset-detial table" >
+              <thead class="table-dark text-center">
+                  <tr >
+                     
+                      
+                      <th scope="col">#Step</th>
+                     
+                      <th scope="col">Name</th>
+                      <th scope="col">Value</th>
+                     
+       
+                    </tr>
+              </thead>
+              <tbody>
+                <!-- <tr *ngFor="let step of selectedInspectionInstance?.stepValues; let i = index" style="height:50px">
+                  <td>{{ ParseInt(step.inspectionStepId) + 1 }}</td>
+
+                  <td>{{ step.name }}</td>
+                  <td>
+                    <ng-container *ngIf="step.type === 'CHECKBOX'; else elseBlock">
+                      
+                     
+
+                        <mat-checkbox  [color]="checkBoxColor"   [checked]="step.value" [ariaDisabled]="true" ></mat-checkbox>
+
+                    </ng-container>
+                    
+                    <ng-template #elseBlock>
+                      <input 
+                      [type]="step.type || 'TEXT'"                      
+                      [value]="step.value"
+                      [disabled]="true"
+                    />
+                    </ng-template>
+                    
+                  </td>
+                </tr> -->
+                
+                
+                <tr *ngFor="let step of selectedInspectionInstance?.stepValues; let i = index" style="height:50px">
+                  <td>{{ ParseInt(step.inspectionStepId) + 1 }}</td>
+                
+                  <td>{{ step.name }}</td>
+                
+                  <td>
+                    <ng-container *ngIf="step.type === 'CHECKBOX'; else elseBlock">
+                      <mat-checkbox 
+                        [color]="checkBoxColor" 
+                        [(ngModel)]="step.value">
+                      </mat-checkbox>
+                    </ng-container>
+                
+                    <ng-template #elseBlock>
+                      <input 
+                        [type]="step.type || 'text'"                      
+                        [(ngModel)]="step.value"
+                      />
+                    </ng-template>
+                  </td>
+                </tr>
+                
+              </tbody>
+            </table>
+            <!-- Notes<input type="text" [value]="selectedInspectionInstance?.notes"  [disabled]="true"> -->
+            <div *ngIf="selectedInspectionInstance">
+              Notes: <input type="text" [(ngModel)]="selectedInspectionInstance.notes">
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-primary" (click)="updateInspectionInstance()" data-dismiss="modal">Save</button>
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+        </div>
+        
     </div>
   </div>
 </div>

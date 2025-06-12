@@ -1,4 +1,6 @@
 export class RoleAndPermission{
+    _id!: string; // <-- Add this line
+    id!:string;
     name!:string;
     assets!:string;
 	customers!:string;

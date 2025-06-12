@@ -43,6 +43,8 @@
         <div class="card team-earnings">
           <h2>Team Earnings</h2>
           <p>In this section, you can find out the earnings of your team for a certain period of time.</p>
+          
+          
           <div class="chart-controls d-flex justify-content-around" >
             <button class="btn" [ngClass]="{'active':(earn_period=='week')}" (click)="updateEarnPeriod('week')">Week</button>
             <button class="btn" [ngClass]="{'active':(earn_period=='month')}" (click)="updateEarnPeriod('month')">Month</button>
@@ -50,6 +52,18 @@
           </div>
           <!-- Chart placeholder -->
           <div class="chart">[Chart goes here]</div>
+     
+          <div style="display: block; width: 400px;">
+         
+
+            <canvas baseChart
+                    [data]="donutChartData"
+                    [labels]="donutChartLabels"
+                    [type]="donutChartType"
+                    [options]="chartOptions">
+            </canvas>
+          </div>
+          
         </div>
   
         <!-- Task List -->

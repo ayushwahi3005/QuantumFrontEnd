@@ -54,17 +54,14 @@ export class CompanyCustomerDetailsPreviewService {
   }
 
   download(id:string):Observable<any>{
-    const headers = new HttpHeaders({
-      'spring.cloud.function.definition': 'download'
-    });
-    return this.httpClient.post("myCustomer/getFile/download"+id,{
+    return this.httpClient.get(this.companyCustomerEndpoint+"getFile/download/"+id,{
       headers:this.headers,
       responseType: 'blob'
     });
   }
   deleteFile(id:string):Observable<any>{
    
-    return this.httpClient.post("myCustomer/deleteFile",id,{headers:this.headers});
+    return this.httpClient.delete(this.companyCustomerEndpoint+"deleteFile/"+id,{headers:this.headers});
   }
   // addCompanyCustomerFile(file:any,companyId:any):Observable<any>{
   //   let myHeaders = new HttpHeaders({

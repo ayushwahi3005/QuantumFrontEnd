@@ -42,11 +42,21 @@ export class InvitationComponent {
   })
   this.invitaionService.getUser(this.companyId,this.token).subscribe((data)=>{
     this.user=data as User;
+    // console.log(data)
+    for (const [key, value] of Object.entries(data)) {
+     
+      if (key === 'role') {
+        this.user.role = value.name;
+        console.log(value); // Output: 'assets'
+        break;
+      }
+    }
     // this.checkAccount=this.authService.checkAccountExistence(this.user?.email);
     // this.authService.checkAccount(this.user?.email).then((data:boolean)=>{
     //   this.authService.resetPassword(this.user?.email);
     // })
     // console.log(this.checkAccount);
+    // this.user.role=data.role.name;
     console.log(this.user)
   },
   (err)=>{

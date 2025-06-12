@@ -28,7 +28,7 @@ export class RoleAndPermissionService {
     return this.httpClient.get(this.endpoint+'customer/countByRole/'+id+'/'+name,{headers:this.headers});
   }
   deleteRoleAndPermission(id:string):Observable<any>{
-    return this.httpClient.delete(this.endpoint+'customer/roleAndPermission/delete/'+id,{headers:this.headers});
+    return this.httpClient.delete(this.endpoint+'customer/roleAndPermission/'+id,{headers:this.headers});
   }
 
 }

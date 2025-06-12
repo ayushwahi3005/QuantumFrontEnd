@@ -625,6 +625,15 @@ select{
 #asset-table tbody tr {
   cursor: pointer; /* Ensures the cursor is always a pointer over the row */
 }
+.scrollable-dropdown {
+  max-height: 200px; /* adjust height as needed for ~5 list items */
+  overflow-y: auto;
+}
+
+.dropdown-toggle-arrow i {
+  font-size: small;
+  color: #7b7c7e;
+}
 
 /* #asset-table tbody tr td {
   pointer-events: all;

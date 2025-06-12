@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, Output, ViewChild } from '@angular/core';
+import { Component, ElementRef, EventEmitter, HostListener, Input, Output, ViewChild } from '@angular/core';
 import { ActivatedRoute, Route, Router } from '@angular/router';
 import { Assets } from './assets';
 import { AssetDetailsService } from './asset-details.service';
@@ -22,6 +22,8 @@ import * as jspdf from 'jspdf';
 import html2canvas from 'html2canvas';
 import { CompanyCustomer } from './company-cutomer';
 import { CategoryName } from 'src/app/setting/asset-category/categoryName';
+import { nonWhiteSpace } from 'html2canvas/dist/types/css/syntax/parser';
+import { InspectionInstance } from './inspectionInstance';
 
 @Component({
   selector: 'app-asset-details',
@@ -30,9 +32,11 @@ import { CategoryName } from 'src/app/setting/asset-category/categoryName';
 })
 export class AssetDetailsComponent {
 
- 
+  @ViewChild('dropdownContainer', { static: false }) dropdownContainer!: ElementRef;
   @Input() assetDetails!:Assets;
   @Output() backStatus = new EventEmitter<{ show: boolean }>();
+  @ViewChild('notes') notesRef!: ElementRef;
+  @ViewChild('location') locationRef!: ElementRef;
   username:any;
   assetId:any='';
   img:string=''
@@ -80,16 +84,43 @@ export class AssetDetailsComponent {
   loading=false;
   userRole:any;
   userRoleDetails:any;
+  selectedEmpName:any;
+  allInspection:any=[]
+  allInspectionInstance:any=[]
+  currentInspection:any;
+  checkBoxColor="primary"
+  selectedInspectionInstance:any;
+  inspectionInstance: InspectionInstance = {
+    assetId: '',
+    companyId: '',
+    assetCategoryInspectionId: '',
+    assetCategoryInspectionName: '',
+    actionPerformedBy:'',
+    notes:'',
+    date:'',
+    stepValues: []
+  };
+  filteredLocationOrBinList: any=[];
+  locationWithBins:any=[];
+  dropdownOptions:any = [];
+  dropdownOpenLocation = false;
+    selectedLocation: any = null;
+    selectedLocationId:any=null;
+    loggedUser!:User;
   // username:any;
   constructor(private activatedRoute:ActivatedRoute,private assetDetailService:AssetDetailsService,private assetComponent:AssetsComponent,private datePipe: DatePipe,private router:Router){}
   ngOnInit(){
-   
+    this.loggedUser=new User();
     this.selectedCustomerId=this.assetDetails.customerId;
-    
-      console.log("NULLLLLLLLLLLLLLL")
-    
+    this.selectedLocation= this.assetDetails.location;
+
+    console.log(this.selectedEmpName)
     console.log("----//////------------>>>>>>>>"+this.assetDetails.customerId)
+    console.log(this.assetDetails);
+
+    this.currentInspection=null;
     this.username= localStorage.getItem('name')
+    this.selectedEmpName=this.username;
     this.message='';
     this.progress=20;
     this.extraFieldString=[];
@@ -119,6 +150,13 @@ export class AssetDetailsComponent {
     err=>{
       console.log(err);
     });
+    this.assetDetailService.getAllAssetInspectionInstance(this.companyId).subscribe((data)=>{
+      this.allInspectionInstance=data;
+      console.log(this.allInspectionInstance)
+    },
+    (err)=>{
+      console.log(err);
+    })
     this.assetDetailService.getCompanyCustomerList(this.companyId).subscribe((data)=>{
       this.companyCustomerList=data;
       this.companyCustomerList.forEach((x)=>{
@@ -128,6 +166,12 @@ export class AssetDetailsComponent {
     },
     (err)=>{
       console.log(err);
+    })
+
+    //inspection
+    this.assetDetailService.getAllAssetInspection(this.companyId).subscribe((data)=>{
+      this.allInspection=data;
+      console.log(this.allInspection)
     })
    
     this.assetDetailService.getAssetCategory(this.companyId).subscribe((data)=>{
@@ -223,7 +267,13 @@ export class AssetDetailsComponent {
     this.assetDetailService.getTechnicalUsers(this.companyId).subscribe((data)=>{
       console.log("Userss=====>")
       this.technicalUserList=data;
+      
+      // this.loggedUser.firstName=this.username.split(' ')[0];
+      // this.loggedUser.lastName=this.username.split(' ')[1];
 
+
+      // this.technicalUserList.push(this.loggedUser);
+      
       console.log(this.technicalUserList);
     }
     ,(err)=>{
@@ -241,7 +291,42 @@ export class AssetDetailsComponent {
 
     this.qrData="assets/id?"+this.assetDetails.id;
 
+    this.assetDetailService.getAllLocationWithBin(this.companyId).subscribe((data)=>{
+      this.locationWithBins=data;
+      this.filteredLocationOrBinList = this.locationWithBins;
+
+      this.locationWithBins.forEach((loc:any) => {
+        if (loc.bins && loc.bins.length > 0) {
+          loc.bins.forEach((bin:any) => {
+            this.dropdownOptions.push({
+              label: `${loc.name} → ${bin.binNumber}`,
+              value: `bin:${bin.id}`
+            });
+          });
+        } else {
+          this.dropdownOptions.push({
+            label: loc.name,
+            value: `location:${loc.id}`
+          });
+        }
+      });
+      console.log(this.dropdownOptions)
+    },
+    (err)=>{
+      console.log(err);
+    });
+
   }
+
+  @HostListener('document:click', ['$event'])
+handleClickOutside(event: MouseEvent) {
+  // console.log("clicked outside")
+  const clickedInside = this.dropdownContainer.nativeElement.contains(event.target);
+  if (!clickedInside) {
+    // this.dropdownOpenLocation = false; // ✅ Close the dropdown
+    this.dropdownOpenLocation=false;
+  }
+}
   show(){
     console.log(this.extraFieldString)
   }
@@ -258,6 +343,7 @@ export class AssetDetailsComponent {
     },
     (err)=>{
       console.log(err);
+      this.triggerAlert(err.error.errorMessage,"danger");
     },
     ()=>{
       this.assetComponent.ngOnInit();
@@ -381,6 +467,7 @@ export class AssetDetailsComponent {
       },
       (err)=>{
         console.log(err);
+        this.triggerAlert(err.error.errorMessage,"danger");
       })
       })
 
@@ -394,19 +481,21 @@ export class AssetDetailsComponent {
       }
       
       console.log(this.assetDetails);
+      this.assetDetails.location=this.selectedLocationId;
     this.assetDetailService.updateAsset(this.assetDetails).subscribe((data)=>{
       console.log(data);
-      
+      this.triggerAlert("Successfully Updated","success");
+      this.router.navigate(['/assets/'+this.assetDetails.id])
     },
     (err)=>{
-      console.log(err);
+      console.log(err.error.errorMessage);
+      this.triggerAlert(err.error.errorMessage,"danger");
     })
 
 
     
   
-    this.triggerAlert("Successfully Updated","success");
-    this.router.navigate(['/assets/'+this.assetDetails.id])
+   
     
   }
   
@@ -418,6 +507,7 @@ export class AssetDetailsComponent {
     },
     (err)=>{
       console.log(err);
+      this.triggerAlert(err.error.errorMessage,"danger");
     }
     ,()=>{
      console.log(this.img);
@@ -452,9 +542,11 @@ export class AssetDetailsComponent {
         }
       },
       err => {
+        this.currentFile= null;
         this.progress = 0;
         this.message = 'Could not upload the file!';
         console.log(this.message);
+        this.triggerAlert(err.error.errorMessage,"danger");
       }
     );
     
@@ -512,6 +604,7 @@ export class AssetDetailsComponent {
     },
     (err)=>{
       console.log(err);
+      this.triggerAlert(err.error.errorMessage,"danger");
     })
   }
   deleteFile(){
@@ -520,6 +613,7 @@ export class AssetDetailsComponent {
     },
     (err)=>{
       console.log(err);
+      this.triggerAlert(err.error.errorMessage,"danger");
     },
     ()=>{
       this.ngOnInit();
@@ -545,6 +639,7 @@ export class AssetDetailsComponent {
       },
       (err)=>{
         console.log(err);
+        this.triggerAlert(err.error.errorMessage,"danger");
         
       },
       ()=>{
@@ -573,7 +668,35 @@ export class AssetDetailsComponent {
     console.log(option)
     this.currOption=option;
   }
+  onTechnicianChange(data:any){
+    console.log(data.target.value)
+    this.selectedEmpName = data.target.value;
+  }
+  handleSubmit(employee: any, notes: string, location: string) {
+    console.log("emp=> "+this.selectedEmpName)
+    console.log("emp=> "+employee)
+    if(this.selectedEmpName==null||this.selectedEmpName==''){
+      this.CheckInOutSubmit(employee, notes, location);
+    }
+    else{
+      this.CheckInOutSubmit(this.selectedEmpName, notes, location);
+    }
+   
+   
+    if (employee) employee = '';
+    this.selectedEmpName=this.username;
+    if (notes) notes = '';
+    if (location) location = '';
+     this.notesRef.nativeElement.value = '';
+    this.locationRef.nativeElement.value = '';
+  }
+  
   CheckInOutSubmit(employee:any,notes:string,location:string){
+    console.log(employee+ " "+notes)
+    if(employee==null&&this.userRole.toLowerCase()!='admin'){
+      
+      employee=this.username
+    }
     let obj={};
     var today=new Date();
     if(employee==null||employee==''||notes==null||notes==''){
@@ -627,6 +750,7 @@ export class AssetDetailsComponent {
       },
       (err)=>{
         console.log(err);
+        this.triggerAlert(err.error.errorMessage,"danger");
   
       },
       ()=>{
@@ -653,6 +777,7 @@ export class AssetDetailsComponent {
     },
     (err)=>{
       console.log(err);
+      this.triggerAlert(err.error.errorMessage,"danger");
     },
     ()=>{
       this.ngOnInit();
@@ -708,6 +833,139 @@ export class AssetDetailsComponent {
       console.log("clicked")
       this.router.navigate(['/assets/'+this.assetId])
     }
+
+    inspectionChanged(){
+      console.log(this.currentInspection)
+      console.log(this.assetId)
+      
+      this.inspectionInstance.assetId = this.assetId;
+      this.inspectionInstance.companyId = this.companyId;
+      this.inspectionInstance.assetCategoryInspectionId = this.currentInspection.id;
+      this.inspectionInstance.assetCategoryInspectionName = this.currentInspection.name;
+
+      let steps: any[] = [];
+
+      this.currentInspection.steps.forEach((step: any,ind:any) => {
+            let obj: any = {
+              name: step.name,
+              inspectionStepId: ind,
+              value: step.type=='CHECKBOX'?false:'',
+              type:step.type
+            };
+            steps.push(obj);
+          });
+
+      this.inspectionInstance.stepValues = steps;
+    }
+    saveInpectionValue(){
+      console.log(this.inspectionInstance)
+      this.inspectionInstance.actionPerformedBy=this.username;
+      const currDateTime=new Date();
+
+      this.inspectionInstance.date=currDateTime.toLocaleString();
+      console.log(this.inspectionInstance)
+      this.assetDetailService.addAssetInspection(this.inspectionInstance).subscribe((data)=>{
+        console.log("Inspection Saved"+data);
+        this.triggerAlert("Inspection saved sucessfully","success");
+      },
+      (err)=>{
+        console.log(err);
+        this.triggerAlert(err.error.errorMessage,"danger");
+      },
+      ()=>{
+        this.ngOnInit();
+      })
+    }
+    handleStepChange(event: any, index: number, type: string): void {
+      if (!this.inspectionInstance.stepValues[index]) return;
+      console.log(type)
+      if (type === 'checkbox') {
+        // For checkbox, use `event.target.checked`
+        console.log(event.target.checked)
+        this.inspectionInstance.stepValues[index].value = event.target.checked ? 'checked' : '';
+      } else {
+        // For text, number, etc., use `event.target.value`
+        this.inspectionInstance.stepValues[index].value = event.target.value;
+      }
+    }
+    handleStepCheckox(isChecked:any, index: number, type: string){
+        
+        this.inspectionInstance.stepValues[index].value = isChecked
+     
+    }
+    addNote(event:any){
+      this.inspectionInstance.notes=event.target.value;
+    }
+    selectedInspectionInstanceFunc(data:InspectionInstance){
+      console.log(data)
+      this.selectedInspectionInstance=data;
+      this.inspectionInstance=data;
+      this.inspectionInstance.assetId=this.assetId;
+      this.inspectionInstance.companyId=this.companyId;
+      this.inspectionInstance.actionPerformedBy=this.username;
+
+      this.selectedInspectionInstance.stepValues
+      ?.forEach((step: { type: string; value: string | boolean; }) => {
+   
+        if (step.type === 'CHECKBOX') {
+          step.value = step.value === 'true'?true:false; // convert to boolean
+        }
+      });
+      console.log(this.selectedInspectionInstance)
+
+    }
+    ParseInt(val:string):number{
+      return parseInt(val);
+    }
+    updateInspectionInstance(){
+      console.log(this.selectedInspectionInstance)
+      this.assetDetailService.updateAssetInspection(this.selectedInspectionInstance).subscribe((data)=>{
+        console.log("Updated Inspection"+data);
+        this.triggerAlert("Inspection updated sucessfully","success");
+      },
+      (err)=>{
+        console.log(err);
+        this.triggerAlert(err.error.errorMessage,"danger");
+      },
+      ()=>{
+        this.ngOnInit();
+      })
+    }
+
+    
+    toggleDropdownLocation() {
+      console.log(this.filteredLocationOrBinList)
+      this.dropdownOpenLocation = !this.dropdownOpenLocation;
+    }
   
+    selectLocationOrBin(locationOrBinId:any,locationOrBin: any) {
+      console.log(locationOrBin)
+      this.selectedLocation = locationOrBin;
+      this.selectedLocationId = locationOrBinId;
+      console.log(this.selectedLocationId)
+      // this.selectedCustomerId=customer.companyCustomerId;
+      this.dropdownOpenLocation = false;
+    }
+    // selectLocationOrBinId(locationOrBinId: any) {
+    //   // console.log(locationOrBinId)
+    //   this.selectedLocationId = locationOrBinId;
+    //   // this.selectedCustomerId=customer.companyCustomerId;
+    //   this.dropdownOpenLocation = false;
+    // }
+    filterLocations(event: Event) {
+      const searchValue = (event.target as HTMLInputElement).value.toLowerCase();
+      console.log("searchValue"+searchValue)
+      this.filteredLocationOrBinList = this.locationWithBins.filter((loc: any) => {
+        const locationMatch = loc.name?.toLowerCase().includes(searchValue);
+      
+        const binMatch = loc.bins?.some((bin: any) =>
+          bin.binNumber?.toLowerCase().includes(searchValue)
+        );
+      
+        return locationMatch || binMatch;
+      });
+      
+    }
+    
 }
 

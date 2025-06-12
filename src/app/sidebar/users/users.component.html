@@ -60,10 +60,11 @@
         <td>{{item.firstName}} {{item.lastName}}</td>
         <td>{{item.title}}</td>
         <td>{{item.email}}</td>
-        <td>{{item.role}}</td>
+        <td>{{item.role?.name}}</td>
         <td *ngIf="lockedInfo.get(item.email)==true; else invitedBlock">Locked <i class="bi bi-lock"></i></td>
         <ng-template #invitedBlock>
-        <td *ngIf="registredUsersMap.get(item.email)==true">Active</td>
+        <td *ngIf="registredUsersMap.get(item.email)==true&&item.status=='active'">Active</td>
+        <td *ngIf="registredUsersMap.get(item.email)==true&&item.status=='inActive'">In Active</td>
         <td *ngIf="registredUsersMap.get(item.email)==undefined">Invited</td >  
         </ng-template>
         <td>
@@ -75,11 +76,14 @@
           <mat-menu #menu="matMenu">
             <button mat-menu-item [disabled]="registredUsersMap.get(item.email)==true" (click)="resendMail(item.email)">Resend Invite</button>
             <button mat-menu-item [disabled]="lockedInfo.get(item.email)!=true" (click)="unlockAccount(item.email)">Unlock User</button>
-            <button mat-menu-item [disabled]="this?.role !== 'ADMIN' || !(this?.detailedRole === 'edit' || this?.detailedRole === 'full')" (click)="selectEditUserFunc(item.email)">
+            <!-- <button mat-menu-item [disabled]="registredUsersMap.get(item.email)==undefined" (click)="makeInActive(item)"><span class="text-danger" >In Active</span></button> -->
+            <button mat-menu-item *ngIf="registredUsersMap.get(item.email)==true&&item.status=='active'" (click)="makeInActive(item)"><span class="text-danger" >In Active</span></button>
+            <button mat-menu-item *ngIf="registredUsersMap.get(item.email)==true&&item.status=='inActive'" (click)="makeActive(item)"><span class="text-success" >Active</span></button>
+            <button mat-menu-item [disabled]="this?.role != 'ADMIN' && !(this?.detailedRole === 'edit' || this?.detailedRole === 'full')" (click)="selectEditUserFunc(item.email)">
               <span data-toggle="modal" data-target="#editpopup">Edit</span>
             </button>
             
-            <button mat-menu-item (click)="selectDeleteUserFunc(item.email)"><span class="text-danger" data-toggle="modal" data-target="#deletepopup">Delete</span></button>
+            <button mat-menu-item [disabled]="registredUsersMap.get(item.email)==true" (click)="selectDeleteUserFunc(item.email)" ><span class="text-danger" data-toggle="modal" data-target="#deletepopup">Delete</span></button>
           </mat-menu>
         </td>
         
@@ -102,8 +106,10 @@
       <div class="modal-content">
         <div class="modal-header">
           <h2 class="modal-title">Edit User</h2>
-          <button type="button" class="close  ms-auto" data-dismiss="modal" aria-label="Close" #closeBox>
-            <span aria-hidden="true">&times;</span>
+         
+          <button type="button" class="btn btn-light btn-sm ms-auto" data-dismiss="modal" aria-label="Close" style="border-radius: 10px; border: 1px solid #c0c0c0;--bs-btn-bg: white" #closeBox>
+            <!-- <span aria-hidden="true">&times;</span> -->
+            <i class="bi bi-x-lg"></i>
           </button>
         </div>
         <div class="modal-body">
@@ -131,20 +137,56 @@
               <label>Job Title</label><br>
                 <input type="text" style="width: 97%" class="form-control"  formControlName="jobTitle" [ngModel]="selectEditUser?.title">
             </div>
-            
             <div >
+              <label style="margin: 10px 0px;">Status<span  class="text-danger">*</span></label><br>
+               
+                <select class="form-select" class="form-control"  formControlName="status" style="width: 97%" [ngModel]="selectEditUser?.status" #role>
+                 
+                 
+                  
+                  <option value="active">Active</option>
+                  <option value="inActive">In Active</option>
+                 
+                  
+                 
+                </select>
+            </div>
+            
+            <!-- <div >
               <label style="margin: 10px 0px;">Role<span  class="text-danger">*</span></label><br>
                
                 <select class="form-select" class="form-control"  formControlName="role" style="width: 97%" [ngModel]="selectEditUser?.role" #role>
                  
                  
                   
-                  <option value="{{role?.name}}" *ngFor="let role of roleAndPermissionList">{{role?.name}}</option>
+                  <option value="{{role?.id}}" *ngFor="let role of roleAndPermissionList">{{role?.name}}</option>
                  
                   
                  
                 </select>
+            </div> -->
+            <div>
+              <label style="margin: 10px 0px;">Role<span class="text-danger">*</span></label><br>
+            
+              <select class="form-select" formControlName="role" style="width: 97%" 
+                      [ngModel]="selectEditUser?.role?.oid" (change)="updateRoleChange($event.target.value)" #role >
+                <option *ngFor="let role of roleAndPermissionList" [value]="role.id">
+                  {{ role.name }}
+                </option>
+              </select>
             </div>
+            <!-- <div>
+              <label style="margin: 10px 0px;">Role <span class="text-danger">*</span></label><br>
+            
+              <select class="form-select" formControlName="role" style="width: 97%">
+                <option *ngFor="let role of roleAndPermissionList" [value]="role.id">
+                  {{ role.name }}
+                </option>
+              </select>
+            </div> -->
+            
+            
+            
            <div style="display: flex; justify-content: center; margin: 10px 0px;">
             <button type="submit" class="btn btn-primary" [disabled]="editUserForm.invalid"  (click)="closeBox.click()">Update</button>
           </div>
@@ -218,8 +260,10 @@
       <div class="modal-content">
         <div class="modal-header" style="padding: 13px 15px">
           <h2 class="modal-title" style="margin:0; display: flex; justify-content: center;">Create User</h2>
-          <button type="button" class="close  ms-auto" data-dismiss="modal" aria-label="Close" #closeBox>
-            <span aria-hidden="true">&times;</span>
+          
+          <button type="button" class="btn btn-light btn-sm ms-auto" data-dismiss="modal" aria-label="Close" style="border-radius: 10px; border: 1px solid #c0c0c0;--bs-btn-bg: white" #closeBoxInvitePop>
+            <!-- <span aria-hidden="true">&times;</span> -->
+            <i class="bi bi-x-lg"></i>
           </button>
         </div>
         <div class="modal-body">
@@ -253,16 +297,16 @@
                
                 <select class="form-select form-control"  formControlName="role" style="width: 100%; margin-top: 10px; border-radius: 5px; height: 35px; border: 1px solid #c0c0c0" #role>
                  
-                  <option value="ADMIN" selected>Administrator</option>
+                  <!-- <option value="ADMIN" selected>Administrator</option> -->
                   
-                  <option value="{{role.name}}" *ngFor="let role of roleAndPermissionList">{{role.name}}</option>
+                  <option value="{{role.id}}" *ngFor="let role of roleAndPermissionList">{{role.name}}</option>
                  
                 </select>
             </div>
            <div style="display: flex; justify-content: center; margin-top: 15px;">
             
-            <button class="btn btn-light" data-dismiss="modal" aria-label="Close" (click)="closeBox.click()" style="margin: 10px; width: 100px; margin-right: 30px; border: 1px solid #c0c0c0" >Cancel</button>
-            <button type="submit" class="btn btn-primary" [disabled]="userForm.invalid" (click)="closeBox.click()" style="margin: 10px; width: 100px">Invite</button>
+            <button class="btn btn-light" data-dismiss="modal" aria-label="Close"  style="margin: 10px; width: 100px; margin-right: 30px; border: 1px solid #c0c0c0" >Cancel</button>
+            <button type="submit" class="btn btn-primary" [disabled]="userForm.invalid" (click)="closeBoxInvitePop.click()" style="margin: 10px; width: 100px">Invite</button>
           </div>
           </form>
         </div>
@@ -299,8 +343,10 @@
     <div class="modal-content">
       <div class="modal-header">
         <h2 class="modal-title" id="exampleModalLongTitle">Do you want to delete this user !!</h2>
-        <button type="button" class="close  ms-auto" data-dismiss="modal" aria-label="Close" #closeBox2>
-          <span aria-hidden="true">&times;</span>
+       
+        <button type="button" class="btn btn-light btn-sm ms-auto" data-dismiss="modal" aria-label="Close" style="border-radius: 10px; border: 1px solid #c0c0c0;--bs-btn-bg: white" #closeBox2>
+          <!-- <span aria-hidden="true">&times;</span> -->
+          <i class="bi bi-x-lg"></i>
         </button>
       </div>
       <div class="d-flex justify-content-center">
@@ -319,8 +365,10 @@
     <div class="modal-content">
       <div class="modal-header">
         <h2 class="modal-title" id="exampleModalLongTitle">All Fields</h2>
-        <button type="button" class="close  ms-auto" data-dismiss="modal" aria-label="Close" #closeBox4>
-          <span aria-hidden="true">&times;</span>
+        
+        <button type="button" class="btn btn-light btn-sm ms-auto" data-dismiss="modal" aria-label="Close" style="border-radius: 10px; border: 1px solid #c0c0c0;--bs-btn-bg: white" #closeBox4>
+          <!-- <span aria-hidden="true">&times;</span> -->
+          <i class="bi bi-x-lg"></i>
         </button>
       </div>
       <div class="modal-body">

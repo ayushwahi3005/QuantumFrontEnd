@@ -111,8 +111,10 @@ export class UsersComponent {
       
       this.mandatoryFieldFilterList.set(x,true);
     });
+    this.selectedExtraColumsMap = new Map();
     if(this.savedExtraColumn!=null){
       this.selectedExtraColums=JSON.parse(this.savedExtraColumn);
+      
       this.selectedExtraColums.forEach((data)=>{
         this.selectedExtraColumsMap.set(data,true);
       })
@@ -122,6 +124,10 @@ export class UsersComponent {
     // })
     this.userService.getRoleAndPermission(this.companyId).subscribe((data)=>{
       this.roleAndPermissionList=data;
+      this.roleAndPermissionList = this.roleAndPermissionList.map((item: any) => ({
+        ...item,
+        _id: item.id
+      }));
       console.log(this.roleAndPermissionList)
     },
   err=>{
@@ -145,11 +151,14 @@ export class UsersComponent {
       phoneNumber:[''],
       role:['',Validators.required]
     });
+
     this.editUserForm=this.formBuilder.group({
       
       firstName:['',Validators.required],
       lastName:['',Validators.required],
+      status: [''],
       jobTitle:[''],
+     
       phoneNumber:[''],
       role:['',Validators.required]
     });
@@ -175,6 +184,7 @@ export class UsersComponent {
     
     this.userService.getUsers(this.companyId).subscribe((data)=>{
       this.userList=data;
+      console.log(this.userList);
       this.searchedUser=this.userList;
       
     },
@@ -218,74 +228,74 @@ export class UsersComponent {
       console.log("//////////-------------->"+actionCode)
     });
 
-    this.userService.getAllMandatoryFields(this.companyId).subscribe((data)=>{
-      this.mandatoryFieldsList=data;
-      console.log("mandatory----------------------->",this.mandatoryFieldsList)
-      if(this.mandatoryFieldsList.length>0){
-      this.mandatoryFieldsList?.forEach((x)=>{
-        this.mandatoryFieldsMap.set(x.name,x.mandatory);
-      })
-    }
-    },
-    (err)=>{
-      console.log(err);
-    })
-    this.userService.getAllShowFields(this.companyId).subscribe((data)=>{
-      this.showFieldsList=data;
-      console.log("show----------------------->",this.showFieldsList)
-      this.selectedFilterList=[]
-      if(this.showFieldsList.length>0){
-      this.showFieldsList?.forEach((x)=>{
-        this.filterList.push(x.name);
-        this.selectedFilterList.push(x.name);
-        // this.filterForm.addControl(x.name,this.formBuilder.control('',Validators.required));
-        this.showFieldsMap.set(x.name,x.show);
-        if(x.show==true){
-          this.extraFieldFilterList.set(x.name,x.type);
-        }
-      })
-    }
+    // this.userService.getAllMandatoryFields(this.companyId).subscribe((data)=>{
+    //   this.mandatoryFieldsList=data;
+    //   console.log("mandatory----------------------->",this.mandatoryFieldsList)
+    //   if(this.mandatoryFieldsList.length>0){
+    //   this.mandatoryFieldsList?.forEach((x)=>{
+    //     this.mandatoryFieldsMap.set(x.name,x.mandatory);
+    //   })
+    // }
+    // },
+    // (err)=>{
+    //   console.log(err);
+    // })
+    // this.userService.getAllShowFields(this.companyId).subscribe((data)=>{
+    //   this.showFieldsList=data;
+    //   console.log("show----------------------->",this.showFieldsList)
+    //   this.selectedFilterList=[]
+    //   if(this.showFieldsList.length>0){
+    //   this.showFieldsList?.forEach((x)=>{
+    //     this.filterList.push(x.name);
+    //     this.selectedFilterList.push(x.name);
+    //     // this.filterForm.addControl(x.name,this.formBuilder.control('',Validators.required));
+    //     this.showFieldsMap.set(x.name,x.show);
+    //     if(x.show==true){
+    //       this.extraFieldFilterList.set(x.name,x.type);
+    //     }
+    //   })
+    // }
       
-      if(this.showFieldsList!=null){
-        if(this.showFieldsList.length>0){
-      // this.showFieldsList.forEach((x)=>{
-      //   if(x.show==true)
-      //   this.assetForm.addControl(x.name,this.formBuilder.control(''));
-      // })
-    }
-    }
+    //   if(this.showFieldsList!=null){
+    //     if(this.showFieldsList.length>0){
+    //   // this.showFieldsList.forEach((x)=>{
+    //   //   if(x.show==true)
+    //   //   this.assetForm.addControl(x.name,this.formBuilder.control(''));
+    //   // })
+    // }
+    // }
     
-    },
-    (err)=>{
-      console.log(err);
-    },
-    ()=>{
-      this.userService.getExtraFieldName(this.companyId).subscribe((data)=>{
+    // },
+    // (err)=>{
+    //   console.log(err);
+    // },
+    // ()=>{
+    //   this.userService.getExtraFieldName(this.companyId).subscribe((data)=>{
       
      
-        this.extraFieldName=data;
-        let arr:string[]=[];
-      this.extraFieldName.forEach((x)=>{
+    //     this.extraFieldName=data;
+    //     let arr:string[]=[];
+    //   this.extraFieldName.forEach((x)=>{
       
-        console.log(x.name+" "+this.showFieldsMap.get(x.name))
-        this.extraFieldNameMap?.set(x.name,x);
-          if(this.showFieldsMap.get(x.name)==true){
-          arr.push(x.name);
-          }
-        })
+    //     console.log(x.name+" "+this.showFieldsMap.get(x.name))
+    //     this.extraFieldNameMap?.set(x.name,x);
+    //       if(this.showFieldsMap.get(x.name)==true){
+    //       arr.push(x.name);
+    //       }
+    //     })
      
-        this.extraFieldNameList=arr;
-        console.log(this.extraFieldNameList)
+    //     this.extraFieldNameList=arr;
+    //     console.log(this.extraFieldNameList)
         
      
        
         
         
-      },
-      (err)=>{
-        console.log(err);
-      })
-    })
+    //   },
+    //   (err)=>{
+    //     console.log(err);
+    //   })
+    // })
 
    
   }
@@ -299,23 +309,28 @@ export class UsersComponent {
   addUser(){
     console.log(this.userForm.value);
     console.log(this.companyId)
+    let role=this.roleAndPermissionList.filter((x)=> x.id==this.userForm.controls['role'].value).at(0);
     let obj={
       "firstName":this.userForm.controls['firstName'].value,
       "lastName":this.userForm.controls['lastName'].value,
       "email":this.userForm.controls['email'].value,
       "message":"Hello please go to link for registration: ",
-      "role":this.userForm.controls['role'].value,
+      "role":role?.name,
       "from":this.email
     }
+    console.log(this.userForm.controls['role'].value)
+   
     let user={
       "firstName":this.userForm.controls['firstName'].value,
       "lastName":this.userForm.controls['lastName'].value,
       "email":this.userForm.controls['email'].value,
       "companyId":this.companyId,
       "mobileNumber":this.userForm.controls['phoneNumber'].value,
-      "role":this.userForm.controls['role'].value,
+      "role":role,
       "title":this.userForm.controls['jobTitle'].value
     }
+    console.log(user)
+    
     this.userService.registerUser(user).subscribe((data)=>{
       console.log("data saved");
       this.triggerAlert("Successfully Invited","success");
@@ -374,6 +389,7 @@ export class UsersComponent {
         "from":this.email
       }
       console.log(myUser);
+      console.log(obj);
       this.userService.sendEmail(obj,this.companyId).subscribe((data)=>{
         console.log("email sent");
         this.isLoading=false;
@@ -390,6 +406,7 @@ export class UsersComponent {
     
   }
   sendMail(obj:any){
+    console.log(obj)
     this.userService.sendEmail(obj,this.companyId).subscribe((data)=>{
       console.log("email sent");
       this.ngOnInit();
@@ -456,15 +473,29 @@ export class UsersComponent {
       })
      
     }
+    updateRoleChange(selectedMongoId:any){
+      const selectedRole = this.roleAndPermissionList.find(role => role._id === selectedMongoId);
+    if (selectedRole) {
+      console.log('role.id:', selectedRole.id);
+    }
+    
+
+      console.log(selectedMongoId)
+      // console.log(data.target.value)
+    }
     updateUser(){
+      console.log(this.editUserForm.controls['role'].value)
+      let role=this.roleAndPermissionList.filter((x)=> x.id==this.editUserForm.controls['role'].value).at(0);
+      console.log(role)
       let obj={
         "firstName":this.editUserForm.controls['firstName'].value,
         "lastName":this.editUserForm.controls['lastName'].value,
         "email":this.selectEditUser.email,
         "companyId":this.companyId,
         "mobileNumber":this.editUserForm.controls['phoneNumber'].value,
-        "role":this.editUserForm.controls['role'].value,
-        "title":this.editUserForm.controls['jobTitle'].value
+        "role":role,
+        "title":this.editUserForm.controls['jobTitle'].value,
+        "status":this.editUserForm.controls['status'].value
       }
       this.userService.updaterUser(obj).subscribe((data)=>{
        console.log("User Updated")
@@ -581,6 +612,28 @@ export class UsersComponent {
           // })
           // return filterData;
         });
+      }
+      makeInActive(data:any){
+        data.status="inActive";
+        this.userService.updateStatus(data).subscribe((data)=>{
+          console.log(data);
+          this.triggerAlert(data,"success");
+        }
+        ,(err)=>{
+        console.log(err);
+        })
+
+      }
+      makeActive(data:any){
+        data.status="active";
+        this.userService.updateStatus(data).subscribe((data)=>{
+          this.triggerAlert(data,"success");
+          console.log(data);
+        }
+        ,(err)=>{
+        console.log(err);
+        })
+
       }
 
 }

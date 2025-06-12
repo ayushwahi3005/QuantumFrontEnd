@@ -24,7 +24,9 @@
           <div class="form-group">
             <mat-form-field>
             <mat-label>Password</mat-label>
-            <input matInput type="password" id="password" name="password"[(ngModel)]="password" >
+            <input matInput [type]="showPasswordType" id="password" name="password"[(ngModel)]="password" >
+            <!-- <button (click)="showPasswordFunc()">show toggle</button> -->
+            <i [class]="showPasswordIconClass" (click)="showPasswordFunc()" style="position: absolute; right: 10px"></i>
           </mat-form-field>
           </div>
          
@@ -62,16 +64,7 @@
   </div>
 
 
-  <div class="dot-spinner d-flex justify-content-center" *ngIf="loader" >
-    <div class="dot-spinner__dot"></div>
-    <div class="dot-spinner__dot"></div>
-    <div class="dot-spinner__dot"></div>
-    <div class="dot-spinner__dot"></div>
-    <div class="dot-spinner__dot"></div>
-    <div class="dot-spinner__dot"></div>
-    <div class="dot-spinner__dot"></div>
-    <div class="dot-spinner__dot"></div>
-  </div>
+
 
 
   
@@ -113,18 +106,21 @@
   <!-- </body> -->
 
 
-  <div class="dot-spinner d-flex justify-content-center" *ngIf="loader" >
-    <div class="dot-spinner__dot"></div>
-    <div class="dot-spinner__dot"></div>
-    <div class="dot-spinner__dot"></div>
-    <div class="dot-spinner__dot"></div>
-    <div class="dot-spinner__dot"></div>
-    <div class="dot-spinner__dot"></div>
-    <div class="dot-spinner__dot"></div>
-    <div class="dot-spinner__dot"></div>
+ 
 
-  </div>
-
+  </body>
+  <body *ngIf="loader">
+    <div class="dot-spinner d-flex justify-content-center"  >
+      <div class="dot-spinner__dot"></div>
+      <div class="dot-spinner__dot"></div>
+      <div class="dot-spinner__dot"></div>
+      <div class="dot-spinner__dot"></div>
+      <div class="dot-spinner__dot"></div>
+      <div class="dot-spinner__dot"></div>
+      <div class="dot-spinner__dot"></div>
+      <div class="dot-spinner__dot"></div>
+  
+    </div>
   </body>
 
 

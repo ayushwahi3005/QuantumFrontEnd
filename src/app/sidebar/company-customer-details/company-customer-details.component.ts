@@ -68,6 +68,7 @@ export class CompanyCustomerDetailsComponent {
   pageIndex:number=0;
   paginationResult!:PaginationResult;
   assets!:any[];
+  stateList=[]
   username:any;
   sideBarCurr=1
   current=1
@@ -85,17 +86,17 @@ export class CompanyCustomerDetailsComponent {
     number:3,
     name:'Inventory',
     icon:'bi bi-journal-text'
-  },
-  {
-    number:4,
-    name:'Preventive Maintainance',
-    icon:'bi bi-speedometer2'
-  },
-  {
-    number:5,
-     name:'Work Order',
-    icon:'bi bi-bookshelf'
   }
+  // {
+  //   number:4,
+  //   name:'Preventive Maintainance',
+  //   icon:'bi bi-speedometer2'
+  // },
+  // {
+  //   number:5,
+  //    name:'Work Order',
+  //   icon:'bi bi-bookshelf'
+  // }
   // {
   //   number:6,
   //   name:'People',
@@ -127,6 +128,10 @@ export class CompanyCustomerDetailsComponent {
       this.companyCustomerId=data.get('id');
       console.log("workOrderId-------------->"+this.companyCustomerId)
     });
+    this.companyCustomerDetailsService.stateList().subscribe((data)=>{
+      this.stateList=data;
+      // console.log("stateList-------->"+this.stateList)
+    })
     this.companyCustomerDetailsService.getRoleAndPermission(this.companyId,this.userRole).subscribe((data)=>{
       this.userRoleDetails=data;
       console.log(this.userRoleDetails);
@@ -153,13 +158,13 @@ export class CompanyCustomerDetailsComponent {
       });
       
  
-    this.companyCustomerDetailsService.getWorkOrderByCustomerId(this.companyCustomerId).subscribe((data)=>{
-        this.customerWorkOrderList=data;
-        console.log(this.customerWorkOrderList)
-      },
-      (err)=>{
-        console.log(err);
-      })
+      // this.companyCustomerDetailsService.getWorkOrderByCustomerId(this.companyCustomerId).subscribe((data)=>{
+      //   this.customerWorkOrderList=data;
+      //   console.log(this.customerWorkOrderList)
+      // },
+      // (err)=>{
+      //   console.log(err);
+      // })
     
     },
     (err)=>{
@@ -395,33 +400,34 @@ export class CompanyCustomerDetailsComponent {
   }
   if(this.companyCustomer.status=="inActive"){
     console.log("prompt")
-    if(confirm("Are you sure to make it inactive. All assets and workOrders associated with it will be changed to inactive ")){
-      this.companyCustomerDetailsService.closeWorkOrders(this.companyCustomer.id).subscribe((data)=>{
-        this.loadingScreen=true;
-      },
+    if(confirm("Are you sure to make it inactive. All assets associated with it will be changed to inactive ")){
+    //   this.companyCustomerDetailsService.closeWorkOrders(this.companyCustomer.id).subscribe((data)=>{
+    //     this.loadingScreen=true;
+    //   },
+    // err=>{
+    //   console.log(err);
+    //   this.loadingScreen=false;
+    // },
+    // ()=>{
+      
+    // })
+    this.companyCustomerDetailsService.inActiveAssets(this.companyCustomer.id).subscribe((data)=>{
+
+    },
     err=>{
       console.log(err);
       this.loadingScreen=false;
+      this.triggerAlert(err.error.errorMessage,"danger");
     },
-    ()=>{
-      this.companyCustomerDetailsService.inActiveAssets(this.companyCustomer.id).subscribe((data)=>{
+  ()=>{
+    if(this.userRoleDetails?.customer=='full'||this.userRoleDetails?.customer=="edit"||this.userRole=="ADMIN"){
+    this.onSave();
 
-      },
-      err=>{
-        console.log(err);
-        this.loadingScreen=false;
-      },
-    ()=>{
-      if(this.userRoleDetails?.customer=='full'||this.userRoleDetails?.customer=="edit"||this.userRole=="ADMIN"){
-      this.onSave();
-
-      }
-      else{
-        this.loadingScreen=false;
-      }
-    })
-    })
-     
+    }
+    else{
+      this.loadingScreen=false;
+    }
+  })
 
     }
     
@@ -479,25 +485,28 @@ export class CompanyCustomerDetailsComponent {
         (err)=>{
           console.log(err);
           this.loadingScreen=false;
+          this.triggerAlert(err.error.errorMessage,"danger");
         })
         })
   
       // console.log(this.assetDetails);
       this.companyCustomerDetailsService.updateCompanyCustomer(this.companyCustomer).subscribe((data)=>{
         console.log("Data Updated");
+        this.loadingScreen=false;
+        this.router.navigate(['/dashboard'])
         // this.loading();
       },
       (err)=>{
         console.log(err);
         this.loadingScreen=false;
+        this.triggerAlert(err.error.errorMessage,"danger");
       })
   
   
       
     
       // this.triggerAlert("Successfully Updated","success");
-      this.loadingScreen=false;
-      this.router.navigate(['/dashboard'])
+    
 
     }
   toCamelCase(str: string): string {
@@ -510,7 +519,7 @@ export class CompanyCustomerDetailsComponent {
     // You can set a timeout to automatically hide the alert after a certain time
     setTimeout(() => {
       this.showAlert = false;
-    }, 50000); // Hide the alert after 5 seconds (adjust as needed)
+    }, 5000); // Hide the alert after 5 seconds (adjust as needed)
   }
 
   onBack(){
@@ -620,16 +629,22 @@ export class CompanyCustomerDetailsComponent {
         },
         err => {
           this.progress = 0;
+          this.currentFile=null;
           this.message = 'Could not upload the file!';
           console.log(this.message);
+          this.triggerAlert(err.error.errorMessage,"danger");
+          
          
         },()=>{
           if(this.progress==100){
-            setTimeout(()=>{
-              alert("successfully uploaded");
-              this.currentFile=null;
+            // setTimeout(()=>{
+            //   alert("successfully uploaded");
+            //   this.currentFile=null;
+            // this.ngOnInit();
+            // },1500);
+            this.triggerAlert("File Uploaded Successfully","success")
+            this.currentFile=null;
             this.ngOnInit();
-            },1500);
             
           }
         })
@@ -715,14 +730,17 @@ export class CompanyCustomerDetailsComponent {
     },
     (err)=>{
       console.log(err);
+      this.triggerAlert(err.error.errorMessage,"danger");
     })
   }
   deleteFile(){
     this.companyCustomerDetailsService.deleteFile(this.deleteFileId).subscribe((data)=>{
       console.log(data);
+      this.triggerAlert("File Deleted Successfully","success")
     },
     (err)=>{
       console.log(err);
+      this.triggerAlert(err.error.errorMessage,"danger");
     },
     ()=>{
       this.ngOnInit();
@@ -739,6 +757,7 @@ export class CompanyCustomerDetailsComponent {
       },
     (err)=>{
       console.log(err);
+      this.triggerAlert(err.error.errorMessage,"danger");
     })
   }
   else{

@@ -83,17 +83,17 @@ export class CompanyCustomerDetailsPreviewComponent {
     number:3,
     name:'Inventory',
     icon:'bi bi-journal-text'
-  },
-  {
-    number:4,
-    name:'Preventive Maintainance',
-    icon:'bi bi-speedometer2'
-  },
-  {
-    number:5,
-     name:'Work Order',
-    icon:'bi bi-bookshelf'
   }
+  // {
+  //   number:4,
+  //   name:'Preventive Maintainance',
+  //   icon:'bi bi-speedometer2'
+  // },
+  // {
+  //   number:5,
+  //    name:'Work Order',
+  //   icon:'bi bi-bookshelf'
+  // }
   // {
   //   number:6,
   //   name:'People',
@@ -147,13 +147,13 @@ export class CompanyCustomerDetailsPreviewComponent {
       });
 
 
-      this.companyCustomerDetailsPreviewService.getWorkOrderByCustomerId(this.companyCustomerId).subscribe((data)=>{
-        this.customerWorkOrderList=data;
-        console.log(this.customerWorkOrderList)
-      },
-      (err)=>{
-        console.log(err);
-      })
+      // this.companyCustomerDetailsPreviewService.getWorkOrderByCustomerId(this.companyCustomerId).subscribe((data)=>{
+      //   this.customerWorkOrderList=data;
+      //   console.log(this.customerWorkOrderList)
+      // },
+      // (err)=>{
+      //   console.log(err);
+      // })
     });
 
     this.companyCustomerDetailsPreviewService.getRoleAndPermission(this.companyId,this.userRole).subscribe((data)=>{
@@ -402,6 +402,7 @@ export class CompanyCustomerDetailsPreviewComponent {
         },
         (err)=>{
           console.log(err);
+          this.triggerAlert(err.error.errorMessage,"danger");
         })
         })
   
@@ -412,6 +413,7 @@ export class CompanyCustomerDetailsPreviewComponent {
       },
       (err)=>{
         console.log(err);
+        this.triggerAlert(err.error.errorMessage,"danger");
       })
   
   
@@ -562,14 +564,17 @@ export class CompanyCustomerDetailsPreviewComponent {
     },
     (err)=>{
       console.log(err);
+      this.triggerAlert(err.error.errorMessage,"danger");
     })
   }
   deleteFile(){
     this.companyCustomerDetailsPreviewService.deleteFile(this.deleteFileId).subscribe((data)=>{
       console.log(data);
+      this.triggerAlert("File Deleted Successfully","success")
     },
     (err)=>{
       console.log(err);
+      this.triggerAlert(err.error.errorMessage,"danger");
     },
     ()=>{
       this.ngOnInit();

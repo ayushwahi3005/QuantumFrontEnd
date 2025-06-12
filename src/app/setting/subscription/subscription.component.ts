@@ -7,7 +7,9 @@ import { Payment } from './payment';
 import { PaymentStatus } from './PaymentStatus';
 import { SubscriptionPlan } from './SubscriptionPlan';
 import { SubscriptionEnum } from './SubscriptionEnum';
-import { format } from 'date-fns';
+import jsPDF from 'jspdf';
+import html2canvas from 'html2canvas';
+
 declare var bootstrap: any;
 import {
   StripeCardElement,
@@ -120,7 +122,7 @@ export class SubscriptionComponent {
     private auth: AuthService,
     private stripeService: StripeService,
     private http: HttpClient
-  ) {}
+  ) { }
   refresh() {
     this.subcriptionSerive.getCurrSubscription(this.companyId).subscribe(
       (data) => {
@@ -705,7 +707,7 @@ export class SubscriptionComponent {
     this.currOption = data;
   }
   addCard() {
-  
+
     this.displayAddCard = true;
   }
   closeAddCard() {
@@ -872,7 +874,7 @@ export class SubscriptionComponent {
             .subscribe(
               (data) => {
                 console.log(data);
-                if(this.editCardId!=null){
+                if (this.editCardId != null) {
                   this.subcriptionSerive.deleteCardDetails(this.editCardId).subscribe(
                     (data) => {
                       console.log(data);
@@ -880,38 +882,38 @@ export class SubscriptionComponent {
                       this.ngOnInit();
                       this.editCard = false;
                       this.savingCard.set(false);
-                      this.cardholderName=null;
+                      this.cardholderName = null;
                     },
                     (err) => {
                       console.log(err);
                       this.triggerAlert(err.errorMessage, 'danger');
                       this.editCard = false;
                       this.savingCard.set(false);
-                      this.cardholderName=null;
+                      this.cardholderName = null;
                     }
                   );
                 }
-                else{
+                else {
                   console.log('Card Saved Successfully');
                   this.triggerAlert('Card Saved Successfully', 'success');
                   this.savingCard.set(false);
                   this.ngOnInit();
-                  this.cardholderName=null;
+                  this.cardholderName = null;
                 }
-                 
-               
+
+
               },
               (err) => {
                 console.log(err);
                 this.triggerAlert(err.errorMessage, 'danger');
                 this.savingCard.set(false);
-                this.cardholderName=null;
+                this.cardholderName = null;
                 this.ngOnInit();
               }
             );
         } else {
           console.error(result.error);
-          this.cardholderName=null;
+          this.cardholderName = null;
           this.savingCard.set(false);
         }
       });
@@ -940,18 +942,18 @@ export class SubscriptionComponent {
     this.editVisibility = false;
     this.editButtonId = -1;
   }
-  downloadInvoice(id: any) {
-    console.log(id);
-    // this.subcriptionSerive.downloadInvoice(id).subscribe((data)=>{
-    //   console.log(data);
-    //   var blob = new Blob([data], { type: 'application/pdf' });
-    //   var url= window.URL.createObjectURL(blob);
-    //   window.open(url);
-    // },
-    // (err)=>{
-    //   console.log(err);
-    // })
-  }
+  // downloadInvoice(id: any) {
+  //   console.log(id);
+  // this.subcriptionSerive.downloadInvoice(id).subscribe((data)=>{
+  //   console.log(data);
+  //   var blob = new Blob([data], { type: 'application/pdf' });
+  //   var url= window.URL.createObjectURL(blob);
+  //   window.open(url);
+  // },
+  // (err)=>{
+  //   console.log(err);
+  // })
+  // }
   closeAddPlan() {
     console.log('Closing Add Plan');
     // const modalElement = document.getElementById('addPerson');
@@ -1057,7 +1059,7 @@ export class SubscriptionComponent {
           this.triggerAlert("Subscription Updated Sucessfully", "success");
           this.ngOnInit();
           this.refresh();
-          this.currOption=1;
+          this.currOption = 1;
           this.paying.set(false);
         },
         (err) => {
@@ -1075,5 +1077,119 @@ export class SubscriptionComponent {
   closeEditCard() {
     this.editCard = false;
     this.displayEditCard = false;
+  }
+
+  getPaymentStatusClass(status: string): string {
+    switch (status) {
+      case 'PAID':
+        return 'paid-status';
+      case 'PENDING':
+        return 'pending-status';
+      case 'FAILED':
+        return 'failed-status';
+      case 'CANCELLED':
+        return 'cancelled-status';
+      default:
+        return '';
+    }
+  }
+
+  downloadInvoice(item: any) {
+    // const item = this.InvoiceList.find(inv => inv.id === id);
+    // if (!item) return;
+
+    // Create a hidden receipt container
+    const receiptHtml = `
+  <div id="receipt-template" style="width: 600px; padding: 20px; font-family: 'Arial'; font-size: 14px; color: #000; background-color: #fff;">
+    <div style="margin-bottom: 20px;">
+
+      <h1>AssetYug</h1>
+    </div>
+
+    <h2>Receipt</h2>
+
+    <div style="display: flex; justify-content: space-between; margin-top: 10px;">
+      <div>
+        <div style="font-size: 12px; color: #666;">INVOICE ID</div>
+        <div style="font-weight: bold;">${item.id}</div>
+      </div>
+      <div>
+        <div style="font-size: 12px; color: #666;">DATE</div>
+        <div style="font-weight: bold;">${new Date(item.startDate).toDateString()} - ${new Date(item.endDate).toDateString()}</div>
+      </div>
+    </div>
+
+    <div style="margin-top: 30px; background-color: #f3f3f3; border-radius: 12px; padding: 20px;">
+      <div style="display: flex; justify-content: space-between; margin-bottom: 10px;">
+        <div>
+          <div style="font-weight: bold;">Item</div>
+          <div style="font-size: 12px; color: #555;">BASIC ${item.planSelected} PLAN</div>
+        </div>
+        <div>
+           <div style="font-weight: bold;">$${item.amount.toFixed(2)}</div>
+           <div style="font-size: 12px; color: #555;">${item.person} Person</div>
+        </div>
+      </div>
+
+     
+
+      <div style="display: flex; justify-content: space-between; margin-bottom: 10px;">
+        <div>
+          <div style="font-weight: bold;">Total tax</div>
+          <div style="font-size: 12px; color: #555;">Sales Tax (0% x $${item.amount.toFixed(2)})</div>
+        </div>
+        <div style="font-weight: bold;">$0.00</div>
+      </div>
+
+      <hr style="border: none; border-top: 1px solid #ccc;" />
+
+      <div style="display: flex; justify-content: space-between; margin-top: 10px;">
+        <div style="font-weight: bold;">Total</div>
+        <div style="font-weight: bold;">$${item.amount.toFixed(2)}</div>
+      </div>
+
+      <div style="margin-top: 20px;">
+        <div style="font-size: 12px; color: #666;">Payment method</div>
+        <div style="font-weight: bold;">${this.getPaymentTypeLabel(item.paymentType)}</div>
+      </div>
+    </div>
+
+    <p style="margin-top: 30px; font-size: 12px;">
+      <a href="https://yourcompany.com/terms" target="_blank" style="color: #007bff; text-decoration: underline;">Terms & Conditions apply</a>.
+    </p>
+
+    <div style="font-size: 10px; color: #999; margin-top: 40px; text-align: center;">
+      Issued by AssetYug Inc.
+    </div>
+  </div>
+`;
+
+
+    // Create a hidden container in the DOM
+    const hiddenDiv = document.createElement('div');
+    hiddenDiv.innerHTML = receiptHtml;
+    hiddenDiv.style.position = 'fixed';
+    hiddenDiv.style.left = '-10000px';
+    document.body.appendChild(hiddenDiv);
+
+    html2canvas(hiddenDiv, { scale: 3 }).then(canvas => {
+      const imgData = canvas.toDataURL('image/png');
+      const pdf = new jsPDF();
+      const imgProps = pdf.getImageProperties(imgData);
+      const pdfWidth = pdf.internal.pageSize.getWidth();
+      const pdfHeight = (imgProps.height * pdfWidth) / imgProps.width;
+
+      pdf.addImage(imgData, 'PNG', 0, 0, pdfWidth, pdfHeight);
+      pdf.save(`Invoice-${item.id}.pdf`);
+
+      document.body.removeChild(hiddenDiv); // clean up
+    });
+  }
+  getPaymentTypeLabel(type: string): string {
+    switch (type) {
+      case 'CREDIT_CARD': return 'Credit Card';
+      case 'DEBIT_CARD': return 'Debit Card';
+      default: return type;
+    }
   }
 }

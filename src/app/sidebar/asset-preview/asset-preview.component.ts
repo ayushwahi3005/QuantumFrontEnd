@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { Component, ElementRef, EventEmitter, Input, Output, ViewChild } from '@angular/core';
 import { ExtraFields } from './extraFields';
 import { CheckInOut } from './checkInOut';
 import { ExtraFieldName } from './extraFieldName';
@@ -27,6 +27,8 @@ import { User } from './user';
   styleUrls: ['./asset-preview.component.css']
 })
 export class AssetPreviewComponent {
+   @ViewChild('notes') notesRef!: ElementRef;
+    @ViewChild('location') locationRef!: ElementRef;
   qr!:QR;
   qrData!:string;
   hoverOverSidebar=true;
@@ -70,6 +72,7 @@ loading=true;
   userRole:any;
   userRoleDetails:any;
   selectEmployeeName:any
+  selectedEmpName:any;
   sideBarOption=[{
     number:1,
     name:'Customers',
@@ -108,6 +111,7 @@ loading=true;
   ngOnInit(){
     this.loading=true;
     this.username= localStorage.getItem('name')
+    this.selectedEmpName=this.username;
     this.extraFieldString=[];
     this.qrSize=3;
     this.extraFieldNameString=[];
@@ -126,16 +130,19 @@ loading=true;
     this.assetPreviewService.getAsset(this.assetId).subscribe((data)=>{
       this.loading=true;
       console.log("details"+data)
+      console.log(data)
       this.assetDetails=data;
       console.log("preview:-"+this.assetDetails.customerId)
-      this.assetPreviewService.getCompanyCustomer(this.assetDetails.customerId).subscribe((data)=>{
+      if(this.assetDetails.customerId!=null&&this.assetDetails.customerId!=''){
+         this.assetPreviewService.getCompanyCustomer(this.assetDetails.customerId).subscribe((data)=>{
         this.customer=data;
      
         console.log(this.customer)
       },
       (err)=>{
         console.log(err);
-      })
+      })}
+     
       console.log("--------asset image",this.assetDetails.image);
     },(err)=>{
       console.log(err);
@@ -189,7 +196,7 @@ loading=true;
       this.loading=true;
       this.checkInOut=data;
    
-      console.log(this.checkInOut[0].detailsList)
+      console.log(this.checkInOut[0]?.detailsList)
       this.checkInOut[0].detailsList.forEach((ele)=>{
         console.log("checkinout->"+ele)
       })
@@ -367,7 +374,28 @@ offHover(){
     }
     // this.dashboardComponent.current=id;
   }
-
+   onTechnicianChange(data:any){
+    console.log(data.target.value)
+    this.selectedEmpName = data.target.value;
+  }
+  handleSubmit(employee: any, notes: string, location: string) {
+    console.log("emp=> "+this.selectedEmpName)
+    console.log("emp=> "+employee)
+    if(this.selectedEmpName==null||this.selectedEmpName==''){
+      this.CheckInOutSubmit(employee, notes, location);
+    }
+    else{
+      this.CheckInOutSubmit(this.selectedEmpName, notes, location);
+    }
+   
+   
+    if (employee) employee = '';
+    this.selectedEmpName=this.username;
+    if (notes) notes = '';
+    if (location) location = '';
+     this.notesRef.nativeElement.value = '';
+    this.locationRef.nativeElement.value = '';
+  }
   CheckInOutSubmit(employee:string,notes:string,location:string){
     let obj={};
     var today=new Date();
@@ -416,6 +444,7 @@ offHover(){
       },
       (err)=>{
         console.log(err);
+        this.triggerAlert(err.error.errorMessage,"danger");
       },
       ()=>{
         this.ngOnInit()
@@ -478,6 +507,7 @@ offHover(){
       },
       (err)=>{
         console.log(err);
+        this.triggerAlert(err.error.errorMessage,"danger");
       })
     }
     itemDeleteDetails(id:string){
@@ -490,6 +520,7 @@ offHover(){
       },
       (err)=>{
         console.log(err);
+        this.triggerAlert(err.error.errorMessage,"danger");
       },
       ()=>{
         this.ngOnInit();

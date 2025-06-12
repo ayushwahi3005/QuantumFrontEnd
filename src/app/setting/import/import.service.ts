@@ -27,6 +27,7 @@ export class ImportService {
 
      const myheaders = new HttpHeaders({
       'Authorization': `Bearer ${localStorage.getItem('authToken')}`,
+       'Device-ID': `${localStorage.getItem('deviceId')}`
     });
     
  
@@ -43,6 +44,7 @@ export class ImportService {
    
     const myheaders = new HttpHeaders({
       'Authorization': `Bearer ${localStorage.getItem('authToken')}`,
+       'Device-ID': `${localStorage.getItem('deviceId')}`
     });
     
  

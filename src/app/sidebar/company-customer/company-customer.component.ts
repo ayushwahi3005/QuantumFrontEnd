@@ -87,6 +87,7 @@ export class CompanyCustomerComponent {
   }
 
   ngOnInit():void{
+    this.companyId=localStorage.getItem('companyId');
     this.companyCustomerForm = this.formBuilder.group({
       name: ['', Validators.required],
       companyId: [this.companyId],
@@ -102,7 +103,7 @@ export class CompanyCustomerComponent {
     });
   
     // Explicitly set the default value for status
-    this.companyCustomerForm.controls['status'].setValue('active');
+    // this.companyCustomerForm.controls['status'].setValue('active');
   
     console.log(this.companyCustomerForm.value); // Check the form values
   
@@ -126,7 +127,7 @@ export class CompanyCustomerComponent {
     this.showMandatoryBasicFields=new Map<string,Boolean>();
     this.email=localStorage.getItem('user');
     this.userRole=localStorage.getItem('role');
-    this.companyId=localStorage.getItem('companyId');
+    
     this.mandatoryFieldsMap = new Map<string, boolean>();
     this.showFieldsMap = new Map<string, boolean>();
 
@@ -146,7 +147,6 @@ export class CompanyCustomerComponent {
       phone:[''],
       address:[''],
       category:[''],
-      apartment:[''],
       status:[''],
       email:[''],
       city:[''],
@@ -281,6 +281,10 @@ export class CompanyCustomerComponent {
        (err)=>{
          console.log(err);
        })
+
+        this.companyCustomerForm.patchValue({
+        status: 'active'
+      });
     })
    
 
@@ -479,6 +483,7 @@ advanceFilterFunc() {
     (err)=>{
       console.log(err);
       this.loadingScreen=false;
+      this.triggerAlert(err.error.errorMessage,"danger");
     },
     ()=>{
     // this.ngOnInit();
@@ -506,6 +511,7 @@ advanceFilterFunc() {
       (err)=>{
         console.log(err);
         this.loadingScreen=false;
+        this.triggerAlert(err.error.errorMessage,"danger");
       },
     ()=>{
       this.loadingScreen=false;
@@ -604,12 +610,14 @@ advanceFilterFunc() {
     (err)=>{
       console.log(err);
       this.companyCustomerForm.reset();
+      this.triggerAlert(err.error.errorMessage,"danger");
     },()=>{
       this.companyCustomerService.deleteWorkorderExtraField(id).subscribe((data)=>{
         console.log("ExtraFields Deleted");
       },
       (err)=>{
         console.log(err);
+        this.triggerAlert(err.error.errorMessage,"danger");
       })
       this.ngOnInit();
       this.loadingScreen=false;
@@ -666,7 +674,10 @@ advanceFilterFunc() {
     console.log("ecgo")
   }
   resetForm(){
-    this.companyCustomerForm.reset();
+    this.companyCustomerForm.reset({
+    status: 'active', // Ensure status is reset to 'active'
+    companyId: this.companyId // Keep companyId if needed
+  });
 
   }
 

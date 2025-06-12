@@ -203,5 +203,13 @@ export class AssetsService {
       });
       return this.httpClient.get(this.assetEndpoint+"getCategoryActiveList/"+companyId,{headers});
     }
+    getAllLocationWithBin(companyId:any):Observable<any>{
+      const headers = new HttpHeaders({
+        'Authorization': `Bearer ${localStorage.getItem('authToken')}`,
+        'Content-Type': 'application/json',
+        'device-id': `${localStorage.getItem('deviceId')}`,
+      });
+      return this.httpClient.get(this.customerEndpoint+"locations-with-bins/"+companyId,{headers});
+    }
   
 }

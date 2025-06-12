@@ -26,6 +26,7 @@ export class CompanyCustomerService {
       'Authorization': `Bearer ${localStorage.getItem('authToken')}`,
       'Content-Type': 'application/json',
       'device-id': `${localStorage.getItem('deviceId')}`,
+      'companyId': `${localStorage.getItem('companyId')}`,
     });
     return this.httpClient.post(this.companyCustomerEndpoint+"addCompanyCustomer",data,{headers});
     // return this.httpClient.post("/myCustomer/addCompanyCustomer",data,{headers});
@@ -35,6 +36,7 @@ export class CompanyCustomerService {
       'Authorization': `Bearer ${localStorage.getItem('authToken')}`,
       'Content-Type': 'application/json',
       'device-id': `${localStorage.getItem('deviceId')}`,
+      'companyId': `${localStorage.getItem('companyId')}`,
     });
     return this.httpClient.get(this.companyCustomerEndpoint+"allCompanyCustomer/"+companyId,{headers});
     // return this.httpClient.get("/myCustomer/allCompanyCustomer/"+companyId,{headers});
@@ -62,6 +64,7 @@ export class CompanyCustomerService {
       'Authorization': `Bearer ${localStorage.getItem('authToken')}`,
       'Content-Type': 'application/json',
       'device-id': `${localStorage.getItem('deviceId')}`,
+      'companyId': `${localStorage.getItem('companyId')}`,
     });
     // return this.httpClient.delete("/myCustomer/deleteCompanyCustomer/"+id,{headers});
     return this.httpClient.get(this.companyCustomerEndpoint+"deleteCompanyCustomer/"+id,{headers});
@@ -74,6 +77,7 @@ export class CompanyCustomerService {
       'Authorization': `Bearer ${localStorage.getItem('authToken')}`,
       'Content-Type': 'application/json',
       'device-id': `${localStorage.getItem('deviceId')}`,
+      'companyId': `${localStorage.getItem('companyId')}`,
     });
     // return this.httpClient.post("/myCustomer/getAllMandatoryFields",companyId,{headers});
     return this.httpClient.get(this.companyCustomerEndpoint+"getAllMandatoryFields/"+companyId,{headers});
@@ -86,6 +90,7 @@ export class CompanyCustomerService {
       'Authorization': `Bearer ${localStorage.getItem('authToken')}`,
       'Content-Type': 'application/json',
       'device-id': `${localStorage.getItem('deviceId')}`,
+      'companyId': `${localStorage.getItem('companyId')}`,
     });
     // return this.httpClient.post("/myCustomer/getAllShowFields",companyId,{headers});
     return this.httpClient.get(this.companyCustomerEndpoint+"getAllShowFields/"+companyId,{headers});
@@ -98,6 +103,7 @@ export class CompanyCustomerService {
       'Authorization': `Bearer ${localStorage.getItem('authToken')}`,
       'Content-Type': 'application/json',
       'device-id': `${localStorage.getItem('deviceId')}`,
+      'companyId': `${localStorage.getItem('companyId')}`,
     });
     // return this.httpClient.post("/myCustomer/getExtraFieldName",id,{headers});
     return this.httpClient.get(this.companyCustomerEndpoint+"getExtraFieldName/"+id,{headers});
@@ -111,6 +117,7 @@ export class CompanyCustomerService {
       'Authorization': `Bearer ${localStorage.getItem('authToken')}`,
       'Content-Type': 'application/json',
       'device-id': `${localStorage.getItem('deviceId')}`,
+      'companyId': `${localStorage.getItem('companyId')}`,
     });
     // return this.httpClient.post("/myCustomer/getExtraFieldNameValue",companyId,{headers});
     return this.httpClient.get(this.companyCustomerEndpoint+"getExtraFieldNameValue/"+companyId,{headers});
@@ -120,6 +127,7 @@ export class CompanyCustomerService {
       'Authorization': `Bearer ${localStorage.getItem('authToken')}`,
       'Content-Type': 'application/json',
       'device-id': `${localStorage.getItem('deviceId')}`,
+      'companyId': `${localStorage.getItem('companyId')}`,
     });
     // return this.httpClient.post("/myCustomer/addfields",data,{headers});
     return this.httpClient.post(this.companyCustomerEndpoint+"addfields",data,{headers});
@@ -129,6 +137,7 @@ export class CompanyCustomerService {
       'Authorization': `Bearer ${localStorage.getItem('authToken')}`,
       'Content-Type': 'application/json',
       'device-id': `${localStorage.getItem('deviceId')}`,
+      'companyId': `${localStorage.getItem('companyId')}`,
     });
     // return this.httpClient.delete("/myCustomer/deleteCompanyCustomerExtraFields/"+id,{headers:this.headers});
     return this.httpClient.delete(this.companyCustomerEndpoint+"deleteCompanyCustomerExtraFields/"+id,{headers});
@@ -139,6 +148,7 @@ export class CompanyCustomerService {
       'Authorization': `Bearer ${localStorage.getItem('authToken')}`,
       'Content-Type': 'application/json',
       'device-id': `${localStorage.getItem('deviceId')}`,
+      'companyId': `${localStorage.getItem('companyId')}`,
     });
     // return this.httpClient.get("/myCustomer/allCompanyCustomerWithExtraFields/"+companyId,{headers});
     return this.httpClient.get(this.companyCustomerEndpoint+"allCompanyCustomerWithExtraFields/"+companyId,{headers});
@@ -148,6 +158,7 @@ export class CompanyCustomerService {
       'Authorization': `Bearer ${localStorage.getItem('authToken')}`,
       'Content-Type': 'application/json',
       'device-id': `${localStorage.getItem('deviceId')}`,
+      'companyId': `${localStorage.getItem('companyId')}`,
     });
     return this.httpClient.get(this.customerEndpoint+'roleAndPermissionByName/get/'+id+'/'+name,{headers});
   }
@@ -181,6 +192,7 @@ export class CompanyCustomerService {
       'Authorization': `Bearer ${localStorage.getItem('authToken')}`,
       'Content-Type': 'application/json',
       'device-id': `${localStorage.getItem('deviceId')}`,
+      'companyId': `${localStorage.getItem('companyId')}`,
     });
     console.log(data)
     // return this.httpClient.post('/myCustomer/advanceFilter',obj,{headers}) .pipe(
@@ -194,6 +206,7 @@ export class CompanyCustomerService {
       'Authorization': `Bearer ${localStorage.getItem('authToken')}`,
       'Content-Type': 'application/json',
       'device-id': `${localStorage.getItem('deviceId')}`,
+      'companyId': `${localStorage.getItem('companyId')}`,
     });
     // return this.httpClient.get('/myCustomer/working',{headers, responseType: 'text'});
     return this.httpClient.get(this.companyCustomerEndpoint+"working",{headers,responseType: 'text'});
@@ -204,6 +217,7 @@ export class CompanyCustomerService {
       'Authorization': `Bearer ${localStorage.getItem('authToken')}`,
       'Content-Type': 'application/json',
       'device-id': `${localStorage.getItem('deviceId')}`,
+      'companyId': `${localStorage.getItem('companyId')}`,
     });
     return this.httpClient.get(this.companyCustomerEndpoint+"statelist",{headers});
    
@@ -214,6 +228,7 @@ export class CompanyCustomerService {
       'Authorization': `Bearer ${localStorage.getItem('authToken')}`,
       'Content-Type': 'application/json',
       'device-id': `${localStorage.getItem('deviceId')}`,
+      'companyId': `${localStorage.getItem('companyId')}`,
     });
     return this.httpClient.get(this.companyCustomerEndpoint+"getCategoryActiveList/"+companyId,{headers});
   }

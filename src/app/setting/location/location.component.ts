@@ -46,7 +46,7 @@ export class LocationComponent {
     });
 
     this.binForm=this.formBuilder.group({
-      location:['',Validators.required],
+      locationId:['',Validators.required],
       binNumber:['',Validators.required],
       status:['active'],
       companyId:[this.companyId]
@@ -110,7 +110,7 @@ export class LocationComponent {
     })
   }
   saveBin(){
-    console.log(this.locationForm.value)
+    console.log(this.binForm.value)
     this.locationService.saveBin(this.binForm.value).subscribe((data)=>{
       console.log(data);
     },

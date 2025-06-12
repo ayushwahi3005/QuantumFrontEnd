@@ -196,3 +196,11 @@
   box-shadow: 0 0 5px rgba(0, 123, 255, 0.5); /* Subtle blue glow */
   transition: border-color 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
 }
+
+.delete{
+  color: rgb(255, 110, 110);
+}
+.bi-pencil{
+  color:  rgb(175, 173, 173);
+
+}

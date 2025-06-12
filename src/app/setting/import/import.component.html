@@ -147,3 +147,79 @@
     </div>
   </div>
 </div>
+
+
+
+
+<!-- Modal -->
+<!-- Add this in your component HTML -->
+<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true" #infoNotice>
+   <div class="modal-dialog modal-lg modal-dialog-scrollable">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h1 class="modal-title" id="exampleModalLabel">Notification</h1>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body" style="font-family: Arial, sans-serif; line-height: 1.5;">
+
+  <h4 style="color: #d32f2f;">🚨 Asset Data Import – Pre-Import Notification</h4>
+  <p>You are about to import asset records into the system. Please ensure your file is properly formatted and follows the required field rules below:</p>
+
+  <h5>🔑 Required Fields and Guidelines:</h5>
+  <ul>
+    <li><strong>Name</strong><br>Enter the full name of the asset (e.g., "Dell Latitude 7420").</li>
+    <li><strong>Serial Number</strong><br>Serial Numbers can be duplicated, but it is recommended to keep them unique for better tracking.</li>
+    <li><strong>Customer</strong><br>Enter the Customer ID (not the name). Ensure the ID exists in the system before importing.</li>
+    <li><strong>Category</strong><br>Enter the Category Name from the system-defined dropdown. Invalid or missing IDs will cause errors.</li>
+    <li><strong>Location</strong><br>Enter the asset's physical or assigned location (e.g., "Warehouse A", "Client Site - NYC").</li>
+    <li><strong>Status</strong><br>Choose a valid status from the following dropdown options:
+      <ul>
+        <li>Active</li>
+        <li>Inactive</li>
+      </ul>
+    </li>
+  </ul>
+
+  <h5 style="color: #f57c00;">⚠️ Important Notes:</h5>
+  <ul>
+    <li>Records with missing or invalid required fields will be skipped.</li>
+    <li>Ensure there are no formatting errors in your file.</li>
+    <li>Only CSV format is supported for upload.</li>
+  </ul>
+
+  <hr>
+
+  <h4>🧾 Customer Import Guidelines:</h4>
+  <ul>
+    <li><strong>Name</strong><br>Enter the full name of the customer (e.g., "ABC Corporation").</li>
+    <li><strong>Category</strong><br>Enter the Category Name from the predefined dropdown. Only valid IDs will be accepted.</li>
+    <li><strong>Status</strong><br>Choose a status from the available options. Accepted values include:
+      <ul>
+        <li>Active</li>
+        <li>Inactive</li>
+      </ul>
+    </li>
+    <li><strong>Email</strong><br>Enter a valid email address (e.g., "contact&#64;abc.com"). Duplicate or invalid emails may be flagged.</li>
+    <li><strong>Street</strong><br>Enter the street address (e.g., "123 Main St").</li>
+    <li><strong>City</strong><br>Enter the city name (e.g., "San Francisco").</li>
+    <li><strong>State</strong><br>Enter the full state name or abbreviation (e.g., "CA" or "California").</li>
+    <li><strong>Zipcode</strong><br>Enter a valid ZIP or postal code (e.g., "94105"). Must be numeric and 5–10 characters depending on country.</li>
+  </ul>
+
+  <h5 style="color: #f57c00;">⚠️ Important Notes:</h5>
+  <ul>
+    <li>All fields are required unless otherwise specified.</li>
+    <li>Category and Status must match system-defined values.</li>
+    <li>Duplicate emails or missing mandatory fields will result in skipped records.</li>
+    <li>Ensure your import file is in CSV format.</li>
+  </ul>
+
+</div>
+
+      <div class="modal-footer">
+        <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Got It</button>
+        
+      </div>
+    </div>
+  </div>
+</div>

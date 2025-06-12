@@ -144,5 +144,27 @@ export class AssetDetailsService {
   getAssetCategory(companyId:any):Observable<any>{
     return this.httpClient.get(this.assetEndpoint+"getCategoryActiveList/"+companyId,{headers:this.headers});
   }
+
+  getAllAssetInspection(id:string):Observable<any>{
+          return this.httpClient.get(this.assetEndpoint+'getAllAssetInspection/'+id,{headers:this.headers});
+        }
+
+  addAssetInspection(inspection:any):Observable<any>{
+          return this.httpClient.post(this.assetEndpoint+'addAssetInspectionInstance',inspection,{headers:this.headers});
+      }
+      updateAssetInspection(inspection:any):Observable<any>{
+        return this.httpClient.put(this.assetEndpoint+'addAssetInspectionInstance',inspection,{headers:this.headers});
+    }
+  getAllAssetInspectionInstance(id:string):Observable<any>{
+        return this.httpClient.get(this.assetEndpoint+'getAllAssetInspectionInstance/'+id,{headers:this.headers});
+      }
+      getAllLocationWithBin(companyId:any):Observable<any>{
+        const headers = new HttpHeaders({
+          'Authorization': `Bearer ${localStorage.getItem('authToken')}`,
+          'Content-Type': 'application/json',
+          'device-id': `${localStorage.getItem('deviceId')}`,
+        });
+        return this.httpClient.get(this.customerEndpoint+"locations-with-bins/"+companyId,{headers});
+      }
   
 }

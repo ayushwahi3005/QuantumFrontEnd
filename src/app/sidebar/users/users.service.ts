@@ -116,5 +116,13 @@ export class UsersService {
     });
     return this.httpClient.get(this.customerEndpoint+"getAllShowFields/"+companyId,{headers});
   }
+  updateStatus(data:any):Observable<any>{
+    const headers = new HttpHeaders({
+      'Authorization': `Bearer ${localStorage.getItem('authToken')}`,
+      'Content-Type': 'application/json',
+      'device-id': `${localStorage.getItem('deviceId')}`,
+    });
+    return this.httpClient.put(this.userEndpoint+"userDetails",data,{headers,responseType:'text'});
+  }
   
 }

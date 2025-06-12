@@ -25,6 +25,7 @@ export class RoleAndPermissionComponent {
   alertMessage: string = ''; // Alert message
   alertType: string = 'success';
   currItem!:RoleAndPermissionEdit;
+  deleteRoleId!:string;
   constructor(private roleAndPermissionService:RoleAndPermissionService,private formBuilder:FormBuilder,private auth:AuthService,private router:Router){}
 
   ngOnInit(){
@@ -195,8 +196,22 @@ export class RoleAndPermissionComponent {
       })
     }
     }
-    deleteRole(id:string){
-
+    selectIdDeleteRole(id:string){
+      this.deleteRoleId=id;
+    }
+    deleteRole(){
+        this.roleAndPermissionService.deleteRoleAndPermission(this.deleteRoleId).subscribe((data)=>{
+          // console.log(data);
+          this.deleteRoleId='';
+        },
+        err=>{
+          console.log(err);
+          this.triggerAlert(err.error.errorMessage,"danger")
+        },
+        ()=>{
+          this.triggerAlert("Role Deleted!!","success")
+          this.ngOnInit();
+        })
     }
     
     logout(){

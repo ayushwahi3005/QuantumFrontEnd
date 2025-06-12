@@ -10,7 +10,8 @@ export class CompanyCustomerDetailsService {
   private headers = new HttpHeaders({
     'Authorization': `Bearer ${localStorage.getItem('authToken')}`,
     'Content-Type': 'application/json',
-    'Device-ID': `${localStorage.getItem('deviceId')}`
+    'Device-ID': `${localStorage.getItem('deviceId')}`,
+    'companyId': `${localStorage.getItem('companyId')}`,
   });
   constructor(private httpClient:HttpClient) { }
  companyCustomerEndpoint=environment.endpoint+"companycustomer/"
@@ -79,6 +80,8 @@ export class CompanyCustomerDetailsService {
   addCompanyCustomerFile(file: any, companyId: any): Observable<any> {
     let myHeaders = new HttpHeaders({
       'Authorization': `Bearer ${localStorage.getItem('authToken')}`,
+    'Device-ID': `${localStorage.getItem('deviceId')}`,
+    'companyId': `${localStorage.getItem('companyId')}`,
       // Don't set 'Content-Type' here!
     });
   
@@ -192,9 +195,6 @@ export class CompanyCustomerDetailsService {
   // }
 
   download(id:string):Observable<any>{
-    const headers = new HttpHeaders({
-      'spring.cloud.function.definition': 'download'
-    });
     return this.httpClient.get(this.companyCustomerEndpoint+"getFile/download/"+id,{
       headers:this.headers,
       responseType: 'blob'
@@ -211,7 +211,7 @@ export class CompanyCustomerDetailsService {
   // }
   deleteFile(id:string):Observable<any>{
    
-    return this.httpClient.post(this.companyCustomerEndpoint+"deleteFile/"+id,{headers:this.headers});
+    return this.httpClient.delete(this.companyCustomerEndpoint+"deleteFile/"+id,{headers:this.headers});
   }
   getCompanyCustomerFile(assetId:string):Observable<any>{
     return this.httpClient.get(this.companyCustomerEndpoint+"getFile/"+assetId,{
@@ -266,6 +266,16 @@ export class CompanyCustomerDetailsService {
   // }
   getCustomerCategory(companyId:any):Observable<any>{
     return this.httpClient.get(this.companyCustomerEndpoint+"getCategoryActiveList/"+companyId,{headers:this.headers});
+  }
+  stateList():Observable<any>{
+    const headers = new HttpHeaders({
+      'Authorization': `Bearer ${localStorage.getItem('authToken')}`,
+      'Content-Type': 'application/json',
+      'device-id': `${localStorage.getItem('deviceId')}`,
+      'companyId': `${localStorage.getItem('companyId')}`,
+    });
+    return this.httpClient.get(this.companyCustomerEndpoint+"statelist",{headers});
+   
   }
   
 }

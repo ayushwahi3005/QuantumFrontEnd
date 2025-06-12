@@ -10,13 +10,15 @@ export class CustomerModuleService {
   private headers = new HttpHeaders({
     'Authorization': `Bearer ${localStorage.getItem('authToken')}`,
     'Content-Type': 'application/json',
-    'Device-ID': `${localStorage.getItem('deviceId')}`
+    'Device-ID': `${localStorage.getItem('deviceId')}`,
+     'companyId': `${localStorage.getItem('companyId')}`,
   });
   constructor(private httpClient:HttpClient) { 
     const headers = new HttpHeaders({
       'Authorization': `Bearer ${localStorage.getItem('authToken')}`,
       'Content-Type': 'application/json',
-      'Device-ID': `${localStorage.getItem('deviceId')}`
+      'Device-ID': `${localStorage.getItem('deviceId')}`,
+       'companyId': `${localStorage.getItem('companyId')}`,
     });
   }
   // customerEndpoint="myCustomer/"

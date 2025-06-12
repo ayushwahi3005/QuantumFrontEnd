@@ -444,8 +444,12 @@ export class AuthService {
             (err) => {
               console.log("Session delete error ", err);
             });
-        alert('Session has expired. Please log in again.');
-        this.router.navigate(['/login']);
+            const currentUrl = this.router.url;
+            if(currentUrl.length!=0 &&!currentUrl.startsWith('/login')&&!currentUrl.startsWith('/register')&&!currentUrl.startsWith('/admin')){
+              alert('Session has expired. Please log in again.');
+              this.router.navigate(['/login']);
+            }
+       
 
           this.stopTokenMonitoring(); // Stop monitoring when session expires
           // Optionally log the user out here

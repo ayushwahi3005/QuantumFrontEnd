@@ -121,7 +121,7 @@ export class AssetModuleComponent {
     this.assetModuleService.addExtraFields(obj).subscribe((data)=>{this.extraFieldOption
       console.log(data);
       const event = { checked: true }; 
-      this.showField(event,this.addFieldName.trim().toLowerCase(),this.extraFieldOption)
+      this.showField(event,this.addFieldName.trim(),this.extraFieldOption)
       // this.showField(event,this.addFieldName.trim(),this.extraFieldOption)
       this.ngOnInit();
     },
@@ -238,11 +238,30 @@ export class AssetModuleComponent {
       console.log(name);
      
 
-      this.savedExtraColumn=localStorage.getItem("selectedExtraColumsAssets")
+      // this.savedExtraColumn=localStorage.getItem("selectedExtraColumsAssets")
   
-        this.selectedExtraColums=JSON.parse(this.savedExtraColumn);
-        this.selectedExtraColums=this.selectedExtraColums.filter((data)=> data!=name);
-        localStorage.setItem("selectedExtraColumsAssets",  JSON.stringify(this.selectedExtraColums));
+      //   this.selectedExtraColums=JSON.parse(this.savedExtraColumn);
+      //   this.selectedExtraColums=this.selectedExtraColums?.filter((data)=> data!=name);
+      //   localStorage.setItem("selectedExtraColumsAssets",  JSON.stringify(this.selectedExtraColums));
+      this.savedExtraColumn = localStorage.getItem("selectedExtraColumsAssets");
+
+      if (this.savedExtraColumn && this.savedExtraColumn !== "undefined" && this.savedExtraColumn !== "null") {
+        try {
+          this.selectedExtraColums = JSON.parse(this.savedExtraColumn);
+        } catch (e) {
+          console.error("Failed to parse selectedExtraColumsAssets:", e);
+          this.selectedExtraColums = [];
+        }
+      } else {
+        this.selectedExtraColums = [];
+      }
+
+      // Now filter out the item
+      this.selectedExtraColums = this.selectedExtraColums.filter((data) => data !== name);
+
+      // Save back to localStorage
+      localStorage.setItem("selectedExtraColumsAssets", JSON.stringify(this.selectedExtraColums));
+
         
       
     }

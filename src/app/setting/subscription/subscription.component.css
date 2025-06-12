@@ -596,3 +596,52 @@ animation-delay: 0.1s;
   box-shadow: 0 0 0 0 rgba(178, 212, 252, 0.7);
 }
 } */
+.paid-status {
+  background-color: #d4edda; /* light green */
+  color: #155724; /* dark green */
+}
+
+.pending-status {
+  background-color: #fff3cd; /* light yellow */
+  color: #856404; /* dark yellow */
+}
+
+.failed-status {
+  background-color: #f8d7da; /* light red */
+  color: #721c24; /* dark red */
+}
+
+.cancelled-status {
+  background-color: #e2e3e5; /* light gray */
+  color: #6c757d; /* dark gray */
+}
+
+.paid-status,
+.pending-status,
+.failed-status,
+.cancelled-status {
+  display: inline-block;
+  padding: 6px 12px;
+  min-width: 80px;
+  height: 32px;
+  text-align: center;
+  vertical-align: middle;
+  border-radius: 8px;
+  font-weight: 500;
+  font-size: 14px;
+  border: 1px solid transparent; 
+  /* margin-top: 15px; */
+  margin-left: 10px;
+}
+td {
+  vertical-align: middle;
+  padding: 10px; /* consistent spacing */
+}
+.table {
+  width: 100%;
+  border-collapse: collapse;
+}
+.table td,
+.table th {
+  border: 1px solid #dee2e6;
+}

@@ -126,13 +126,13 @@ export class CustomerModuleComponent {
     this.customerModuleService.addExtraFields(obj).subscribe((data)=>{this.extraFieldOption
       console.log(data);
       const event = { checked: true }; 
-      this.showField(event,this.addFieldName.trim().toLowerCase(),this.extraFieldOption)
+      this.showField(event,this.addFieldName.trim(),this.extraFieldOption)
       this.ngOnInit();
     },
     (err)=>{
       console.log(err.error);
       // alert(err.error.errorMessage)
-      this.triggerAlert(err.error.message,"danger");
+      this.triggerAlert(err.error.errorMessage,"danger");
     },
     ()=>{
       this.addFieldName='';

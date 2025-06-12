@@ -39,6 +39,8 @@ import { CustomFieldsSettingsComponent } from './setting/custom-fields-settings/
 import { TickAnimationComponent } from './tick-animation/tick-animation.component';
 import { AssetPreviewComponent } from './sidebar/asset-preview/asset-preview.component';
 import { ImportComponent } from './setting/import/import.component';
+
+
 import {MatSlideToggleModule} from '@angular/material/slide-toggle';
 import { WorkorderModuleComponent } from './setting/workorder-module/workorder-module.component';
 import { InvitationComponent } from './invitation/invitation.component';
@@ -48,6 +50,7 @@ import {MatTableModule} from '@angular/material/table';
 import { NgSelectModule } from '@ng-select/ng-select';
 import { InventoryModuleComponent } from './setting/inventory-module/inventory-module.component';
 import { MatButtonModule } from '@angular/material/button';
+import { MatDialogModule } from '@angular/material/dialog';
 import { MatMenuModule } from '@angular/material/menu';
 import {MatIconModule} from '@angular/material/icon';
 import {MatDividerModule} from '@angular/material/divider';
@@ -85,7 +88,7 @@ import { MatToolbarModule } from '@angular/material/toolbar';
 import { CustomerResetPasswordComponent } from './customer-reset-password/customer-reset-password.component';
 import { UserModuleComponent } from './setting/user-module/user-module.component';
 import { SessionInterceptor } from './shared/SessionInterceptor';
-
+import { NgChartsModule } from 'ng2-charts';
 
 @NgModule({
   declarations: [
@@ -169,6 +172,8 @@ import { SessionInterceptor } from './shared/SessionInterceptor';
     MatRadioModule,
     MatCardModule,
     MatToolbarModule,
+    NgChartsModule,
+    MatDialogModule,
     NgxStripeModule.forRoot('pk_test_51QJEvHDbrtjFAyfvm2UQu2ohdlUl814jAftZVEW9IHnfd4YrVOfh5ZBJyfYahnJcOMxwjgK3WjA8tU8XPg5nGpbM00J9CxIx3A'),
   ],
   providers: [DatePipe,

@@ -9,7 +9,8 @@ import { InventoryComponent } from './inventory.component';
 export class InventoryService {
   private headers = new HttpHeaders({
     'Authorization': `Bearer ${localStorage.getItem('authToken')}`,
-    'Content-Type': 'application/json'
+    'Content-Type': 'application/json',
+    'Device-ID': `${localStorage.getItem('deviceId')}`
   });
   constructor(private httpClient:HttpClient) { }
   dashboard(companyId:string):Observable<any>{

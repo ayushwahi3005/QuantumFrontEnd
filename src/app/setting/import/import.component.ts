@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, ElementRef, ViewChild } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ImportService } from './import.service';
 import { AssetsService } from 'src/app/sidebar/assets/assets.service';
@@ -7,14 +7,18 @@ import * as XLSX from 'xlsx';
 import { ColumnMapping } from './columnMapping';
 import { HttpEventType, HttpResponse } from '@angular/common/http';
 import * as saveAs from 'file-saver';
+import { MatDialog } from '@angular/material/dialog';
 
-
+declare var bootstrap: any;
 @Component({
   selector: 'app-import',
   templateUrl: './import.component.html',
   styleUrls: ['./import.component.css']
 })
+
 export class ImportComponent {
+  
+  @ViewChild('infoNotice') myModal!: ElementRef;
   
   loading:boolean=false;
   email!:any;
@@ -57,15 +61,19 @@ export class ImportComponent {
   progress: number = 0;
   uploadInProgress: boolean = false;
   currExportModuel:any;
-  constructor(private formBuilder:FormBuilder,private importService:ImportService,private assetService:AssetsService){
+  constructor(private formBuilder:FormBuilder,private importService:ImportService,private assetService:AssetsService,private dialog: MatDialog){
 
   }
-  
+   
+
+
 
   ngOnInit(){
     this.loading=false;
     this.email=localStorage.getItem('user');
     this.companyId=localStorage.getItem('companyId');
+
+   
     
     this.importForm=this.formBuilder.group({
       module:['asset',Validators.required],
@@ -134,9 +142,15 @@ export class ImportComponent {
     // this.columnMappings=new Array(this.assetDatabaseColumns.length).fill({excel:"",database:""});
     this.columnMappings=new Map<String,String>();
     console.log(this.columnMappings)
-
   }
-
+  ngAfterViewInit() {
+  this.openModal(); // Now safe, ViewChild is initialized
+}
+  openModal() {
+    const modalElement = this.myModal.nativeElement;
+    const modal = new bootstrap.Modal(modalElement); // bootstrap must be globally available
+    modal.show();
+  }
   
   convertCSVToXlsx(csvData:any): void {
     // Replace this with your CSV data
@@ -184,6 +198,7 @@ export class ImportComponent {
     });
   }
   onSubmit(){
+    
     this.loading=true;
     this.uploadInProgress = true;
     localStorage.setItem('uploadInProgress', 'true');

@@ -21,11 +21,15 @@ import { Router } from '@angular/router';
     ): Observable<HttpEvent<any>> {
       return next.handle(req).pipe(
         catchError((error: HttpErrorResponse) => {
-           
-            if (error.status === 401) {
+          const currentUrl = this.router.url;
+          console.log("Current URL:", currentUrl.startsWith('/login'));
+          if (error.status === 401 && currentUrl.startsWith('/login') === false&&currentUrl.startsWith('/register') === false&&currentUrl.startsWith('/admin') === false) {
+          // if(false){
+              // const currentUrl = this.router.url;
+              console.log("Current URL:", currentUrl);
                 // Ensure logout and redirection are handled only once
                 console.log("IsloggedIn=========>"+this.authService.isLoggedIn)
-                if(this.authService.isLoggedIn === "true"){
+                if(this.authService.isLoggedIn === "true"||this.authService.isLoggedIn === undefined){
                     this.authService.isLoggedIn = "false";
                     localStorage.setItem('isLoggedIn', 'false');
                     this.authService.sessionExpired$.next(true);

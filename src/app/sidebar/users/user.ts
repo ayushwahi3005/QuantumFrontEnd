@@ -6,6 +6,7 @@ export class User{
 	  companyId!:string;
 	  mobileNumber!:string;
 	  role!:string;
+	  status!:string;
 	  title!:string;
 
 

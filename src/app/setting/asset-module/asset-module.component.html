@@ -38,7 +38,7 @@
           <h2 *ngIf="extraFieldName.length>0" style="margin: 10px;">Custom Fields</h2>
           <tr *ngFor="let item of extraFieldName">
            
-            <td>{{item.name|titlecase}}</td>
+            <td>{{item.name}}</td>
             <td>{{item.type|titlecase}} </td>
             <td>
               <!-- <input type="checkbox" (change)="showField(sh,item.name,item.type)" [checked]="getValueOfShowMap(item.name)"  [disabled]="editOn" #sh> -->

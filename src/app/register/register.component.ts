@@ -160,6 +160,7 @@ export class RegisterComponent  {
     const obj={
       "customerEmail":this.registerObj['email'],
       "companyName":this.registerObj['companyName'],
+      "phoneNo": this.registerObj['mobileNumber']
 
     }
     this.loader=true;

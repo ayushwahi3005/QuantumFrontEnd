@@ -12,6 +12,7 @@ export class CustomerCategoryService {
     'Authorization': `Bearer ${localStorage.getItem('authToken')}`,
     'Content-Type': 'application/json',
     'Device-ID': `${localStorage.getItem('deviceId')}`,
+    'companyId': `${localStorage.getItem('companyId')}`,
   });
 
   constructor(private httpClient:HttpClient) {
