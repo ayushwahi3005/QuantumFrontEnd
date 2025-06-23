@@ -1,0 +1,1 @@
+(window as any).global = window; // Polyfill for globalThis in older browsers

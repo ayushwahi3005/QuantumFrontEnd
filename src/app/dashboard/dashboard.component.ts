@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { AuthService } from '../shared/auth.service';
 import { Router } from '@angular/router';
 import { DashboardService } from './dashboard.service';
-import { AssetsComponent } from '../sidebar/assets/assets.component';
+import { NotificationService } from '../notification/notification.service';
 
 @Component({
   selector: 'app-dashboard',
@@ -11,6 +11,7 @@ import { AssetsComponent } from '../sidebar/assets/assets.component';
 })
 export class DashboardComponent  {
   email:any='';
+  notification:string='';
   current:number=2;
   username:any='';
   hoverOverSidebar=true;
@@ -47,7 +48,14 @@ export class DashboardComponent  {
   
 ];
 
-  constructor(private auth:AuthService,private router:Router,private dashService:DashboardService){
+  constructor(private auth:AuthService,private router:Router,private dashService:DashboardService,private notificationService:NotificationService) {
+    // this.notificationService.getNotificationObservable().subscribe((message) => {
+    //   this.notification = message;
+    //   console.log("Notification received:", this.notification);
+    // });
+    this.hoverOverSidebar=true;
+    this.current=parseInt(localStorage.getItem('currOption')||'2',10);
+    console.log("Current Option in Dashboard Component: ",this.current);
    
   }
 
@@ -71,6 +79,10 @@ export class DashboardComponent  {
     this.current=parseInt(storedCurr,10);
     }
     
+    this.notificationService.getNotificationObservable().subscribe((message) => {
+      this.notification = message;
+      console.log("Notification received:", this.notification);
+    });
     console.log("------------------>",localStorage.getItem('authToken'));
     this.dashService.dashboard(this.email).subscribe((data)=>{
     
