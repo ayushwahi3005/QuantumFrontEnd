@@ -145,8 +145,8 @@ export class AssetDetailsService {
     return this.httpClient.get(this.assetEndpoint+"getCategoryActiveList/"+companyId,{headers:this.headers});
   }
 
-  getAllAssetInspection(id:string):Observable<any>{
-          return this.httpClient.get(this.assetEndpoint+'getAllAssetInspection/'+id,{headers:this.headers});
+  getAllAssetInspection(id:string,category:string):Observable<any>{
+          return this.httpClient.get(this.assetEndpoint+'getAllAssetInspectionByCategory/'+id+'?category='+category,{headers:this.headers});
         }
 
   addAssetInspection(inspection:any):Observable<any>{

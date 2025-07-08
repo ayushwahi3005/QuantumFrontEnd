@@ -673,7 +673,17 @@
             <option [ngValue]="inspection" *ngFor="let inspection of allInspection">{{inspection.name}}</option>
             
           </select>
-          <div *ngIf="currentInspection">
+          <ng-multiselect-dropdown
+  [placeholder]="'Inspection List'"
+  [settings]="dropdownSettings"
+  [data]="dropdownList"
+  [(ngModel)]="selectedItems"
+  (onSelect)="onItemSelect($event)"
+  (onSelectAll)="onSelectAll($event)"
+  (onDeSelect)="onItemDeSelect($event)"
+>
+</ng-multiselect-dropdown>
+          <div *ngIf="this.selectedItems.length > 0">
             <table class="table" id="asset-detial table" >
               <thead class="table-dark text-center">
                   <tr >
@@ -688,8 +698,8 @@
                     </tr>
               </thead>
               <tbody>
-                <tr *ngFor="let step of currentInspection.steps; let i = index" style="height:50px">
-                  <td>{{ step.stepNumber + 1 }}</td>
+                <tr *ngFor="let step of inspectionInstance.stepValues; let i = index" style="height:50px">
+                  <td>{{i+1}}</td>
                   <td>{{ step.name }}</td>
                   <td>
                     <ng-container *ngIf="step.type === 'CHECKBOX'; else elseBlock">
@@ -791,7 +801,7 @@
                 
                 
                 <tr *ngFor="let step of selectedInspectionInstance?.stepValues; let i = index" style="height:50px">
-                  <td>{{ ParseInt(step.inspectionStepId) + 1 }}</td>
+                  <td>{{ i + 1 }}</td>
                 
                   <td>{{ step.name }}</td>
                 
@@ -822,7 +832,7 @@
         </div>
         <div class="modal-footer">
           <button type="button" class="btn btn-primary" (click)="updateInspectionInstance()" data-dismiss="modal">Save</button>
-          <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+          <button type="button" class="btn btn-secondary" data-dismiss="modal" (click)="clearSteps()">Close</button>
         </div>
         
     </div>

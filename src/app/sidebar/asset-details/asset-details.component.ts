@@ -22,8 +22,9 @@ import * as jspdf from 'jspdf';
 import html2canvas from 'html2canvas';
 import { CompanyCustomer } from './company-cutomer';
 import { CategoryName } from 'src/app/setting/asset-category/categoryName';
-import { nonWhiteSpace } from 'html2canvas/dist/types/css/syntax/parser';
 import { InspectionInstance } from './inspectionInstance';
+
+import { IDropdownSettings } from 'ng-multiselect-dropdown';
 
 @Component({
   selector: 'app-asset-details',
@@ -108,8 +109,30 @@ export class AssetDetailsComponent {
     selectedLocationId:any=null;
     loggedUser!:User;
   // username:any;
+
+
+   dropdownList:any = [];
+  selectedItems:any = [];
+  dropdownSettings:IDropdownSettings = {};
+  inspectionMap:Map<string,Object> = new Map<string,Object>();
   constructor(private activatedRoute:ActivatedRoute,private assetDetailService:AssetDetailsService,private assetComponent:AssetsComponent,private datePipe: DatePipe,private router:Router){}
   ngOnInit(){
+    this.inspectionMap=new Map<string,Object>();
+    this.selectedItems = [];
+    this.dropdownSettings = {
+      singleSelection: false,
+      idField: 'id',
+      textField: 'name',
+      selectAllText: 'Select All',
+      unSelectAllText: 'UnSelect All',
+      itemsShowLimit: 3,
+      allowSearchFilter: true
+    };
+
+
+
+
+
     this.loggedUser=new User();
     this.selectedCustomerId=this.assetDetails.customerId;
     this.selectedLocation= this.assetDetails.location;
@@ -152,6 +175,7 @@ export class AssetDetailsComponent {
     });
     this.assetDetailService.getAllAssetInspectionInstance(this.companyId).subscribe((data)=>{
       this.allInspectionInstance=data;
+       
       console.log(this.allInspectionInstance)
     },
     (err)=>{
@@ -169,9 +193,20 @@ export class AssetDetailsComponent {
     })
 
     //inspection
-    this.assetDetailService.getAllAssetInspection(this.companyId).subscribe((data)=>{
+    this.assetDetailService.getAllAssetInspection(this.companyId,this.assetDetails.category).subscribe((data)=>{
       this.allInspection=data;
       console.log(this.allInspection)
+      this.dropdownList = this.allInspection;
+      this.allInspection.forEach((x:any)=>{
+        const obj={
+          "name":x.name,
+          "stepsList":x.steps
+        }
+        this.inspectionMap.set(x.id,obj);
+
+
+      })
+      console.log(this.inspectionMap)
     })
    
     this.assetDetailService.getAssetCategory(this.companyId).subscribe((data)=>{
@@ -834,7 +869,30 @@ handleClickOutside(event: MouseEvent) {
       this.router.navigate(['/assets/'+this.assetId])
     }
 
-    inspectionChanged(){
+    // inspectionChanged(){
+    //   console.log(this.currentInspection)
+    //   console.log(this.assetId)
+      
+    //   this.inspectionInstance.assetId = this.assetId;
+    //   this.inspectionInstance.companyId = this.companyId;
+    //   this.inspectionInstance.assetCategoryInspectionId = this.currentInspection.id;
+    //   this.inspectionInstance.assetCategoryInspectionName = this.currentInspection.name;
+
+    //   let steps: any[] = [];
+
+    //   this.currentInspection.steps.forEach((step: any,ind:any) => {
+    //         let obj: any = {
+    //           name: step.name,
+    //           inspectionStepId: ind,
+    //           value: step.type=='CHECKBOX'?false:'',
+    //           type:step.type
+    //         };
+    //         steps.push(obj);
+    //       });
+
+    //   this.inspectionInstance.stepValues = steps;
+    // }
+     inspectionChanged(){
       console.log(this.currentInspection)
       console.log(this.assetId)
       
@@ -844,16 +902,29 @@ handleClickOutside(event: MouseEvent) {
       this.inspectionInstance.assetCategoryInspectionName = this.currentInspection.name;
 
       let steps: any[] = [];
-
-      this.currentInspection.steps.forEach((step: any,ind:any) => {
-            let obj: any = {
-              name: step.name,
-              inspectionStepId: ind,
-              value: step.type=='CHECKBOX'?false:'',
-              type:step.type
-            };
-            steps.push(obj);
-          });
+      // this.selectedItems
+      this.selectedItems.forEach((item:any)=>{
+        let inspectionMapValue = this.inspectionMap.get(item.id);
+        if (inspectionMapValue !== null && inspectionMapValue !== undefined) {
+          const inspectionMap = inspectionMapValue as Map<string, any>;
+          const stepList= inspectionMap.get('stepsList');
+          stepList.forEach((step:any)=>{
+              let obj: any = {
+                name: step.get('name'),
+                // The following variables (ind, step) are not defined in this context.
+                // You may need to adjust this logic as per your requirements.
+                inspectionStepId: null,
+                value: step.type=='CHECKBOX'?false:'',
+                type:step.type
+              };
+              steps.push(obj);
+          })
+        
+          // You may want to push obj to steps or handle it as needed.
+        }
+      })
+      console.log(steps)
+        
 
       this.inspectionInstance.stepValues = steps;
     }
@@ -867,12 +938,15 @@ handleClickOutside(event: MouseEvent) {
       this.assetDetailService.addAssetInspection(this.inspectionInstance).subscribe((data)=>{
         console.log("Inspection Saved"+data);
         this.triggerAlert("Inspection saved sucessfully","success");
+        this.selectedItems=[]
       },
       (err)=>{
         console.log(err);
         this.triggerAlert(err.error.errorMessage,"danger");
+        this.selectedItems=[]
       },
       ()=>{
+        this.selectedItems=[]
         this.ngOnInit();
       })
     }
@@ -928,6 +1002,7 @@ handleClickOutside(event: MouseEvent) {
         this.triggerAlert(err.error.errorMessage,"danger");
       },
       ()=>{
+         this.inspectionInstance.stepValues = [];
         this.ngOnInit();
       })
     }
@@ -967,5 +1042,68 @@ handleClickOutside(event: MouseEvent) {
       
     }
     
+
+  updateStepList(){
+    //  console.log(this.currentInspection)
+    //   console.log(this.assetId)
+      
+      this.inspectionInstance.assetId = this.assetId;
+      this.inspectionInstance.companyId = this.companyId;
+      // this.inspectionInstance.assetCategoryInspectionId = this.currentInspection.id;
+      this.inspectionInstance.assetCategoryInspectionName = "";
+      this.selectedItems.forEach((item:any)=>{
+        this.inspectionInstance.assetCategoryInspectionName += item.name + " ";
+      })
+
+      let steps: any[] = [];
+      // this.selectedItems
+      console.log("selectedItems",this.selectedItems)
+      this.selectedItems.forEach((item:any)=>{
+        let inspectionMapValue = this.inspectionMap.get(item.id);
+        console.log("inspectionMapValue",inspectionMapValue)
+        if (inspectionMapValue !== null && inspectionMapValue !== undefined) {
+          const inspectionMap = inspectionMapValue as any;
+          const stepList= inspectionMap['stepsList'];
+          stepList.forEach((step:any)=>{
+              let obj: any = {
+                name: step['name'],
+                // The following variables (ind, step) are not defined in this context.
+                // You may need to adjust this logic as per your requirements.
+                inspectionStepId: null,
+                value: step['type']=='CHECKBOX'?false:'',
+                type:step['type']
+              };
+              steps.push(obj);
+          })
+        
+          // You may want to push obj to steps or handle it as needed.
+        }
+      })
+      console.log(steps)
+       this.inspectionInstance.stepValues = steps;
+       console.log(this.inspectionInstance.stepValues)
+        
+
+  }
+
+  onItemSelect(item: any) {
+    console.log(this.selectedItems);
+    console.log(item);
+    this.updateStepList();
+  }
+  onSelectAll(items: any) {
+    console.log(this.selectedItems);
+    console.log(items);
+    this.selectedItems = items;
+     this.updateStepList();
+  }
+  onItemDeSelect(items: any){
+console.log(this.selectedItems);
+    console.log(items);
+     this.updateStepList();
+  }
+  clearSteps(){
+    this.inspectionInstance.stepValues = [];
+  }
 }
 

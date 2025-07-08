@@ -245,3 +245,10 @@ body{
 .dropdown-toggle::after {
     display: none;
 }
+/* app-category{
+    height: calc(100vh - 150px);
+} */
+ /* app-category {
+  border: 1px solid black;
+  padding: 10px;
+} */

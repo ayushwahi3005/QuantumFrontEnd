@@ -89,6 +89,7 @@ import { CustomerResetPasswordComponent } from './customer-reset-password/custom
 import { UserModuleComponent } from './setting/user-module/user-module.component';
 import { SessionInterceptor } from './shared/SessionInterceptor';
 import { NgChartsModule } from 'ng2-charts';
+import { TimeAgoPipe } from 'src/utils/pipes/time-ago.pipe';
 
 @NgModule({
   declarations: [
@@ -136,7 +137,8 @@ import { NgChartsModule } from 'ng2-charts';
     PaymentComponent,
     CustomerResetPasswordComponent,
     UserModuleComponent,
-    InspectionTemplateComponent
+    InspectionTemplateComponent,
+    TimeAgoPipe
     
    
   ],

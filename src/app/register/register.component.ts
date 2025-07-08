@@ -35,6 +35,7 @@ export class RegisterComponent  {
   registerObj:any;
   loader=false;
   currentyear:any
+  confirmPasswordMatch: boolean = false; // Flag to check password match
   ngOnInit():void{
   this.registerForm=this.formBuilder.group({
     firstName:[''],
@@ -46,6 +47,7 @@ export class RegisterComponent  {
     cpassword:[''],
     companyId:['']
   })
+  this.confirmPasswordMatch = false; // Initialize the flag
   this.subscribeToService();
   this.loader=false;
   this.registerObj={
@@ -214,4 +216,12 @@ export class RegisterComponent  {
       this.triggerAlert(mydata.data,mydata.type); // Call your component function here
     });
   }
+ confirmPassword(data: any) {
+  if(data===this.registerObj.password){
+    this.confirmPasswordMatch = true; // Set to true if passwords match
+  }
+  else{
+     this.confirmPasswordMatch = false; 
+  }
+}
 }

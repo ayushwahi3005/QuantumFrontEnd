@@ -1,115 +1,136 @@
 <body>
   <div *ngIf="!loader">
-  <div class="header">
-    <div class="header-centre">
-      <!-- <img src='../../assets/logo.png'> -->
-      <h1>AssetYug</h1>
+    <div class="header">
+      <div class="header-centre">
+        <!-- <img src='../../assets/logo.png'> -->
+        <h1>AssetYug</h1>
+      </div>
     </div>
-  </div>
-  <div *ngIf="showAlert" class="alert" [ngClass]="'alert-' + alertType" role="alert">
-    {{ alertMessage|titlecase }}
-    <!-- Optionally, add a close button -->
-    <button type="button" class="btn-close" (click)="showAlert = false" aria-label="Close" style="float: right;"></button>
-  </div>
-  
-  <div class="login container">
+    <div *ngIf="showAlert" class="alert" [ngClass]="'alert-' + alertType" role="alert">
+      {{ alertMessage|titlecase }}
+      <!-- Optionally, add a close button -->
+      <button type="button" class="btn-close" (click)="showAlert = false" aria-label="Close"
+        style="float: right;"></button>
+    </div>
+
+    <div class="login container">
       <form class="form-border">
-          <h1 id="reg">Sign Up</h1>
-          <div class="form-group d-flex justify-content-between" style="margin-top: 30px;">
-            <mat-form-field style="margin: 0 15px 0 0; padding: 0; flex: 1;">
-              <mat-label>First Name</mat-label>
-              <input matInput type="text" [(ngModel)]="registerObj.firstName" name="firstName">
-            </mat-form-field>
-  
-            <mat-form-field style="margin-left: 5px; margin: 0; padding: 0; flex: 1;">
-              <mat-label>Last Name</mat-label>
-              <input matInput type="text" [(ngModel)]="registerObj.lastName" [ngModelOptions]="{standalone: true}">
-            </mat-form-field>
-          </div>
-  
-          <div class="form-group">
-            <mat-form-field style="width: 100%;">
-              <mat-label>Company Name</mat-label>
-              <input matInput type="text" [(ngModel)]="registerObj.companyName" [ngModelOptions]="{standalone: true}">
-            </mat-form-field>
-          </div>
-  
-          <div class="form-group">
-            <mat-form-field style="width: 100%;">
-              <mat-label>Email</mat-label>
-              <input matInput type="email" [(ngModel)]="registerObj.email" [ngModelOptions]="{standalone: true}">
-            </mat-form-field>
-          </div>
-  
-          <div class="form-group">
-            <mat-form-field style="width: 100%;">
-              <mat-label>Mobile Number</mat-label>
-              <input matInput type="tel" [(ngModel)]="registerObj.mobileNumber" [ngModelOptions]="{standalone: true}">
-            </mat-form-field>
-          </div>
-  
-          <div class="form-group">
-            <mat-form-field style="width: 100%;">
-              <mat-label>Password</mat-label>
-              <input matInput type="password" [(ngModel)]="registerObj.password" [ngModelOptions]="{standalone: true}">
-            </mat-form-field>
-          </div>
-  
-          <div class="form-group">
-            <mat-form-field style="width: 100%;">
-              <mat-label>Confirm Password</mat-label>
-              <input matInput type="password" [(ngModel)]="registerObj.cpassword" [ngModelOptions]="{standalone: true}">
-            </mat-form-field>
-          </div>
-         
-          <button (click)="register()" class="btn btn-primary"  style=" width: 100%;
+        <h1 id="reg">Sign Up</h1>
+        <div class="form-group d-flex justify-content-between" style="margin-top: 30px;">
+          <mat-form-field style="margin: 0 15px 0 0; padding: 0; flex: 1;">
+            <mat-label>First Name</mat-label>
+            <input matInput type="text" [(ngModel)]="registerObj.firstName" name="firstName">
+          </mat-form-field>
+
+          <mat-form-field style="margin-left: 5px; margin: 0; padding: 0; flex: 1;">
+            <mat-label>Last Name</mat-label>
+            <input matInput type="text" [(ngModel)]="registerObj.lastName" [ngModelOptions]="{standalone: true}">
+          </mat-form-field>
+        </div>
+
+        <div class="form-group">
+          <mat-form-field style="width: 100%;">
+            <mat-label>Company Name</mat-label>
+            <input matInput type="text" [(ngModel)]="registerObj.companyName" [ngModelOptions]="{standalone: true}">
+          </mat-form-field>
+        </div>
+
+        <div class="form-group">
+          <mat-form-field style="width: 100%;">
+            <mat-label>Email</mat-label>
+            <input matInput type="email" [(ngModel)]="registerObj.email" [ngModelOptions]="{standalone: true}">
+          </mat-form-field>
+        </div>
+
+        <div class="form-group">
+          <mat-form-field style="width: 100%;">
+            <mat-label>Mobile Number</mat-label>
+            <input matInput type="tel" [(ngModel)]="registerObj.mobileNumber" [ngModelOptions]="{standalone: true}">
+          </mat-form-field>
+        </div>
+
+        <div class="form-group">
+          <mat-form-field style="width: 100%;">
+            <mat-label>Password</mat-label>
+            <input matInput type="password" [(ngModel)]="registerObj.password" [ngModelOptions]="{standalone: true}">
+          </mat-form-field>
+        </div>
+
+        <div class="form-group">
+          <mat-form-field style="width: 100%;">
+  <mat-label>Confirm Password</mat-label>
+
+  <input 
+    matInput 
+    type="password" 
+    (input)="confirmPassword(cnf.value)" 
+    [(ngModel)]="registerObj.cpassword" 
+    [ngModelOptions]="{standalone: true}" 
+    #cnf
+  >
+
+  <span matSuffix *ngIf="confirmPasswordMatch" style="display: flex; align-items: center;">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"
+      style="width: 20px; height: 20px; fill: green; margin-right: 15px;">
+      <path
+        d="M256 512A256 256 0 1 0 256 0a256 256 0 1 0 0 512zM369 209L241 337c-9.4 9.4-24.6 9.4-33.9 0l-64-64c-9.4-9.4-9.4-24.6 0-33.9s24.6-9.4 33.9 0l47 47L335 175c9.4-9.4 24.6-9.4 33.9 0s9.4 24.6 0 33.9z" />
+    </svg>
+  </span>
+
+</mat-form-field>
+
+
+
+        </div>
+
+        <button (click)="register()" class="btn btn-primary" style=" width: 100%;
           background-color: #013365 ;
           height: 40px;
           color: white;
           margin-top: 10px;">SIGN UP</button>
-  
-          <div style="display: flex; justify-content: center; margin-top: 20px;">
-             
-                Already have an account?
-                  <a  [routerLink]="['/login']" style="margin-left: 5px;"> Log in</a>
-  
+
+        <div style="display: flex; justify-content: center; margin-top: 20px;">
+
+          Already have an account?
+          <a [routerLink]="['/login']" style="margin-left: 5px;"> Log in</a>
+
+        </div>
+      </form>
+    </div>
+
+    <div class="modal" tabindex="-1" role="dialog" [ngStyle]="{'display':displayStyle}">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h1 class="modal-title ">Alert</h1>
           </div>
-        </form>
-  </div>
-  
-  <div class="modal" tabindex="-1" role="dialog" [ngStyle]="{'display':displayStyle}">
-    <div class="modal-dialog" role="document">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h1 class="modal-title " >Alert</h1>
-        </div>
-        <div class="modal-body">
-          {{errorMessage}}
-        </div>
-        <div class="modal-footer">
-          <button type="button" class="btn btn-warning" style=" width: 100%;
+          <div class="modal-body">
+            {{errorMessage}}
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-warning" style=" width: 100%;
          background-color: #013365 ;
       height: 40px;
       color: white;
       margin-top: 30px;" (click)="closePopup()">Close</button>
+          </div>
+
         </div>
-  
       </div>
     </div>
+
+    <footer class="custom-footer">
+      <div class="footer-content">
+        <p>
+          <a href="#">Terms of Use</a> |
+          <a href="#">Privacy Policy</a>
+        </p>
+        <p class="copyright">&copy; {{currentyear}} AssetYug</p>
+      </div>
+    </footer>
   </div>
-  
-  <footer class="custom-footer">
-    <div class="footer-content">
-      <p>
-        <a href="#">Terms of Use</a> | 
-        <a href="#">Privacy Policy</a>
-      </p>
-      <p class="copyright">&copy; {{currentyear}} AssetYug</p>
-    </div>
-  </footer>
-  </div>
-  
-  <div class="dot-spinner d-flex justify-content-center" *ngIf="loader" >
+
+  <div class="dot-spinner d-flex justify-content-center" *ngIf="loader">
     <div class="dot-spinner__dot"></div>
     <div class="dot-spinner__dot"></div>
     <div class="dot-spinner__dot"></div>
@@ -119,4 +140,4 @@
     <div class="dot-spinner__dot"></div>
     <div class="dot-spinner__dot"></div>
   </div>
-  </body>
+</body>

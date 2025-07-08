@@ -11,7 +11,8 @@ import { NotificationService } from '../notification/notification.service';
 })
 export class DashboardComponent  {
   email:any='';
-  notification:string='';
+  notificationList:Notification[]=[];
+  unReadCount:number=0;
   current:number=2;
   username:any='';
   hoverOverSidebar=true;
@@ -78,10 +79,47 @@ export class DashboardComponent  {
     if(storedCurr!=null){
     this.current=parseInt(storedCurr,10);
     }
-    
+    this.dashService.getNotification(this.email).subscribe((data)=>{
+      // console.log("Notification Data",data);  
+      this.unReadCount=0;
+      if(data!=null){
+        // console.log("Notification",data);
+        this.notificationList=data;
+        console.log("Notification",this.notificationList);
+        this.notificationList.forEach((notification: any) => {
+          console.log("Is Unread",notification.isRead);
+          if(notification.read === false) {
+            this.unReadCount++;
+          }
+        });
+        console.log("Unread Count",this.unReadCount);
+      }
+      else{
+        this.notificationList=[];
+      }
+    },
+    (err)=>{
+      console.log("Notification Error",err);
+      this.notificationList=[];
+    });
+
+
+
     this.notificationService.getNotificationObservable().subscribe((message) => {
-      this.notification = message;
-      console.log("Notification received:", this.notification);
+      try {
+        this.unReadCount=0;
+        this.notificationList = typeof message === 'string' ? JSON.parse(message) : message;
+        this.notificationList.forEach((notification: any) => {
+          console.log("Is Unread",notification.isRead);
+          if(notification.read === false) {
+            this.unReadCount++;
+          }
+        });
+      } catch (e) {
+        this.notificationList = [];
+        console.error('Failed to parse notification message:', e);
+      }
+      console.log("Notification received:", this.notificationList);
     });
     console.log("------------------>",localStorage.getItem('authToken'));
     this.dashService.dashboard(this.email).subscribe((data)=>{
@@ -163,6 +201,21 @@ console.log(localStorage.getItem('user'));
     this.hoverOverSidebar=true;
 
     // console.log(this.hoverOverSidebar);
+  }
+
+  notificationClick() {
+    console.log("Notification Clicked");
+    if(this.unReadCount > 0) {  
+    this.dashService.updateNotification(this.notificationList,this.email).subscribe(
+      (response) => {
+        console.log( response);
+        this.unReadCount = 0; // Reset unread count after marking as read
+      },
+      (error) => {
+        console.error("Error updating notification", error);
+      }
+    );
+  }
   }
 
   

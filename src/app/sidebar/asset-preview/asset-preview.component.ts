@@ -197,9 +197,15 @@ loading=true;
       this.checkInOut=data;
    
       console.log(this.checkInOut[0]?.detailsList)
-      this.checkInOut[0].detailsList.forEach((ele)=>{
-        console.log("checkinout->"+ele)
-      })
+      if(this.checkInOut.length>0){
+        this.checkInOut[0].detailsList.forEach((ele)=>{
+          console.log("checkinout->"+ele)
+        })
+      }
+      else{
+        console.log("No Check In/Out Details")
+      }
+
     },
     (err)=>{
       console.log(err);
