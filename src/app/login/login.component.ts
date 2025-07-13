@@ -108,10 +108,12 @@ export class LoginComponent {
     this.loginService.isSameBrowserAndDevice(mydata).subscribe((data)=>{
       console.log("Active LogIn")
       console.log(data)
-      if(!data){
-        // alert('Already LoggedIn from different device');
-        this.showModal()
-      }
+      if (!data) {
+          this.loader = false;
+          setTimeout(() => {
+            this.showModal();
+          }, 0);
+        }
       else{
         this.auth.login(this.email,this.password,mydata);
         this.email='';
@@ -193,6 +195,7 @@ export class LoginComponent {
 
   }
   showModal() {
+    this.loader=false;
     const modalElement = document.getElementById('removeLoggedIn');
     if (modalElement) {
       const myModal = new bootstrap.Modal(modalElement, {
