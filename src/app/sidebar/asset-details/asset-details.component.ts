@@ -98,8 +98,12 @@ export class AssetDetailsComponent {
     assetCategoryInspectionName: '',
     actionPerformedBy:'',
     notes:'',
-    date:'',
-    stepValues: []
+    createdAt:'',
+    updatedAt:'',
+    status: 'PENDING',
+    stepValues: [],
+    inspectionTemplates: [],
+    selectedItemList: []
   };
   filteredLocationOrBinList: any=[];
   locationWithBins:any=[];
@@ -115,6 +119,8 @@ export class AssetDetailsComponent {
   selectedItems:any = [];
   dropdownSettings:IDropdownSettings = {};
   inspectionMap:Map<string,Object> = new Map<string,Object>();
+  stepObject:any[]=[];
+  notedData!:string;
   constructor(private activatedRoute:ActivatedRoute,private assetDetailService:AssetDetailsService,private assetComponent:AssetsComponent,private datePipe: DatePipe,private router:Router){}
   ngOnInit(){
     this.inspectionMap=new Map<string,Object>();
@@ -132,7 +138,7 @@ export class AssetDetailsComponent {
 
 
 
-
+    
     this.loggedUser=new User();
     this.selectedCustomerId=this.assetDetails.customerId;
     this.selectedLocation= this.assetDetails.location;
@@ -173,7 +179,7 @@ export class AssetDetailsComponent {
     err=>{
       console.log(err);
     });
-    this.assetDetailService.getAllAssetInspectionInstance(this.companyId).subscribe((data)=>{
+    this.assetDetailService.getAllAssetInspectionInstanceByAssetId(this.assetId).subscribe((data)=>{
       this.allInspectionInstance=data;
        
       console.log(this.allInspectionInstance)
@@ -206,8 +212,32 @@ export class AssetDetailsComponent {
 
 
       })
-      console.log(this.inspectionMap)
+          console.log(this.inspectionMap)
+          
+        //   this.inspectionInstance=localStorage.getItem(this.assetId+'tempInspection') ? JSON.parse(localStorage.getItem(this.assetId+'tempInspection') || '{}') : {
+        //   assetId: '',
+        //   companyId: '',
+        //   assetCategoryInspectionId: '',
+        //   assetCategoryInspectionName: '',
+        //   actionPerformedBy:'',
+        //   notes:'',
+        //   date:'',
+        //   stepValues: [],
+        //   inspectionTemplates: []
+        // };
+        // if(localStorage.getItem(this.assetId+'tempInspection')!=null){
+        // this.inspectionInstance=JSON.parse(localStorage.getItem(this.assetId+'tempInspection') || '{}')
+        // }
+      
+        // console.log("saved Inspection Instances1",localStorage.getItem(this.assetId+'tempInspection'))
+        // console.log("saved Inspection Instance", this.inspectionInstance)
+        // this.selectedItems= localStorage.getItem(this.assetId+'selectedItems') ? JSON.parse(localStorage.getItem(this.assetId+'selectedItems') || '[]') : [];
+        // console.log("selectedItems",this.selectedItems)
+        // if(this.selectedItems.length>0){
+        //   this.updateStepListFromLocalStorage()
+        // }
     })
+    
    
     this.assetDetailService.getAssetCategory(this.companyId).subscribe((data)=>{
       this.assetCategoryList=data;
@@ -902,38 +932,55 @@ handleClickOutside(event: MouseEvent) {
       this.inspectionInstance.assetCategoryInspectionName = this.currentInspection.name;
 
       let steps: any[] = [];
+      let stepObj:any[]=[]
       // this.selectedItems
       this.selectedItems.forEach((item:any)=>{
         let inspectionMapValue = this.inspectionMap.get(item.id);
         if (inspectionMapValue !== null && inspectionMapValue !== undefined) {
-          const inspectionMap = inspectionMapValue as Map<string, any>;
-          const stepList= inspectionMap.get('stepsList');
+          const inspectionMap = inspectionMapValue as any;
+          const stepList= inspectionMap['stepsList'];
+          
+          let myCurrStep:any[]=[];
           stepList.forEach((step:any)=>{
               let obj: any = {
-                name: step.get('name'),
+                name: step['name'],
                 // The following variables (ind, step) are not defined in this context.
                 // You may need to adjust this logic as per your requirements.
                 inspectionStepId: null,
-                value: step.type=='CHECKBOX'?false:'',
-                type:step.type
+                value: step['type']=='CHECKBOX'?false:'',
+                type:step['type']
               };
+
               steps.push(obj);
+              myCurrStep.push(obj);
           })
+          let myObj={
+            "inspectionName": item.name,
+            "stepValues": myCurrStep
+          }
+          stepObj.push(myObj);
         
           // You may want to push obj to steps or handle it as needed.
         }
       })
+      console.log("stepObj",stepObj)
       console.log(steps)
-        
-
-      this.inspectionInstance.stepValues = steps;
+      this.stepObject=stepObj;
+       this.inspectionInstance.stepValues = steps;
+       this.inspectionInstance.inspectionTemplates = this.stepObject;
+       console.log(this.inspectionInstance.stepValues)
     }
     saveInpectionValue(){
       console.log(this.inspectionInstance)
+      console.log(this.stepObject)
       this.inspectionInstance.actionPerformedBy=this.username;
       const currDateTime=new Date();
-
-      this.inspectionInstance.date=currDateTime.toLocaleString();
+      if(this.inspectionInstance.createdAt==null || this.inspectionInstance.createdAt==''){
+      this.inspectionInstance.createdAt=currDateTime.toLocaleString();
+      }
+      this.inspectionInstance.updatedAt=currDateTime.toLocaleString();
+      this.inspectionInstance.status='COMPLETED';
+      this.inspectionInstance.selectedItemList= this.selectedItems;
       console.log(this.inspectionInstance)
       this.assetDetailService.addAssetInspection(this.inspectionInstance).subscribe((data)=>{
         console.log("Inspection Saved"+data);
@@ -947,6 +994,7 @@ handleClickOutside(event: MouseEvent) {
       },
       ()=>{
         this.selectedItems=[]
+        this.clearSavedData();
         this.ngOnInit();
       })
     }
@@ -972,20 +1020,23 @@ handleClickOutside(event: MouseEvent) {
     }
     selectedInspectionInstanceFunc(data:InspectionInstance){
       console.log(data)
+      
+
+      data.stepValues
+      ?.forEach((step: { type: string; value: string | boolean; }) => {
+   
+              if (typeof step.value === 'string') {
+        step.value = step.value === 'true';}
+      
+      });
+
+   
       this.selectedInspectionInstance=data;
+    
       this.inspectionInstance=data;
       this.inspectionInstance.assetId=this.assetId;
       this.inspectionInstance.companyId=this.companyId;
       this.inspectionInstance.actionPerformedBy=this.username;
-
-      this.selectedInspectionInstance.stepValues
-      ?.forEach((step: { type: string; value: string | boolean; }) => {
-   
-        if (step.type === 'CHECKBOX') {
-          step.value = step.value === 'true'?true:false; // convert to boolean
-        }
-      });
-      console.log(this.selectedInspectionInstance)
 
     }
     ParseInt(val:string):number{
@@ -993,6 +1044,8 @@ handleClickOutside(event: MouseEvent) {
     }
     updateInspectionInstance(){
       console.log(this.selectedInspectionInstance)
+      this.selectedInspectionInstance.notes=this.notedData;
+      this.inspectionInstance.selectedItemList= this.selectedItems;
       this.assetDetailService.updateAssetInspection(this.selectedInspectionInstance).subscribe((data)=>{
         console.log("Updated Inspection"+data);
         this.triggerAlert("Inspection updated sucessfully","success");
@@ -1003,6 +1056,7 @@ handleClickOutside(event: MouseEvent) {
       },
       ()=>{
          this.inspectionInstance.stepValues = [];
+         this.inspectionInstance.notes='';
         this.ngOnInit();
       })
     }
@@ -1056,7 +1110,9 @@ handleClickOutside(event: MouseEvent) {
       })
 
       let steps: any[] = [];
+      let stepObj:any[]=[]
       // this.selectedItems
+      console.log("updateStepListCalled")
       console.log("selectedItems",this.selectedItems)
       this.selectedItems.forEach((item:any)=>{
         let inspectionMapValue = this.inspectionMap.get(item.id);
@@ -1064,6 +1120,8 @@ handleClickOutside(event: MouseEvent) {
         if (inspectionMapValue !== null && inspectionMapValue !== undefined) {
           const inspectionMap = inspectionMapValue as any;
           const stepList= inspectionMap['stepsList'];
+          
+          let myCurrStep:any[]=[];
           stepList.forEach((step:any)=>{
               let obj: any = {
                 name: step['name'],
@@ -1073,15 +1131,76 @@ handleClickOutside(event: MouseEvent) {
                 value: step['type']=='CHECKBOX'?false:'',
                 type:step['type']
               };
+
               steps.push(obj);
+              myCurrStep.push(obj);
           })
+          let myObj={
+            "inspectionName": item.name,
+            "stepValues": myCurrStep
+          }
+          stepObj.push(myObj);
         
           // You may want to push obj to steps or handle it as needed.
         }
       })
+      console.log("stepObj",stepObj)
       console.log(steps)
+      this.stepObject=stepObj;
        this.inspectionInstance.stepValues = steps;
+       this.inspectionInstance.inspectionTemplates = this.stepObject;
        console.log(this.inspectionInstance.stepValues)
+        
+
+  }
+  updateStepListFromLocalStorage(){
+      
+      this.inspectionInstance.assetId = this.assetId;
+      this.inspectionInstance.companyId = this.companyId;
+      this.inspectionInstance.assetCategoryInspectionName = "";
+      this.selectedItems.forEach((item:any)=>{
+        this.inspectionInstance.assetCategoryInspectionName += item.name + " ";
+      })
+
+      let steps: any[] = [];
+      let stepObj:any[]=[]
+      // this.selectedItems
+      console.log("updateStepListCalled")
+      console.log("selectedItems",this.selectedItems)
+      this.inspectionInstance.inspectionTemplates.forEach((item:any)=>{
+
+          const stepList= item['stepValues'];
+          
+          let myCurrStep:any[]=[];
+          stepList.forEach((step:any)=>{
+              let obj: any = {
+                name: step['name'],
+                // The following variables (ind, step) are not defined in this context.
+                // You may need to adjust this logic as per your requirements.
+                inspectionStepId: null,
+                value: step['value'],
+                type:step['type']
+              };
+
+              steps.push(obj);
+              myCurrStep.push(obj);
+          })
+          let myObj={
+            "inspectionName": item.inspectionName,
+            "stepValues": myCurrStep
+          }
+          stepObj.push(myObj);
+        
+          // You may want to push obj to steps or handle it as needed.
+    
+      })
+      console.log("stepObj",stepObj)
+      console.log(steps)
+      this.stepObject=stepObj;
+       this.inspectionInstance.stepValues = steps;
+       this.inspectionInstance.inspectionTemplates = this.stepObject;
+       console.log(this.inspectionInstance.notes)
+      //  console.log(this.inspectionInstance.stepValues)
         
 
   }
@@ -1105,5 +1224,59 @@ console.log(this.selectedItems);
   clearSteps(){
     this.inspectionInstance.stepValues = [];
   }
-}
+  tempSave(){
+    this.inspectionInstance.actionPerformedBy=this.username;
+      const currDateTime=new Date();
 
+       if(this.inspectionInstance.createdAt==null || this.inspectionInstance.createdAt==''){
+      this.inspectionInstance.createdAt=currDateTime.toLocaleString();
+      }
+      this.inspectionInstance.updatedAt=currDateTime.toLocaleString();
+      this.inspectionInstance.status='PENDING';
+      this.inspectionInstance.selectedItemList= this.selectedItems;
+      this.assetDetailService.addAssetInspection(this.inspectionInstance).subscribe((data)=>{
+        console.log("Inspection Saved"+data);
+        this.triggerAlert("Inspection saved sucessfully","success");
+        this.selectedItems=[]
+      },
+      (err)=>{
+        console.log(err);
+        this.triggerAlert(err.error.errorMessage,"danger");
+        this.selectedItems=[]
+      },
+      ()=>{
+        this.selectedItems=[]
+        this.clearSavedData();
+        this.ngOnInit();
+      })
+      console.log(this.inspectionInstance)
+      console.log(this.selectedItems)
+      // localStorage.setItem(this.assetId+'tempInspection', JSON.stringify(this.inspectionInstance));
+      // localStorage.setItem(this.assetId+'selectedItems', JSON.stringify(this.selectedItems));
+      this.triggerAlert("Inspection Instance Saved","success");
+  }
+  clearSavedData(){
+    localStorage.removeItem(this.assetId+'tempInspection');
+    localStorage.removeItem(this.assetId+'selectedItems');
+    this.inspectionInstance = new InspectionInstance();
+
+    this.selectedItems = [];
+    this.notedData="";
+  }
+  updateNotedData(data:any){
+    this.notedData=data;
+  }
+
+  mySelectedInspectionInstanceFunc(instance:any){
+    console.log("mySelectedInspectionInstanceFunc called")
+    console.log(instance)
+    this.selectedItems = instance.selectedItemList;
+    this.selectedInspectionInstance=instance;
+    this.inspectionInstance=instance;
+    this.inspectionInstance.assetId=this.assetId;
+    this.inspectionInstance.companyId=this.companyId;
+    this.inspectionInstance.actionPerformedBy=this.username;
+    this.notedData=instance.notes;
+    this.updateStepListFromLocalStorage();
+  }
+}

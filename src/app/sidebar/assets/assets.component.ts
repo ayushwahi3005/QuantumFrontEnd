@@ -438,12 +438,17 @@ export class AssetsComponent {
   }
 
   dropdownOpenLocation = false;
+  dropdownOpenLocationFilter = false;
   selectedLocation: any = null;
   selectedLocationId: any = null;
 
   toggleDropdownLocation() {
     console.log(this.filteredLocationOrBinList)
     this.dropdownOpenLocation = !this.dropdownOpenLocation;
+  }
+  toggleDropdownLocationForFilter() {
+    console.log(this.filteredLocationOrBinList)
+    this.dropdownOpenLocationFilter = !this.dropdownOpenLocationFilter;
   }
 
   selectLocationOrBin(locationOrBinId: any, locationOrBin: any) {
@@ -452,6 +457,7 @@ export class AssetsComponent {
     this.selectedLocationId = locationOrBinId;
     console.log(this.selectedLocationId)
     // this.selectedCustomerId=customer.companyCustomerId;
+    this.dropdownOpenLocationFilter = false;
     this.dropdownOpenLocation = false;
   }
   // selectLocationOrBinId(locationOrBinId: any) {
@@ -992,7 +998,7 @@ export class AssetsComponent {
   addFilterForm() {
     this.loading = true;
     this.filterForm.controls['customer'].setValue(this.selectedCustomer?.name);
-    this.filterForm.controls['location'].setValue(this.selectedLocation);
+    this.filterForm.controls['location'].setValue(this.selectedLocationId);
     console.log(this.filterForm.value);
     this.mandatoryFieldFilterList.forEach((value, data) => {
       if (value == true && this.filterForm.controls[data]?.value != null && this.filterForm.controls[data]?.value != "") {

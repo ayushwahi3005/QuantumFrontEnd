@@ -20,6 +20,7 @@ export class SettingMainComponent {
   companyImage:any;
   companyInformation!:CompanyInformation;
   companyId!:any;
+  role:any;
   sideBarOption=[{
     number:1,
     name:'Company Information',
@@ -90,7 +91,7 @@ constructor(private settingMainService:SettingMainService,private auth:AuthServi
     this.email=localStorage.getItem('user');
     console.log(this.email);
     this.companyId=localStorage.getItem('companyId');
-   
+    this.role=localStorage.getItem('role')
     this.settingMainService.dashboard(this.email).subscribe((data)=>{
       this.username=data.firstName+" "+data.lastName;
     },(err)=>{

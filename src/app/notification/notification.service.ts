@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { Client } from '@stomp/stompjs';
 import { Subject } from 'rxjs';
 import * as SockJS from 'sockjs-client';
+import { environment } from 'src/environments/environment';
 
 @Injectable({
   providedIn: 'root'
@@ -28,7 +29,8 @@ export class NotificationService {
     }
 
     this.stompClient = new Client({
-      webSocketFactory: () => new SockJS('http://localhost:8080/assetyug-notifications'),
+      webSocketFactory: () => new SockJS(environment.endpoint+'assetyug-notifications'),
+      //  webSocketFactory: () => new SockJS('http://localhost:8080/assetyug-notifications'),
       connectHeaders: {
         'Authorization': `Bearer ${token}`
       },

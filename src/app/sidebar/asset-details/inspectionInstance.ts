@@ -5,7 +5,11 @@ export class InspectionInstance{
     assetCategoryInspectionName!:string;
     actionPerformedBy!:string;
     notes!:string;
-    date!:string;
+    createdAt!:string;
+    updatedAt!:string;
+    status!:'PENDING' | 'COMPLETED';
     stepValues!:any[];
+    inspectionTemplates!:any[]
+    selectedItemList!:any[];
   
 }

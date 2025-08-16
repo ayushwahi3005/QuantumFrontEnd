@@ -28,7 +28,7 @@
             </div>
             
             <div class="mt-5">
-                <span class="downloadTemplate">Download Template</span> | <span class="exportList"  data-toggle="modal" data-target="#exportTable">Export Current List</span>
+                <span class="downloadTemplate" data-toggle="modal" data-target="#downloadTemplate">Download Template</span> | <span class="exportList"  data-toggle="modal" data-target="#exportTable">Export Current List</span>
             </div>
             
             <div class="form-group" class="form-control" (change)="FileUpload($event)" style="border: 0px;">
@@ -147,7 +147,37 @@
     </div>
   </div>
 </div>
-
+<div class="modal fade" id="downloadTemplate" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle" aria-hidden="true" style="z-index :10000;">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2 class="modal-title" id="exampleModalLongTitle">Select Template</h2>
+        <button type="button" class="close  ms-auto" data-dismiss="modal" aria-label="Close" #closeBox4>
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <form>
+          <select class="form-select form-control" id="dropdown"   style="width: 100%;" (change)="exportTemplate(templateVal)" #templateVal>
+                
+            <option value="asset" >Asset</option>
+            <option value="workorder" selected>Work Order</option>
+            <option value="inventory" >Inventory</option>
+            <option value="customer">Customer</option>
+            </select>
+        </form>
+        
+         
+      
+      </div>
+      <div class="modal-footer d-flex justify-content-around">
+        
+        <button type="submit" class="btn btn-primary mt-3" (click)="closeBox4.click()" (click)="exportTemplateData()"   >Download Template</button>
+        
+      </div>
+    </div>
+  </div>
+</div>
 
 
 

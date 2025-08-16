@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Animated Device Limit Reached</title>
+    <style>
+        .device-limit-container {
+            width: 100%;
+            height: 300px;
+            background: #f8fafc;
+            border-radius: 12px;
+            position: relative;
+            overflow: hidden;
+            margin: 20px auto;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .background-circle {
+            width: 120px;
+            height: 120px;
+            background: #fee2e2;
+            border: 2px solid #fecaca;
+            border-radius: 50%;
+            position: relative;
+            margin-bottom: 40px;
+            animation: pulse 2s ease-in-out infinite;
+        }
+
+        .devices-container {
+            position: absolute;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 15px;
+            align-items: center;
+        }
+
+        .device {
+            animation: slideIn 1s ease-out;
+        }
+
+        .device.laptop {
+            animation-delay: 0.2s;
+        }
+
+        .device.phone {
+            animation-delay: 0.4s;
+        }
+
+        .device.tablet {
+            animation-delay: 0.6s;
+        }
+
+        .laptop {
+            width: 20px;
+            height: 14px;
+            background: #6b7280;
+            border-radius: 1px;
+            position: relative;
+        }
+
+        .laptop::before {
+            content: '';
+            position: absolute;
+            top: 1px;
+            left: 1px;
+            width: 18px;
+            height: 8px;
+            background: #374151;
+        }
+
+        .laptop::after {
+            content: '';
+            position: absolute;
+            top: 14px;
+            left: -1px;
+            width: 22px;
+            height: 2px;
+            background: #6b7280;
+            border-radius: 1px;
+        }
+
+        .phone {
+            width: 12px;
+            height: 20px;
+            background: #6b7280;
+            border-radius: 2px;
+            position: relative;
+        }
+
+        .phone::before {
+            content: '';
+            position: absolute;
+            top: 2px;
+            left: 1px;
+            width: 10px;
+            height: 14px;
+            background: #374151;
+        }
+
+        .phone::after {
+            content: '';
+            position: absolute;
+            bottom: 2px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 2px;
+            height: 2px;
+            background: #9ca3af;
+            border-radius: 50%;
+        }
+
+        .tablet {
+            width: 16px;
+            height: 22px;
+            background: #6b7280;
+            border-radius: 2px;
+            position: relative;
+        }
+
+        .tablet::before {
+            content: '';
+            position: absolute;
+            top: 2px;
+            left: 1px;
+            width: 14px;
+            height: 16px;
+            background: #374151;
+        }
+
+        .tablet::after {
+            content: '';
+            position: absolute;
+            bottom: 2px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 4px;
+            height: 1px;
+            background: #9ca3af;
+            border-radius: 0.5px;
+        }
+
+        .warning-circle {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 50px;
+            height: 50px;
+            background: #ef4444;
+            border-radius: 50%;
+            opacity: 0.9;
+            animation: bounceIn 1.5s ease-out 0.8s both;
+        }
+
+        .warning-x {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            color: white;
+            font-size: 24px;
+            font-weight: bold;
+            animation: bounceIn 1.5s ease-out 0.8s both;
+        }
+
+        .title {
+            font-family: system-ui, -apple-system, sans-serif;
+            font-size: 24px;
+            font-weight: 600;
+            color: #1f2937;
+            margin-bottom: 10px;
+            animation: fadeInUp 1s ease-out 1.2s both;
+        }
+
+        .subtitle {
+            font-family: system-ui, -apple-system, sans-serif;
+            font-size: 14px;
+            color: #6b7280;
+            margin-bottom: 5px;
+            animation: fadeInUp 1s ease-out 1.4s both;
+        }
+
+        .action-text {
+            font-family: system-ui, -apple-system, sans-serif;
+            font-size: 14px;
+            color: #6b7280;
+            animation: fadeInUp 1s ease-out 1.6s both;
+        }
+
+        .decorative-dots {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+        }
+
+        .dot {
+            position: absolute;
+            border-radius: 50%;
+            background: #e5e7eb;
+            animation: float 3s ease-in-out infinite;
+        }
+
+        .dot1 {
+            top: 50px;
+            left: 80px;
+            width: 6px;
+            height: 6px;
+            animation-delay: 0s;
+        }
+
+        .dot2 {
+            top: 60px;
+            right: 80px;
+            width: 8px;
+            height: 8px;
+            animation-delay: 1s;
+        }
+
+        .dot3 {
+            bottom: 100px;
+            right: 50px;
+            width: 4px;
+            height: 4px;
+            animation-delay: 0.5s;
+        }
+
+        .dot4 {
+            bottom: 80px;
+            left: 50px;
+            width: 4px;
+            height: 4px;
+            animation-delay: 1.5s;
+        }
+
+        @keyframes pulse {
+            0%, 100% {
+                transform: scale(1);
+                opacity: 1;
+            }
+            50% {
+                transform: scale(1.05);
+                opacity: 0.8;
+            }
+        }
+
+        @keyframes slideIn {
+            0% {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            100% {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes bounceIn {
+            0% {
+                opacity: 0;
+                transform: translate(-50%, -50%) scale(0.3);
+            }
+            50% {
+                transform: translate(-50%, -50%) scale(1.1);
+            }
+            100% {
+                opacity: 0.9;
+                transform: translate(-50%, -50%) scale(1);
+            }
+        }
+
+        @keyframes fadeInUp {
+            0% {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            100% {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes float {
+            0%, 100% {
+                transform: translateY(0);
+                opacity: 0.3;
+            }
+            50% {
+                transform: translateY(-10px);
+                opacity: 0.6;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="device-limit-container">
+        <div class="decorative-dots">
+            <div class="dot dot1"></div>
+            <div class="dot dot2"></div>
+            <div class="dot dot3"></div>
+            <div class="dot dot4"></div>
+        </div>
+        
+        <div class="background-circle">
+            <div class="devices-container">
+                <div class="device laptop"></div>
+                <div class="device phone"></div>
+                <div class="device tablet"></div>
+            </div>
+            <div class="warning-circle"></div>
+            <div class="warning-x">✕</div>
+        </div>
+        
+        <div class="title">Device Limit Reached</div>
+        <div class="subtitle">You've reached the maximum number of devices</div>
+        <!-- <div class="action-text">Remove from all devices</div> -->
+    </div>
+</body>
+</html>

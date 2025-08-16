@@ -69,27 +69,48 @@
 
   
   
-  <div class="modal fade" id="removeLoggedIn" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle" aria-hidden="true" data-backdrop="static" data-keyboard="false"  style="z-index :10000;">
-    <div class="modal-dialog " role="document">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h2 class="modal-title" id="exampleModalLongTitle">Already Logged In From Other Device!</h2>
-          <button type="button" class="close  ms-auto" data-dismiss="modal" aria-label="Close" #closeBox (click)="routeToLogin()" >
-            <span aria-hidden="true">&times;</span>
-          </button>
-        </div>
-        <div class="modal-body">
-         
-          <p>Logout from all devices</p>
-         
-        </div>
-        <div class="modal-footer">
-          <button class="btn btn-primary" (click)="logoutFromAllDevice()">Yes</button>
-          <button class="btn btn-danger" (click)="closeBox.click()" (click)="routeToLogin()">No</button>
-        </div>
+ <div class="modal fade" id="removeLoggedIn" tabindex="-1" role="dialog"
+     aria-labelledby="exampleModalLongTitle" aria-hidden="true"
+     data-backdrop="static" data-keyboard="false"
+     style="z-index: 10000;">
+  
+  <!-- Make modal larger with modal-lg -->
+  <div class="modal-dialog modal-lg" role="document" style="max-width: 600px;width:60%">
+    <div class="modal-content" style="max-height:495px">
+
+      <div class="modal-header">
+        <h2 class="modal-title" id="exampleModalLongTitle">
+          Already Logged In From Other Device!
+        </h2>
+        <!-- <button type="button" class="close ms-auto" data-dismiss="modal"
+                aria-label="Close" #closeBox (click)="routeToLogin()">
+                
+          <span aria-hidden="true">&times;</span>
+        </button> -->
+         <button type="button" class="btn btn-light btn-sm ms-auto" data-dismiss="modal" aria-label="Close"
+          style="border-radius: 10px;" #closeBox (click)="routeToLogin()">
+          <i class="bi bi-x-lg"></i>
+        </button>
       </div>
+
+      <!-- Remove card padding so iframe takes full space -->
+      <div class="modal-body p-0" style="height: 500px;">
+        <iframe 
+          src="assets/device-limit.html" 
+          style="width: 100%; height: 100%; border: none; display: block;">
+        </iframe>
+      </div>
+
+      <div class="modal-footer d-flex justify-content-center">
+        <button class="btn btn-primary" (click)="logoutFromAllDevice()">Logout From All Devices</button>
+        <!-- <button class="btn btn-danger" (click)="closeBox.click(); routeToLogin()">No</button> -->
+      </div>
+
     </div>
   </div>
+</div>
+
+
   
   
   <footer class="custom-footer">

@@ -104,8 +104,8 @@ export class AuthService {
                      this.tokenAuthenticationService.getCompanyId(user?.email).subscribe((data)=>{
                       this.companyId=data;
                       console.log(this.companyId)
-                      localStorage.setItem('companyId',this.companyId.id);
-                      console.log("CompanyId"+this.companyId.id+" "+localStorage.getItem('user'))
+                      localStorage.setItem('companyId',this.companyId?.id);
+                      console.log("CompanyId"+this.companyId?.id+" "+localStorage.getItem('user'))
                       this.isLoggedIn="true";
                       localStorage.setItem('isLoggedIn',"true");
                       //loggedIN data saving

@@ -466,28 +466,61 @@
               <div class="d-flex justify-content-around">
                 <!-- <input type="text" class="form-control" id="location" formControlName="location"  > -->
                 <div class="dropdown">
-                  <span class="dropdown-toggle-arrow">
+
+                <span class="dropdown-toggle-arrow">
+                  <i class="fa" [ngClass]="dropdownOpenLocation ? 'fa-chevron-up' : 'fa-chevron-down'"></i>
+                </span>
+                <input type="text" placeholder="Search" class="form-control" (input)="filterLocations($event)"
+                  [value]="selectedLocation || ''" (click)="toggleDropdownLocationForFilter()" />
+                <ul *ngIf="dropdownOpenLocationFilter" class="dropdown-menu show scrollable-dropdown">
+                  <!-- Add [class.show]="dropdownOpen" as needed -->
+                  <ng-container *ngFor="let loc of filteredLocationOrBinList">
+                    <!-- Location as section header or selectable -->
+                    <li class="dropdown-item font-weight-bold"
+                      (click)="selectLocationOrBin('location:' + loc.id,loc.name)">
+                      {{ loc.name }}
+                    </li>
+
+                    <!-- Bins nested under the location -->
+                    <li *ngFor="let bin of loc.bins" class="dropdown-item pl-4"
+                      (click)="selectLocationOrBin('bin:' + bin.id,loc.name+' -> '+bin.binNumber)">
+                      <!-- {{ loc.name }}→ {{ bin.binNumber }} -->
+                      {{ loc.name }} -> {{ bin.binNumber }}
+                    </li>
+                  </ng-container>
+                </ul>
+
+
+
+
+
+
+
+
+                  <!-- <span class="dropdown-toggle-arrow">
                     <i class="fa" [ngClass]="dropdownOpenLocation ? 'fa-chevron-up' : 'fa-chevron-down'"></i>
                   </span>
                   <input type="text" placeholder="Search" class="form-control" (input)="filterLocations($event)"
-                    [value]="selectedLocation || ''" (click)="toggleDropdownLocation()" />
-                  <ul *ngIf="dropdownOpenLocation" class="dropdown-menu show scrollable-dropdown">
-                    <!-- Add [class.show]="dropdownOpen" as needed -->
+                    [value]="selectedLocation || ''" (click)="toggleDropdownLocation()" /> -->
+                  <!-- <ul *ngIf="dropdownOpenLocation" class="dropdown-menu show scrollable-dropdown">
+                  
                     <ng-container *ngFor="let loc of filteredLocationOrBinList">
-                      <!-- Location as section header or selectable -->
+                  
                       <li class="dropdown-item font-weight-bold"
                         (click)="selectLocationOrBin('location:' + loc.id,loc.name)">
                         {{ loc.name }}
                       </li>
 
-                      <!-- Bins nested under the location -->
+                   
                       <li *ngFor="let bin of loc.bins" class="dropdown-item pl-4"
                         (click)="selectLocationOrBin('bin:' + bin.id,bin.binNumber)">
-                        <!-- {{ loc.name }}→ {{ bin.binNumber }} -->
+                    
                         {{ loc.name }} -> {{ bin.binNumber }}
                       </li>
                     </ng-container>
-                  </ul>
+                  </ul> -->
+
+                  
                   <!-- <select class="form-control" id="location" formControlName="location">
                     <option [value]="'location:' + loc.id" *ngFor="let loc of locationWithBins" >
                     {{ loc.name }}

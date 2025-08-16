@@ -61,6 +61,7 @@ export class ImportComponent {
   progress: number = 0;
   uploadInProgress: boolean = false;
   currExportModuel:any;
+  currExportTemplate:any;
   constructor(private formBuilder:FormBuilder,private importService:ImportService,private assetService:AssetsService,private dialog: MatDialog){
 
   }
@@ -496,4 +497,26 @@ export class ImportComponent {
       })
     }
   }
+
+  exportTemplate(event:any){
+    // console.log(event.value)
+    this.currExportTemplate=event.value;
+
+    // console.log(this.currExportTemplate)
+  }
+  exportTemplateData(){
+    if(this.currExportTemplate=="asset"){
+      const link = document.createElement('a');
+    link.href = 'assets/Template_Files/Asset_Template.csv'; // path to your file
+    link.download = 'Asset_template.csv';        // name of the file to be downloaded
+    link.click();
+    }
+    if(this.currExportTemplate=="customer"){
+      const link = document.createElement('a');
+    link.href = 'assets/Template_Files/Customer_Template.csv'; // path to your file
+    link.download = 'Customer_Template.csv';        // name of the file to be downloaded
+    link.click();
+    }
+  }
+
 }

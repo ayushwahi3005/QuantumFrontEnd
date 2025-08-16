@@ -132,6 +132,17 @@ loading=true;
       console.log("details"+data)
       console.log(data)
       this.assetDetails=data;
+      this.assetPreviewService.getLocationBinDetails(this.companyId,this.assetDetails.location).subscribe((data)=>{
+      console.log("location bin details",data);
+      this.assetDetails.location=data;
+    },
+    (err)=>{
+      console.log(err);
+    },
+    ()=>{
+      this.loading=false;
+    });
+      
       console.log("preview:-"+this.assetDetails.customerId)
       if(this.assetDetails.customerId!=null&&this.assetDetails.customerId!=''){
          this.assetPreviewService.getCompanyCustomer(this.assetDetails.customerId).subscribe((data)=>{
@@ -151,6 +162,8 @@ loading=true;
     ()=>{
       this.loading=false;
     })
+
+    
     this.userRole=localStorage.getItem('role');
     if(this.userRole=='ADMIN'){
       this.assetPreviewService.getTechnicalUsers(this.companyId).subscribe((data)=>{

@@ -1,0 +1,56 @@
+<svg width="400" height="300" viewBox="0 0 400 300" xmlns="http://www.w3.org/2000/svg">
+  <!-- Background -->
+  <rect width="400" height="300" fill="#f8fafc" rx="12"/>
+  
+  <!-- Main circle background -->
+  <circle cx="200" cy="120" r="60" fill="#fee2e2" stroke="#fecaca" stroke-width="2"/>
+  
+  <!-- Device icons -->
+  <!-- Laptop -->
+  <g transform="translate(160, 90)">
+    <rect x="0" y="10" width="20" height="12" fill="#6b7280" rx="1"/>
+    <rect x="1" y="11" width="18" height="8" fill="#374151"/>
+    <rect x="-1" y="22" width="22" height="2" fill="#6b7280" rx="1"/>
+  </g>
+  
+  <!-- Phone -->
+  <g transform="translate(205, 85)">
+    <rect x="0" y="0" width="12" height="20" fill="#6b7280" rx="2"/>
+    <rect x="1" y="2" width="10" height="14" fill="#374151"/>
+    <circle cx="6" cy="18" r="1" fill="#9ca3af"/>
+  </g>
+  
+  <!-- Tablet -->
+  <g transform="translate(225, 88)">
+    <rect x="0" y="0" width="16" height="22" fill="#6b7280" rx="2"/>
+    <rect x="1" y="2" width="14" height="16" fill="#374151"/>
+    <rect x="6" y="19" width="4" height="1" fill="#9ca3af" rx="0.5"/>
+  </g>
+  
+  <!-- Warning/X symbol -->
+  <g transform="translate(200, 120)">
+    <circle r="25" fill="#ef4444" opacity="0.9"/>
+    <path d="M-8,-8 L8,8 M8,-8 L-8,8" stroke="white" stroke-width="3" stroke-linecap="round"/>
+  </g>
+  
+  <!-- Title text -->
+  <text x="200" y="200" font-family="system-ui, -apple-system, sans-serif" font-size="24" font-weight="600" text-anchor="middle" fill="#1f2937">
+    Device Limit Reached
+  </text>
+  
+  <!-- Subtitle text -->
+  <text x="200" y="225" font-family="system-ui, -apple-system, sans-serif" font-size="14" text-anchor="middle" fill="#6b7280">
+    You've reached the maximum number of devices
+  </text>
+  
+  <!-- Additional text -->
+  <text x="200" y="245" font-family="system-ui, -apple-system, sans-serif" font-size="14" text-anchor="middle" fill="#6b7280">
+    Remove from all device
+  </text>
+  
+  <!-- Decorative elements -->
+  <circle cx="80" cy="50" r="3" fill="#e5e7eb" opacity="0.5"/>
+  <circle cx="320" cy="60" r="4" fill="#e5e7eb" opacity="0.3"/>
+  <circle cx="350" cy="200" r="2" fill="#e5e7eb" opacity="0.4"/>
+  <circle cx="50" cy="220" r="2" fill="#e5e7eb" opacity="0.6"/>
+</svg>

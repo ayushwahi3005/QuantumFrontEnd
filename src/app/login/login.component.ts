@@ -150,12 +150,7 @@ export class LoginComponent {
   logoutFromAllDevice(){
     this.loginService.removeSession(this.email).subscribe((data)=>{
       console.log("Removed from all devices")
-    },
-      (err)=>{
-        console.log(err);
-      },
-      ()=>{
-        const modalElement = document.getElementById('removeLoggedIn');
+          const modalElement = document.getElementById('removeLoggedIn');
     if (modalElement) {
       modalElement.classList.remove('show');
       modalElement.style.display = 'none';
@@ -176,6 +171,12 @@ export class LoginComponent {
         console.log(this.loader)
         this.subscribeToService();
         console.log(this.errorMessage+" in Login");
+    },
+      (err)=>{
+        console.log(err);
+      },
+      ()=>{
+    
       })
    
   }

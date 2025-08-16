@@ -96,4 +96,7 @@ export class AssetPreviewService {
   getUserDetail(companyId:string,email:string):Observable<any>{
     return this.httpClient.get(this.userEndpoint+"getUserDetails/"+companyId+'/'+email,{headers:this.headers});
   }
+  getLocationBinDetails(companyId:string,name:string):Observable<any>{
+    return this.httpClient.get(this.assetEndpoint+"locationBinDetails/"+companyId+'/'+name,{headers:this.headers,responseType: 'text'});
+  }
 }

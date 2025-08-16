@@ -158,6 +158,9 @@ export class AssetDetailsService {
   getAllAssetInspectionInstance(id:string):Observable<any>{
         return this.httpClient.get(this.assetEndpoint+'getAllAssetInspectionInstance/'+id,{headers:this.headers});
       }
+      getAllAssetInspectionInstanceByAssetId(id:string):Observable<any>{
+        return this.httpClient.get(this.assetEndpoint+'getAllAssetInspectionInstanceByAssetId/'+id,{headers:this.headers});
+      }
       getAllLocationWithBin(companyId:any):Observable<any>{
         const headers = new HttpHeaders({
           'Authorization': `Bearer ${localStorage.getItem('authToken')}`,

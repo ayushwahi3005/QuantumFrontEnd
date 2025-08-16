@@ -104,7 +104,7 @@ export class CustomerCategoryComponent {
 
     const obj={
       "id":id,
-        "name":name.trim().toLowerCase(),
+        "name":name.trim(),
        "status":event.checked==true?"active":"inactive",
        "companyId":this.companyId
     }
@@ -182,7 +182,7 @@ export class CustomerCategoryComponent {
     console.log(this.editCurrCategory);
     const obj={
         "id":this.editCurrCategory.id,
-        "name":this.editCurrCategory.name.trim().toLowerCase(),
+        "name":this.editCurrCategory.name.trim(),
        "status":this.editCurrCategory.status,
        "companyId":this.companyId
     }

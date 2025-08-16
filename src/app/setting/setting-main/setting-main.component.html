@@ -41,15 +41,14 @@
     <ul class="nav-list"  >
     
    
-    <li class="nav-list-item" *ngFor="let item of sideBarOption" [ngClass]="{'selected':(current==item.number)}"  (click)="update(item.number)">
-
-      <i class={{item.icon}}></i>
-      <span >
-        
-        {{item.name}}
-      </span>
-    
-    </li>
+    <ng-container *ngFor="let item of sideBarOption">
+      <li class="nav-list-item" [ngClass]="{'selected':(current==item.number)}" (click)="update(item.number)" *ngIf="item.name !== 'Subscription' || role === 'ADMIN'">
+        <i class="{{item.icon}}"></i>
+        <span>
+          {{item.name}}
+        </span>
+      </li>
+    </ng-container>
 
   </ul>
 </div>
