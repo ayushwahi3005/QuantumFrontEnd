@@ -1,4 +1,9 @@
 <div class="main">
+  <div *ngIf="showAlert" class="alert" [ngClass]="'alert-' + alertType" role="alert" style="margin: 10px 2%; height: 60px; position: fixed; width: calc(95vw - 250px); z-index: 10000; left: 250px; ">
+  {{ alertMessage }}
+
+  <button type="button" class="btn-close" (click)="showAlert = false" aria-label="Close" style="float: right;"></button>
+</div>
 <div class="option d-flex flex-row bd-highlight " style="width: 60%; margin: 30px auto;">
     <span [ngClass]="{'selected-option':(currOption==1)}" (click)="onClick(1)">Locations</span>
     <span [ngClass]="{'selected-option':(currOption==2)}" (click)="onClick(2)">Bins</span>
@@ -40,12 +45,12 @@
                     <td scope="row">{{searchedLocationList.indexOf(item)+1}}</td>
                     <td>{{item.name|titlecase}}</td>
                     <td>{{item.address|titlecase}}</td>
-                    <td>{{item.status|titlecase}}</td>
+                      <td>{{ item.status === 'active' ? 'Active' : 'In Active' }}</td>
                     <td>
                       <div style="display: flex; align-items: center; gap: 15px;">
                         <!-- <img src="../../../assets/edit.svg" id="edit-button" [ngClass]="{'editoption':!(editVisibility&&(editButtonId==locationList.indexOf(item)+1))}" style="float: inline-start; height: 25px; width: 25px;"  > -->
-                        <i class="bi bi-pencil edit-icon" [ngClass]="{'editoption':!(editVisibility&&(editButtonId==searchedLocationList.indexOf(item)+1))}" style="float: inline-start; margin: 5px 5px;" ></i>
-                        <i class="bi bi-trash delete-icon"  [ngClass]="{'editoption':!(editVisibility&&(editButtonId==searchedLocationList.indexOf(item)+1))}" style="color: red; float: inline-start; margin: 5px 5px;" (click)="deleteLocation(item.id)"></i>
+                        <i class="bi bi-pencil edit-icon" [ngClass]="{'editoption':!(editVisibility&&(editButtonId==searchedLocationList.indexOf(item)+1))}" style="float: inline-start; margin: 5px 5px;" id="dropdownMenuButton" data-toggle="modal" data-target="#editLocation" (click)="editLocation(item)"></i>
+                        <i class="bi bi-trash delete-icon"  [ngClass]="{'editoption':!(editVisibility&&(editButtonId==searchedLocationList.indexOf(item)+1))}" style="color: red; float: inline-start; margin: 5px 5px;" (click)="deleteLocation(item.id,item.name)" id="dropdownMenuButton" data-toggle="modal" data-target="#confirmDeleteLocation"></i>
                       </div>
                     </td>
                   </tr>
@@ -95,11 +100,11 @@
                   <th scope="row">{{searchedBinList.indexOf(item)+1}}</th>
                   <td>{{item.binNumber|titlecase}}</td>
                   <td>{{item.locationName|titlecase}}</td>
-                  <td>{{item.status|titlecase}}</td>
-                  <td>
+                  <td>{{ item.status === 'active' ? 'Active' : 'In Active' }}</td>
+                  <td style="display: flex; align-items: center; gap: 15px;">
                       <!-- <img src="../../../assets/edit.svg" id="edit-button" [ngClass]="{'editoption':!(editVisibility&&(editButtonId==locationList.indexOf(item)+1))}" style="float: inline-start; height: 25px; width: 25px;"  > -->
-                      <i class="bi bi-pencil" [ngClass]="{'editoption':!(editVisibility&&(editButtonId==searchedBinList.indexOf(item)+1))}"  style="float: inline-start; margin: 15px 5px;" ></i>
-                    <i class="bi bi-trash"  [ngClass]="{'editoption':!(editVisibility&&(editButtonId==searchedBinList.indexOf(item)+1))}" style="color: red; float: inline-start; margin: 15px 5px;" (click)="deleteBin(item.id)"></i>
+                      <i class="bi bi-pencil" [ngClass]="{'editoption':!(editVisibility&&(editButtonId==searchedBinList.indexOf(item)+1))}"  style="float: inline-start; margin: 15px 5px;" id="dropdownMenuButton" data-toggle="modal" data-target="#editBin" (click)="editBin(item)"></i>
+                    <i class="bi bi-trash"  [ngClass]="{'editoption':!(editVisibility&&(editButtonId==searchedBinList.indexOf(item)+1))}" style="color: red; float: inline-start; margin: 15px 5px;" (click)="deleteBin(item.id,item.binNumber)" id="dropdownMenuButton" data-toggle="modal" data-target="#confirmDeleteBin"></i>
                   </td>
                 </tr>
               </ng-container>
@@ -234,6 +239,202 @@
           <div style="display: flex; justify-content: center; margin-top: 15px;">
           <button  class="btn btn-light"  (click)="closeBox5.click()" style="margin: 10px; width: 100px; margin-right: 30px; border: 1px solid #c0c0c0">Cancel</button>
           <button type="submit" class="btn btn-primary" (click)="closeBox5.click()" (click)="saveBin()" [disabled]="binForm.invalid" style="margin: 10px; width: 100px;">Save</button>
+          
+        </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Edit Location -->
+     <div class="modal fade" id="editLocation" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header" style="padding: 13px 15px">
+          <h2 class="modal-title" id="exampleModalLongTitle" style="margin:0; display: flex; justify-content: center;">Edit Location</h2>
+          <button type="button" class="btn btn-light btn-sm ms-auto" data-dismiss="modal" aria-label="Close" style="border-radius: 10px;" #closeBoxEditLocation>
+            <!-- <span aria-hidden="true" style="height: 20px; width: 10px; background-color: #f0f0f0; border:none; display:block; padding-top: 0px;  ">&times;</span> -->
+            <i class="bi bi-x-lg"></i>
+          </button>
+        </div>
+        <div class="modal-body">
+          <form [formGroup]="locationForm" >
+
+            <!-- <div style="width: 95%;"> -->
+              <div>
+                <label for="name">Name</label><br>
+                <input type="text" class="form-group" id="name" formControlName="name" style="font-size: 16px; padding-left: 11px; width: 100%; margin-top: 10px; border-radius: 5px; height: 35px; border: 1px solid #c0c0c0; transition: border-color 0.3s, box-shadow 0.3s;" #name>
+                <!-- <i class="bi bi-trash-fill delete" style="display: inline-flex; margin-top: 12px; margin-left: 10px; color: red; margin-right: 5px;" (click)="removeMandatoryFieldFilter('assetId')"></i> -->
+              </div>
+            
+              <div style="margin-top: 10px;">
+              <label for="parentLocation">Parent Location</label><br>
+              <!-- <input type="text" class="form-select form-control" id="parentLocation" formControlName="parentLocation" style="font-size: 16px; padding-left: 11px; width: 100%; margin-top: 10px; border-radius: 5px; height: 35px; border: 1px solid #c0c0c0; transition: border-color 0.3s, box-shadow 0.3s;" #name> -->
+              <select class="form-select form-control" id="parentLocation" formControlName="parentLocation" style="font-size: 16px; padding-left: 11px; width: 100%; margin-top: 10px; border-radius: 5px; height: 35px; border: 1px solid #c0c0c0; transition: border-color 0.3s, box-shadow 0.3s;" #location >
+                <option value="{{location.id}}" *ngFor="let location of locationList">{{location.name}}</option>
+                <!-- <option value="{{[customer.name,customer.id]}}" *ngFor="let customer of companyCustomerList">{{customer.name}}</option> -->
+                <!-- <option value="outOfService" selected>Out Of Service</option> -->
+              </select>
+              <!-- <i class="bi bi-trash-fill delete" style="display: inline-flex; margin-top: 12px; margin-left: 10px; color: red; margin-right: 5px;" (click)="removeMandatoryFieldFilter('assetId')"></i> -->
+            </div>
+
+            <div style="margin-top: 10px;">
+              <label for="address">Address</label><br>
+              <input type="text" placeholder="Address 1" class="form-group" id="address" formControlName="address" style="font-size: 16px; padding-left: 11px; width: 100%; margin-top: 10px; border-radius: 5px; height: 35px; border: 1px solid #c0c0c0; transition: border-color 0.3s, box-shadow 0.3s;" #name>
+              <!-- <i class="bi bi-trash-fill delete" style="display: inline-flex; margin-top: 12px; margin-left: 10px; color: red; margin-right: 5px;" (click)="removeMandatoryFieldFilter('name')"></i> -->
+            </div>
+         
+              <div>
+                <!-- <label for="apartment">Apartment</label> -->
+                <input type="text" placeholder="Address 2" class="form-group" id="apartment" formControlName="apartment" style="font-size: 16px; padding-left: 11px; width: 100%; margin-top: 10px; border-radius: 5px; height: 35px; border: 1px solid #c0c0c0; transition: border-color 0.3s, box-shadow 0.3s;" >
+                <!-- <i class="bi bi-trash-fill delete" style="display: inline-flex; margin-top: 12px; margin-left: 10px; color: red; margin-right: 5px;" (click)="removeMandatoryFieldFilter('serialNumber')"></i> -->
+              </div>
+              
+              <div class="d-flex justify-content-between">
+              <div>
+                <!-- <label for="city" >City</label> -->
+                <input type="text" placeholder="City" class="form-group" id="city" formControlName="city" style="font-size: 16px; padding-left: 11px; width: 100%; margin-top: 10px; border-radius: 5px; height: 35px; border: 1px solid #c0c0c0; transition: border-color 0.3s, box-shadow 0.3s;">
+                <!-- <i class="bi bi-trash-fill delete" style="display: inline-flex; margin-top: 12px; margin-left: 10px; color: red; margin-right: 5px;" (click)="removeMandatoryFieldFilter('category')"></i> -->
+              </div>
+              
+              <div style="padding-left: 20px;">
+                <!-- <label for="state">State</label> -->
+                <input type="text" placeholder="State" class="form-group" id="state" formControlName="state" style="font-size: 16px; padding-left: 11px; width: 100%; margin-top: 10px; border-radius: 5px; height: 35px; border: 1px solid #c0c0c0; transition: border-color 0.3s, box-shadow 0.3s;">
+                <!-- <i class="bi bi-trash-fill delete" style="display: inline-flex; margin-top: 12px; margin-left: 10px; color: red; margin-right: 5px;" (click)="removeMandatoryFieldFilter('customer')"></i> -->
+              </div>
+              
+              <div style="padding-left: 20px;">
+                <!-- <label for="zipCode">ZipCode</label> -->
+                <input type="text" placeholder="Zip Code" class="form-group" id="zipCode" formControlName="zipCode" style="font-size: 16px; padding-left: 11px; width: 100%; margin-top: 10px; border-radius: 5px; height: 35px; border: 1px solid #c0c0c0; transition: border-color 0.3s, box-shadow 0.3s;">
+                <!-- <i class="bi bi-trash-fill delete" style="display: inline-flex; margin-top: 12px; margin-left: 10px; color: red; margin-right: 5px;" (click)="removeMandatoryFieldFilter('location')"></i> -->
+                <br>
+              </div>
+                <div style="padding-left: 20px;">
+                <!-- <label for="zipCode">ZipCode</label> -->
+                <input type="text" placeholder="Zip Code" class="form-group" id="zipCode" formControlName="zipCode" style="font-size: 16px; padding-left: 11px; width: 100%; margin-top: 10px; border-radius: 5px; height: 35px; border: 1px solid #c0c0c0; transition: border-color 0.3s, box-shadow 0.3s;">
+                <!-- <i class="bi bi-trash-fill delete" style="display: inline-flex; margin-top: 12px; margin-left: 10px; color: red; margin-right: 5px;" (click)="removeMandatoryFieldFilter('location')"></i> -->
+                <br>
+              </div>
+
+              
+              </div>
+              <div style="margin-top: 10px;">
+                <label for="status">Status</label><br>
+                 <select class="form-select form-control" id="state" formControlName="status" style="font-size: 16px; padding-left: 11px; width: 100%; margin-top: 10px; border-radius: 5px; height: 35px; border: 1px solid #c0c0c0; transition: border-color 0.3s, box-shadow 0.3s;" #location >
+                    <option value="active">Active</option>
+                    <option value="inActive">In Active</option>
+                    <!-- <option value="{{[customer.name,customer.id]}}" *ngFor="let customer of companyCustomerList">{{customer.name}}</option> -->
+                    <!-- <option value="outOfService" selected>Out Of Service</option> -->
+                  </select>
+                  </div>
+              <div style="display: flex; justify-content: center; margin-top: 15px;">
+                <button  class="btn btn-light"  (click)="closeBoxEditLocation.click()" (click)="clearEditLocation()" style="margin: 10px; width: 100px; margin-right: 30px; border: 1px solid #c0c0c0">Cancel</button>
+                <button type="submit" class="btn btn-primary" (click)="closeBoxEditLocation.click()" (click)="updateLocation()" style="margin: 10px; width: 100px;">Save</button>
+              </div>
+
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Edit Bin -->
+   <div class="modal fade" id="editBin" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header" style="padding: 13px 15px">
+          <h2 class="modal-title" id="exampleModalLongTitle" style="margin:0; display: flex; justify-content: center;">Add Bin</h2>
+          <button type="button" class="btn btn-light btn-sm ms-auto" data-dismiss="modal" aria-label="Close" style="border-radius: 10px;" #closeEditBin (click)="binNumber.value=''"  (click)="location.value=''">
+            <!-- <span aria-hidden="true" style="height: 20px; width: 10px; background-color: #f0f0f0; border:none; display:block; padding-top: 0px;  ">&times;</span> -->
+            <i class="bi bi-x-lg"></i>
+          </button>
+        </div>
+        <div class="modal-body">
+            <form [formGroup]="binForm" >
+
+                <!-- <div style="width: 95%;"> -->
+                  <div>
+                    <label for="binNumber">Bin Number<span style="border: none; background-color: white;display:contents;" class="text-danger"> *</span></label>
+                    <input type="text" class="form-group" id="binNumber" formControlName="binNumber" style="font-size: 16px; padding-left: 11px; width: 100%; margin-top: 10px; border-radius: 5px; height: 35px; border: 1px solid #c0c0c0; transition: border-color 0.3s, box-shadow 0.3s;" #binNumber>
+                    <!-- <i class="bi bi-trash-fill delete" style="display: inline-flex; margin-top: 12px; margin-left: 10px; color: red; margin-right: 5px;" (click)="removeMandatoryFieldFilter('name')"></i> -->
+                  </div>
+
+                <div style="margin-top: 10px;">
+                  <label for="location">Location<span style="border: none; background-color: white;display:contents;" class="text-danger"> *</span></label>
+                  <!-- <input type="text" class="form-control" id="location" formControlName="location" > -->
+                  <!-- <i class="bi bi-trash-fill delete" style="display: inline-flex; margin-top: 12px; margin-left: 10px; color: red; margin-right: 5px;" (click)="removeMandatoryFieldFilter('assetId')"></i> -->
+                  <select class="form-select form-control" id="state" formControlName="locationId" style="font-size: 16px; padding-left: 11px; width: 100%; margin-top: 10px; border-radius: 5px; height: 35px; border: 1px solid #c0c0c0; transition: border-color 0.3s, box-shadow 0.3s;" #location >
+                    <option value="{{location.id}}" *ngFor="let location of locationList">{{location.name}}</option>
+                    <!-- <option value="{{[customer.name,customer.id]}}" *ngFor="let customer of companyCustomerList">{{customer.name}}</option> -->
+                    <!-- <option value="outOfService" selected>Out Of Service</option> -->
+                  </select>
+                </div>
+
+                <div style="margin-top: 10px;">
+                  <label for="status">Status<span style="border: none; background-color: white;display:contents;" class="text-danger"> *</span></label>
+                  <!-- <input type="text" class="form-control" id="location" formControlName="location" > -->
+                  <!-- <i class="bi bi-trash-fill delete" style="display: inline-flex; margin-top: 12px; margin-left: 10px; color: red; margin-right: 5px;" (click)="removeMandatoryFieldFilter('assetId')"></i> -->
+                  <select class="form-select form-control" id="state" formControlName="status" style="font-size: 16px; padding-left: 11px; width: 100%; margin-top: 10px; border-radius: 5px; height: 35px; border: 1px solid #c0c0c0; transition: border-color 0.3s, box-shadow 0.3s;" #location >
+                    <option value="active">Active</option>
+                    <option value="inActive">In Active</option>
+                    <!-- <option value="{{[customer.name,customer.id]}}" *ngFor="let customer of companyCustomerList">{{customer.name}}</option> -->
+                    <!-- <option value="outOfService" selected>Out Of Service</option> -->
+                  </select>
+                </div>
+  
+            <!-- </div> -->
+           
+          </form>
+       
+          <div style="display: flex; justify-content: center; margin-top: 15px;">
+          <button  class="btn btn-light"  (click)="closeEditBin.click()" style="margin: 10px; width: 100px; margin-right: 30px; border: 1px solid #c0c0c0">Cancel</button>
+          <button type="submit" class="btn btn-primary" (click)="closeEditBin.click()" (click)="updateBin()" [disabled]="binForm.invalid" style="margin: 10px; width: 100px;">Save</button>
+          
+        </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal fade" id="confirmDeleteLocation" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header" style="padding: 13px 15px">
+          <h2 class="modal-title" id="exampleModalLongTitle" style="margin:0; display: flex; justify-content: center;">Are You Sure Want to Delete '{{deleteLocationName}}' ?</h2>
+          <button type="button" class="btn btn-light btn-sm ms-auto" data-dismiss="modal" aria-label="Close" style="border-radius: 10px;" #closeDeleteLocation (click)="deleteLocationName=''" >
+            <!-- <span aria-hidden="true" style="height: 20px; width: 10px; background-color: #f0f0f0; border:none; display:block; padding-top: 0px;  ">&times;</span> -->
+            <i class="bi bi-x-lg"></i>
+          </button>
+        </div>
+        <div class="modal-body">
+        
+       
+          <div style="display: flex; justify-content: center; margin-top: 15px;">
+          <button  class="btn btn-light"  (click)="closeDeleteLocation.click()" style="margin: 10px; width: 100px; margin-right: 30px; border: 1px solid #c0c0c0">Cancel</button>
+          <button type="submit" class="btn btn-danger" (click)="closeDeleteLocation.click()" (click)="deleteConfirmLocation()"  style="margin: 10px; width: 100px;">Delete</button>
+          
+        </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal fade" id="confirmDeleteBin" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header" style="padding: 13px 15px">
+          <h2 class="modal-title" id="exampleModalLongTitle" style="margin:0; display: flex; justify-content: center;">Are You Sure Want to delete Bin '{{deleteBinName}}' ?</h2>
+          <button type="button" class="btn btn-light btn-sm ms-auto" data-dismiss="modal" aria-label="Close" style="border-radius: 10px;" #closeDeleteBin (click)="deleteBinName=''" >
+            <!-- <span aria-hidden="true" style="height: 20px; width: 10px; background-color: #f0f0f0; border:none; display:block; padding-top: 0px;  ">&times;</span> -->
+            <i class="bi bi-x-lg"></i>
+          </button>
+        </div>
+        <div class="modal-body">
+        
+       
+          <div style="display: flex; justify-content: center; margin-top: 15px;">
+          <button  class="btn btn-light"  (click)="closeDeleteBin.click()" style="margin: 10px; width: 100px; margin-right: 30px; border: 1px solid #c0c0c0">Cancel</button>
+          <button type="submit" class="btn btn-danger" (click)="closeDeleteBin.click()" (click)="confirmDeleteBin()"  style="margin: 10px; width: 100px;">Delete</button>
           
         </div>
         </div>

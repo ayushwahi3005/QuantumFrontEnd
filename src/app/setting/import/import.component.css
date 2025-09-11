@@ -1,12 +1,8 @@
-.main{
-   
-    width: calc(100vw - 400px);
-    /* margin-left: 140px; */
-    height: 75vh;
-    margin-top: 5%;
-    
-    
-    
+.main {
+  width: calc(100vw - 400px);
+  height: 75vh;
+  padding-top: 100px;  /* ensures content stays below alert */
+  margin: 0 auto;      /* keeps it centered, prevents shifting left */
 }
 .container{
     border: 2px solid #f6f6f6dc;
@@ -14,10 +10,14 @@
     background-color: white;
     border: 1px solid lightgray;
 }
-.alert{
-    width: calc(100vw - 290px);
-    margin-left: 120px;
-    margin-top: 5px;
+.alert {
+  /* position: fixed; */
+  top: 10px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 100%;
+  max-width: 100%;    /* so it doesn’t overflow */
+  z-index: 1050;
 }
 h1{
     font-family: Sans-serif;

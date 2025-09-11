@@ -101,6 +101,9 @@ export class CustomerResetPasswordComponent {
       }
     }, 5000); // Hide the alert after 5 seconds (adjust as needed)
   }
+  resendOTP(){
+
+  }
   sendOTP(){
     this.loader=true;
     console.log(this.loader)
@@ -115,7 +118,7 @@ export class CustomerResetPasswordComponent {
     
     this.customerResetPasswordService.sendOTPToEmail(this.email).subscribe((data)=>{
       console.log("OTP sent to email")
-     this.state=this.state+1;
+     this.state=2;
      this.loader=false;
       },
       (err)=>{

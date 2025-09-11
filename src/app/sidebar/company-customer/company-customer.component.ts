@@ -94,7 +94,7 @@ export class CompanyCustomerComponent {
       category: [''],
       status: ['active'],
       phone: ['', Validators.pattern('^[ 0-9\(\)\-]{14}$')],
-      email: [''],
+      email: ['', Validators.pattern('^[a-z0-9._%+-]+@[a-z0-9.-]+\\.[a-z]{2,4}$')],
       address: [''],
       apartment: [''],
       city: [''],
@@ -483,7 +483,12 @@ advanceFilterFunc() {
     (err)=>{
       console.log(err);
       this.loadingScreen=false;
+       if(err.error.error==="TRIAL_EXPIRED"){
+        this.triggerAlert(err.error.message,"danger");
+      }
+      else{
       this.triggerAlert(err.error.errorMessage,"danger");
+      }
     },
     ()=>{
     // this.ngOnInit();
@@ -511,7 +516,12 @@ advanceFilterFunc() {
       (err)=>{
         console.log(err);
         this.loadingScreen=false;
-        this.triggerAlert(err.error.errorMessage,"danger");
+         if(err.error.error==="TRIAL_EXPIRED"){
+        this.triggerAlert(err.error.message,"danger");
+      }
+      else{
+      this.triggerAlert(err.error.errorMessage,"danger");
+      }
       },
     ()=>{
       this.loadingScreen=false;
@@ -610,14 +620,24 @@ advanceFilterFunc() {
     (err)=>{
       console.log(err);
       this.companyCustomerForm.reset();
+       if(err.error.error==="TRIAL_EXPIRED"){
+        this.triggerAlert(err.error.message,"danger");
+      }
+      else{
       this.triggerAlert(err.error.errorMessage,"danger");
+      }
     },()=>{
       this.companyCustomerService.deleteWorkorderExtraField(id).subscribe((data)=>{
         console.log("ExtraFields Deleted");
       },
       (err)=>{
         console.log(err);
-        this.triggerAlert(err.error.errorMessage,"danger");
+         if(err.error.error==="TRIAL_EXPIRED"){
+        this.triggerAlert(err.error.message,"danger");
+      }
+      else{
+      this.triggerAlert(err.error.errorMessage,"danger");
+      }
       })
       this.ngOnInit();
       this.loadingScreen=false;

@@ -103,7 +103,7 @@
         <span *ngIf="appliedFilterListSize >0">
           <button *ngFor="let item of appliedFilterList" class="sort btn btn-primary"
             (click)="removeSingleFilter(item)">{{(item=="assetId")?"Id":item|titlecase}}:
-            {{appliedFilterListMap?.get(item)|titlecase}} &times;</button>
+            {{getFilterDisplayValue(item)|titlecase}} &times;</button>
           <button class="btn btn-warning" style="margin-left: 5px;" (click)="reset()">Clear All</button>
         </span>
       </div>

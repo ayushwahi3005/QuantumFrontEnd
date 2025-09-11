@@ -47,6 +47,7 @@ export class SettingHomeComponent {
 constructor(private settingHomeService:SettingHomeService,private auth:AuthService,private router:Router){}
 
   ngOnInit(){
+  
     
     this.email=localStorage.getItem('user');
     console.log(this.email);
@@ -78,6 +79,7 @@ constructor(private settingHomeService:SettingHomeService,private auth:AuthServi
   update(val:number){
     console.log(val);
     this.current=val;
+
   }
   logout(){
     this.auth.currUser=null;

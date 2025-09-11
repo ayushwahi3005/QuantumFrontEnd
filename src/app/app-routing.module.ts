@@ -20,6 +20,7 @@ import { AdminHomeComponent } from './admin/admin-home/admin-home.component';
 import { AdminAuthenticationService } from './shared/admin-authentication.service';
 import { PaymentComponent } from './setting/payment/payment.component';
 import { CustomerResetPasswordComponent } from './customer-reset-password/customer-reset-password.component';
+import { PageNotFoundComponent } from './page-not-found/page-not-found/page-not-found.component';
 
 const routes: Routes = [
   {path: '', component:HomeComponent, pathMatch:'full'},
@@ -40,7 +41,8 @@ const routes: Routes = [
   {path:'payment',component:PaymentComponent,canActivate:[AuthenticationService]},
   {path:'admin',component:AdminLoginComponent},
   {path:'admin/reset',component:ResetPasswordAdminComponent},
-  {path:'admin/home',component:AdminHomeComponent,canActivate:[AdminAuthenticationService]}
+  {path:'admin/home',component:AdminHomeComponent,canActivate:[AdminAuthenticationService]},
+  {path: '**', component: PageNotFoundComponent }  
 
 
   

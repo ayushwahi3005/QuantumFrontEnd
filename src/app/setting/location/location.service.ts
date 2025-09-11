@@ -25,6 +25,12 @@ export class LocationService {
    
     return this.httpClient.post(this.endpoint+'customer/addlocation',data,{headers});
   }
+
+  updateLocation(data:any):Observable<any>{
+    const headers = new HttpHeaders().set('Authorization', `Bearer ${this.myToken}`).set('Device-ID', `${localStorage.getItem('deviceId')}`);
+   
+    return this.httpClient.put(this.endpoint+'customer/addlocation',data,{headers});
+  }
   deleteLocation(id:string):Observable<any>{
     const headers = new HttpHeaders().set('Authorization', `Bearer ${this.myToken}`).set('Device-ID', `${localStorage.getItem('deviceId')}`);
    
@@ -34,6 +40,11 @@ export class LocationService {
     const headers = new HttpHeaders().set('Authorization', `Bearer ${this.myToken}`).set('Device-ID', `${localStorage.getItem('deviceId')}`);
    
     return this.httpClient.post(this.endpoint+'customer/addbin',data,{headers});
+  }
+  updateBin(data:any):Observable<any>{
+    const headers = new HttpHeaders().set('Authorization', `Bearer ${this.myToken}`).set('Device-ID', `${localStorage.getItem('deviceId')}`);
+   
+    return this.httpClient.put(this.endpoint+'customer/addbin',data,{headers});
   }
   getBin(companyId:string):Observable<any>{
     const headers = new HttpHeaders().set('Authorization', `Bearer ${this.myToken}`).set('Device-ID', `${localStorage.getItem('deviceId')}`);

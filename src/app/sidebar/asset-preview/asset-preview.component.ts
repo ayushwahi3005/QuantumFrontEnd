@@ -463,7 +463,12 @@ offHover(){
       },
       (err)=>{
         console.log(err);
-        this.triggerAlert(err.error.errorMessage,"danger");
+         if(err.error.error==="TRIAL_EXPIRED"){
+        this.triggerAlert(err.error.message,"danger");
+      }
+      else{
+      this.triggerAlert(err.error.errorMessage,"danger");
+      }
       },
       ()=>{
         this.ngOnInit()
@@ -526,7 +531,12 @@ offHover(){
       },
       (err)=>{
         console.log(err);
-        this.triggerAlert(err.error.errorMessage,"danger");
+         if(err.error.error==="TRIAL_EXPIRED"){
+        this.triggerAlert(err.error.message,"danger");
+      }
+      else{
+      this.triggerAlert(err.error.errorMessage,"danger");
+      }
       })
     }
     itemDeleteDetails(id:string){
@@ -539,7 +549,12 @@ offHover(){
       },
       (err)=>{
         console.log(err);
-        this.triggerAlert(err.error.errorMessage,"danger");
+         if(err.error.error==="TRIAL_EXPIRED"){
+        this.triggerAlert(err.error.message,"danger");
+      }
+      else{
+      this.triggerAlert(err.error.errorMessage,"danger");
+      }
       },
       ()=>{
         this.ngOnInit();

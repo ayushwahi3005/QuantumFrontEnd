@@ -1,4 +1,4 @@
-<div class="admin-dashboard">
+<div class="admin-dashboard" [ngClass]="{'dark': dark_theme, 'light': !dark_theme}">
     <!-- Sidebar -->
     <aside class="sidebar">
       <div class="logo">
@@ -17,9 +17,10 @@
         <a href="#">Add new plugin</a>
       </div>
       <div class="theme-toggle">
-        <label for="themeSwitch">Light</label>
-        <input type="checkbox" id="themeSwitch" checked />
-        <label for="themeSwitch">Dark</label>
+        <label for="themeSwitch" style="color: white;">Light</label>
+        <!-- <input type="checkbox" id="themeSwitch" (change)="onThemeSwitch(themeSwitch)" #themeSwitch> -->
+        <mat-slide-toggle  color="primary" (change)="onThemeSwitch(sh)"  #sh></mat-slide-toggle>
+        <label for="themeSwitch" style="color: white;">Dark</label>
       </div>
     </aside>
   
@@ -29,9 +30,9 @@
         <h1>Manage your projects</h1>
         <p>Here you can track projects, task progress, and team activity.</p>
         <div class="header-controls">
-          <button class="btn create">Create</button>
+          <button class="btn create" [ngClass]="{'dark': dark_theme, 'light': !dark_theme}">Create</button>
           <!-- <img src="../../../assets/admin-profile.svg" alt="Profile" class="profile-pic" /> -->
-          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-person-fill" viewBox="0 0 16 16">
+          <svg  xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-person-fill" viewBox="0 0 16 16">
             <path d="M3 14s-1 0-1-1 1-4 6-4 6 3 6 4-1 1-1 1zm5-6a3 3 0 1 0 0-6 3 3 0 0 0 0 6"/>
           </svg>
           <button class="btn" style="background-color: gainsboro;" (click)="logout()" >Logout</button>
@@ -46,14 +47,14 @@
           
           
           <div class="chart-controls d-flex justify-content-around" >
-            <button class="btn" [ngClass]="{'active':(earn_period=='week')}" (click)="updateEarnPeriod('week')">Week</button>
-            <button class="btn" [ngClass]="{'active':(earn_period=='month')}" (click)="updateEarnPeriod('month')">Month</button>
-            <button class="btn" [ngClass]="{'active':(earn_period=='year')}" (click)="updateEarnPeriod('year')">Year</button>
+            <button class="btn" [ngClass]="{'active':(earn_period=='WEEKLY')}" (click)="updateEarnPeriod('WEEKLY')">Week</button>
+            <button class="btn" [ngClass]="{'active':(earn_period=='MONTHLY')}" (click)="updateEarnPeriod('MONTHLY')">Month</button>
+            <button class="btn" [ngClass]="{'active':(earn_period=='YEARLY')}" (click)="updateEarnPeriod('YEARLY')">Year</button>
           </div>
           <!-- Chart placeholder -->
           <div class="chart">[Chart goes here]</div>
      
-          <div style="display: block; width: 400px;">
+          <div style="display: block; max-width: 400px; width: 100%;">
          
 
             <canvas baseChart

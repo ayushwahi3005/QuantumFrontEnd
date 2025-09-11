@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, ElementRef, ViewChild } from '@angular/core';
 import { RoleAndPermissionService } from './role-and-permission.service';
 import { RoleAndPermission } from './RoleAndPermission';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
@@ -26,6 +26,7 @@ export class RoleAndPermissionComponent {
   alertType: string = 'success';
   currItem!:RoleAndPermissionEdit;
   deleteRoleId!:string;
+    @ViewChild('closeBox2') closeBox2!: ElementRef<HTMLButtonElement>;
   constructor(private roleAndPermissionService:RoleAndPermissionService,private formBuilder:FormBuilder,private auth:AuthService,private router:Router){}
 
   ngOnInit(){
@@ -122,6 +123,12 @@ export class RoleAndPermissionComponent {
       },
       err=>{
         console.log(err);
+         if(err.error.error==="TRIAL_EXPIRED"){
+        this.triggerAlert(err.error.message,"danger");
+      }
+      else{
+      this.triggerAlert(err.error.errorMessage,"danger");
+      }
       },
       ()=>{
         this.ngOnInit();
@@ -177,7 +184,7 @@ export class RoleAndPermissionComponent {
       console.log(this.currItem)
       // this.roleAndPermissionForm.controls['companyId'].setValue(this.companyId);
       let name=this.currItem.name;
-      if(name.trim()==''){
+      if(name.trim()==''||this.roleAndPermissionFormEdit.controls['name'].value.trim()==''){
         this.triggerAlert("Empty Name Field","warning")
       }
       else{
@@ -188,10 +195,19 @@ export class RoleAndPermissionComponent {
       },
       err=>{
         console.log(err);
+         if(err.error.error==="TRIAL_EXPIRED"){
+        this.triggerAlert(err.error.message,"danger");
+      }
+      else{
+      this.triggerAlert(err.error.errorMessage,"danger");
+      }
       },
       ()=>{
         this.triggerAlert("Role And Permission Updated","success")
         this.ngOnInit();
+         if (this.closeBox2) {
+          this.closeBox2.nativeElement.click();
+        }
         
       })
     }
@@ -206,7 +222,12 @@ export class RoleAndPermissionComponent {
         },
         err=>{
           console.log(err);
-          this.triggerAlert(err.error.errorMessage,"danger")
+           if(err.error.error==="TRIAL_EXPIRED"){
+        this.triggerAlert(err.error.message,"danger");
+      }
+      else{
+      this.triggerAlert(err.error.errorMessage,"danger");
+      }
         },
         ()=>{
           this.triggerAlert("Role Deleted!!","success")

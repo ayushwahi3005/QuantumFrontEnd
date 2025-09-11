@@ -150,7 +150,12 @@
                 <div style="margin: 0px 6.5vw;">
                     <label for="phone">Phone<span *ngIf="mandatoryFieldsMap.get('phone')" class="text-danger">*</span></label><br>
                     
-                    <input id="phone" type="text" [(ngModel)]=" companyCustomer.phone"  >
+                    <input id="phone" 
+                      type="text" 
+                      [(ngModel)]="companyCustomer.phone"  
+                      (input)="formatPhoneNumber($event)" 
+                      maxlength="14"
+                      class="form-control">
                 </div>
                 <div style="margin: 0px 6.5vw;">
                     <label for="email">Email<span *ngIf="mandatoryFieldsMap.get('email')" class="text-danger">*</span></label><br>
@@ -250,6 +255,8 @@
       <div class="d-flex justify-content-between" style="margin: 5px;">
         
         <span style="font-size: large; background:none; border: none; justify-content:left;">{{item.fileName|titlecase}}</span>
+
+         <span style="font-size: large; background:none; border: none; justify-content:left;">{{item.uploadDateTime|date}}</span>
         <div>
          
           <a (click)="download(item.id,item.fileName)"  style="margin: 0px 5px;"><i class="bi bi-file-earmark-arrow-down"></i></a>

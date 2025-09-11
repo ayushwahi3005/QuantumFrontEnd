@@ -365,11 +365,28 @@ export class CompanyCustomerDetailsComponent {
       }
     }
     if(this.mandatoryFieldsMap.get("zipCode")==true){
-      if(this.companyCustomer.apartment==''||this.companyCustomer.apartment==null){
+      if(this.companyCustomer.zipCode==null){
         this.triggerAlert("Fill Mandatory field 'zipCode'","danger")
         return ;
       }
     }
+
+    
+      const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+
+      if (this.companyCustomer.email &&!emailRegex.test(this.companyCustomer.email)) {
+        this.triggerAlert("Please enter a valid email address", "danger");
+        return;
+      }
+
+      const phoneRegex = /^^\(\d{3}\) \d{3}-\d{4}$/;
+
+      if (this.companyCustomer.phone &&!phoneRegex.test(this.companyCustomer.phone)) {
+        this.triggerAlert("Please enter a valid phone number", "danger");
+        return;
+      }
+
+
     let mandatoryFlag=1;
     console.log("extraField-->",this.extraFields)
     if (Array.isArray(this.extraFields)) {
@@ -417,7 +434,12 @@ export class CompanyCustomerDetailsComponent {
     err=>{
       console.log(err);
       this.loadingScreen=false;
+       if(err.error.error==="TRIAL_EXPIRED"){
+        this.triggerAlert(err.error.message,"danger");
+      }
+      else{
       this.triggerAlert(err.error.errorMessage,"danger");
+      }
     },
   ()=>{
     if(this.userRoleDetails?.customer=='full'||this.userRoleDetails?.customer=="edit"||this.userRole=="ADMIN"){
@@ -485,7 +507,12 @@ export class CompanyCustomerDetailsComponent {
         (err)=>{
           console.log(err);
           this.loadingScreen=false;
-          this.triggerAlert(err.error.errorMessage,"danger");
+           if(err.error.error==="TRIAL_EXPIRED"){
+        this.triggerAlert(err.error.message,"danger");
+      }
+      else{
+      this.triggerAlert(err.error.errorMessage,"danger");
+      }
         })
         })
   
@@ -499,7 +526,12 @@ export class CompanyCustomerDetailsComponent {
       (err)=>{
         console.log(err);
         this.loadingScreen=false;
-        this.triggerAlert(err.error.errorMessage,"danger");
+         if(err.error.error==="TRIAL_EXPIRED"){
+        this.triggerAlert(err.error.message,"danger");
+      }
+      else{
+      this.triggerAlert(err.error.errorMessage,"danger");
+      }
       })
   
   
@@ -632,7 +664,12 @@ export class CompanyCustomerDetailsComponent {
           this.currentFile=null;
           this.message = 'Could not upload the file!';
           console.log(this.message);
-          this.triggerAlert(err.error.errorMessage,"danger");
+           if(err.error.error==="TRIAL_EXPIRED"){
+        this.triggerAlert(err.error.message,"danger");
+      }
+      else{
+      this.triggerAlert(err.error.errorMessage,"danger");
+      }
           
          
         },()=>{
@@ -730,7 +767,12 @@ export class CompanyCustomerDetailsComponent {
     },
     (err)=>{
       console.log(err);
+       if(err.error.error==="TRIAL_EXPIRED"){
+        this.triggerAlert(err.error.message,"danger");
+      }
+      else{
       this.triggerAlert(err.error.errorMessage,"danger");
+      }
     })
   }
   deleteFile(){
@@ -740,7 +782,12 @@ export class CompanyCustomerDetailsComponent {
     },
     (err)=>{
       console.log(err);
+       if(err.error.error==="TRIAL_EXPIRED"){
+        this.triggerAlert(err.error.message,"danger");
+      }
+      else{
       this.triggerAlert(err.error.errorMessage,"danger");
+      }
     },
     ()=>{
       this.ngOnInit();
@@ -757,7 +804,12 @@ export class CompanyCustomerDetailsComponent {
       },
     (err)=>{
       console.log(err);
+       if(err.error.error==="TRIAL_EXPIRED"){
+        this.triggerAlert(err.error.message,"danger");
+      }
+      else{
       this.triggerAlert(err.error.errorMessage,"danger");
+      }
     })
   }
   else{
@@ -801,4 +853,27 @@ export class CompanyCustomerDetailsComponent {
     }
     // this.dashboardComponent.current=id;
   }
+
+  formatPhoneNumber(event: Event) {
+    let input = (event.target as HTMLInputElement).value;
+  
+    // Keep only digits
+    input = input.replace(/\D/g, '');
+  
+    if (input.length === 0) {
+      input = '';   // ✅ allow empty value
+    } else if (input.length > 6) {
+      input = `(${input.substring(0, 3)}) ${input.substring(3, 6)}-${input.substring(6, 10)}`;
+    } else if (input.length > 3) {
+      input = `(${input.substring(0, 3)}) ${input.substring(3, 6)}`;
+    } else {
+      input = `(${input.substring(0, 3)}`;
+    }
+  
+    // Update field and model
+    (event.target as HTMLInputElement).value = input;
+    this.companyCustomer.phone = input;  // ✅ ngModel stays in sync
+  }
+
+
 }

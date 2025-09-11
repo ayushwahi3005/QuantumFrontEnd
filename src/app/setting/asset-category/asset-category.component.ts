@@ -106,7 +106,12 @@ export class AssetCategoryComponent {
     (err)=>{ this.handleError(err)
       console.log(err.error.errorMessage);
       
+       if(err.error.error==="TRIAL_EXPIRED"){
+        this.triggerAlert(err.error.message,"danger");
+      }
+      else{
       this.triggerAlert(err.error.errorMessage,"danger");
+      }
     },
     ()=>{
       this.addFieldName='';

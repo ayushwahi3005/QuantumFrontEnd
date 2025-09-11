@@ -130,7 +130,13 @@ export class ImportService {
 
   }
   downloadAllAssets(companyId: string): Observable<Blob> {
-    return this.httpClient.get(this.assetEndpoint + "export-asset/" + companyId, {
+    return this.httpClient.get(this.assetEndpoint + "export-asset-xlsx/" + companyId, {
+      headers: this.headers,
+      responseType: 'blob' // Specify blob as response type
+    });
+  }
+  downloadAllCustomer(companyId: string): Observable<Blob> {
+    return this.httpClient.get(this.companyCustomerEndpoint + "export-company-customer/" + companyId, {
       headers: this.headers,
       responseType: 'blob' // Specify blob as response type
     });

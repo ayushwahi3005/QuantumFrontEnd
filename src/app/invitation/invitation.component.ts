@@ -16,6 +16,7 @@ export class InvitationComponent {
  companyId!:any;
  token!:any;
  user!:User;
+ linkExpired: boolean = false; // Flag to indicate if the link has expired
 
  showAlert: boolean = false; // Flag to toggle alert visibility
   alertMessage: string = ''; // Alert message
@@ -61,6 +62,8 @@ export class InvitationComponent {
   },
   (err)=>{
     console.log(err);
+    this.triggerAlert(err.error.errorMessage,"danger");
+    this.linkExpired=true;
   })
   
   this.subscribeToService();
@@ -69,6 +72,10 @@ export class InvitationComponent {
 
  }
  register(){
+  if(this.linkExpired){
+    this.triggerAlert("Link Expired!!","danger");
+    return;
+  }
   console.log(this.inviteForm.value);
   console.log(this.user);
   this.user.password=this.inviteForm.controls['password'].value,

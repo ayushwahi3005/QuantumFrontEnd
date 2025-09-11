@@ -118,6 +118,7 @@ export class AssetsComponent {
   dropdownOptions: any = [];
   selectedLocationOrBin: string | null = null;
   filteredLocationOrBinList: any = [];
+  binLocationIdNameMap: Map<String, String> = new Map<String, String>();
   constructor(private assetService: AssetsService, private authService: AuthService, private formBuilder: FormBuilder) {
 
   }
@@ -289,6 +290,23 @@ export class AssetsComponent {
     this.assetService.getAllLocationWithBin(this.companyId).subscribe((data) => {
       this.locationWithBins = data;
       this.filteredLocationOrBinList = this.locationWithBins;
+
+
+      // Populate binLocationIdNameMap
+      this.binLocationIdNameMap.clear();
+      this.filteredLocationOrBinList.forEach((loc: any) => {
+        // Add location
+        this.binLocationIdNameMap.set(`location:${loc.id}`, loc.name);
+        // Add bins if present
+        if (loc.bins && Array.isArray(loc.bins)) {
+          loc.bins.forEach((bin: any) => {
+            this.binLocationIdNameMap.set(`bin:${bin.id}`, bin.binNumber);
+          });
+        }
+      });
+
+      console.log(data)
+      console.log(this.binLocationIdNameMap)
 
       this.locationWithBins.forEach((loc: any) => {
         if (loc.bins && loc.bins.length > 0) {
@@ -570,7 +588,12 @@ export class AssetsComponent {
     },
       (err) => {
         console.log(err);
-        this.triggerAlert(err.error.errorMessage, "danger");
+         if(err.error.error==="TRIAL_EXPIRED"){
+        this.triggerAlert(err.error.message,"danger");
+      }
+      else{
+      this.triggerAlert(err.error.errorMessage,"danger");
+      }
       })
   }
   onAdd() {
@@ -695,7 +718,12 @@ export class AssetsComponent {
     },
       (err) => {
         console.log(err);
-        this.triggerAlert(err.error.errorMessage, "danger");
+         if(err.error.error==="TRIAL_EXPIRED"){
+        this.triggerAlert(err.error.message,"danger");
+      }
+      else{
+      this.triggerAlert(err.error.errorMessage,"danger");
+      }
       },
       () => {
         this.selectedLocationId = '';
@@ -1099,5 +1127,13 @@ export class AssetsComponent {
   openSnackBar(message: string, action: string) {
     this._snackBar.open(message, action);
   }
+  getFilterDisplayValue(key: string): any {
+  const value = this.appliedFilterListMap?.get(key);
+  if (!value) return '';
+  if (value.startsWith('bin:') || value.startsWith('location:')) {
+    return this.binLocationIdNameMap?.get(value) || value;
+  }
+  return value;
+}
 
 }

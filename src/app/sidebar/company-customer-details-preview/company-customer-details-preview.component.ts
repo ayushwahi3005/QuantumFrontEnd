@@ -402,7 +402,12 @@ export class CompanyCustomerDetailsPreviewComponent {
         },
         (err)=>{
           console.log(err);
-          this.triggerAlert(err.error.errorMessage,"danger");
+           if(err.error.error==="TRIAL_EXPIRED"){
+        this.triggerAlert(err.error.message,"danger");
+      }
+      else{
+      this.triggerAlert(err.error.errorMessage,"danger");
+      }
         })
         })
   
@@ -413,7 +418,12 @@ export class CompanyCustomerDetailsPreviewComponent {
       },
       (err)=>{
         console.log(err);
-        this.triggerAlert(err.error.errorMessage,"danger");
+         if(err.error.error==="TRIAL_EXPIRED"){
+        this.triggerAlert(err.error.message,"danger");
+      }
+      else{
+      this.triggerAlert(err.error.errorMessage,"danger");
+      }
       })
   
   
@@ -564,7 +574,12 @@ export class CompanyCustomerDetailsPreviewComponent {
     },
     (err)=>{
       console.log(err);
+       if(err.error.error==="TRIAL_EXPIRED"){
+        this.triggerAlert(err.error.message,"danger");
+      }
+      else{
       this.triggerAlert(err.error.errorMessage,"danger");
+      }
     })
   }
   deleteFile(){
@@ -574,7 +589,12 @@ export class CompanyCustomerDetailsPreviewComponent {
     },
     (err)=>{
       console.log(err);
+       if(err.error.error==="TRIAL_EXPIRED"){
+        this.triggerAlert(err.error.message,"danger");
+      }
+      else{
       this.triggerAlert(err.error.errorMessage,"danger");
+      }
     },
     ()=>{
       this.ngOnInit();

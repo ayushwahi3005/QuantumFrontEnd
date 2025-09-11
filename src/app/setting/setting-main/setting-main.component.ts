@@ -87,7 +87,10 @@ export class SettingMainComponent {
 constructor(private settingMainService:SettingMainService,private auth:AuthService,private router:Router,private formBuilder:FormBuilder){}
 
   ngOnInit(){
-    
+    if(localStorage.getItem('settingHomeOption')!=null){
+      console.log("localStorage.getItem('settingHomeOption')->",localStorage.getItem('settingHomeOption'));
+      this.current=Number(localStorage.getItem('settingHomeOption'));
+    }
     this.email=localStorage.getItem('user');
     console.log(this.email);
     this.companyId=localStorage.getItem('companyId');
@@ -168,6 +171,7 @@ constructor(private settingMainService:SettingMainService,private auth:AuthServi
   update(val:number){
     console.log(val);
     this.current=val;
+        localStorage.setItem('settingHomeOption',val.toString());
     // if(val==3){
     //   this.router.navigate(['/custom-setting'])
     // }
@@ -219,6 +223,7 @@ constructor(private settingMainService:SettingMainService,private auth:AuthServi
     },
     (err)=>{
       console.log(err);
+      
       alert(err)
     }
     ,()=>{

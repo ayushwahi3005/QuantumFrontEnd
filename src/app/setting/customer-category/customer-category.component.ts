@@ -73,7 +73,7 @@ export class CustomerCategoryComponent {
     else{
     const obj={
       
-      "name":this.addFieldName.trim().toLowerCase(),
+      "name":this.addFieldName.trim(),
        "status":"active",
 
        "companyId":this.companyId
@@ -87,8 +87,12 @@ export class CustomerCategoryComponent {
     },
     (err)=>{
       console.log(err.error);
-      
+      if(err.error==="TRIAL_EXPIRED"){
+        this.triggerAlert(err.message,"danger");
+      }
+      else{
       this.triggerAlert(err.error.errorMessage,"danger");
+      }
     },
     ()=>{
       this.addFieldName='';

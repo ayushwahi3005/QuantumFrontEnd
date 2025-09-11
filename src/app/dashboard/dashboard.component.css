@@ -4,7 +4,13 @@
     font-size: xx-large;
     font-weight: 600;
 }
-
+/* .main {
+  overflow: hidden;
+  height: 100vh;
+} */
+ body{
+    overflow: hidden;
+ }
 .navoption{
     text-decoration: none;
     color: black;
@@ -162,6 +168,8 @@ i {
     color: black;
     display: flex;
     transition: margin 150ms linear;
+      overflow-y: auto;
+  max-height: calc(100vh - [header-height]);
     /* position: fixed; */
     /* overflow: visible !important; */
 }
@@ -247,13 +255,21 @@ td{
   padding: 8px 12px;
   border-bottom: 1px solid #ddd;
 }
- .notification-dot {
+.notification-dot {
   width: 8px;
   height: 8px;
   background-color: #12232E;
   border-radius: 50%;
   display: inline-block;
+  flex-shrink: 0; /* 🔒 don't let the dot shrink */
+  margin-top: 4px; /* optional: vertically align with first text line */
 }
+
+.notification-text {
+  white-space: normal;     /* allow wrapping */
+  word-break: break-word;  /* break long words if needed */
+}
+
 .notification-list-item:hover{
  background-color: #ddd;
     border-radius: 5px;

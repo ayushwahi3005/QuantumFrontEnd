@@ -338,7 +338,12 @@ export class UsersComponent {
     },
     (err)=>{
       console.log(err);
+       if(err.error.error==="TRIAL_EXPIRED"){
+        this.triggerAlert(err.error.message,"danger");
+      }
+      else{
       this.triggerAlert(err.error.errorMessage,"danger");
+      }
     },
     ()=>{
       // this.userService.sendEmail(obj,this.companyId).subscribe((data)=>{
@@ -398,7 +403,12 @@ export class UsersComponent {
       },
       (err)=>{
         console.log(err);
-        this.triggerAlert(err.error.errorMessage,"danger");
+         if(err.error.error==="TRIAL_EXPIRED"){
+        this.triggerAlert(err.error.message,"danger");
+      }
+      else{
+      this.triggerAlert(err.error.errorMessage,"danger");
+      }
         this.isLoading=false;
       });
     })
@@ -528,7 +538,12 @@ export class UsersComponent {
       },
       (err)=>{
         console.log(err.error.errorMessage);
-        this.triggerAlert(err.error.errorMessage,"danger");
+         if(err.error.error==="TRIAL_EXPIRED"){
+        this.triggerAlert(err.error.message,"danger");
+      }
+      else{
+      this.triggerAlert(err.error.errorMessage,"danger");
+      }
         this.isLoading=false;
       },
       ()=>{

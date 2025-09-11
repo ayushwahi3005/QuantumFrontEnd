@@ -202,6 +202,7 @@ export class ImportComponent {
     
     this.loading=true;
     this.uploadInProgress = true;
+    this.showAlert= false; // Hide any previous alert
     localStorage.setItem('uploadInProgress', 'true');
     console.log("loading",this.loading);
     console.log(this.importForm.value)
@@ -393,12 +394,15 @@ export class ImportComponent {
         this.importService.addCustomer(this.myFile,this.companyId,this.email,this.columnMappings).subscribe((data)=>{
           console.log("Successfully Uploaded");
           this.loading=false;
-          this.triggerAlert("Inventory File Successfully Uploaded","success");
+          this.triggerAlert("Customer File Successfully Uploaded","success");
         },
         (err)=>{
           this.loading=false;
           console.log(err);
-          if(err.error.errorMessage=="Import File cannot import more than 5000 rows"){
+          if(err.error.errorMessage=="Import File cannot import more than 1000 rows"){
+            this.triggerAlert("Failed!! "+err.error.errorMessage,"danger");
+          }
+          else if(err.error.errorMessage=="Mandatory Column Name Is Missing in Mapping"){
             this.triggerAlert("Failed!! "+err.error.errorMessage,"danger");
           }
           else{
@@ -422,7 +426,7 @@ export class ImportComponent {
         this.importService.updateCustomer(this.myFile,this.companyId,this.email).subscribe((data)=>{
           console.log("Successfully Updated");
           this.loading=false;
-          this.triggerAlert("Inventory File Successfully Updated","success");
+          this.triggerAlert("Customer File Successfully Updated","success");
         },
         (err)=>{
           this.loading=false;
@@ -490,6 +494,16 @@ export class ImportComponent {
       this.importService.downloadAllAssets(this.companyId).subscribe((data:Blob)=>{
         const blob = new Blob([data], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
         const fileName = `assets_${this.companyId}.xlsx`;
+        saveAs(blob, fileName);
+      },
+      (err)=>{
+        console.log(err)
+      })
+    }
+    else if(this.currExportModuel=="customer"){
+      this.importService.downloadAllCustomer(this.companyId).subscribe((data:Blob)=>{
+        const blob = new Blob([data], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+        const fileName = `customer_${this.companyId}.xlsx`;
         saveAs(blob, fileName);
       },
       (err)=>{

@@ -8,12 +8,19 @@
   .admin-dashboard {
     display: flex;
     background-color: #1d1d1d;
-    color: #fff;
+
     font-family: Arial, sans-serif;
     height: 100vh;
     overflow-y: scroll;
   }
-  
+  .dark{
+    background-color: #1d1d1d;
+    color: #fff;
+  }
+  .light{
+    background-color: #f0f0f0;
+    color: #000;
+  }
   /* Sidebar */
   .sidebar {
     width: 250px;

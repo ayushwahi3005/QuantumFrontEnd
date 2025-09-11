@@ -70,7 +70,7 @@ export class DashboardComponent  {
 
     //   }
     // });
-  
+    document.body.style.overflow = 'hidden';
     console.log("isLoggedIn->"+localStorage.getItem('isLoggedIn'))
     console.log("deviceId->"+localStorage.getItem('deviceId'))
     this.email=localStorage.getItem('user');

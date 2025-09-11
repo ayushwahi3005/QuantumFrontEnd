@@ -408,7 +408,12 @@ handleClickOutside(event: MouseEvent) {
     },
     (err)=>{
       console.log(err);
+       if(err.error.error==="TRIAL_EXPIRED"){
+        this.triggerAlert(err.error.message,"danger");
+      }
+      else{
       this.triggerAlert(err.error.errorMessage,"danger");
+      }
     },
     ()=>{
       this.assetComponent.ngOnInit();
@@ -532,7 +537,12 @@ handleClickOutside(event: MouseEvent) {
       },
       (err)=>{
         console.log(err);
-        this.triggerAlert(err.error.errorMessage,"danger");
+         if(err.error.error==="TRIAL_EXPIRED"){
+        this.triggerAlert(err.error.message,"danger");
+      }
+      else{
+      this.triggerAlert(err.error.errorMessage,"danger");
+      }
       })
       })
 
@@ -554,7 +564,12 @@ handleClickOutside(event: MouseEvent) {
     },
     (err)=>{
       console.log(err.error.errorMessage);
+       if(err.error.error==="TRIAL_EXPIRED"){
+        this.triggerAlert(err.error.message,"danger");
+      }
+      else{
       this.triggerAlert(err.error.errorMessage,"danger");
+      }
     })
 
 
@@ -572,7 +587,12 @@ handleClickOutside(event: MouseEvent) {
     },
     (err)=>{
       console.log(err);
+       if(err.error.error==="TRIAL_EXPIRED"){
+        this.triggerAlert(err.error.message,"danger");
+      }
+      else{
       this.triggerAlert(err.error.errorMessage,"danger");
+      }
     }
     ,()=>{
      console.log(this.img);
@@ -611,7 +631,12 @@ handleClickOutside(event: MouseEvent) {
         this.progress = 0;
         this.message = 'Could not upload the file!';
         console.log(this.message);
-        this.triggerAlert(err.error.errorMessage,"danger");
+         if(err.error.error==="TRIAL_EXPIRED"){
+        this.triggerAlert(err.error.message,"danger");
+      }
+      else{
+      this.triggerAlert(err.error.errorMessage,"danger");
+      }
       }
     );
     
@@ -669,7 +694,12 @@ handleClickOutside(event: MouseEvent) {
     },
     (err)=>{
       console.log(err);
+       if(err.error.error==="TRIAL_EXPIRED"){
+        this.triggerAlert(err.error.message,"danger");
+      }
+      else{
       this.triggerAlert(err.error.errorMessage,"danger");
+      }
     })
   }
   deleteFile(){
@@ -678,7 +708,12 @@ handleClickOutside(event: MouseEvent) {
     },
     (err)=>{
       console.log(err);
+       if(err.error.error==="TRIAL_EXPIRED"){
+        this.triggerAlert(err.error.message,"danger");
+      }
+      else{
       this.triggerAlert(err.error.errorMessage,"danger");
+      }
     },
     ()=>{
       this.ngOnInit();
@@ -704,7 +739,12 @@ handleClickOutside(event: MouseEvent) {
       },
       (err)=>{
         console.log(err);
-        this.triggerAlert(err.error.errorMessage,"danger");
+         if(err.error.error==="TRIAL_EXPIRED"){
+        this.triggerAlert(err.error.message,"danger");
+      }
+      else{
+      this.triggerAlert(err.error.errorMessage,"danger");
+      }
         
       },
       ()=>{
@@ -815,7 +855,12 @@ handleClickOutside(event: MouseEvent) {
       },
       (err)=>{
         console.log(err);
-        this.triggerAlert(err.error.errorMessage,"danger");
+         if(err.error.error==="TRIAL_EXPIRED"){
+        this.triggerAlert(err.error.message,"danger");
+      }
+      else{
+      this.triggerAlert(err.error.errorMessage,"danger");
+      }
   
       },
       ()=>{
@@ -842,7 +887,12 @@ handleClickOutside(event: MouseEvent) {
     },
     (err)=>{
       console.log(err);
+       if(err.error.error==="TRIAL_EXPIRED"){
+        this.triggerAlert(err.error.message,"danger");
+      }
+      else{
       this.triggerAlert(err.error.errorMessage,"danger");
+      }
     },
     ()=>{
       this.ngOnInit();
@@ -989,7 +1039,12 @@ handleClickOutside(event: MouseEvent) {
       },
       (err)=>{
         console.log(err);
-        this.triggerAlert(err.error.errorMessage,"danger");
+         if(err.error.error==="TRIAL_EXPIRED"){
+        this.triggerAlert(err.error.message,"danger");
+      }
+      else{
+      this.triggerAlert(err.error.errorMessage,"danger");
+      }
         this.selectedItems=[]
       },
       ()=>{
@@ -1052,7 +1107,12 @@ handleClickOutside(event: MouseEvent) {
       },
       (err)=>{
         console.log(err);
-        this.triggerAlert(err.error.errorMessage,"danger");
+         if(err.error.error==="TRIAL_EXPIRED"){
+        this.triggerAlert(err.error.message,"danger");
+      }
+      else{
+      this.triggerAlert(err.error.errorMessage,"danger");
+      }
       },
       ()=>{
          this.inspectionInstance.stepValues = [];
@@ -1241,7 +1301,12 @@ console.log(this.selectedItems);
       },
       (err)=>{
         console.log(err);
-        this.triggerAlert(err.error.errorMessage,"danger");
+         if(err.error.error==="TRIAL_EXPIRED"){
+        this.triggerAlert(err.error.message,"danger");
+      }
+      else{
+      this.triggerAlert(err.error.errorMessage,"danger");
+      }
         this.selectedItems=[]
       },
       ()=>{
