@@ -45,13 +45,13 @@ export class SubscriptionService {
 
     return this.httpClient.get(this.subscriptionEndpoint+'currentSubscription/'+companyId,{headers:this.headers});
   }
-  deleteUpcomingSubscription(companyId:any,companyName:any,email:any):Observable<any>{
+  deleteUpcomingSubscription(companyId:any,email:any):Observable<any>{
 
-    return this.httpClient.delete(this.subscriptionEndpoint+'deleteUpcomingSubscription/'+companyId+'/'+companyName+'/'+email,{headers:this.headers});
+    return this.httpClient.delete(this.subscriptionEndpoint+'deleteUpcomingSubscription/'+companyId+'/'+email,{headers:this.headers});
   }
-  startUpcomingSubscription(companyId:any,companyName:any,email:any):Observable<any>{
+  startUpcomingSubscription(companyId:any,email:any):Observable<any>{
 
-    return this.httpClient.get(this.subscriptionEndpoint+'startUpcomingSubscription/'+companyId+'/'+companyName+'/'+email,{headers:this.headers});
+    return this.httpClient.get(this.subscriptionEndpoint+'startUpcomingSubscription/'+companyId+'/'+email,{headers:this.headers});
   }
   getAllSubscription(companyId:any):Observable<any>{
 

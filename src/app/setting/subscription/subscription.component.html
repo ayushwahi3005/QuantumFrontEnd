@@ -210,7 +210,7 @@
          
             </div> -->
             <div *ngIf="this.currSubscription && myCard?.length>0">
-              <button (click)="payWithSavedCard()" class="btn btn-success">
+              <button (click)="payWithSavedCard()" class="btn btn-success"  [disabled]="paying()">
                 @if (paying()) {
                   <div class="d-flex justify-content-around">
                     <span>PROCESSING </span>
@@ -218,14 +218,14 @@
                   </div>
                   } @else {
                   <span>
-                    Change Plan
+                    Click To Proceed with Saved Card
                   </span>
                   }
               </button>
             </div>
           </div>
-          <!-- <div class="address" *ngIf="myCard?.length==0" > -->
-            <div class="address" >
+          <div class="address" *ngIf="myCard?.length==0||myCard==null" >
+            <!-- <div class="address" > -->
 
             <!-- <form [formGroup]="paymentForm" (ngSubmit)="addPaymentInformation()">
           <div class="form-group" >
@@ -418,7 +418,7 @@
 
     </div>
 
-    <div *ngIf="currOption==1">
+    <div *ngIf="currOption==1" style="margin-bottom: 20px;">
       <div class="d-flex justify-content-center">
         <div class="card" *ngIf="this.currSubscription!=null">
           <div class="logo d-flex justify-content-center" style=" background-color: #bac9bbeb;">
@@ -639,8 +639,8 @@
                   number:'1.2-2'}}</span></span>
             </div>
             <div style="font-size:large; padding: 10px;" class="d-flex justify-content-between">
-              <span>{{ this.currSubscription?.subscriptionDate | date:'d MMMM, YYYY' }} - {{
-                this.currSubscription?.expiryDate | date:'d MMMM, YYYY' }}</span>
+              <span>{{ this.currSubscription?.subscriptionDate | date:'d MMMM, YYYY' }} - 
+                 {{ getOneDayBefore(this.currSubscription?.expiryDate) | date:'d MMMM, YYYY' }}</span>
               <span> {{ this.currSubscription?.expiryDate| date:'d MMMM, YYYY' }}</span>
             </div>
 
@@ -817,7 +817,7 @@
                   <div style="color: gray; font-weight: 400; font-size: small;">
                     <span>Expiry Date: </span> {{ ('0' + (card?.expMonth || 0)).slice(-2) }} / {{ card?.expYear }}
                   </div>
-                  <div style="display: flex; justify-content: center; margin-top: 20px; font-size: small;">
+                  <div style="display: flex; justify-content: center; margin-top: 20px; font-size: small; margin: 5px;">
                     <button class="btn btn-primary btn-sm" style="margin: 10px;"
                       (click)="deleteCardBack()">Back</button>
                     <button class="btn btn-danger btn-sm" style="margin: 10px;"
@@ -858,9 +858,10 @@
       </div>
     </div>
   </div> -->
-      <div class="invoice-details">
+      <div class="invoice-details" >
         <h1 style="margin: 10px;">Invoice</h1>
-        <table class="table" id="invoice-table">
+        <div class="invoice-table-wrapper">
+        <table class="table" id="invoice-table" style="height: 100px;">
           <thead class="table-dark">
             <tr>
 
@@ -905,6 +906,7 @@
 
           </tbody>
         </table>
+        </div>
 
       </div>
 
