@@ -169,7 +169,7 @@ export class SubscriptionComponent {
     this.subcriptionSerive.getCardDetailsFromStripe(this.companyId).subscribe(
       (data) => {
         this.myCard = data;
-        // console.log(this.myCard)
+        console.log("MYCARD-----",this.myCard)
       },
       (err) => {
         console.log(err);
@@ -306,7 +306,8 @@ export class SubscriptionComponent {
     this.subcriptionSerive.getCardDetailsFromStripe(this.companyId).subscribe(
       (data) => {
         this.myCard = data;
-        console.log(this.myCard);
+        // console.log(this.myCard);
+        console.log("MYCARD-----",this.myCard)
       },
       (err) => {
         console.log(err);
@@ -980,10 +981,10 @@ export class SubscriptionComponent {
   }
   deleteUpcomingPlan() {
     this.loading = true;
+    // console.log(this.companyId+" "+localStorage.getItem('companyName')+" "+localStorage.getItem('companyEmail'));
     this.subcriptionSerive
       .deleteUpcomingSubscription(
         this.companyId,
-        localStorage.getItem('companyName'),
         localStorage.getItem('companyEmail')
       )
       .subscribe(
@@ -1018,25 +1019,30 @@ export class SubscriptionComponent {
     this.subcriptionSerive
       .startUpcomingSubscription(
         this.companyId,
-        localStorage.getItem('companyName'),
         localStorage.getItem('companyEmail')
       )
       .subscribe(
         (data) => {
           console.log(data);
           this.loading = false;
-          this.triggerAlert('Upcoming Plan Started Successfully', 'success');
+          
           this.refresh();
-          this.ngOnInit();
+          // this.ngOnInit();
+          this.triggerAlert('Upcoming Plan Started Successfully', 'success');
         },
         (err) => {
           console.log(err);
           this.loading = false;
+           this.ngOnInit();
           this.triggerAlert(err.error.errorMessage, 'danger');
         }
       );
+       this.ngOnInit();
   }
   payWithSavedCard() {
+    if (this.paying()) {
+    return; // already processing, ignore
+  }
     let cardId = this.myCard[0].id;
     console.log(cardId);
     this.paying.set(true);
@@ -1191,5 +1197,11 @@ export class SubscriptionComponent {
       case 'DEBIT_CARD': return 'Debit Card';
       default: return type;
     }
+  }
+  getOneDayBefore(dateString: string | Date | null): Date | null {
+  if (!dateString) return null;
+  const date = new Date(dateString);
+  date.setDate(date.getDate() - 1);
+  return date;
   }
 }
