@@ -5,7 +5,7 @@ export class User{
 	  email!:string;
 	  companyId!:string;
 	  mobileNumber!:string;
-	  role!:string;
+	  role!:any;
 	  status!:string;
 	  title!:string;
 

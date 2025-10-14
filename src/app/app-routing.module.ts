@@ -35,7 +35,7 @@ const routes: Routes = [
   {path:'edit-inventory/:id',component:EditInventoryComponent,canActivate:[AuthenticationService]},
   {path:'setting-home',component:SettingMainComponent,canActivate:[AuthenticationService]},
   {path:'assets/:id',component:AssetPreviewComponent,canActivate:[AuthenticationService]},
-  {path:'invitation/:id/:details',component:InvitationComponent,canActivate:[AuthenticationService]},
+  {path:'invitation/:id/:details',component:InvitationComponent},
   {path:'customer/preview/:id',component:CompanyCustomerDetailsPreviewComponent,canActivate:[AuthenticationService]},
   {path:'customer/:id',component:CompanyCustomerDetailsComponent,canActivate:[AuthenticationService]},
   {path:'payment',component:PaymentComponent,canActivate:[AuthenticationService]},

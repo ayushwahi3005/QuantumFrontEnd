@@ -1,4 +1,4 @@
-import { Component, inject, signal, ViewChild } from '@angular/core';
+import { Component, ElementRef, inject, signal, ViewChild } from '@angular/core';
 import { SubscriptionService } from './subscription.service';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Subscriber } from 'rxjs';
@@ -32,10 +32,11 @@ import { HttpClient } from '@angular/common/http';
 })
 export class SubscriptionComponent {
   @ViewChild(StripePaymentElementComponent)
+  
   paymentElement!: StripePaymentElementComponent;
   // private readonly fb = inject(UntypedFormBuilder);
   private readonly fb = inject(FormBuilder);
-
+ @ViewChild('manageSection') manageSection!: ElementRef;
   expiryDate!: any;
   curr_amount: any;
   curr_phase = 1;
@@ -387,6 +388,7 @@ export class SubscriptionComponent {
       },
       (err) => {
         if (err.status == '403') {
+          console.log('Session expired - Subscription Component: Session has expired. Logging out.');
           alert('Session expired');
           this.logout();
         }
@@ -1203,5 +1205,8 @@ export class SubscriptionComponent {
   const date = new Date(dateString);
   date.setDate(date.getDate() - 1);
   return date;
+  }
+  scrollToManage() {
+    this.manageSection.nativeElement.scrollIntoView({ behavior: 'smooth', block: 'start' });
   }
 }

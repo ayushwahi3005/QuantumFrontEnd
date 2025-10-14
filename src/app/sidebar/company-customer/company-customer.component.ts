@@ -99,7 +99,7 @@ export class CompanyCustomerComponent {
       apartment: [''],
       city: [''],
       state: [''],
-      zipCode: ['']
+      zipCode: ['', Validators.pattern('^[a-z0-9]{6}$')]
     });
   
     // Explicitly set the default value for status
@@ -436,6 +436,11 @@ advanceFilterFunc() {
     console.log(this.companyCustomerForm.value);
     let valid=1;
     console.log(this.mandatoryFieldsList)
+    //Name Mandatory Field So Checking it
+    if(this.companyCustomerForm.get("name")?.value==null||this.companyCustomerForm.get("name")?.value==''){
+      this.triggerAlert("Fill Mandatory Field 'Name'","warning");
+      return;
+    }
     this.mandatoryFieldsList?.forEach((val)=>{
       console.log(val.name,"-============>",val.mandatory+" "+this.companyCustomerForm.get(val.name)?.value);
       if(this.showFieldsMap.get(val.name)==false){

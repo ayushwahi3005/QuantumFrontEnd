@@ -153,7 +153,7 @@ export class UsersComponent {
     });
 
     this.editUserForm=this.formBuilder.group({
-      
+      id:[''],
       firstName:['',Validators.required],
       lastName:['',Validators.required],
       status: [''],
@@ -379,6 +379,16 @@ export class UsersComponent {
 
     
   }
+  resendEmailVerificationLink(email:any){
+    this.userService.resendFirebaseVerificationEmail(this.companyId,email).subscribe((data)=>{
+      console.log(data);
+      this.triggerAlert(data.message,data.status);
+    },
+    (err)=>{
+      console.log(err);
+      this.triggerAlert(err.error.errorMessage,"danger");
+    })
+  }
   resendMail(email:any){
    
     let myUser:User;
@@ -498,6 +508,7 @@ export class UsersComponent {
       let role=this.roleAndPermissionList.filter((x)=> x.id==this.editUserForm.controls['role'].value).at(0);
       console.log(role)
       let obj={
+        "id":this.selectEditUser.id,
         "firstName":this.editUserForm.controls['firstName'].value,
         "lastName":this.editUserForm.controls['lastName'].value,
         "email":this.selectEditUser.email,
@@ -607,7 +618,8 @@ export class UsersComponent {
         this.searchedUser=this.userList.filter((mydata)=>{
       //  console.log(mydata)
           let filterData:any;
-          if(mydata.firstName.toLowerCase().includes(value.toLowerCase())||mydata.lastName.toLowerCase().includes(value.toLowerCase())||mydata.mobileNumber.toLowerCase().includes(value.toLowerCase())||(mydata.role.toLowerCase().includes(value.toLowerCase()))||(mydata.title.toLowerCase().includes(value.toLowerCase()))||(mydata.email.toLowerCase().includes(value.toLowerCase()))){
+           //  console.log(mydata)
+          if(mydata.firstName.toLowerCase().includes(value.toLowerCase())||mydata.lastName.toLowerCase().includes(value.toLowerCase())||mydata.mobileNumber.toLowerCase().includes(value.toLowerCase())||(mydata.role.name.toLowerCase()?.includes(value.toLowerCase()))||(mydata.title.toLowerCase().includes(value.toLowerCase()))||(mydata.email.toLowerCase().includes(value.toLowerCase()))){
             filterData=mydata;
           }
           else{
@@ -647,6 +659,20 @@ export class UsersComponent {
         }
         ,(err)=>{
         console.log(err);
+        let errorMsg = 'Something went wrong!';
+
+        if (err && err.error) {
+          try {
+            const parsedError = typeof err.error === 'string' ? JSON.parse(err.error) : err.error;
+            errorMsg = parsedError.errorMessage || errorMsg;
+          } catch (e) {
+            console.error('Error parsing backend response:', e);
+          }
+        }
+
+        this.triggerAlert(errorMsg, 'danger');
+
+        data.status="inActive";
         })
 
       }

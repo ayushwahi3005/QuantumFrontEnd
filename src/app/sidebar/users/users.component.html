@@ -75,10 +75,11 @@
           
           <mat-menu #menu="matMenu">
             <button mat-menu-item [disabled]="registredUsersMap.get(item.email)==true" (click)="resendMail(item.email)">Resend Invite</button>
+            <button mat-menu-item  (click)="resendEmailVerificationLink(item.email)">Resend Email Verification Link</button>
             <button mat-menu-item [disabled]="lockedInfo.get(item.email)!=true" (click)="unlockAccount(item.email)">Unlock User</button>
             <!-- <button mat-menu-item [disabled]="registredUsersMap.get(item.email)==undefined" (click)="makeInActive(item)"><span class="text-danger" >In Active</span></button> -->
-            <button mat-menu-item *ngIf="registredUsersMap.get(item.email)==true&&item.status=='active'" (click)="makeInActive(item)"><span class="text-danger" >In Active</span></button>
-            <button mat-menu-item *ngIf="registredUsersMap.get(item.email)==true&&item.status=='inActive'" (click)="makeActive(item)"><span class="text-success" >Active</span></button>
+            <button mat-menu-item *ngIf="registredUsersMap.get(item.email)==true&&item.status=='active'" (click)="makeInActive(item)"><span class="text-danger" >In Activate</span></button>
+            <button mat-menu-item *ngIf="registredUsersMap.get(item.email)==true&&item.status=='inActive'" (click)="makeActive(item)"><span class="text-success" >Activate</span></button>
             <button mat-menu-item [disabled]="this?.role != 'ADMIN' && !(this?.detailedRole === 'edit' || this?.detailedRole === 'full')" (click)="selectEditUserFunc(item.email)">
               <span data-toggle="modal" data-target="#editpopup">Edit</span>
             </button>
@@ -137,8 +138,8 @@
               <label>Job Title</label><br>
                 <input type="text" style="width: 97%" class="form-control"  formControlName="jobTitle" [ngModel]="selectEditUser?.title">
             </div>
-            <div >
-              <label style="margin: 10px 0px;">Status<span  class="text-danger">*</span></label><br>
+            <!-- <div >
+              <label style="margin: 10px 0px;">Statuss<span  class="text-danger" [disabled]=true>*</span></label><br>
                
                 <select class="form-select" class="form-control"  formControlName="status" style="width: 97%" [ngModel]="selectEditUser?.status" #role>
                  
@@ -150,7 +151,7 @@
                   
                  
                 </select>
-            </div>
+            </div> -->
             
             <!-- <div >
               <label style="margin: 10px 0px;">Role<span  class="text-danger">*</span></label><br>

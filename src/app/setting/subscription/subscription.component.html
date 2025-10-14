@@ -48,7 +48,7 @@
             style="background-color: #bac9bbeb; border: #bac9bbeb; width: 70%;height: 30px; border-radius: 10px; bottom: 0; margin-bottom: 10px; position: absolute;"
             (click)="checkUpcomingPlan()">Select
           </button>
-            
+
         </div>
         <div>
           <ul class="lists">
@@ -172,8 +172,8 @@
             </table>
 
           </div>
-        
-          <div class="savedCard d-flex justify-content-center" >
+
+          <div class="savedCard d-flex justify-content-center">
             <!-- <div *ngIf="myCard">
               <h2>Saved Card</h2>
               <div id="card-span"  *ngIf="!editCard">
@@ -210,21 +210,21 @@
          
             </div> -->
             <div *ngIf="this.currSubscription && myCard?.length>0">
-              <button (click)="payWithSavedCard()" class="btn btn-success"  [disabled]="paying()">
+              <button (click)="payWithSavedCard()" class="btn btn-success" [disabled]="paying()">
                 @if (paying()) {
-                  <div class="d-flex justify-content-around">
-                    <span>PROCESSING </span>
+                <div class="d-flex justify-content-around">
+                  <span>PROCESSING </span>
 
-                  </div>
-                  } @else {
-                  <span>
-                    Click To Proceed with Saved Card
-                  </span>
-                  }
+                </div>
+                } @else {
+                <span>
+                  Click To Proceed with Saved Card
+                </span>
+                }
               </button>
             </div>
           </div>
-          <div class="address" *ngIf="myCard?.length==0||myCard==null" >
+          <div class="address" *ngIf="myCard?.length==0||myCard==null">
             <!-- <div class="address" > -->
 
             <!-- <form [formGroup]="paymentForm" (ngSubmit)="addPaymentInformation()">
@@ -383,8 +383,8 @@
             </mat-card>
 
           </div>
-          
-          
+
+
         </div>
       </div>
 
@@ -427,7 +427,7 @@
               <label class="price" style="font-weight: 400;">${{this.currSubscription?.amount}}</label>
               <label style="margin: 10px auto; font-size: large;">{{this.currSubscription?.person}} person</label>
               <ng-container *ngIf="this.currSubscription?.expiryDate > this.todayDate; else expiredTemplate">
-                
+
                 <!-- <label>
                   Will Expire on {{ this.currSubscription?.expiryDate | date: 'dd/MM/yyyy' }}
                 </label> -->
@@ -435,8 +435,8 @@
                   <span style="font-size: large; font-weight: bold; ">
                     Current Plan
                   </span>
-                  
-                  <span>  Will Expire on {{ this.currSubscription?.expiryDate | date: 'dd/MM/yyyy' }}</span>
+
+                  <span> Will Expire on {{ this.currSubscription?.expiryDate | date: 'dd/MM/yyyy' }}</span>
                 </label>
               </ng-container>
 
@@ -453,8 +453,7 @@
           </div>
           <div class="d-flex justify-content-center">
             <button
-              style="background-color: #bac9bbeb; border: #bac9bbeb; width: 70%;height: 30px; border-radius: 10px; bottom: 0; margin-bottom: 10px; position: absolute;"
-              data-toggle="modal" data-target="#manage">Manage</button>
+              style="background-color: #bac9bbeb; border: #bac9bbeb; width: 70%;height: 30px; border-radius: 10px; bottom: 0; margin-bottom: 10px; position: absolute;" (click)="scrollToManage()">Manage</button>
           </div>
           <div>
             <ul class="lists">
@@ -522,7 +521,7 @@
                   <span style="font-size: large; font-weight: bold; text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);">
                     Upcoming Plan
                   </span>
-                  
+
                   <span> Will Start From {{ this.upcomingSubscription?.subscriptionDate | date: 'dd/MM/yyyy' }}</span>
                 </label>
               </ng-container>
@@ -534,12 +533,12 @@
           <div class="tab-container">
             <button class="tab tab--1">{{this.upcomingSubscription?.subscriptionPlan}}</button>
           </div>
-          
-        
-          
-         
+
+
+
+
           <div>
-            
+
             <ul class="lists">
               <li class="list">
                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-check"
@@ -596,30 +595,30 @@
             <div
               *ngIf="upcomingSubscription?.subscriptionPlan == currSubscription?.subscriptionPlan&&upcomingSubscription?.person>currSubscription?.person"
               style="display: flex; flex-direction: column; align-items: center; gap: 10px;">
-              
+
               <button
                 style="background-color: #bac9bbeb; border: #ced4ceeb; width: 80%; height: 30px; border-radius: 10px;"
                 data-toggle="modal" data-target="#startUpcomingSubscription">
                 Start
               </button>
-          
+
               <button
                 style="background-color: #bac9bbeb; border: #ced4ceeb; width: 80%; height: 30px; border-radius: 10px;"
                 data-toggle="modal" data-target="#deleteUpcomingSubscription">
                 Cancel
               </button>
-          
+
             </div>
-          
+
             <button
               *ngIf="upcomingSubscription?.subscriptionPlan != currSubscription?.subscriptionPlan||upcomingSubscription?.person<=currSubscription?.person"
               style="background-color: #bac9bbeb; border: #ced4ceeb; width: 80%; height: 30px; border-radius: 10px;
-                     position: absolute; bottom: 0; left: 10%;; margin-bottom: 10px;" 
-              data-toggle="modal" data-target="#deleteUpcomingSubscription">
+                     position: absolute; bottom: 0; left: 10%;; margin-bottom: 10px;" data-toggle="modal"
+              data-target="#deleteUpcomingSubscription">
               Cancel
             </button>
           </div>
-          
+
         </div>
       </div>
 
@@ -628,7 +627,7 @@
       <h2 class="d-flex justify-content-center" *ngIf="this.currSubscription==null">
         No Subscription
       </h2>
-      <div class="billing-details" *ngIf="this.currSubscription!=null">
+      <div class="billing-details" *ngIf="this.currSubscription!=null"  #manageSection id="manage">
 
         <div class="addCardsDetails">
           <div style="padding: 10px;" *ngIf="!this.upcomingSubscription; else currentPlan">
@@ -639,14 +638,14 @@
                   number:'1.2-2'}}</span></span>
             </div>
             <div style="font-size:large; padding: 10px;" class="d-flex justify-content-between">
-              <span>{{ this.currSubscription?.subscriptionDate | date:'d MMMM, YYYY' }} - 
-                 {{ getOneDayBefore(this.currSubscription?.expiryDate) | date:'d MMMM, YYYY' }}</span>
+              <span>{{ this.currSubscription?.subscriptionDate | date:'d MMMM, YYYY' }} -
+                {{ getOneDayBefore(this.currSubscription?.expiryDate) | date:'d MMMM, YYYY' }}</span>
               <span> {{ this.currSubscription?.expiryDate| date:'d MMMM, YYYY' }}</span>
             </div>
 
           </div>
           <ng-template #currentPlan>
-            <div style="padding: 10px;" >
+            <div style="padding: 10px;">
               <div class="d-flex justify-content-between" style="padding: 10px;">
                 <h2>Current Billing Details</h2>
                 <span style="font-size: larger; ">Next Billing: <span
@@ -660,7 +659,7 @@
               </div>
             </div>
           </ng-template>
-         
+
           <button class="btn btn-primary" (click)="addCard()" id="card-add-btn" *ngIf="!myCard?.length">Add
             Card</button>
           <div id="add-card-div" *ngIf="displayAddCard">
@@ -825,7 +824,7 @@
                   </div>
                 </div>
               </div>
-             
+
             </div>
           </div>
 
@@ -858,54 +857,53 @@
       </div>
     </div>
   </div> -->
-      <div class="invoice-details" >
+      <div class="invoice-details">
         <h1 style="margin: 10px;">Invoice</h1>
         <div class="invoice-table-wrapper">
-        <table class="table" id="invoice-table" style="height: 100px;">
-          <thead class="table-dark">
-            <tr>
+          <table class="table" id="invoice-table" style="height: 100px;">
+            <thead class="table-dark">
+              <tr>
 
-              <th scope="col">Date</th>
-              <th scope="col">Invoice#</th>
+                <th scope="col">Date</th>
+                <th scope="col">Invoice#</th>
 
-              <th scope="col">Payment Status</th>
-              <th scope="col">Amount</th>
-              <th></th>
+                <th scope="col">Payment Status</th>
+                <th scope="col">Amount</th>
+                <th></th>
 
-            </tr>
-          </thead>
-          <tbody>
-            <tr *ngFor="let item of InvoiceList" bi bi-download>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let item of InvoiceList" bi bi-download>
 
-              <td>{{item.transactionDate|date }}</td>
-              <td>{{item.id}}</td>
-              <td >
-                <div [ngClass]="getPaymentStatusClass(item.paymentStatus)">
-                  {{ item.paymentStatus }}
-                </div>
-               
-              </td>
-              <td>$ {{item.amount| number:'1.2-2'}}</td>
+                <td>{{item.transactionDate|date }}</td>
+                <td>{{item.id}}</td>
+                <td>
+                  <div [ngClass]="getPaymentStatusClass(item.paymentStatus)">
+                    {{ item.paymentStatus }}
+                  </div>
 
-              <td>
+                </td>
+                <td>$ {{item.amount| number:'1.2-2'}}</td>
 
-                <!-- <img src="../../../assets/edit.svg" id="edit-button" [ngClass]="{'editoption':!(editVisibility&&(editButtonId==assetListWithExtraFields.indexOf(item)+1))}" style="float: inline-start; height: 25px; width: 25px;" (click)="changeAssetDetails(item)"> -->
-                <i class="bi bi-download" 
-                style="float: inline-start; font-size: 20px; cursor: pointer;" 
-                (click)="downloadInvoice(item)">
-                </i>
-             
+                <td>
 
-                <!-- <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="currentColor" class="bi bi-pencil" viewBox="0 0 16 16" style="margin-top: 20px; color:gray " [ngClass]="{'editoption':!(editVisibility&&(editButtonId==assetListWithExtraFields.indexOf(item)+1))}" (click)="changeAssetDetails(item)" >
+                  <!-- <img src="../../../assets/edit.svg" id="edit-button" [ngClass]="{'editoption':!(editVisibility&&(editButtonId==assetListWithExtraFields.indexOf(item)+1))}" style="float: inline-start; height: 25px; width: 25px;" (click)="changeAssetDetails(item)"> -->
+                  <i class="bi bi-download" style="float: inline-start; font-size: 20px; cursor: pointer;"
+                    (click)="downloadInvoice(item)">
+                  </i>
+
+
+                  <!-- <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="currentColor" class="bi bi-pencil" viewBox="0 0 16 16" style="margin-top: 20px; color:gray " [ngClass]="{'editoption':!(editVisibility&&(editButtonId==assetListWithExtraFields.indexOf(item)+1))}" (click)="changeAssetDetails(item)" >
                 <path d="M12.146.146a.5.5 0 0 1 .708 0l3 3a.5.5 0 0 1 0 .708l-10 10a.5.5 0 0 1-.168.11l-5 2a.5.5 0 0 1-.65-.65l2-5a.5.5 0 0 1 .11-.168zM11.207 2.5 13.5 4.793 14.793 3.5 12.5 1.207zm1.586 3L10.5 3.207 4 9.707V10h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.293zm-9.761 5.175-.106.106-1.528 3.821 3.821-1.528.106-.106A.5.5 0 0 1 5 12.5V12h-.5a.5.5 0 0 1-.5-.5V11h-.5a.5.5 0 0 1-.468-.325"/>
               </svg> -->
-              </td>
+                </td>
 
-            </tr>
+              </tr>
 
 
-          </tbody>
-        </table>
+            </tbody>
+          </table>
         </div>
 
       </div>
@@ -921,7 +919,7 @@
         <div class="modal-content">
           <div class="modal-header">
             <h2 class="modal-title" id="exampleModalLongTitle">Total Amount</h2>
-            <button type="button" class="close  ms-auto" (click)="closeAddPlan()"  #closeBox>
+            <button type="button" class="close  ms-auto" (click)="closeAddPlan()" #closeBox>
               <div aria-hidden="true">&times;</div>
             </button>
           </div>
@@ -958,7 +956,8 @@
             <!-- <button class="btn btn-light plus-minus-btn" (click)="removePerson()" ><div class="plus-minus">-</div></button><button class="btn btn-light" >{{person}}</button><button class="btn btn-light plus-minus-btn" (click)="addPerson()"><div class="plus-minus" >+</div></button>  -->
           </div>
           <div class="modal-footer">
-            <button type="button" class="btn btn-secondary" data-dismiss="modal" (click)="closeBox.click()">Cancel</button>
+            <button type="button" class="btn btn-secondary" data-dismiss="modal"
+              (click)="closeBox.click()">Cancel</button>
             <button type="button" class="btn btn-primary" (click)="proceed()"
               (click)="closeBox.click()">Proceed</button>
           </div>
@@ -967,12 +966,13 @@
     </div>
 
 
-    <div class="modal fade" id="deleteUpcomingSubscription" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle"
-      aria-hidden="true">
+    <div class="modal fade" id="deleteUpcomingSubscription" tabindex="-1" role="dialog"
+      aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
       <div class="modal-dialog modal-dialog-centered" role="document">
         <div class="modal-content">
           <div class="modal-header">
-            <h2 class="modal-title" id="exampleModalLongTitle">Are you Sure You Want to Cancel Upcoming Subscription</h2>
+            <h2 class="modal-title" id="exampleModalLongTitle">Are you Sure You Want to Cancel Upcoming Subscription
+            </h2>
             <button type="button" class="close  ms-auto" data-dismiss="modal" aria-label="Close" #closeBox>
               <div aria-hidden="true">&times;</div>
             </button>
@@ -983,19 +983,20 @@
             <button class="btn btn-light plus-minus-btn" (click)="removePerson()" ><div class="plus-minus">-</div></button><button class="btn btn-light" >{{person}}</button><button class="btn btn-light plus-minus-btn" (click)="addPerson()"><div class="plus-minus" >+</div></button>  -->
           <!-- </div> -->
           <div class="modal-footer">
-            <button class="btn btn-danger" (click)="deleteUpcomingPlan()" (click)="closeBox.click()" data-dismiss="modal">Delete</button>
+            <button class="btn btn-danger" (click)="deleteUpcomingPlan()" (click)="closeBox.click()"
+              data-dismiss="modal">Delete</button>
             <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
-            
+
+          </div>
         </div>
       </div>
+
+
+
     </div>
 
-
-
-  </div>
-
-  <div class="modal fade" id="startUpcomingSubscription" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle"
-      aria-hidden="true">
+    <div class="modal fade" id="startUpcomingSubscription" tabindex="-1" role="dialog"
+      aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
       <div class="modal-dialog modal-dialog-centered" role="document">
         <div class="modal-content">
           <div class="modal-header">
@@ -1012,13 +1013,11 @@
           <div class="modal-footer">
             <button class="btn btn-success" (click)="startUpcomingPlan()" data-dismiss="modal">Start</button>
             <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
-            
+
+          </div>
         </div>
       </div>
+
+
+
     </div>
-
-
-
-  </div>
-
-  

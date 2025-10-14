@@ -179,7 +179,7 @@ i {
 }
 
 app-assets,app-workorder,app-inventory,app-company-customer {
-    background-color: #f5f5f5;
+    background-color: #F4F5F7;
     /* background-color: #FFFDF8; */
     width: calc(100vw - 60px);
     transition: width 150ms linear;

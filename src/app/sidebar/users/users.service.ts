@@ -122,7 +122,15 @@ export class UsersService {
       'Content-Type': 'application/json',
       'device-id': `${localStorage.getItem('deviceId')}`,
     });
-    return this.httpClient.put(this.userEndpoint+"userDetails",data,{headers,responseType:'text'});
+    return this.httpClient.put(this.userEndpoint+"userStatusUpdate",data,{headers,responseType:'text'});
+  }
+  resendFirebaseVerificationEmail(companyId:any,email:any):Observable<any>{
+    const headers = new HttpHeaders({
+      'Authorization': `Bearer ${localStorage.getItem('authToken')}`,
+      'Content-Type': 'application/json',
+      'device-id': `${localStorage.getItem('deviceId')}`,
+    });
+    return this.httpClient.post(this.userEndpoint+"resend-email-firebase-verification/"+companyId+"/"+email,null,{headers});
   }
   
 }

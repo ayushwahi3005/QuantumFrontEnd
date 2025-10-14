@@ -54,9 +54,9 @@ export class RoleAndPermissionComponent {
     err=>{
     console.log(err.status);
     if(err.status=="403"){
+      console.log('Session expired - Role & Permission Component: Session has expired. Logging out.');
       alert("Session expired");
       this.logout();
-
     }
       },
     ()=>{

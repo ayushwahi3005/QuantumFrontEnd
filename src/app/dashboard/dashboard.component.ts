@@ -26,11 +26,11 @@ export class DashboardComponent  {
     name:'Assets',
     icon:'bi bi-boxes'
   },
-  {
-    number:3,
-    name:'Inventory',
-    icon:'bi bi-journal-text'
-  },
+  // {
+  //   number:3,
+  //   name:'Inventory',
+  //   icon:'bi bi-journal-text'
+  // },
   // {
   //   number:4,
   //   name:'Preventive Maintainance',

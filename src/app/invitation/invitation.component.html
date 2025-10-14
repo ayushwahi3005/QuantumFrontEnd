@@ -10,10 +10,10 @@
   <button type="button" class="btn-close" (click)="showAlert = false" aria-label="Close" style="float: right;"></button>
 </div>
 <div class="register">
-    <form [formGroup]="inviteForm" (ngSubmit)="register()" >
-        <h1 id="reg">You are Invited!!!</h1>
-        <h3 id="reg">Register</h3>
-        <!-- <div class="form-group d-flex justify-content-between">
+  <form [formGroup]="inviteForm" (ngSubmit)="register()">
+    <h1 id="reg">You are Invited!!!</h1>
+    <h3 id="reg">Register</h3>
+    <!-- <div class="form-group d-flex justify-content-between">
           <mat-form-field style="padding-left: 0px;">
             <mat-label>FirstName</mat-label>
             <input matInput type="text" class="form-control" formControlName="firstName" >
@@ -42,41 +42,63 @@
           </mat-form-field>
       
         </div> -->
-        <div class="form-group">
-          <mat-form-field style="width: 100%;">
-            <mat-label>Password</mat-label>
-            <input matInput type="password" class="form-control" formControlName="password" >
-            
-          </mat-form-field>
-      
-        </div>
-        <div class="form-group">
-          <mat-form-field style="width: 100%;">
-            <mat-label>Confirm Password</mat-label>
-            <input matInput type="password" class="form-control" formControlName="cpassword" >
-            
-          </mat-form-field>
-      
-        </div>
-       
-        <button id="submitButton" type="submit" class="btn btn-primary" [disabled]="inviteForm.invalid" >Submit</button>
-        
-      </form>
+    <div class="form-group">
+      <mat-form-field style="width: 100%;" appearance="outline">
+        <mat-label>Password</mat-label>
+
+        <input matInput [type]="showPassword ? 'text' : 'password'" formControlName="password" />
+
+        <!-- Eye icon toggle -->
+        <button mat-icon-button matSuffix type="button" (click)="toggleShowPassword()"
+          aria-label="Toggle password visibility">
+          <i class="bi" [ngClass]="showPassword ? 'bi-eye-slash' : 'bi-eye'" style="font-size: 14px;"></i>
+        </button>
+      </mat-form-field>
+
+    </div>
+    <div class="form-group">
+        <mat-form-field style="width: 100%;" appearance="outline">
+  <mat-label>Confirm Password</mat-label>
+
+  <input
+    matInput
+    [type]="showCPassword ? 'text' : 'password'"
+    formControlName="cpassword"
+  />
+
+  <!-- Eye icon toggle -->
+  <button
+    mat-icon-button
+    matSuffix
+    type="button"
+    (click)="toggleShowCPassword()"
+    aria-label="Toggle confirm password visibility"
+  >
+    <i class="bi" [ngClass]="showCPassword ? 'bi-eye-slash' : 'bi-eye'" style="font-size: 14px;"></i>
+  </button>
+</mat-form-field>
+
+    </div>
+
+    <button id="submitButton" type="submit" class="btn btn-primary" [disabled]="inviteForm.invalid">Submit</button>
+
+  </form>
 </div>
-<div class="modal fade" id="popup" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle" aria-hidden="true">
-    <div class="modal-dialog" role="document">
-      <div class="modal-content">
-        <div class="modal-header d-flex justify-content-center">
-          Successfully Registered
-          
-        </div>
-        <div class="d-flex justify-content-center">
+<div class="modal fade" id="popup" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle"
+  aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header d-flex justify-content-center">
+        Successfully Registered
+
+      </div>
+      <div class="d-flex justify-content-center">
         <app-tick-animation></app-tick-animation>
-         
-          
-          
-         
-        </div>
+
+
+
+
       </div>
     </div>
   </div>
+</div>

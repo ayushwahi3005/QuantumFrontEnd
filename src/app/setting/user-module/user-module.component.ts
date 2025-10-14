@@ -11,6 +11,7 @@ import { UserModuleService } from './user-module.service';
 })
 export class UserModuleComponent {
 extraFieldName!:ExtraFieldName[];
+searchedFieldName!:ExtraFieldName[];
   addFieldName!:string;
   showFieldsList!:ShowFieldsData[];
   mandatoryFieldsList!:MandatoryFields[];
@@ -56,6 +57,7 @@ extraFieldName!:ExtraFieldName[];
     this.companyId=localStorage.getItem('companyId');
     this.userModuleService.getExtraFields(this.companyId).subscribe((data)=>{
       this.extraFieldName=data;
+      this.searchedFieldName=data;
       console.log("--------extra------------->"+this.companyId+"---"+this.extraFieldName);
       this.extraFieldName.forEach((x)=>{
         console.log(x.companyId+" "+x.name+" "+x.email)
@@ -295,4 +297,24 @@ extraFieldName!:ExtraFieldName[];
     console.log(data);
     this.extraFieldOption=data;
   }
+  find(data:any){
+        console.log(data.target.value)
+     
+        const value=data.target.value;
+       
+      this.searchedFieldName=this.extraFieldName.filter((mydata)=>{
+      //  console.log(mydata)
+          let filterData:any;
+           //  console.log(mydata)
+          if(mydata.name.toLowerCase().includes(value.toLowerCase())){
+            filterData=mydata;
+          }
+          else{
+            filterData=false;
+          }
+          console.log(filterData)
+          return filterData;
+        
+        });
+      }
 }

@@ -22,6 +22,8 @@ export class InvitationComponent {
   alertMessage: string = ''; // Alert message
   alertType: string = 'success'; // Alert type: success, warning, error, etc.
   checkAccount:any;
+  showPassword: boolean = false;
+  showCPassword:boolean=false;
 
  ngOnInit(){
   this.activeRoute.paramMap.subscribe((data)=>{
@@ -52,12 +54,6 @@ export class InvitationComponent {
         break;
       }
     }
-    // this.checkAccount=this.authService.checkAccountExistence(this.user?.email);
-    // this.authService.checkAccount(this.user?.email).then((data:boolean)=>{
-    //   this.authService.resetPassword(this.user?.email);
-    // })
-    // console.log(this.checkAccount);
-    // this.user.role=data.role.name;
     console.log(this.user)
   },
   (err)=>{
@@ -78,9 +74,13 @@ export class InvitationComponent {
   }
   console.log(this.inviteForm.value);
   console.log(this.user);
-  this.user.password=this.inviteForm.controls['password'].value,
+  this.user.password=this.inviteForm.controls['password'].value;
 
-
+  const cpassword=this.inviteForm.controls['cpassword'].value;
+  if(this.inviteForm.controls['password'].value!=cpassword){
+    this.triggerAlert("Password and Confirm Password should be same","danger");
+    return;
+  }
 
   this.authService.registerForUser(this.user.email,this.inviteForm.controls['password'].value).then((data:boolean)=>{
     if(data){
@@ -124,5 +124,11 @@ subscribeToService() {
     console.log("trigger register in service vallleeddd2222")
     this.triggerAlert(mydata.data,mydata.type); // Call your component function here
   });
+}
+toggleShowPassword(){
+  this.showPassword = !this.showPassword;
+}
+toggleShowCPassword(){
+  this.showCPassword = !this.showCPassword;
 }
 }

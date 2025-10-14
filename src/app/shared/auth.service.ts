@@ -377,6 +377,13 @@ export class AuthService {
   logout(){
     
     return this.fireAuth.signOut().then(() => {
+      
+      this.tokenAuthenticationService.removeSession(localStorage.getItem('user')!).subscribe((data)=>{
+        console.log("Logged in data deleted");
+      },
+      (err)=>{
+        console.log(err);
+      });
       localStorage.clear();
       // localStorage.removeItem('token');
       // localStorage.removeItem('companyId');
@@ -445,7 +452,8 @@ export class AuthService {
               console.log("Session delete error ", err);
             });
             const currentUrl = this.router.url;
-            if(currentUrl.length!=0 &&!currentUrl.startsWith('/login')&&!currentUrl.startsWith('/register')&&!currentUrl.startsWith('/admin')){
+            if(currentUrl.length!=0 &&!currentUrl.startsWith('/login')&&!currentUrl.startsWith('/register')&&!currentUrl.startsWith('/admin')&&!currentUrl.startsWith('/invitation')){
+              console.log('Session expired - Auth Service: Session has expired. Redirecting to login.');
               alert('Session has expired. Please log in again.');
               this.router.navigate(['/login']);
             }
@@ -454,6 +462,7 @@ export class AuthService {
           this.stopTokenMonitoring(); // Stop monitoring when session expires
           // Optionally log the user out here
         } else if (timeLeft <= 6 * 60 * 1000 && !this.hasAlerted) {
+          console.log('Session warning - Auth Service: Session will expire in less than 5 minutes.');
           alert('Your session will expire in less than 5 minutes.');
           this.hasAlerted = true; // Set the flag to avoid repeated alerts
         }
@@ -469,6 +478,7 @@ stopTokenMonitoring(): void {
     clearInterval(this.tokenCheckInterval);
   }
 }
+
 
 
  

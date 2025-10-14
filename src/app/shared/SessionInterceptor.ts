@@ -22,17 +22,22 @@ import { Router } from '@angular/router';
       return next.handle(req).pipe(
         catchError((error: HttpErrorResponse) => {
           const currentUrl = this.router.url;
-          console.log("Current URL:", currentUrl.startsWith('/login'));
-          if (error.status === 401 && currentUrl.startsWith('/login') === false&&currentUrl.startsWith('/register') === false&&currentUrl.startsWith('/admin') === false) {
+          // console.log("Current URL:", currentUrl);
+          if (error.status === 401 && 
+              !currentUrl.startsWith('/login') && 
+              !currentUrl.startsWith('/register') && 
+              !currentUrl.startsWith('/admin') && 
+              !currentUrl.includes('/invitation/')) {
           // if(false){
               // const currentUrl = this.router.url;
-              console.log("Current URL:", currentUrl);
+              // console.log("Current URL:", currentUrl);
                 // Ensure logout and redirection are handled only once
-                console.log("IsloggedIn=========>"+this.authService.isLoggedIn)
+                // console.log("IsloggedIn=========>"+this.authService.isLoggedIn)
                 if(this.authService.isLoggedIn === "true"||this.authService.isLoggedIn === undefined){
                     this.authService.isLoggedIn = "false";
                     localStorage.setItem('isLoggedIn', 'false');
                     this.authService.sessionExpired$.next(true);
+                    console.log('Session expired - Interceptor: Session has expired. User will be logged out.');
                     alert('Session Expired');
                     console.log(error);
                   //   this.router.navigate(['/login']);

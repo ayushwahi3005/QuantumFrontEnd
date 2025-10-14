@@ -11,6 +11,7 @@ import { CustomerModuleService } from './customer-module.service';
 })
 export class CustomerModuleComponent {
   extraFieldName!:ExtraFieldName[];
+  searchedFieldName!:ExtraFieldName[];
   addFieldName!:string;
   showFieldsList!:ShowFieldsData[];
   mandatoryFieldsList!:MandatoryFields[];
@@ -72,6 +73,7 @@ export class CustomerModuleComponent {
     this.companyId=localStorage.getItem('companyId');
     this.customerModuleService.getExtraFields(this.companyId).subscribe((data)=>{
       this.extraFieldName=data;
+      this.searchedFieldName=data;
       console.log("--------extra------------->"+this.companyId+"---"+this.extraFieldName);
       this.extraFieldName.forEach((x)=>{
         console.log(x.companyId+" "+x.name+" "+x.email)
@@ -152,6 +154,34 @@ export class CustomerModuleComponent {
     this.customerModuleService.removeExtraField(this.deletionId).subscribe((data)=>{
       console.log(data);
       this.deletionId='';
+      this.customerModuleService.deleteShowAndMandatoryFields(this.deletionName,this.companyId).subscribe((data)=>{
+        console.log("deleted extra fields mandate and show");
+      },
+      (err)=>{
+        console.log(err);
+      },
+      ()=>{
+        this.ngOnInit();
+        
+      }
+      )
+     let selectedExtraColums = localStorage.getItem("selectedExtraColumsCustomer");
+
+      if (selectedExtraColums != null) {
+        let arr = JSON.parse(selectedExtraColums);
+
+        // find index of the element
+        let index = arr.indexOf(this.deletionName);
+
+        if (index !== -1) {
+          // remove the element from array
+          arr.splice(index, 1);
+
+          // save updated array back to localStorage
+          localStorage.setItem("selectedExtraColumsCustomer", JSON.stringify(arr));
+        }
+      }
+      
     },
     (err)=>{
       console.log(err);
@@ -161,17 +191,7 @@ export class CustomerModuleComponent {
       
     }
     )
-    this.customerModuleService.deleteShowAndMandatoryFields(this.deletionName,this.companyId).subscribe((data)=>{
-      console.log("deleted extra fields mandate and show");
-    },
-    (err)=>{
-      console.log(err);
-    },
-    ()=>{
-      this.ngOnInit();
-      
-    }
-    )
+    
   }
   updateDeletionName(name:string){
     this.deletionName=name;
@@ -304,4 +324,24 @@ export class CustomerModuleComponent {
     console.log(data);
     this.extraFieldOption=data;
   }
+  find(data:any){
+        console.log(data.target.value)
+     
+        const value=data.target.value;
+       
+        this.searchedFieldName=this.extraFieldName.filter((mydata)=>{
+      //  console.log(mydata)
+          let filterData:any;
+           //  console.log(mydata)
+          if(mydata.name.toLowerCase().includes(value.toLowerCase())){
+            filterData=mydata;
+          }
+          else{
+            filterData=false;
+          }
+          console.log(filterData)
+          return filterData;
+        
+        });
+      }
 }

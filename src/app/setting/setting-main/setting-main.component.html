@@ -93,18 +93,19 @@
         </div>
         <div class="col-md-4">
           
-          <input 
-          type="text" 
-          class="form-control" 
-          formControlName="zipCode" 
-          placeholder="Enter ZIP Code" 
-          [ngModel]="companyInformation ? companyInformation.zipCode : ''" 
+              <input 
+          type="text"
+          class="form-control"
+          formControlName="zipCode"
+          placeholder="Enter ZIP Code"
+          [ngModel]="companyInformation ? companyInformation.zipCode : ''"
           maxlength="6"
-          pattern="^\d{6}$"
-        >
+          pattern="^[a-z0-9]*$"
+        />
+
         <div *ngIf="companyInformationForm.get('zipCode')?.invalid && companyInformationForm.get('zipCode')?.touched"  class="text-danger">
           <span *ngIf="this.companyInformationForm.get('zipCode')?.errors?.required">ZIP Code is required.</span>
-          <span *ngIf="this.companyInformationForm.get('zipCode')?.errors?.pattern">Enter a valid ZIP Code (e.g., 12345 or 12345-6789).</span>
+          <span *ngIf="this.companyInformationForm.get('zipCode')?.errors?.pattern">Enter a valid ZIP Code (e.g., 123456).</span>
         </div>
         </div>
         <div class="col-12">
