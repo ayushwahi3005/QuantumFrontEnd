@@ -1,3 +1,11 @@
+* {
+    font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+}
+
+hr {
+    margin: 0.5rem 0;
+}
+
 #logo{
     text-decoration: none;
     color: black;
@@ -26,7 +34,6 @@ li{
 } */
 
 .nav-item {
-    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
     font-size: 18px;
 }
 
@@ -91,7 +98,9 @@ img{
     left: 0rem;
     width: 250px;
     /* height: calc(100vh - 76px); */
+
     height: calc(100vh - 53px);
+
     background-color: #12232E;
     box-shadow:rgba(255, 255, 255, 0.5);
     color: white;
@@ -154,11 +163,13 @@ i {
 }
 
 .content-area{
+
     width: max-content;
     margin-left: 60px;
     display: flex;
     justify-content: center;
     height: 500px;
+
     color: black;
     display: flex;
     transition: margin 150ms linear;
@@ -203,8 +214,8 @@ td{
     height: auto;
     /* max-height: 200px; */
     overflow-y: auto;
-    border: 1px solid #ccc;
-    border-radius: 5px;
+    /* border: 1px solid #ccc; */
+    border-radius: 10px;
     background-color: #fff;
     z-index: 1050;
     display: none;
@@ -219,14 +230,13 @@ td{
 }
 
 .dropdown-item {
-    padding: 10px 90px 10px 7px;
+    padding: 9px 90px 9px 7px;
     cursor: pointer;
-    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
 }
   
 .dropdown-item:hover {
     background-color: #f1f1f1;
-    border-radius: 5px;
+    border-radius: 10px;
 }
 
 .dropdown-toggle::after {

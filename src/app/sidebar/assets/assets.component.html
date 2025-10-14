@@ -12,9 +12,23 @@
 <div  class="loading" *ngIf="loading">
 </div>
 
+<div *ngIf="!detailedAsset" class="d-flex justify-content-center" style="margin: 20px 30px 0 30px;">
+  <div class="d-flex justify-content-between" style=" width: 100%;">
 
-<div *ngIf="!detailedAsset" style="border: 1px solid lightgray; border: 1px black lightgray; background-color: white; border-radius: 10px; padding: 0px; margin: 30px 30px 30px 30px; box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1); height: auto; padding-bottom: 8px;">
-<div *ngIf="mainAsset && !loading" class="main-asset">
+    <div style="height: 40px;">
+      <label style="font-size: 24px; font-weight: bold; padding: 10px 0;">Assets</label>
+    </div>
+
+    <button class="btn btn-dark" (click)="exportexcel()">Export</button>
+
+  </div>
+</div>
+
+
+<div *ngIf="!detailedAsset" style="border: 1px solid lightgray; border: 1px black lightgray; background-color: white; border-radius: 10px; padding: 0px; margin: 20px 30px 30px 30px; box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1); padding-bottom: 20px;">
+
+  <div *ngIf="mainAsset && !loading" class="main-asset">
+    
     <div class="row">
       <!-- <div class="col flex justify-content-between searchBar" style="float: left;" > -->
         <div class="d-flex justify-content-between searchBar" style="float: left; width: 450px; align-items: center;">
@@ -44,7 +58,7 @@
 
       <button class="btn btn-primary" data-toggle="modal" data-target="#addAssetPopup" style=" margin: 0px 5px; width: 100%; max-width: 100px;" *ngIf="!(userRoleDetails?.assets!='full' &&userRole!='ADMIN')">+ Asset</button>
 
-      <button class="btn btn-dark" (click)="exportexcel()" style=" margin: 0px 5px;">Export</button>
+      <!-- <button class="btn btn-dark" (click)="exportexcel()" style=" margin: 0px 5px;">Export</button> -->
     
       <a class="btn btn-light dropdown-toggle" type="button" id="sortButtonAsset" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="margin: 0px 5px; border: 1px solid #c0c0c0;--bs-btn-bg: white" title="Sort">
         <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-arrow-down-up" viewBox="0 0 16 16">
@@ -53,15 +67,10 @@
       </a>
 
       <div class="dropdown-menu" aria-labelledby="sortButtonAsset" style="z-index: 10; margin-top: 5px;padding: 8px;">
-        <!-- <a class="dropdown-item" (click)="sortBy('name')">Sort By Name</a> -->
         <div style="padding: 8px 12px;cursor: default;pointer-events: none;user-select: none;">Sort by</div> 
         <a class="dropdown-item" (click)="sortBy('assetId')">ID</a>
         <a class="dropdown-item" (click)="sortBy('name')">
           <span *ngIf="sortedBy === 'name'" style="margin-left: -24px; margin-right: 8px;">
-            <!-- <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-check-circle" viewBox="0 0 16 16">
-              <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14m0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16"/>
-              <path d="m10.97 4.97-.02.022-3.473 4.425-2.093-2.094a.75.75 0 0 0-1.06 1.06L6.97 11.03a.75.75 0 0 0 1.079-.02l3.992-4.99a.75.75 0 0 0-1.071-1.05"/>
-            </svg> -->
             <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-check2" viewBox="0 0 16 16">
               <path d="M13.854 3.646a.5.5 0 0 1 0 .708l-7 7a.5.5 0 0 1-.708 0l-3.5-3.5a.5.5 0 1 1 .708-.708L6.5 10.293l6.646-6.647a.5.5 0 0 1 .708 0"/>
             </svg>
@@ -78,20 +87,21 @@
     </div>
     
     <div id="sort-and-search">
-      <button *ngIf="sortedBy" class="sort btn btn-light"  (click)="removeSort()">Sorted by: {{sortedBy|titlecase}} &times;</button>
+      <button *ngIf="sortedBy" class="btn btn-light btn-sm"  (click)="removeSort()">Sorted by: {{sortedBy|titlecase}} &times;</button>
       <span *ngIf="appliedFilterListSize >0">
-      <button *ngFor="let item of appliedFilterList" class="sort btn btn-primary"  (click)="removeSingleFilter(item)">{{(item=="assetId")?"Id":item|titlecase}}: {{appliedFilterListMap.get(item)|titlecase}} &times;</button>
-      <button class="btn btn-warning" style="margin-left: 5px;" (click)="reset()">Clear All</button>
+      <button *ngFor="let item of appliedFilterList" class="sort btn btn-primary btn-sm"  (click)="removeSingleFilter(item)">{{(item=="assetId")?"Id":item|titlecase}}: {{appliedFilterListMap.get(item)|titlecase}} &times;</button>
+      <button class="btn btn-warning btn-sm" style="margin-left: 5px;" (click)="reset()">Clear All</button>
       </span>  
     </div>
 
-    <div class="row" style="height: calc(100vh - 260px); overflow: auto; width: 100%;">
+    <!-- <div class="row" style="height: calc(100vh - 260px); overflow: auto; width: 100%;"> -->
+    <div class="row" style="width: 100%;">
+
       <div class="col" style="margin: 0; padding: 0; width: 100%;">
         
         <div class="extra-columns">
 
       </div>
-
 
         <table class="table" id="asset-table">
             <thead class="table-dark">
@@ -102,11 +112,11 @@
                     <th scope="col" style="padding-left: 1%;" *ngIf="showMandatoryBasicFields.get('assetId')">ID</th>
                     <th scope="col" (click)="sortBy('name')" *ngIf="showMandatoryBasicFields.get('name')">Name<span *ngIf="sortedBy === 'name'" class="bi bi-arrow-up" style="margin-left: 5px;"></span></th>
 
-                    <th scope="col" *ngIf="showMandatoryBasicFields.get('serialNumber')">Serial Number</th>
-                    <th scope="col" *ngIf="showMandatoryBasicFields.get('category')">Category</th>
-                    <th scope="col" *ngIf="showMandatoryBasicFields.get('customer')">Customer</th>
-                    <th scope="col" *ngIf="showMandatoryBasicFields.get('location')">Location</th>
-                    <th scope="col" *ngIf="showMandatoryBasicFields.get('status')">Status</th>
+                    <th scope="col" (click)="sortBy('serialNumber')" *ngIf="showMandatoryBasicFields.get('serialNumber')">Serial Number<span *ngIf="sortedBy === 'serialNumber'" class="bi bi-arrow-up" style="margin-left: 5px;"></span></th>
+                    <th scope="col" *ngIf="showMandatoryBasicFields.get('category')">Category<span *ngIf="sortedBy === 'category'" class="bi bi-arrow-up" style="margin-left: 5px;"></span></th>
+                    <th scope="col" *ngIf="showMandatoryBasicFields.get('customer')">Customer<span *ngIf="sortedBy === 'customer'" class="bi bi-arrow-up" style="margin-left: 5px;"></span></th>
+                    <th scope="col" *ngIf="showMandatoryBasicFields.get('location')">Location<span *ngIf="sortedBy === 'location'" class="bi bi-arrow-up" style="margin-left: 5px;"></span></th>
+                    <th scope="col" *ngIf="showMandatoryBasicFields.get('status')">Status<span *ngIf="sortedBy === 'status'" class="bi bi-arrow-up" style="margin-left: 5px;"></span></th>
                     <th scope="col" *ngFor="let col of selectedExtraColums">{{col|titlecase}}</th>
                     <th></th>
                   </tr>
@@ -123,7 +133,7 @@
                     <td *ngIf="showMandatoryBasicFields.get('customer')">{{customerIdNameMap.get(item.customerId)|titlecase}}</td>
                     <td *ngIf="showMandatoryBasicFields.get('location')">{{item.location|titlecase}}</td>
                     <td *ngIf="item.status=='active'&&showMandatoryBasicFields.get('status')">Active</td>
-                    <td *ngIf="item.status=='inactive'&&showMandatoryBasicFields.get('status')">In Active</td>
+                    <td *ngIf="item.status=='inactive'&&showMandatoryBasicFields.get('status')">Inactive</td>
                     <td *ngIf="item.status=='outofservice'&&showMandatoryBasicFields.get('status')">Out Of Service</td>
                     <td *ngIf="item.status==null||item.status==''&&showMandatoryBasicFields.get('status')"></td>
             
@@ -155,13 +165,13 @@
     </div>
 
 
-    <hr style="border: 0.5px solid gray; margin: 0; width: 100%;">
+    <!-- <hr style="border: 0.5px solid gray; margin: 0; width: 100%;"> -->
     <mat-paginator [length]="totalLength"
               (page)="handlePageEvent($event)"
               [pageSize]="pageSize"
               [pageIndex]="pageIndex"
               [pageSizeOptions]="[50, 100, 200]"
-              aria-label="Select page" style="z-index: 0; height: auto; font-size: 14px;">
+              aria-label="Select page" style="z-index: 0; height: auto; font-size: 15.5px;margin-top: 10px;">
 </mat-paginator>
 
 
@@ -177,7 +187,6 @@
         <div class="modal-header" style="padding: 13px 15px; position: sticky; top: 0; z-index: 100; background-color: white;">
           <h2 class="modal-title" style="margin:0; display: flex; justify-content: center;" id="exampleModalLongTitle">Add Asset</h2>
           <button type="button" class="btn btn-light btn-sm ms-auto" data-dismiss="modal" aria-label="Close" style="border-radius: 10px;" #closeBox2>
-            <!-- <span aria-hidden="true">&times;</span> -->
             <i class="bi bi-x-lg"></i>
           </button>
         </div>
@@ -259,20 +268,18 @@
                   <option value="inactive">Inactive</option>
                 </select>
               </div>
-              <br>
 
-              <div class="form-group" *ngFor="let item of showFieldsList" >
+              <div *ngFor="let item of showFieldsList">
                 <div *ngIf="item.show">
-                <label for={{item.name}}>{{item.name|titlecase}}<span *ngIf="mandatoryFieldsMap.get(item.name)" class="text-danger">*</span></label><br>
+                  <br>
+                <label for={{item.name}}>{{item.name|titlecase}}<span *ngIf="mandatoryFieldsMap.get(item.name)" class="text-danger">*</span></label>
                 <input type={{item.type}} class="form-control" id="{{item.name}}" formControlName={{item.name}}  placeholder={{item.name|titlecase}}>
                 </div>
-                <br>
               </div>
 
-              <!-- <div class="modal-footer"> -->
               <div style="display: flex; justify-content: center; margin-top: 15px;">
                 <button class="btn btn-light"  (click)="closeBox2.click()" style="margin: 10px; margin-right: 30px; width: 100px; border: 1px solid #c0c0c0">Cancel</button>
-                <button type="submit" class="btn btn-primary"  (click)="image.value=''" style="margin: 10px; width: 100px;">Save</button>
+                <button class="btn btn-primary"  (click)="image.value=''" style="margin: 10px; width: 100px;">Save</button>
               </div>
             
           </form>
@@ -401,8 +408,8 @@
             <h3>Select Checkbox</h3>
 
               <div style="width: 100%;">
-              <div>  <mat-checkbox  [color]="checkBoxColor"  [checked]="showMandatoryBasicFields.get('image')==true?true:false"  (change)="mandatoryFieldCheckBox($event.checked,'image')" disabled="true">Image</mat-checkbox></div>
-              <div>  <mat-checkbox  [color]="checkBoxColor"  [checked]="showMandatoryBasicFields.get('assetId')==true?true:false"  (change)="mandatoryFieldCheckBox($event.checked,'assetId')" disabled="true" >Asset Id</mat-checkbox></div>
+              <!-- <div>  <mat-checkbox  [color]="checkBoxColor"  [checked]="showMandatoryBasicFields.get('image')==true?true:false"  (change)="mandatoryFieldCheckBox($event.checked,'image')" disabled="true">Image</mat-checkbox></div> -->
+              <div>  <mat-checkbox  [color]="checkBoxColor"  [checked]="showMandatoryBasicFields.get('assetId')==true?true:false"  (change)="mandatoryFieldCheckBox($event.checked,'assetId')" disabled="true" >ID</mat-checkbox></div>
               <div>  <mat-checkbox  [color]="checkBoxColor"  [checked]="showMandatoryBasicFields.get('name')==true?true:false"  (change)="mandatoryFieldCheckBox($event.checked,'name')" disabled="true">Name</mat-checkbox></div>
               <div>  <mat-checkbox  [color]="checkBoxColor"  [checked]="showMandatoryBasicFields.get('serialNumber')==true?true:false"  (change)="mandatoryFieldCheckBox($event.checked,'serialNumber')">Serial Number</mat-checkbox></div>
               <div>  <mat-checkbox  [color]="checkBoxColor"  [checked]="showMandatoryBasicFields.get('category')==true?true:false"  (change)="mandatoryFieldCheckBox($event.checked,'category')">Category</mat-checkbox></div>

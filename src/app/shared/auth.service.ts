@@ -423,9 +423,11 @@ export class AuthService {
         const expirationTime = decodedToken.exp * 1000; // Convert to milliseconds
         const currentTime = Date.now();
         const timeLeft = expirationTime - currentTime;
-        console.log('Time left:', timeLeft);
+
+        // console.log('Time left:', timeLeft);
         const timeLeftInMinutes = Math.floor(timeLeft / 60000); // Convert to minutes
-console.log(`Time left: ${timeLeftInMinutes} minutes`);
+// console.log(`Time left: ${timeLeftInMinutes} minutes`);
+
         if (timeLeft <= 1 * 60 * 1000) {
           // alert('Session has expired. Please log in again.');
           this.email = localStorage.getItem('user');
@@ -457,7 +459,9 @@ console.log(`Time left: ${timeLeftInMinutes} minutes`);
         console.error('Error decoding token:', error);
       }
     }
-  }, 10000)
+
+  }, 1000)
+
 }
 
 stopTokenMonitoring(): void {

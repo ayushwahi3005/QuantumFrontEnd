@@ -12,9 +12,49 @@
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Horizontal, Vertical, Blur, Color */
 }
 .main-subscription{
-width: 80%;
+  width: calc(100vw - 270px);
+  display: flex;
+  flex-direction: column;
 /* overflow: auto; */
 }
+
+.option span {
+  border: 1px solid #c2c7cf;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  padding-top: 20px;
+  border-radius: 5px;
+  font-size: large;
+  margin: 0px 1px;
+  background-color: #c2c7cf;
+  cursor: pointer;
+}
+  
+.option span:hover {
+  border: #989292 1px solid;
+  border-radius: 5px;
+}
+  
+.option span.selected-option {
+  font-weight: bold;
+  color: white;
+  background-color: #12232E;
+  border-radius: 5px;
+}
+
+.option{
+  width: calc(100vw - 400px);
+  margin-top: 50px;
+  height: 70px;
+  margin-left: 60px;
+}
+
+.selected-option{
+  background-color: #12232E;
+  color: white;  
+}
+
 .logo {
   height: 140px;
   width: 100%;
@@ -381,51 +421,7 @@ cursor: pointer;
 /* span:hover{
 border:2px solid darkgray; 
 } */
-.option span {
-/* Common styling for all spans inside the option div */
-border: 1px solid #c2c7cf;
-width: 100%;
-display: flex;
-justify-content: center;
-padding-top: 20px;
-border-radius: 5px;
-font-size: large;
-margin: 0px 1px;
-background-color: #c2c7cf;
-cursor: pointer;
-}
 
-.option span:hover {
-/* Styling for hover effect */
-border: #989292 1px solid;
-border-radius: 5px;
-}
-
-.option span.selected-option {
-/* Styling for the selected option */
-font-weight: bold;
-color: white;
-background-color: #12232E;
-border-radius: 5px;
-}
-.option{
-width: calc(100vw - 400px);
-margin-top: 50px;
-
-height: 70px;
-
-margin-left: 60px;
-
-
-
-
-
-}
-.selected-option{
-background-color: #12232E;
-color: white;
-
-}
 ::ng-deep .mat-mdc-card-header-text{
   width: 100%;
 }
@@ -442,16 +438,17 @@ width: 100%;
 
 }
 #card-span{
- background-color: white;
- width: 600px;
- height: 70px;
- margin: 10px 0px;
- padding: 10px 10px;
- border-radius: 10px;
- border: 0.5px solid lightgray;
- font-size: larger;
- font-weight: 500;
+  background-color: white;
+  width: 600px;
+  height: 70px;
+  margin: 10px 0px;
+  padding: 10px 10px;
+  border-radius: 10px;
+  border: 0.5px solid lightgray;
+  font-size: larger;
+  font-weight: 500;
 }
+
 #edit-card-span{
 background-color: white;
 width: 600px;
@@ -463,10 +460,28 @@ border: 0.5px solid lightgray;
 font-size: larger;
 font-weight: 500;
 }
-#card-span:hover{
-border: 1px solid darkgray;
-box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+
+.change-card {
+  background-color: white;
+  width: 600px;
+  height: 70px;
+  margin: 10px 0px;
+  padding: 10px 10px;
+  border-radius: 10px;
+  border: 0.5px solid lightgray;
+  font-size: larger;
+  font-weight: 500;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
 }
+
+.change-card:hover {
+  border: 1px solid darkgray;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
 #card-add-btn{
 display: flex;
 place-self: end;
@@ -496,6 +511,8 @@ margin: 2px 0px;
 background-color: white;
 border-radius: 10px;
 border: 0.5px solid lightgray;
+box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+margin: 0 50px;
 }
 .card-logo {
 width: 40px;
@@ -504,42 +521,49 @@ margin-right: 8px;
 vertical-align: middle;
 }
 .invoice-details{
-width: 100%;
-min-height: 100px;
-margin-top: 20px;
-background-color: white;
-border-radius: 10px;
-border: 1px solid lightgray;
+  /* width: 100%; */
+  min-height: 100px;
+  margin: 25px 50px;
+  background-color: white;
+  border-radius: 10px;
+  border: 1px solid lightgray;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  padding: 0 20px 20px 20px;
 }
-#invoice-table thead{
-position: sticky;
-top: 0;
-z-index: 1;
-width: 100%;
-/* margin-left: 10%; */
+
+.invoice-table thead{
+  position: sticky;
+  top: 0;
+  z-index: 1;
+  width: 100%;
+  /* margin-left: 10%; */
 }
-#invoice-table{
-color: #5E6164;
-width: 90%;
-margin-left: 5%;
-margin-top: 20px;
-border-radius: 10px;
-
-
-
-
-
+.invoice-table{
+  color: #5E6164;
+  width: 100%;
+  /* margin-left: 5%; */
+  /* margin-top: 20px; */
+  border-radius: 10px;
 }
-#asset-table tr:hover{
-box-shadow: 20px 10px 10px 5px black;
 
+.invoice-table tbody{
+  border: 1px solid lightgray;
+  border-radius: 10px;
+  font-size: 16px;
 }
-#asset-table{
-  
-/* overflow: hidden; */
-/* margin-top: 10px; */
-border-radius: 10px;
+
+.invoice-table td {
+  vertical-align: middle;
 }
+
+.invoice-table tr:hover{
+  background-color: #f5f5f5;
+}
+
+.invoice-table tr:hover td{
+  background-color: inherit;
+}
+
 .editoption{
 opacity: 0;
 }
@@ -595,3 +619,8 @@ animation-delay: 0.1s;
   box-shadow: 0 0 0 0 rgba(178, 212, 252, 0.7);
 }
 } */
+
+.table-dark {
+  --bs-table-bg: #12232E;
+  --bs-table-color: white;
+}

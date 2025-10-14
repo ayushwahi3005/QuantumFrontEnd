@@ -1,14 +1,9 @@
-    <div *ngIf="showAlert" class="alert" [ngClass]="'alert-' + alertType" role="alert" style="margin: 5px; position: fixed; width: 95%; z-index: 100;">
-    {{ alertMessage }}
-   
-    <button type="button" class="btn-close" (click)="showAlert = false" aria-label="Close" style="float: right;"></button>
-    </div>
-    <ul class="nav justify-content-between header">
+<ul class="nav justify-content-between header">
   
-      <div class="header-centre">
-        <!-- <img src='../../assets/logo.png'> -->
-        <h1>AssetYug</h1>
-      </div>
+  <div class="header-centre">
+    <!-- <img src='../../assets/logo.png'> -->
+    <h1>AssetYug</h1>
+  </div>
     
     
       <li class="nav-item d-flex align-items-center"  style="padding-right: 5px; margin: 15px; gap: 25px;">
@@ -20,98 +15,100 @@
       </a>
        
 
-        <ul class="dropdown-menu" style="margin-top: 30px;padding: 8px;margin-right: 10px;font-size: 17px;">
+        <ul class="dropdown-menu" style="margin-top: 25px;padding: 8px;margin-right: 10px;font-size: 16px;">
          
-          <b class="dropdown-item"><a href="#" style="text-decoration: none; color: black;">Profile ({{email}})</a></b>
+          <b class="dropdown-item" href="#" style="text-decoration: none; color: black;">Profile ({{email}})</b>
+          <hr style="margin: 0.5rem 0;">
           <b class="dropdown-item">More Details</b>
           <b class="dropdown-item">Contact Support</b>
+          <b class="dropdown-item">Manage account</b>
     
         </ul>
         <a (click)="logout()" style="cursor: pointer;">Log out</a>
       
       </li>
       
-    </ul>
+</ul>
 
 
-    <div class="side-navbar"  (mouseover)="onHover()" (mouseleave)="offHover()" [ngClass]="{'nav-list-open':hoverOverSidebar}" >
-      <ul class="nav-list"  >
-      <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="currentColor" class="bi bi-list" viewBox="0 0 16 16" style="margin-left: 10px;"> 
-        <path fill-rule="evenodd" d="M2.5 12a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5zm0-4a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5zm0-4a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5z"/>
-      </svg>
-      <hr>
-      <li class="nav-list-item" *ngFor="let item of sideBarOption"  [ngClass]="{'selected':(current==item.number)}" (click)="update(item.number)" >
+<div class="side-navbar" (mouseover)="onHover()" (mouseleave)="offHover()" [ngClass]="{'nav-list-open':hoverOverSidebar}" >
+  <ul class="nav-list">
+    <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="currentColor" class="bi bi-list" viewBox="0 0 16 16" style="margin-left: 10px;"> 
+      <path fill-rule="evenodd" d="M2.5 12a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5zm0-4a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5zm0-4a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5z"/>
+    </svg>
+    <hr style="margin: 0.5rem 0;">
+    <li class="nav-list-item" *ngFor="let item of sideBarOption"  [ngClass]="{'selected':(current==item.number)}" (click)="update(item.number)" >
         
-        <i class={{item.icon}}></i>
+      <i class={{item.icon}} style="color: white;"></i>
         <span >
           
           {{item.name}}
         </span>
       
-      </li>
+    </li>
+    <hr style="margin: 0.5rem 0;">
+
+    <!-- <li class="nav-list-item" [routerLink]="['/setting-home']">
+      <i class="bi bi-gear-fill"></i>
+      <span>Settings</span>
+    </li> -->
+
     
-  
-      <li  class="nav-list-item" style=" margin-top: 400px; margin-bottom: 0px; position: absolute; bottom: 0;" [routerLink]="['/setting-home']">
-        <i class="bi bi-gear-fill"></i>
+    <li class="nav-list-item" style="position: absolute; bottom: 0;" [routerLink]="['/setting-home']">
+      <i class="bi bi-gear-fill"></i>
         <span >Settings</span>
-      </li>
-    </ul>
-  </div>
+    </li>
+  </ul>
+</div>
 
   
   <!-- <div class="content-area" [ngClass]="{'content-area-onhover':!hoverOverSidebar}"  style="overflow-y:scroll; height: calc(100vh - 100px);"> -->
-  <div class="content-area" [ngClass]="{'content-area-onhover':!hoverOverSidebar}">
-    <div *ngIf="!loadingScreen">
+<div class="content-area" [ngClass]="{'content-area-onhover':!hoverOverSidebar}">
 
-        <!-- <div class="main" > -->
-  
+  <div *ngIf="showAlert" class="alert" [ngClass]="'alert-' + alertType" role="alert" style="margin: 5px; position: fixed; width: 95%; z-index: 100;">
+      {{ alertMessage }}
+     
+      <button type="button" class="btn-close" (click)="showAlert = false" aria-label="Close" style="float: right;"></button>
+  </div>
+
+  <!-- <div *ngIf="!loadingScreen"> -->
      
   
             <!-- <div class="mainform" style="width: calc(100vw - 90px);"> -->
               <!-- <div class="d-flex justify-content-around"  style="position: sticky; top: 0px; z-index: 1000; border: 1px solid lightgray;border-radius:10px ; padding: 10px 10px; background-color: white;"> -->
               
               
-                <div style="display: flex; flex-direction: column; width: calc(100vw - 90px);">
+                <div style="display: flex; flex-direction: column; width: calc(100vw);">
                   <div class="back-button" style="padding: 0">
-                    <div class="d-flex justify-content-between" style="padding: 3px 20px 5px 20px;">
+                    <div class="d-flex justify-content-between" style="padding: 3px 20px;">
                       <div style="margin-right: 30px;display: flex; justify-content: center; align-items: center;">
-                        <a [routerLink]="['/dashboard']" style="margin-right: 20px; text-decoration: none; font-weight: bold ;">&larr;
-                          Back to Customers</a>
-                      </div>
+                        <a [routerLink]="['/dashboard']" style="margin-right: 20px; text-decoration: none; font-size: large;">&larr; Back to Customers</a>
+
                       <div class="v1"></div>
                       <div style="margin: 0; font-size: larger; color: black;"><b style="margin-left: 20px;">{{companyCustomer.name|titlecase}}</b></div>
-                    <!-- </div> -->
-                
-                  <!-- </div> -->
-                
+                    </div>
                 
                   <!-- <div class="d-flex justify-content-around"> -->
                 
                   <div class="button-container">
-                    <button type="submit" class="centered-button btn btn-primary submit" style="margin: 5px; padding:7px 28px ;" [routerLink]="['/customer/',companyCustomerId]"
+                    <button class="centered-button btn btn-primary submit" style="margin: 5px; padding:7px 28px ;" [routerLink]="['/customer/',companyCustomerId]"
                       *ngIf="!(userRoleDetails?.customers!='full'&&userRoleDetails?.customers!='edit' &&userRole!='ADMIN')">Edit</button>
                   </div>
                   </div>
                   </div>
                 
-                <!-- </div> -->
-                
-              <!-- </div> -->
-            </div> 
-                <!-- <hr> -->
-                
-                <!-- <div class="d-flex justify-content-center" *ngIf="!loading" style="margin-top: 15px;"> -->
+                <div class="d-flex justify-content-center" style="margin-top: 15px;">
                 <div style="margin-top: 10px; color:  #74777a;" >
                 <div class="card mt-2" style="margin-bottom: 40px;">
                 
-                <h2 style="display: flex; justify-content: center;color: black;">Customer Details</h2>
+                <h1 style="display: flex; justify-content: center;margin-top: 10px;">Customer Details</h1>
                 
                 
                 
                 <div class="mainFields" style="font-size: 16px;" >
                   
                   <div>
-                      <div style="display: flex; flex-direction: row;" class="d-flex justify-content-center">
+                      <div style="display: flex; flex-direction: row;justify-content: center;">
                           <div style="margin: 0px 2vw;">
                               <label for="name" style="color: black; font-weight: bold;">Customer Name<span *ngIf="mandatoryFieldsMap.get('name')" class="text-danger">*</span></label>
                               <!-- <input type="text"  id="name"   [(ngModel)]=" companyCustomer.name" disabled> -->
@@ -138,15 +135,15 @@
                               <!-- <input id="status" type="text" [(ngModel)]=" companyCustomer.status"  disabled> -->
                               <div style="margin: 10px;">
                                 <!-- <p *ngIf="companyCustomer.status">{{companyCustomer.status}}</p> -->
-                                <td *ngIf="companyCustomer.status=='active'">Active</td>
-                                <td *ngIf="companyCustomer.status=='inActive'">In Active</td>
+                                <p *ngIf="companyCustomer.status=='active'">Active</p>
+                                <p *ngIf="companyCustomer.status=='inActive'">In Active</p>
                                 <p *ngIf="!companyCustomer.status">&nbsp; </p>
                                 <hr style="width: 20vw;">
                               </div>
                           </div>
                       </div>
-                      <div style="display: flex; flex-direction: row;"  class="d-flex justify-content-around"> 
-                          <div style="margin-right: 40px;">
+                      <div style="display: flex; flex-direction: row;justify-content: center;"> 
+                          <div style="margin: 0px 2vw">
                               <label for="phone"  style="color: black; font-weight: bold;">Phone<span *ngIf="mandatoryFieldsMap.get('phone')" class="text-danger">*</span></label>
                               
                               <!-- <input id="phone" type="text" [(ngModel)]=" companyCustomer.phone" disabled > -->
@@ -156,7 +153,7 @@
                                 <hr style="width: 20vw;">
                               </div>
                           </div>
-                          <div  style="margin-left: 40px;">
+                          <div  style="margin: 0px 2vw">
                               <label for="email"  style="color: black; font-weight: bold;">Email<span *ngIf="mandatoryFieldsMap.get('email')" class="text-danger">*</span></label>
                               
                               <!-- <input id="email" type="text" [(ngModel)]=" companyCustomer.email"  disabled> -->
@@ -166,14 +163,16 @@
                                 <hr style="width: 20vw;">
                               </div>
                           </div>
+                          <div style="margin: 0px 2vw;width: 20vw;">
+                          </div>
                     </div>
                   </div>
                   <hr>
-                  <h2 style="display: flex; justify-content: center; margin: 10px 0px; color: black; font-size: x-large;">Address</h2>
+                  <h1 style="display: flex; justify-content: center;">Address</h1>
                   
                   <div >
                   
-                     <div style="display: flex; flex-direction: row;"  class="d-flex justify-content-center"> 
+                     <div style="display: flex; flex-direction: row;justify-content: center;"> 
                           <div style="margin: 0px 2vw;">
                             <label for="address"  style="color: black; font-weight: bold;">Address/Street<span *ngIf="mandatoryFieldsMap.get('address')" class="text-danger">*</span></label>
                             <!-- <input type="text"  id="address"   [(ngModel)]=" companyCustomer.address" disabled> -->
@@ -205,8 +204,8 @@
                             </div>
                           </div>
                       </div>
-                      <div style="display: flex; flex-direction: row;"  class="d-flex justify-content-around"> 
-                          <div style="margin-right: 40px;" >
+                      <div style="display: flex; flex-direction: row;justify-content: center; margin-bottom: 10px;"> 
+                          <div style="margin: 0px 2vw;" >
                             <label for="state"  style="color: black; font-weight: bold;">State<span *ngIf="mandatoryFieldsMap.get('state')" class="text-danger">*</span></label>
                             
                             <!-- <input id="state" type="text" [(ngModel)]=" companyCustomer.c"  disabled> -->
@@ -216,7 +215,7 @@
                               <hr style="width: 20vw;">
                             </div>
                           </div>
-                          <div style="margin-left: 40px;" >
+                          <div style="margin: 0px 2vw;" >
                             <label for="zipCode"  style="color: black; font-weight: bold;">Zip Code<span *ngIf="mandatoryFieldsMap.get('zipCode')" class="text-danger">*</span></label>
                             
                             <!-- <input id="zipCode" type="text" [(ngModel)]=" companyCustomer.zipCode"  disabled> -->
@@ -225,6 +224,8 @@
                               <p *ngIf="!companyCustomer.zipCode">&nbsp; </p>
                               <hr style="width: 20vw;">
                             </div>
+                          </div>
+                          <div style="margin: 0px 2vw;width: 20vw;">
                           </div>
                       
                        </div>
@@ -247,8 +248,9 @@
            
           
            
-            <div class="option d-flex flex-row mb-4">
-              <span [ngClass]="{'selected-option':(currOption==1),'subTab':(currOption!=1)}" (click)="onClick(1)" >Asset</span>
+            <!-- <div class="option d-flex flex-row mb-4" style="width: 100%; margin: 30px auto;color: black;"> -->
+            <div class="option d-flex flex-row bd-highlight" style="width: 100%; margin: 30px auto;color: black;">
+              <span [ngClass]="{'selected-option':(currOption==1),'subTab':(currOption!=1)}" (click)="onClick(1)" >Assets</span>
               <span [ngClass]="{'selected-option':(currOption==2),'subTab':(currOption!=2)}" (click)="onClick(2)" class="subTab">Files</span>
               <!-- <span [ngClass]="{'selected-option':(currOption==3),'subTab':(currOption!=3)}" (click)="onClick(3)" class="subTab">Work Order</span>
               <span [ngClass]="{'selected-option':(currOption==4),'subTab':(currOption!=4)}" (click)="onClick(4)" class="subTab">Invoices</span> -->
@@ -256,35 +258,32 @@
             </div>
 
 
-            <div class="card mt-2" *ngIf="currOption==1"  >
+            <div class="card mt-2" *ngIf="currOption==1" style="margin-bottom: 50px;" >
               <!-- <h1 style="display: flex; justify-content: center; margin-top: 10px;">Assets</h1> -->
               <div class="card-body">
                 <table class="table" id="asset-table" *ngIf="customerAssetList?.length">
                   <thead class="table-dark">
                       <tr>
-                          <th scope="col">#</th>
-                          <th scope="col">Image</th>
-                          <th scope="col">Id</th>                 
+                          <!-- <th scope="col">#</th> -->
+                          <th scope="col">ID</th>
+                          <!-- <th scope="col">Image</th> -->
                           <th scope="col">Name</th>
-                          <th scope="col">Serial#</th>
+                          <th scope="col">Serial Number</th>
                           <th scope="col">Category</th>
-                          <th scope="col">Customer</th>
+                          <!-- <th scope="col">Customer</th> -->
                           <th scope="col">Location</th>
                           <th scope="col">Status</th>
                         </tr>
                   </thead>
                   <tbody>
-                      <tr *ngFor="let item of customerAssetList"  target="_blank" style="cursor: pointer;">
-                          <th scope="row">{{customerAssetList.indexOf(item)+1}}</th>
-                          
-                    
-                          <td style="color: black;"><img src="../../../assets/asset_image.jpg" class="image" *ngIf="!item.image" ><img src={{item.image}} class="image"  *ngIf="item.image"  ></td>
+                      <tr *ngFor="let item of customerAssetList" [routerLink]="['/assets',item.id]" target="_blank" style="cursor: pointer;">
+                          <!-- <th scope="row">{{customerAssetList.indexOf(item)+1}}</th> -->
                           <td>{{item.assetId}}</td>
-                          
+                          <!-- <td style="color: black;"><img src="../../../assets/asset_image.jpg" class="image" *ngIf="!item.image" ><img src={{item.image}} class="image"  *ngIf="item.image"  ></td> -->
                           <td>{{item.name|titlecase}}</td>
                           <td>{{item.serialNumber|titlecase}}</td>
                           <td>{{item.category|titlecase}}</td>
-                          <td>{{item.customer|titlecase}}</td>
+                          <!-- <td>{{item.customer|titlecase}}</td> -->
                           <td>{{item.location|titlecase}}</td>
                           <td *ngIf="item.status=='active'">Active</td>
                     <td *ngIf="item.status=='inactive'">In Active</td>
@@ -297,7 +296,7 @@
                 <mat-paginator [length]="totalLength"
                 (page)="handlePageEvent($event)"
                 [pageSize]="pageSize"
-               
+               style="font-size: 15.5px"
                 aria-label="Select page">
                 </mat-paginator>
           
@@ -305,7 +304,7 @@
             </div>
 
 
-            <div class="card mt-2" *ngIf="currOption==2">
+            <div class="card mt-2" *ngIf="currOption==2" style="margin-bottom: 50px;">
               <!-- <h1 style="display: flex; justify-content: center; margin-top: 10px;">Files</h1> -->
              
               <div class="card-body">
@@ -330,12 +329,12 @@
                 <div class="d-flex justify-content-between" style="margin: 5px;">
                   
                   <span style="font-size: large; background:none; border: none; justify-content:left;">{{item.fileName|titlecase}}</span>
-                  <!-- <div>
+                  <div style="font-size: 16px;">
                    
                     <a (click)="download(item.id,item.fileName)"  style="margin: 0px 5px;"><i class="bi bi-file-earmark-arrow-down"></i></a>
                       <a (click)="itemDeleteDetails(item.id)" data-target="#popupDelete" data-toggle="modal" style="margin: 0px 5px;"><i class="bi bi-trash-fill delete"></i></a>
                       
-                  </div> -->
+                  </div>
                 </div>
                 </div>
               </div>
@@ -383,16 +382,23 @@
             </div>
 
 
-            <div class="card mt-2" *ngIf="currOption==5">
+            <div class="card mt-2" *ngIf="currOption==5" style="margin-bottom: 50px;">
               <!-- <h1 style="display: flex; justify-content: center; margin-top: 10px;">Customs</h1> -->
               <div class="card-body">
-                <div class="extraFields">
+                <div class="extraFields" style="font-size: 16px;">
                   <div > 
                    <div *ngFor="let item of extraFieldName" >
                      <div *ngIf="!extraFieldString.includes(item.name) && showFieldsMap?.get(item.name)">
-                       <span>{{item.name|titlecase}}<span *ngIf="mandatoryFieldsMap.get(item.name) " class="text-danger">*</span></span>
-                       <br><input id="value" type="{{item.type}}" [(ngModel)]="extraFieldValue[extraFieldName.indexOf(item)]" disabled>
-                       <p *ngIf="mandatoryFieldsMap.get(item.name) && extraFieldValue[extraFieldName.indexOf(item)]==''" class="text-danger">*Mandatory</p>
+                       <span style="padding-left: 10px;">{{item.name|titlecase}}<span *ngIf="mandatoryFieldsMap.get(item.name) " class="text-danger">*</span></span>
+                       <!-- <br><input id="value" type="{{item.type}}" [(ngModel)]="extraFieldValue[extraFieldName.indexOf(item)]" disabled> -->
+                       <!-- <p *ngIf="mandatoryFieldsMap.get(item.name) && extraFieldValue[extraFieldName.indexOf(item)]==''" class="text-danger">*Mandatory</p> -->
+                       <div style="margin: 10px;">
+                        <!-- <input id="value" type="{{item.type}}" [(ngModel)]="extraFieldValue[extraFieldName.indexOf(item)]" disabled> -->
+                        <!-- <p *ngIf="mandatoryFieldsMap.get(item.name) && extraFieldValue[extraFieldName.indexOf(item)]==''" class="text-danger">*Mandatory</p> -->
+                        <p *ngIf="item.value">{{item.value}}</p>
+                        <p *ngIf="!item.value">&nbsp; </p>
+                        <hr style="width: 20vw;">
+                      </div>
                      </div>
                    </div>
                   
@@ -400,9 +406,16 @@
                  <div >
                    <div *ngFor="let item of extraFields" >
                        <div *ngIf="showFieldsMap.get(item.name)">
-                       <span>{{item.name|titlecase}}<span *ngIf="mandatoryFieldsMap.get(item.name) " class="text-danger">*</span></span>
-                       <br><input id="value" type="{{item.type}}" [(ngModel)]="item.value" disabled>
-                       <p *ngIf="mandatoryFieldsMap.get(item.name) && item.value==''" class="text-danger">*Mandatory</p>
+                       <span style="padding-left: 10px;font-weight: bold;">{{item.name|titlecase}}<span *ngIf="mandatoryFieldsMap.get(item.name) " class="text-danger">*</span></span>
+                       <!-- <br><input id="value" type="{{item.type}}" [(ngModel)]="item.value" disabled> -->
+                       <!-- <p *ngIf="mandatoryFieldsMap.get(item.name) && item.value==''" class="text-danger">*Mandatory</p> -->
+                       <div style="margin: 10px;">
+                        <!-- <input id="value" type="{{item.type}}" [(ngModel)]="extraFieldValue[extraFieldName.indexOf(item)]" disabled> -->
+                        <!-- <p *ngIf="mandatoryFieldsMap.get(item.name) && extraFieldValue[extraFieldName.indexOf(item)]==''" class="text-danger">*Mandatory</p> -->
+                        <p *ngIf="item.value">{{item.value}}</p>
+                        <p *ngIf="!item.value">&nbsp; </p>
+                        <hr style="width: 20vw;">
+                      </div>
                        </div>
                    </div>
                   
@@ -419,10 +432,34 @@
             </div>
 
 
-          <!-- </div> -->
+          </div>
         </div>
+  </div>
+</div>
+
+<div class="modal fade" id="popupDelete" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header" style="padding: 13px 15px">
+        <h2 class="modal-title" id="exampleModalLongTitle" style="margin:0; display: flex; justify-content: center;">Confirm Delete</h2>
+        <button type="button" class="btn btn-light btn-sm ms-auto" data-dismiss="modal" aria-label="Close" style="border-radius: 10px;" #closeBox4>
+          <i class="bi bi-x-lg"></i>
+        </button>
+      </div>
+      <div class="d-flex justify-content-center">
+        <div class="modal-body">
+
+            <div style="display: flex; justify-content: center; margin-top: 15px;">
+              <button class="btn btn-light" data-dismiss="modal" aria-label="Close" (click)="closeBox4.click()" style="margin: 10px; width: 100px; margin-right: 30px; border: 1px solid #c0c0c0">Cancel</button>
+              <button class="btn btn-danger" (click)="deleteFile()" (click)="closeBox4.click()" style="margin:10px;width: 100px;">Delete</button>
+            </div>
+         
+        </div>
+       
+      </div>
     </div>
   </div>
+</div>
        
-            <div class="loading" *ngIf="loadingScreen"></div>
+  <!-- <div class="loading" *ngIf="loadingScreen"></div> -->
           

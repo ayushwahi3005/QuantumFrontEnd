@@ -3,13 +3,17 @@
   <!-- Optionally, add a close button -->
   <button type="button" class="btn-close" (click)="showAlert = false" aria-label="Close" style="float: right;"></button>
 </div>
+
+<div  class="loading" *ngIf="loading">
+</div>
+
 <div class="main" *ngIf="!loading"  >
   
 <div class="back-button" style="padding: 0;">
   
   <div class="d-flex justify-content-between" style="padding: 0px 20px;">
     <div  style="margin-right: 30px; display: flex; justify-content: center; align-items: center;">
-      <a  (click)="onBack()" style="margin-right: 20px; font-size: large; font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;" id="asset-back" >&larr; Back to Assets</a>
+      <a  (click)="onBack()" style="margin-right: 20px; font-size: large;" id="asset-back" >&larr; Back to Assets</a>
       <div class="v1"></div>
       <div style="margin: 0; font-size: larger; color: black;"><b style="margin-left: 20px;">{{assetDetails.name|titlecase}}</b></div>
     </div>
@@ -44,7 +48,8 @@
 
 <!-- <div class="main d-flex justify-content-center" *ngIf="!loading" style="margin-top: 15px;" > -->
 
-<div style="margin: 25px auto;  color:  #74777a;" >
+<!-- <div style="margin: 25px auto; color:  #74777a;" > -->
+<div style="margin: 25px auto;">
   
   
   
@@ -59,12 +64,16 @@
         <img src="../../../assets/asset_image.jpg" class="image" *ngIf="!assetDetails.image"  data-toggle="modal" data-target="#imageUploadModel1"><img src={{img}} class="image"  *ngIf="assetDetails.image"  data-toggle="modal" data-target="#imageUploadModel1">
         
         <div>
-          <p class="card-title">Name<span *ngIf="mandatoryFieldsMap.get('name')" class="text-danger">*</span> <br> <input type="text" id="asset-name" value="{{assetDetails.name}}" class="title" [(ngModel)]="assetDetails.name" #name></p>
+          <p class="card-title">Name<span *ngIf="mandatoryFieldsMap.get('name')" class="text-danger">*</span> <br>
+            <input type="text" id="asset-name" value="{{assetDetails.name}}" class="title" [(ngModel)]="assetDetails.name" #name></p>
           <p *ngIf="mandatoryFieldsMap.get('name') && assetDetails.name==''" class="text-danger">Mandatory</p>
           <hr>
-          <p class="card-text">Serial Number<span *ngIf="mandatoryFieldsMap.get('serialNumber')" class="text-danger">*</span> <br><input type="text" value="{{assetDetails.serialNumber}}" class="serialNumber" id="serialNumber" [(ngModel)]="assetDetails.serialNumber" [required]="mandatoryFieldsMap.get(assetDetails.name)==true"> </p>
+          
+          <p class="card-text">Serial Number<span *ngIf="mandatoryFieldsMap.get('serialNumber')" class="text-danger">*</span> <br>
+            <input type="text" value="{{assetDetails.serialNumber}}" class="serialNumber" id="serialNumber" [(ngModel)]="assetDetails.serialNumber" [required]="mandatoryFieldsMap.get(assetDetails.name)==true"> </p>
           <p *ngIf="mandatoryFieldsMap.get('serialNumber') && assetDetails.serialNumber==''" class="text-danger">Mandatory</p>
           <hr>
+          
           <p class="card-text">Category<span *ngIf="mandatoryFieldsMap.get('category')" class="text-danger">*</span> <br>
             <!-- <input type="text" value="{{assetDetails.category}}" class="category" [(ngModel)]="assetDetails.category" [required]="mandatoryFieldsMap.get(assetDetails.name)==true"> -->
             <select class="form-select custom-dropdown" class="category" id="category"  #category style="height: fit-content;" [(ngModel)]="assetDetails.category" [required]="mandatoryFieldsMap.get(assetDetails.name)==true">
@@ -107,8 +116,8 @@
           <select  id="status"   [(ngModel)]=" assetDetails.status"   #mySelect >  
        
                   <option value="active" selected>Active</option>
-                  <option value="inactive" selected>In Active</option>
-                  <option value="outofservice" selected>Out Of Service</option>
+                  <option value="inactive" selected>Inactive</option>
+                  <option value="outofservice" selected>Out of Service</option>
             
           </select>
           <!-- <input type="text" value="{{assetDetails.status}}" class="status" [(ngModel)]="assetDetails.status" [required]="mandatoryFieldsMap.get(assetDetails.name)==true"></p> -->
@@ -124,70 +133,32 @@
     <!-- <div class="option d-flex flex-row bd-highlight mb-3" style="color: black;margin: 30px;"> -->
     <div class="option d-flex flex-row bd-highlight " style="width: 100%; margin: 30px auto;color: black;">
       <span [ngClass]="{'selected-option':(currOption==1),'subTab':(currOption!=1)}" (click)="onClick(1)">Check In/Out</span>
+      <span [ngClass]="{'selected-option':(currOption==6),'subTab':(currOption!=6)}" (click)="onClick(6)">Inspection</span>
       <span [ngClass]="{'selected-option':(currOption==2),'subTab':(currOption!=2)}" (click)="onClick(2)">Files</span>
-      <span [ngClass]="{'selected-option':(currOption==3),'subTab':(currOption!=3)}" (click)="onClick(3)">WOs</span>
-      <span [ngClass]="{'selected-option':(currOption==4),'subTab':(currOption!=4)}" (click)="onClick(4)">Parts</span>
+      <!-- <span [ngClass]="{'selected-option':(currOption==3),'subTab':(currOption!=3)}" (click)="onClick(3)">WOs</span> -->
+      <!-- <span [ngClass]="{'selected-option':(currOption==4),'subTab':(currOption!=4)}" (click)="onClick(4)">Parts</span> -->
       <span [ngClass]="{'selected-option':(currOption==5),'subTab':(currOption!=5)}" (click)="onClick(5)">Custom</span>
     </div>
+
     <div class="card mt-2" *ngIf="currOption==1">
       
       <div class="card-body">
+
         <div class="d-flex justify-content-between align-items-center">
+          
           <div>
             <!-- <button class="btn btn-light" style="padding: 2px 5px; margin-right: 5px;">Current Status </button> -->
-            <label style="padding: 5px 5px; margin-right: 5px;">Current Status :</label> <span  [ngClass]="{'checkedIn-status':((checkInOut.length==0)||(checkInOut[0].status=='Checked In')),'checkedOut-status':((checkInOut.length>0)&&(checkInOut[0].status=='Checked Out'))}">{{(checkInOut.length==0) ? 'CheckedIn': checkInOut[0].status}}</span></div>
-            <button data-target="#checkInOut" style="margin-bottom: 5px;" [ngClass]="{'danger-button':((checkInOut.length==0)||(checkInOut[0].status=='Checked In')),'btn btn-primary':((checkInOut.length>0)&&(checkInOut[0].status=='Checked Out'))}"  data-toggle="modal">{{(checkInOut.length==0) ? 'Check Out': (checkInOut[0].status=='Checked In' ? 'Check Out':'Check In')}}</button>
+            <label style="padding: 5px 5px; margin-right: 5px;">Current Status :</label> <span [ngClass]="{'checkedIn-status':((checkInOut.length==0)||(checkInOut[0].status=='Checked In')),'checkedOut-status':((checkInOut.length>0)&&(checkInOut[0].status=='Checked Out'))}">{{(checkInOut.length==0) ? 'Checked In': checkInOut[0].status}}</span>
+          </div>
+            <button data-target="#checkInOut" [ngClass]="{'danger-button':((checkInOut.length==0)||(checkInOut[0].status=='Checked In')),'btn btn-primary':((checkInOut.length>0)&&(checkInOut[0].status=='Checked Out'))}"  data-toggle="modal">{{(checkInOut.length==0) ? 'Check Out': (checkInOut[0].status=='Checked In' ? 'Check Out':'Check In')}}</button>
           </div>
         
-        <div class="modal fade" id="checkInOut" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle" aria-hidden="true">
-          <div class="modal-dialog" role="document">
-            <div class="modal-content">
-              <div class="modal-header">
-                <h2 class="modal-title" id="exampleModalLongTitle">Check In/Out Details</h2>
-                <button type="button" class="close ms-auto " data-dismiss="modal" aria-label="Close" style="border-radius: 5px;" #closeBox3>
-                  <span aria-hidden="true">&times;</span>
-                </button>
-              </div>
-              <div class="modal-body">
-                <form id="checkForm">
-                  <label>Employee<span class="text-danger">*</span></label>
-                  <!-- <input type="text"  #employeeName> -->
-                  <select  id="technician"  #employeeName *ngIf="userRole.toLowerCase()=='admin'">
-                  
-                    <option value="{{technician.firstName}}  {{technician.lastName}}" *ngFor="let technician of technicalUserList">{{technician.firstName}} {{technician.lastName}}</option>
-                    
-                  </select>
-                  <select id="technician" #employeeName [disabled]="userRole.toLowerCase()!= 'admin'" *ngIf="userRole.toLowerCase()!='admin'">
-                    <option
-                      
-                      [value]="username">
-                      {{ username}}
-                    </option>
-                  </select>
-                  <!-- <input type="text"  id="technician"  #employeeName> -->
-                  <p><label>Notes<span class="text-danger">*</span></label></p>
-                  <textarea rows="4" cols="61" id="textArea" #notes placeholder="Write Your Notes Here!!" style="border-radius: 5px; border: 3px solid #aab1b8;"></textarea><br>
-                  <label>Location</label>
-                  <input type="text" #location>
-                  <div class="d-flex justify-content-around">
-                  
-                  <button class="btn btn-light" (click)="closeBox3.click()" (click)="employeeName.value=''" (click)="notes.value=''" (click)="location.value=''">Cancel</button>
-                  <button class="btn btn-primary" (click)="CheckInOutSubmit(employeeName.value,notes.value,location.value)" (click)="closeBox3.click()" (click)="employeeName.value=''" (click)="notes.value=''" (click)="location.value=''">Submit</button>
-                 </div>  
-                </form>
-      
-               
-              </div>
-            </div>
-          </div>
-        </div>
         <table class="table" id="asset-detial table" *ngIf="(checkInOut.length!=0)">
           <thead class="table-dark">
               <tr >
                  
                   <th scope="col">Status</th>
                   <th scope="col">Date</th>
-                 
                   <th scope="col">Employee</th>
                   <th scope="col">Notes</th>
                   <th scope="col">Location</th>
@@ -198,15 +169,11 @@
               <tr *ngFor="let item of checkInOut[0].detailsList">
                  
                   <td>{{item.status}}</td>
-                 
                   <td>{{ item.updateTime | date: 'yyyy-MM-dd HH:mm:ss' }}
                   </td>
                   <td>{{item.employee|titlecase}}</td>
-                  <td>{{item.notes|titlecase}}</td>
+                  <td class="notes-cell">{{item.notes|titlecase}}</td>
                   <td>{{item.location|titlecase}}</td>
-                  
-                  
-                  
                   
                 </tr>
                
@@ -215,6 +182,7 @@
 
       </div>
     </div>
+    
     <div class="card mt-2" *ngIf="currOption==2">
       <!-- <h1 style="display: flex; justify-content: center; margin-top: 10px;">Files</h1> -->
       <!-- <div class="d-flex justify-content-around qr" >
@@ -275,6 +243,7 @@
         </div>
       </div>
     </div>
+    
     <div class="card mt-2" *ngIf="currOption==3">
       <!-- <h1 style="display: flex; justify-content: center; margin-top: 10px;">WOs</h1> -->
       <div class="card-body">
@@ -354,6 +323,57 @@
         
       </div>
     </div>
+    
+
+<!-- Check In/Out -->
+
+    <div class="modal fade" id="checkInOut" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle" aria-hidden="true">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header" style="padding: 13px 15px;">
+            <h2 class="modal-title" id="exampleModalLongTitle" style="margin: 0; display: flex; justify-content: center;">Check In/Out Details</h2>
+            <button type="button" class="btn btn-light btn-sm ms-auto " data-dismiss="modal" aria-label="Close" style="border-radius: 10px;" #closeBox3>
+              <b class="bi bi-x-lg"></b>
+            </button>
+          </div>
+          <div class="modal-body">
+            <form id="checkForm">
+              <label>Employee<span class="text-danger">*</span></label>
+              <!-- <input type="text"  #employeeName> -->
+              <select  id="technician" class="form-select form-control" #employeeName *ngIf="userRole.toLowerCase()=='admin'">
+              
+                <option value="{{technician.firstName}}  {{technician.lastName}}" *ngFor="let technician of technicalUserList">{{technician.firstName}} {{technician.lastName}}</option>
+                
+              </select>
+              <select id="technician" #employeeName [disabled]="userRole.toLowerCase()!= 'admin'" *ngIf="userRole.toLowerCase()!='admin'">
+                <option
+                  
+                  [value]="username">
+                  {{ username}}
+                </option>
+              </select>
+              <br>
+              <!-- <input type="text"  id="technician"  #employeeName> -->
+              <label>Notes<span class="text-danger">*</span></label>
+              <textarea id="textArea" class="form-control" #notes></textarea>
+              <!-- <textarea rows="4" cols="61" id="textArea" #notes placeholder="Write Your Notes Here!!" style="border-radius: 5px; border: 3px solid #aab1b8;"></textarea> -->
+              <br>
+              
+              <label>Location</label>
+              <input type="text" class="form-control" #location>
+              
+              <div style="display:flex; justify-content:center; margin-top: 15px;">
+              
+              <button class="btn btn-light" (click)="closeBox3.click()" (click)="employeeName.value=''" (click)="notes.value=''" (click)="location.value=''" style="margin: 10px; border: 1px solid #c0c0c0; width: 100px; margin-right: 30px;">Cancel</button>
+              <button class="btn btn-primary" (click)="CheckInOutSubmit(employeeName.value,notes.value,location.value)" (click)="closeBox3.click()" (click)="employeeName.value=''" (click)="notes.value=''" (click)="location.value=''" style="margin: 10px;width: 100px;">Submit</button>
+             </div>  
+            </form>
+  
+           
+          </div>
+        </div>
+      </div>
+    </div>
 
 <!-- Confirmation message while updating an asset record -->
     
@@ -361,18 +381,23 @@
       <div class="modal-dialog" role="document">
         <div class="modal-content">
           <div class="modal-header" style="padding: 13px 15px;">
-            <h2 class="modal-title" style="margin:0; display: flex; justify-content: center;" id="exampleModalLongTitle">Do you want to update details for {{assetDetails.name}}?</h2>
-            <button type="button" class="close ms-auto" data-dismiss="modal" aria-label="Close" #closeBox>
-              <span aria-hidden="true">&times;</span>
+            <h2 class="modal-title" style="margin:0; display: flex; justify-content: center;" id="exampleModalLongTitle">Confirm Update</h2>
+            <button type="button" class="btn btn-light btn-sm ms-auto" data-dismiss="modal" aria-label="Close" style="border-radius: 10px;" #closeBox>
+              <b class="bi bi-x-lg"></b>
             </button>
           </div>
-          <!-- <div class="d-flex justify-content-center"> -->
+
+          <div class="modal-body">
+
+            <h3>Do you want to update details for '<strong>{{assetDetails.name}}</strong>'?</h3>
+          
           <div style="display: flex; justify-content: center; margin-top: 15px;">
             
             <button class="btn btn-light" data-dismiss="modal" aria-label="Close" (click)="closeBox.click()" style="margin: 10px; margin-right: 30px; width: 100px; border: 1px solid #c0c0c0" >No</button>
             <button class="btn btn-primary" data-dismiss="modal" aria-label="Close" (click)="onCheck()" (click)="closeBox.click()"  style="margin: 10px; width: 100px;">Yes</button>
             
           </div>
+        </div>
         </div>
       </div>
     </div>
@@ -382,10 +407,10 @@
     <div class="modal fade" id="imageUploadModel1" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle" aria-hidden="true">
       <div class="modal-dialog" role="document">
         <div class="modal-content">
-          <div class="modal-header">
-            <h2 class="modal-title" id="exampleModalLongTitle">Select Image To Upload</h2>
-            <button type="button" class="close ms-auto" data-dismiss="modal" aria-label="Close" #closeBox2>
-              <span aria-hidden="true">&times;</span>
+          <div class="modal-header" style="padding: 13px 15px;">
+            <h2 class="modal-title" style="margin:0; display: flex; justify-content: center;" id="exampleModalLongTitle">Select Image To Upload</h2>
+            <button type="button" class="btn btn-light btn-sm ms-auto" data-dismiss="modal" aria-label="Close" style="border-radius: 10px;" #closeBox2>
+              <b class="bi bi-x-lg"></b>
             </button>
           </div>
           <div class="modal-body">
@@ -405,17 +430,20 @@
     <div class="modal fade" id="assetdeleteModel" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle" aria-hidden="true">
       <div class="modal-dialog" role="document">
         <div class="modal-content">
-          <div class="modal-header">
-            <h2 class="modal-title" id="exampleModalLongTitle">Do you want to delete Asset {{assetDetails.name}}?</h2>
-            <button type="button" class="close ms-auto" data-dismiss="modal" aria-label="Close" #closeBox3>
-              <span aria-hidden="true">&times;</span>
+          <div class="modal-header" style="padding: 13px 15px">
+            <h2 class="modal-title" style="margin:0; display: flex; justify-content: center;" id="exampleModalLongTitle">Confirm Delete</h2>
+            <button type="button" class="btn btn-light btn-sm ms-auto" data-dismiss="modal" aria-label="Close" style="border-radius: 10px;" #closeBox3>
+              <b class="bi bi-x-lg"></b>
             </button>
           </div>
           <div class="modal-body">
-            <div class="d-flex justify-content-around">
+
+            <h3>Are you sure you want to delete Asset '<strong>{{assetDetails.name}}</strong>'?</h3>
+
+            <div style="display: flex; justify-content: center; margin-top: 15px;">
            
-            <button class="btn btn-primary close" data-dismiss="modal" aria-label="Close" (click)="closeBox3.click()"  >CANCEL</button>
-            <button class="btn btn-danger" (click)="onDelete()" (click)="closeBox3.click()">DELETE</button>
+            <button class="btn btn-light" data-dismiss="modal" aria-label="Close" (click)="closeBox3.click()" style="margin: 10px; border: 1px solid #c0c0c0; width: 100px; margin-right: 30px;">Cancel</button>
+            <button class="btn btn-danger" (click)="onDelete()" (click)="closeBox3.click()" style="margin: 10px; width: 100px">Delete</button>
             </div>
            
           </div>
@@ -427,9 +455,7 @@
   
 
 </div>
-<div  class="loading" *ngIf="loading">
 
-</div>
 
 
 <div class="modal fade" id="popup2" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle" aria-hidden="true">
@@ -455,23 +481,22 @@
 <div class="modal fade" id="popupDelete" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle" aria-hidden="true">
   <div class="modal-dialog" role="document">
     <div class="modal-content">
-      <div class="modal-header d-flex justify-content-center">
-        Are you sure You Want to delete File !
-        <button type="button" class="close ms-auto" data-dismiss="modal" aria-label="Close" #closeBox4>
-          <span aria-hidden="true">&times;</span>
+      <div class="modal-header" style="padding: 13px 15px;">
+        <h2 class="modal-title" style="margin: 0; display: flex; justify-content: center;">Confirm Delete</h2>
+        <button type="button" class="btn btn-light btn-sm ms-auto" data-dismiss="modal" aria-label="Close" style="border-radius: 10px;" #closeBox4>
+          <b class="bi bi-x-lg"></b>
         </button>
       </div>
-      <div class="d-flex justify-content-center">
-        <div class="modal-body">
+      <div class="modal-body">
+
+        <h3>Are you sure you want to delete this file '<strong></strong>'?</h3>
+
+        <div class="d-flex justify-content-center" style="margin-top: 15px;">
           
-          <button class="btn btn-primary" style="margin: 0px 10px;" (click)="deleteFile()" (click)="closeBox4.click()">DELETE</button>
-          <button class="btn btn-danger" style="margin: 0px 10px;" data-dismiss="modal" aria-label="Close" (click)="closeBox4.click()">CANCEL</button>
-    
+          <button class="btn btn-light" data-dismiss="modal" aria-label="Close" (click)="closeBox4.click()" style="margin: 10px; border: 1px solid #c0c0c0; width: 100px; margin-right: 30px;">Cancel</button>
+          <button class="btn btn-danger" (click)="deleteFile()" (click)="closeBox4.click()" style="margin: 10px; width: 100px">Delete</button>
          
         </div>
-       
-        
-        
        
       </div>
     </div>
@@ -485,15 +510,13 @@
     <div class="modal-content">
       <div class="modal-header" style="padding: 13px 15px;">
         <h2 class="modal-title" style="margin: 0; display: flex; justify-content: center;">Download QR</h2>
-        <button type="button" class="close ms-auto" data-dismiss="modal" aria-label="Close" #closeBox4>
-          <span aria-hidden="true">&times;</span>
+        <button type="button" class="btn btn-light btn-sm ms-auto" data-dismiss="modal" aria-label="Close" style="border-radius: 10px;" #closeBox4>
+          <b class="bi bi-x-lg"></b>
         </button>
       </div>
       <div class="d-flex ">
         <div class="modal-body justify-content-around">
           
-          <!-- <button class="btn btn-primary" (click)="deleteFile()" (click)="closeBox4.click()">DELETE</button>
-          <button class="btn btn-danger close" data-dismiss="modal" aria-label="Close" (click)="closeBox3.click()">CANCEL</button> -->
           <div class="d-flex justify-content-around qr" >
        
         
@@ -531,12 +554,7 @@
               <button (click)="downloadQR()" class="btn btn-success" style="float: right; align-self: center;" >Download</button>
             </div>
             
-         
-         
         </div>
-       
-        
-        
        
       </div>
     </div>

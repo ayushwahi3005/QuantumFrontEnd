@@ -1,7 +1,8 @@
 export enum SubscriptionEnum{
     ACTIVE = 'ACTIVE',
     EXPIRED = 'EXPIRED',
-    PENDING = 'PENDING'
+    PENDING = 'PENDING',
+    UPCOMING = 'UPCOMING'
  
 
 

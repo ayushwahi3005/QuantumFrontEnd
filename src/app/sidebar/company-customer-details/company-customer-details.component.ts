@@ -62,6 +62,7 @@ export class CompanyCustomerDetailsComponent {
   customerWorkOrderList!:WorkOrder[]
   userRoleDetails: any;
   userRole: any;
+  stateList=[];
   pageSize:number=5;
   totalLength:number=100;
   pageEvent!: PageEvent;
@@ -86,16 +87,16 @@ export class CompanyCustomerDetailsComponent {
     name:'Inventory',
     icon:'bi bi-journal-text'
   },
-  {
-    number:4,
-    name:'Preventive Maintainance',
-    icon:'bi bi-speedometer2'
-  },
-  {
-    number:5,
-     name:'Work Order',
-    icon:'bi bi-bookshelf'
-  }
+  // {
+  //   number:4,
+  //   name:'Preventive Maintainance',
+  //   icon:'bi bi-speedometer2'
+  // },
+  // {
+  //   number:5,
+  //    name:'Work Order',
+  //   icon:'bi bi-bookshelf'
+  // }
   // {
   //   number:6,
   //   name:'People',
@@ -120,6 +121,10 @@ export class CompanyCustomerDetailsComponent {
 
 
     this.companyId=localStorage.getItem('companyId');
+    this.companyCustomerDetailsService.stateList().subscribe((data)=>{
+      this.stateList=data;
+      // console.log("stateList-------->"+this.stateList)
+    })
     this.email=localStorage.getItem('user');
     this.loginCustomerName=localStorage.getItem('name');
     this.userRole=localStorage.getItem('role');

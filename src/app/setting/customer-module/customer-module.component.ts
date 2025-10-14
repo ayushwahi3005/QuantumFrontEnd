@@ -126,7 +126,8 @@ export class CustomerModuleComponent {
     this.customerModuleService.addExtraFields(obj).subscribe((data)=>{this.extraFieldOption
       console.log(data);
       const event = { checked: true }; 
-      this.showField(event,this.addFieldName.trim().toLowerCase(),this.extraFieldOption)
+      // this.showField(event,this.addFieldName.trim().toLowerCase(),this.extraFieldOption)
+      this.showField(event,this.addFieldName.trim(),this.extraFieldOption)
       this.ngOnInit();
     },
     (err)=>{
@@ -211,7 +212,7 @@ export class CustomerModuleComponent {
       }
       this.customerModuleService.mandatoryFields(obj).subscribe((data)=>{
         console.log("Updated");
-        this.triggerAlert("SuccessFully Updated Field","success");
+        this.triggerAlert("Field settings updated successfully","success");
       },
       (err)=>{
         console.log(err);

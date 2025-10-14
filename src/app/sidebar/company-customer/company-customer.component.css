@@ -152,8 +152,8 @@ th{
     border: none;
   
 
-    background-color: white;
-    color: black;
+    /* background-color: white; */
+    /* color: black; */
     padding: 5px 5px;
 }
 .sort{
@@ -243,7 +243,7 @@ border-style: none;
     --bs-table-color: white;
 }
 
-.extraFieldInput{
+/* .extraFieldInput{
     color: #717275;
     border-radius: 8px;
     
@@ -258,25 +258,25 @@ border-style: none;
  }
  .extraFieldInput:focus{
     border: 2px solid #1a65ab;
- }
+ } */
  label {
     display: block;
   }
-  .custom-dropdown {
-    position: relative; /* Ensure it stays in flow of the document */
-    z-index: 1000; /* Bring the dropdown on top of other elements */
-    height: 50px; /* Set desired height */
-    overflow-y: auto; /* Ensure scrolling within the dropdown */
-    display: block; /* Block-level display */
+  /* .custom-dropdown {
+    position: relative;
+    z-index: 1000;
+    height: 50px;
+    overflow-y: auto;
+    display: block;
     -webkit-appearance: none; 
     -moz-appearance: none; 
     appearance: none;
   }
   
   .custom-dropdown:focus {
-    position: absolute; /* Force dropdown to open below the select */
-    bottom: auto; /* Prevent it from being aligned upwards */
-  }
+    position: absolute;
+    bottom: auto;
+  } */
   
   .mat-mdc-paginator-container  {
     z-index: 0;
@@ -317,7 +317,6 @@ border-style: none;
   
   .searchIcon{
     position: absolute;
-    /* left: -220px; */
     left: 10px;
     pointer-events: none;
     /* top: 0.65rem; */
@@ -346,4 +345,78 @@ border-style: none;
 
   .dropdown-toggle::after {
     display: none;
+  }
+
+  .form-control{
+    border-radius: 5px;
+    border: 0.5px solid #c0c0c0;
+    font-size: 16px;
+    padding-left: 11px;
+    margin-top: 5px;
+    width: 100%;
+    height: 35px;
+}
+
+.form-control:hover {
+    background-color: #fbfbfb;
+}
+
+.form-control:focus {
+    border-color: #007bff; /* Change border color */
+    box-shadow: 0 0 5px rgba(0, 123, 255, 0.5); /* Add a glowing effect */
+    outline: none; /* Remove default outline */
+}
+
+.form-select:focus {
+    border-color: #007bff; /* Change border color */
+    box-shadow: 0 0 5px rgba(0, 123, 255, 0.5); /* Add a glowing effect */
+    outline: none; /* Remove default outline */
+}
+ /* .form-group {
+    margin-top: 10px;
+ } */
+
+/* .form-group input {
+    background-color: #fbfbfb;
+} */
+
+/* .form-group input:hover{
+    background-color: #fbfbfb;
+}
+  
+.form-group input:focus{
+    background-color: #fbfbfb;
+} */
+
+.dropdown-menu {
+    position: absolute;
+    width: auto;
+    height: auto;
+    /* max-height: 200px; */
+    overflow-y: auto;
+    /* border: 1px solid #ccc; */
+    border-radius: 5px;
+    background-color: #fff;
+    z-index: 1000;
+    display: none;
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+  }
+  
+  .dropdown-menu.show {
+    display: block;
+  }
+
+  .dropdown-item {
+    padding: 7px 12px;
+    cursor: pointer;
+    padding-left: 34px;
+    padding-right: 34px;
+  }
+  
+  .dropdown-item:hover {
+    background-color: #f1f1f1;
+    border-radius: 5px;
   }

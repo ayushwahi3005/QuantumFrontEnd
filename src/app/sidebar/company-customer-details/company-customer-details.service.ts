@@ -264,6 +264,15 @@ export class CompanyCustomerDetailsService {
   // advanceFilter(data:any,pageIndex:number,pageSize:number,category:any):Observable<any>{
   //   return this.httpClient.post(this.assetEndpoint+'advanceFilter/'+pageIndex+'/'+pageSize+"?category="+category,data,{headers:this.headers});
   // }
+  stateList():Observable<any>{
+    const headers = new HttpHeaders({
+      'Authorization': `Bearer ${localStorage.getItem('authToken')}`,
+      'Content-Type': 'application/json',
+      'device-id': `${localStorage.getItem('deviceId')}`,
+    });
+    return this.httpClient.get(this.companyCustomerEndpoint+"statelist",{headers});
+   
+  }
   getCustomerCategory(companyId:any):Observable<any>{
     return this.httpClient.get(this.companyCustomerEndpoint+"getCategoryActiveList/"+companyId,{headers:this.headers});
   }

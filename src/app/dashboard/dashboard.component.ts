@@ -61,6 +61,7 @@ export class DashboardComponent  {
 
     //   }
     // });
+
     console.log("isLoggedIn->"+localStorage.getItem('isLoggedIn'))
     console.log("deviceId->"+localStorage.getItem('deviceId'))
     this.email=localStorage.getItem('user');
@@ -151,6 +152,10 @@ console.log(localStorage.getItem('user'));
 
     // console.log(this.hoverOverSidebar);
   }
+
+  
+
+  
   
 
 

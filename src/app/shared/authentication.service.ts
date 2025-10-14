@@ -20,7 +20,7 @@ export class AuthenticationService implements CanActivate {
       this.router.navigate(['/login']); // Redirect to login if not authenticated
       return false;
     }
-    return this.auth.isLoggedIn;
+    // return this.auth.isLoggedIn;
     
   }
  

@@ -1,9 +1,19 @@
+<div class="d-flex justify-content-center" style=" width: 98%;margin-top: 20px;">
+  <div class="d-flex justify-content-between" style=" width: 98%;">
+
+    <div style="height: 40px;">
+      <label style="font-size: 24px; font-weight: bold; padding: 10px 0;">Import History</label>
+    </div>
+
+  </div>
+</div>
+
 <!-- <div  id="history-loader" *ngIf="loading"></div> -->
 <div id="import-history-container" class="d-flex justify-content-center">
   <div id="history-background">
     <!-- <h2 class="mb-4 text-center">Import History</h2> -->
     <div class="d-flex justify-content-between" style="width: 100%;">
-      <div class="search-bar" style="margin: 0 5px;">
+      <div class="search-bar" style="margin: 0">
         <input type="text" id="role-input" placeholder="Search" style="margin: 0px 0px; height: 40px; " (keyup)="find($event)" #data>
         <i class="bi bi-search" id="searchIcon"></i>
       </div>

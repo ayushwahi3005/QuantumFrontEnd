@@ -1,6 +1,7 @@
 import { Component, ElementRef, ViewChild } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { CompanyCustomerService } from './company-customer.service';
+import * as XLSX from 'xlsx';
 import { CompanyCustomer } from './company-cutomer';
 import { ShowFieldsData } from './showFieldsData';
 import { MandatoryFields } from './mandatoryFields';
@@ -28,6 +29,7 @@ export class CompanyCustomerComponent {
   companyId:any;
   priority!:string;
   todayDate!:Date;
+  fileName= 'CustomerSheet.xlsx';
   editVisibility:boolean=false;
   editButtonId:number=-1;
   detailedWorkOrder=false;
@@ -87,6 +89,7 @@ export class CompanyCustomerComponent {
   }
 
   ngOnInit():void{
+  // ngOnInit(){
     this.companyCustomerForm = this.formBuilder.group({
       name: ['', Validators.required],
       companyId: [this.companyId],
@@ -733,6 +736,21 @@ advanceFilterFunc() {
     this.advanceFilterFunc();
 
   }
+
+  exportexcel(): void 
+    {
+       /* table id is passed over here */   
+       let element = document.getElementById('companycustomer-table'); 
+       const ws: XLSX.WorkSheet =XLSX.utils.table_to_sheet(element);
+
+       /* generate workbook and add the worksheet */
+       const wb: XLSX.WorkBook = XLSX.utils.book_new();
+       XLSX.utils.book_append_sheet(wb, ws, 'Sheet1');
+
+       /* save to file */
+       XLSX.writeFile(wb, this.fileName);
+			
+    }
   
   removeSingleFilter(name:string){
     console.log("single: "+name)

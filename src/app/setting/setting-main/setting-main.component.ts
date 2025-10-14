@@ -30,6 +30,7 @@ export class SettingMainComponent {
     name:'Locations and Bins',
     icon:'bi bi-geo-alt-fill'
   },
+
   {
     number:3,
     name:'Custom Fields',
@@ -38,6 +39,11 @@ export class SettingMainComponent {
   {
     number:4,
     name:'Categories',
+    icon:'bi bi-boxes'
+  },
+    {
+    number:12,
+    name:'Inspection Templates',
     icon:'bi bi-boxes'
   },
   {

@@ -72,6 +72,9 @@ export class UsersComponent {
   myList:string[]=[];
   myArray=[]
   mandatoryFieldFilterList!:Map<string,Boolean>;
+
+  searchedUser!:any[];
+
   constructor(private formBuilder:FormBuilder,private userService:UsersService,private authService:AuthService,private route:ActivatedRoute){}
 
 
@@ -174,6 +177,7 @@ export class UsersComponent {
     
     this.userService.getUsers(this.companyId).subscribe((data)=>{
       this.userList=data;
+      this.searchedUser=this.userList;
       
     },
     (err)=>{
@@ -550,5 +554,37 @@ export class UsersComponent {
         localStorage.setItem("showMandatoryBasicFieldsAssets",  JSON.stringify(myArry));
         console.log(item+" mandatory-"+localStorage.getItem("showMandatoryBasicFieldsAssets"));
       }
+
+
+      find(data:any){
+        console.log(data.target.value)
+     
+        const value=data.target.value;
+       
+        this.searchedUser=this.userList.filter((mydata)=>{
+      //  console.log(mydata)
+          let filterData:any;
+          if(mydata.firstName.toLowerCase().includes(value.toLowerCase())||mydata.lastName.toLowerCase().includes(value.toLowerCase())||mydata.mobileNumber.toLowerCase().includes(value.toLowerCase())||(mydata.role.toLowerCase().includes(value.toLowerCase()))||(mydata.title.toLowerCase().includes(value.toLowerCase()))||(mydata.email.toLowerCase().includes(value.toLowerCase()))){
+            filterData=mydata;
+          }
+          else{
+            filterData=false;
+          }
+          console.log(filterData)
+          return filterData;
+         
+          // keys.forEach((key)=>{
+          //   const myString:String =data[key];
+          //   if(myString!=null&&myString.toLowerCase().includes(value.toLowerCase())){
+          //     filterData=data;
+          //   }
+           
+            
+            
+          // })
+          // return filterData;
+        });
+      }
+
 
 }

@@ -1,7 +1,11 @@
 /* import-history.component.css */
+* {
+  font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+}
+
 #import-history-container {
   /* padding: 40px 80px; */
-  font-family: 'Roboto', sans-serif;
+  /* font-family: 'Roboto', sans-serif; */
   width: calc(100vw - 300px);
   /* width: 90%;
   padding-left: 5%; */ 
@@ -11,10 +15,10 @@
   border-radius: 10px;
   border: 1px solid lightgray;
   background-color: white;
-  height: 80vh;
+  /* height: 80vh; */
   width: 98%;
   /* margin: 30px auto; */
-  margin-top: 30px;
+  margin-top: 20px;
   padding: 20px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
@@ -32,7 +36,7 @@
 
 /* Set a fixed height with scrolling enabled for the table container */
 .table-container {
-  max-height: 60vh; /* Adjust height as needed */
+  /* max-height: 60vh; */
   overflow-y: auto;
   border: 1px solid white;
 }
@@ -43,7 +47,7 @@
   /* margin-left: 7.5%; */
   /* margin-bottom: 20px; */
   border-radius: 10px;
-  height: 75%;
+  /* height: 75%; */
 }
 
   h2 {

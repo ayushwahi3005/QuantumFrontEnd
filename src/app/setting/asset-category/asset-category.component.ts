@@ -91,7 +91,8 @@ export class AssetCategoryComponent {
     else{
     const obj={
       
-      "name":this.addFieldName.trim().toLowerCase(),
+      // "name":this.addFieldName.trim().toLowerCase(),
+      "name":this.addFieldName.trim(),
        "status":"active",
 
        "companyId":this.companyId
@@ -125,7 +126,8 @@ export class AssetCategoryComponent {
 
     const obj={
       "id":id,
-        "name":name.trim().toLowerCase(),
+        // "name":name.trim().toLowerCase(),
+        "name":name.trim(),
        "status":event.checked==true?"active":"inactive",
        "companyId":this.companyId
     }
@@ -151,7 +153,8 @@ export class AssetCategoryComponent {
   }
   removeField(){
 // <<<<<<< HEAD
-    this.assetCategoryService.countAssetByCategory(this.deletionName.toLowerCase()).subscribe((data)=>{
+    // this.assetCategoryService.countAssetByCategory(this.deletionName.toLowerCase()).subscribe((data)=>{
+    this.assetCategoryService.countAssetByCategory(this.deletionName).subscribe((data)=>{
 
 // =======
 //     this.assetCategoryService.deleteAssetCategory(this.deletionId).subscribe((data)=>{
@@ -230,6 +233,7 @@ export class AssetCategoryComponent {
 
       let filterData:any;
       if(mydata.name.toLowerCase().includes(value.toLowerCase())||mydata.status.toLowerCase().includes(value.toLowerCase())){
+      // if(mydata.name.includes(value)||mydata.status.includes(value)){
         filterData=mydata;
       }
       else{
@@ -253,7 +257,8 @@ export class AssetCategoryComponent {
     console.log(this.editCurrCategory);
     const obj={
         "id":this.editCurrCategory.id,
-        "name":this.editCurrCategory.name.trim().toLowerCase(),
+        // "name":this.editCurrCategory.name.trim().toLowerCase(),
+        "name":this.editCurrCategory.name.trim(),
        "status":this.editCurrCategory.status,
        "companyId":this.companyId
     }

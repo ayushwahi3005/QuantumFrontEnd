@@ -1,3 +1,10 @@
+* {
+    font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+}
+  
+mat-icon {
+    font-family: 'Material Icons';
+}
 
 input{
     margin: 10px 0px;
@@ -53,16 +60,9 @@ select:focus{
 
 .option{
     width:80vw;
-    margin-top: 50px;
-    
+    /* margin-top: 50px; */
     height: 70px;
-
-    margin: 0px auto;
-   
-  
-   
-    
-    
+    /* margin: 0px auto; */
 }
 
 .submit{
@@ -76,7 +76,7 @@ select:focus{
 .main{
     display: flex;
     flex-direction: row;
-
+justify-content: center;
   
     
 }
@@ -103,25 +103,29 @@ select:focus{
     cursor: default;
     text-decoration: none;
     color: #8c8e91;
-    font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
-   
+    /* font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif; */
     /* margin: 10px 0px; */
     font-size: larger;
     /* float: inline-start; */
-    height: 20px;
-   
+    float: inline-start;
+    /* height: 100px; */
+    width: 100%;
+    padding: 10px;
+    /* margin: 10px; */
+    border: 0.5px white solid;
+    /* border-radius: 10px; */
+    background-color: white;
+    border-bottom-color: lightgray;
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+    overflow: visible;    
+}
 
-    
-    
-    
-   
-    
-}
 .back-button:hover{
-    /* color: #1a65ab; */
     color:#1a65ab
-    
 }
+
 .mainform{
     width: 100vw;
     color: #717275;
@@ -146,11 +150,11 @@ a:hover{
     width: 100%;
 }
 .mainFields input{
-    width: 15vw;
+    width: 20vw;
     height: 40px;
 }
 .mainFields select{
-    width: 15vw;
+    width: 20vw;
    
     border-radius: 8px;
     border: 3px #aab1b8 solid;
@@ -220,9 +224,9 @@ a:hover{
     margin: 10px auto;
     
 }
-i{
+/* i{
 padding-top: 10px;
-}
+} */
 
 i:hover{
     color: #0D6EFD;
@@ -253,7 +257,6 @@ table{
     outline: none;
 }
 
-/* -------------------------------------------------------------- */
 #logo{
     text-decoration: none;
     color: black;
@@ -269,19 +272,25 @@ table{
 }
 li{
     padding-right: 50px;
-    padding-top: 10px;
+    /* padding-top: 10px; */
     padding-left: 5px;
     
 }
-button{
+/* button{
     margin-top: 10px;
-}
-.nav-item i{
+} */
+/* .nav-item i{
     padding-left: 20px;
+} */
+
+.nav-item {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
+    font-size: 18px;
 }
+
 .selected{
     background-color: rgba(255, 255, 255, 0.3);
-    border-radius: 10px;
+    border-radius: 5px;
     padding: 10px 10px;
    
   
@@ -308,24 +317,26 @@ img{
     justify-content: center;
     align-items: center;
     flex-direction: row;
-    padding: 1em;
+    padding: 12.5px
 }
 .header-centre h1{
     display: block;
-    font-size: 2em;
+    font-size: 28px;
     font-weight: bold;
     padding-left: 15px;
-    font-family: "copperplate gothic light";
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
     -webkit-font-smoothing: antialiased;
+    margin: 0;
+    padding: 0;
 }
-/* .content{
+.content{
     width: fit-content;
-} */
+}
 .side-navbar{
     position: absolute;
     left: 0rem;
     width: 250px;
-    height: calc(100% - 76px);
+    height: calc(100% - 53px);
     background-color: #12232E;
     box-shadow:rgba(255, 255, 255, 0.5);
     color: white;
@@ -345,7 +356,7 @@ img{
     height: 25px;
     width: 25px;
     margin-right: 15px;
-    margin-left: 10px;
+    margin-left: 5px;
     text-align: center;
     line-height: 25px;
    
@@ -353,24 +364,24 @@ img{
 }
 .nav-list-item span{
     width: 170px;
-    cursor: default;
-   
-    
-    
+    cursor: pointer;
+   font-size: 16px;
 }
+
 .nav-list-item{
     padding-right: 0px;
     margin: 10px;
     padding: 10px;
-    width: 250px;
+    width: 230px;
 }
 .nav-list-item:hover{
     background-color: rgba(255, 255, 255, 0.3);
-    border-radius: 10px;
- 
+    border-radius: 5px;
+ cursor: pointer;
 }
+
 .nav-list-open{
-    width: 65px;
+    width: 60px;
     
 }
 .nav-list-open span{
@@ -380,14 +391,14 @@ img{
 }
 .content-area{
     /* width: max-content; */
-    margin-left: 65px;
+    margin-left: 60px;
     display: flex;
     justify-content: center;
-    height: 500px;
-
+    /* height: 500px; */
+    height: calc(100vh - 53px);
     color: black;
-    display: flex;
     transition: margin 150ms linear;
+    overflow-y: scroll;
 }
 .content-area-onhover{
     margin-left: 250px;
@@ -398,6 +409,13 @@ img{
 .app-assets-open{
     width: calc(100vw - 270px);
 }
+
+.nav-item a:hover,
+.nav-item i:hover,
+.nav-item dropdown:hover {
+  color: #007bff;
+}
+
 /* td{
     color: #5E6164;
     font-size: medium;
@@ -405,6 +423,71 @@ img{
    
    
 } */
-.mat-mdc-button>.mat-icon{
+/* .mat-mdc-button>.mat-icon{
     margin-bottom: 10px;
+} */
+
+.dropdown-toggle::after {
+    display: none;
+  }
+
+  .dropdown-menu {
+    position: absolute;
+    width: auto;
+    height: auto;
+    /* max-height: 200px; */
+    overflow-y: auto;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    background-color: #fff;
+    z-index: 1050;
+    display: none;
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    box-shadow: 0 16px 32px rgba(0, 0, 0, 0.2);
+  }
+  
+  .dropdown-menu.show {
+    display: block;
+  }
+  
+  .dropdown-item {
+    padding: 10px 90px 10px 7px;
+    cursor: pointer;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
+  }
+  
+  .dropdown-item:hover {
+    background-color: #f1f1f1;
+    border-radius: 5px;
+  }
+
+  #matbutton {
+    top: 10px;
+}
+
+.table-dark {
+    --bs-table-bg: #12232E;
+    --bs-table-color: white;
+}
+
+.table tbody {
+    font-size: 16px;
+}
+
+.table thead {
+    font-size: 15.5px;
+}
+
+tr {
+    border: 1px solid lightgray;
+}
+
+tr:hover{
+    background-color: #f5f5f5;
+}
+
+tr:hover td{
+    background-color: inherit;
 }

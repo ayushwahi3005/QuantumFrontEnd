@@ -1,4 +1,6 @@
-
+* {
+  font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+}
 
 #asset-table{
     
@@ -9,13 +11,9 @@
 }
 
 .row{
-    /* margin: 10px 0px; */
-    margin-top: 20px;
-    margin-bottom: 0;
-    margin-left: 0;
-    margin-right: 0;
-    
+    margin: 20px 0 0 0;
 }
+
 .filter{
 display: flex;
 flex-direction: row-reverse;
@@ -107,7 +105,8 @@ app-asset-details  {
     width: calc(100vw - 85px);
     transition: width 150ms linear;
     /* overflow-y: scroll; */
-    height: calc(100vh - 80px);
+    /* height: calc(100vh - 80px); */
+    height: calc(100vh - 53px);
 }
 .app-assets-open{
     width: calc(100vw - 270px);
@@ -389,7 +388,7 @@ select{
    #asset-table thead{
     position: sticky;
     top: 0;
-    z-index: 1;
+    z-index: 2;
     border: 1px lightgray;
    }
    mat-form-field {

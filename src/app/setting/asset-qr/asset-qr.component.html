@@ -1,5 +1,19 @@
-<div class="main" [ngClass]="{'blur': isModalOpen}">
-    <div class="d-flex justify-content-around">
+<div class="qr-main" style="display:flex; justify-content:center;">
+  <div class="main" [ngClass]="{'blur': isModalOpen}">
+    
+    <div class="d-flex justify-content-center" style=" width: 100%;">
+      <div class="d-flex justify-content-between" style=" width: 100%;">
+  
+        <div style="margin: 0 5px; height: 40px;">
+          <label style="font-size: 24px; font-weight: bold; padding: 10px 0;">Select QR Label Style</label>
+        </div>
+  
+      </div>
+    </div>
+    
+    <div class="d-flex justify-content-center" style="width: 100%; gap: 80px; margin-top: 40px;">
+        
+      <div class="d-flex justify-content-between" (click)="update('1')" style="gap: 20px;">
         <input type="radio" style="height: 20px; width: 20px; margin: auto 5px;" class="qr-radio" name="qr-radio" (click)="update('1')" [checked]="type=='1'">
         <div class="qr first" (click)="update('1')" [ngClass]="{'selected':(type=='1')}">
             <div class="inside">
@@ -8,6 +22,9 @@
                 <p style="display: flex; justify-content: center;">Optional Text</p>
             </div>
         </div>
+      </div>
+
+      <div class="d-flex justify-content-between" (click)="update('2')" style="gap: 20px;">
         <input type="radio" style="height: 20px; width: 20px; margin: auto 5px;"  class="qr-radio" name="qr-radio" (click)="update('2')"  [checked]="type=='2'">
         <div class="qr second " (click)="update('2')" [ngClass]="{'selected':(type=='2')}">
             <div class="inside d-flex justify-content-around">
@@ -20,37 +37,44 @@
                 </div>
             </div>
         </div>
+      </div>
     </div>
-    <div class="d-flex justify-content-center">
+
+    <div class="d-flex justify-content-center" style="margin-top: 30px; gap: 60px;">
      
-        <label style="margin: auto 5px;">Custom Text </label><br><input type="text" [(ngModel)]="custom"><br>
-        <label style="margin: auto 5px;">Optional Text</label><br><input type="text" [(ngModel)]="optional"><br>
-      
-   
+      <div>  
+        <label style="margin: auto 5px; font-size: 16px;">Custom Text </label><br><input type="text" [(ngModel)]="custom"><br>
+      </div>
+
+      <div>
+        <label style="margin: auto 5px; font-size: 16px;">Optional Text</label><br><input type="text" [(ngModel)]="optional"><br>
+      </div>
       
     </div>
+
     <div class="d-flex justify-content-center">
       <button (click)="save()" class="btn btn-primary" style="margin: 50px;">Update</button>
     </div>
     
+  </div>
 </div>
 
 
 <div class="modal" tabindex="-1" role="dialog" [ngStyle]="{'display':displayStyle}" style="margin-top: 10%;" id="mypopup"  >
-    <div class="modal-dialog" role="document">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h1 class="modal-title " >Alert</h1>
-        </div>
-        <div class="modal-body">
-          <p style="font-size: larger;">{{message}}</p>
-        </div>
-        <div class="modal-footer">
-          <button type="button" class="btn btn-warning"  (click)="closePopup()">Close</button>
-        </div>
-  
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h1 class="modal-title " >Alert</h1>
       </div>
-    </div>
+      <div class="modal-body">
+        <p style="font-size: larger;">{{message}}</p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-warning"  (click)="closePopup()">Close</button>
+      </div>
   
+    </div>
   </div>
+  
+</div>
 

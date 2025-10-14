@@ -45,6 +45,20 @@ export class SubscriptionService {
 
     return this.httpClient.get(this.subscriptionEndpoint+'currentSubscription/'+companyId,{headers:this.headers});
   }
+
+  deleteUpcomingSubscription(companyId:any,companyName:any,email:any):Observable<any>{
+
+    return this.httpClient.delete(this.subscriptionEndpoint+'deleteUpcomingSubscription/'+companyId+'/'+companyName+'/'+email,{headers:this.headers});
+  }
+  startUpcomingSubscription(companyId:any,companyName:any,email:any):Observable<any>{
+
+    return this.httpClient.get(this.subscriptionEndpoint+'startUpcomingSubscription/'+companyId+'/'+companyName+'/'+email,{headers:this.headers});
+  }
+  getAllSubscription(companyId:any):Observable<any>{
+
+    return this.httpClient.get(this.subscriptionEndpoint+'getAllSubscription/'+companyId,{headers:this.headers});
+  }
+
   createPaymentIntent(paymentMethodId:any,email:any,name:any,companyId:any,quantity:any,plan:any,amount:any,cardholderName:any): Observable<any> {
     // return this.http.post<PaymentIntent>(
     //   `${PlutoService.BASE_URL}/payments/create-payment-intent`,
@@ -99,6 +113,7 @@ export class SubscriptionService {
     // this.headers.append( merchant: this.clientId )
     return this.httpClient.get(this.paymentEndpoint+'checkCred', { headers: myheaders});
   }
+
 
 
 }

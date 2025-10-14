@@ -1,35 +1,66 @@
+
+.main{
+    width: calc(100vw - 270px);
+    display: flex;
+  flex-direction: column;
+}
+
+.asset-custom {
+    margin: 0 30px;
+  border-radius: 10px;
+  border: 1px black lightgray;
+  /* margin-top: 10px; */
+  background-color: white;
+  /* width: 80%; */
+  /* margin: 20px auto; */
+  padding: 20px;
+  border: 1px solid lightgray;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
 table i{
     color: red;
     margin-bottom: 2px;
     font-size: larger;
     margin-left: 20px;
-
+    cursor: pointer;
 }
 table{
-    width:95%;
-   margin: 10px auto;
+    width:100%;
+   margin: 20px auto;
    border: 1px lightgray solid;
    border-radius: 10px;
 }
 
-.card{
-    width: calc(100vw - 400px);
-    margin-right: 10px;
-    margin-left: 60px;
-    margin-bottom: 100px;
-    height: 75vh;
-    overflow-y: scroll;
-    overflow-x: hidden;
-    
+.table tbody {
+    font-size: 16px;
 }
-i{
+
+.table thead {
+    font-size: 15.5px;
+}
+
+thead th {
+    position: sticky;
+    top: 0;
+    /* background-color: #343a40; */
+    color: white;
+    z-index: 2;
+}
+
+.table-dark {
+    --bs-table-bg: #12232E;
+    --bs-table-color: white;
+}
+
+/* i{
     color: red;
     margin-bottom: 2px;
     font-size: larger;
     margin-left: 20px;
     cursor: default;
+} */
 
-}
 .dropdown-menu i{
     float: right;
 }
@@ -37,16 +68,39 @@ i{
     width: 100px;
 }
 
-.extra-field-input input{
+/* .extra-field-input input{
     width: 100%;
     border-radius: 5px;
     border: 1px solid black;
     margin-bottom: 10px;
     height: 30px;
-}
+} */
+
 button{
     float: inline-end;
 }
 .card-body{
     flex: none;
+}
+
+.form-control{
+    border-radius: 5px;
+    border: 1px solid #c0c0c0;
+    font-size: 16px;
+    padding-left: 11px;
+    width: 100%;
+    margin-top: 5px;
+    height: 35px;
+}
+
+.form-control:focus {
+    border-color: #007bff; /* Change border color */
+    box-shadow: 0 0 5px rgba(0, 123, 255, 0.5); /* Add a glowing effect */
+    outline: none; /* Remove default outline */
+}
+
+.form-select:focus {
+    border-color: #007bff; /* Change border color */
+    box-shadow: 0 0 5px rgba(0, 123, 255, 0.5); /* Add a glowing effect */
+    outline: none; /* Remove default outline */
 }

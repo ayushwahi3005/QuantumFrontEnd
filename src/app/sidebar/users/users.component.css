@@ -1,20 +1,28 @@
+* {
+  font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+}
+
+mat-icon {
+  font-family: 'Material Icons';
+}
+
+#user-main{
+  width: calc(100vw - 300px);
+  margin-top: 20px;
+}
+
 #main{
   border-radius: 10px;
   border: 1px solid lightgray;
-
   background-color: white;
-  height: 80vh;
+  /* height: 80vh; */
   width: 98%;
   padding: 20px;
   /* margin-top: 30px; */
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
-#user-main{
-  width: calc(100vw - 300px);
-  margin-top: 30px;
 
-}
-#userform input{
+/* #userform input{
     margin: 10px 0px;
     color: #717275;
     border-radius: 8px;
@@ -29,19 +37,40 @@
 
 #userform input:focus {
     border: 3px solid #1a65ab;
-}
+} */
 
-#usertable tr:hover{
+.user_table tr:hover{
   background-color: #f5f5f5;
 }
 
-#usertable tr:hover td{
+.user_table tr:hover td{
   background-color: inherit;
 }
 
 #usertable td{
   vertical-align: middle;
   font-size: 16px;
+}
+
+.user_table{
+  margin-top: 20px;
+  width: 100%;
+  /* height: 80%; */
+  /* border: 1px solid lightgray; */
+  /* overflow-y: scroll; */
+  border-radius: 10px;
+}
+
+.user_table thead{
+  top: 0;
+  position: sticky;
+  z-index: 2;
+  font-size: 15.5px;
+  border: 0;
+}
+
+.user_table tbody {
+  border: 1px solid lightgray;
 }
 
 /* #usertable{
@@ -73,9 +102,6 @@
     
   } */
 
-
-
-
 /* .bi-search{
     position: absolute;
     left: 20.5rem;
@@ -83,39 +109,41 @@
     top: 15.2rem;
 } */
 
+.form-control{
+  border-radius: 5px;
+  border: 1px solid #c0c0c0;
+  font-size: 16px;
+  padding-left: 11px;
+  margin-top: 5px;
+  width: 100%;
+  height: 35px;
+}
+
 .highlight-input {
   font-size: 16px;
   padding-left: 11px;
   width: 100%;
-  margin-top: 10px;
+  margin-top: 5px;
   border-radius: 5px;
   height: 35px;
   border: 1px solid #c0c0c0;
   transition: border-color 0.3s, box-shadow 0.3s;
 }
 
-.highlight-input:focus {
-  border-color: #007bff; /* Change border color */
+.form-control:focus {
+  border-color: #007bff;
   box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
-  outline: none; /* Remove default outline */
+  outline: none;
 }
   
-.user_table{
-  margin-top: 20px;
-  width: 100%;
-  height: 80%;
-  border: 1px solid lightgray;
-  overflow-y: scroll;
-  border-radius: 10px;
-}
 
-.user_table thead{
-  top: 0;
-  position: sticky;
-  z-index: 100;
-}
+
+/* #usertable tbody {
+  border: 1px solid lightgray;
+} */
 
 /* Search Bar Container */
+
 #searchIcon-user{
   position: absolute;
   /* left: -220px; */
@@ -185,6 +213,7 @@
   --bs-table-bg: #12232E;
   --bs-table-color: white;
 }
+
 
 /* .dropdown-toggle{
   margin: 10px;

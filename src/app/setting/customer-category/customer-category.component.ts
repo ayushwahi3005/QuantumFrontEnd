@@ -73,7 +73,8 @@ export class CustomerCategoryComponent {
     else{
     const obj={
       
-      "name":this.addFieldName.trim().toLowerCase(),
+      // "name":this.addFieldName.trim().toUpperCase(),
+      "name":this.addFieldName.trim(),
        "status":"active",
 
        "companyId":this.companyId
@@ -104,7 +105,8 @@ export class CustomerCategoryComponent {
 
     const obj={
       "id":id,
-        "name":name.trim().toLowerCase(),
+        // "name":name.trim().toLowerCase(),
+        "name":name.trim(),
        "status":event.checked==true?"active":"inactive",
        "companyId":this.companyId
     }
@@ -129,7 +131,8 @@ export class CustomerCategoryComponent {
 
   }
   removeField(){
-    this.customerCategoryService.countCompanyCustomerByCategory(this.deletionName.toLowerCase()).subscribe((data)=>{
+    // this.customerCategoryService.countCompanyCustomerByCategory(this.deletionName.toUpperCase()).subscribe((data)=>{
+    this.customerCategoryService.countCompanyCustomerByCategory(this.deletionName).subscribe((data)=>{
       
       console.log(data);
       if(data>0){
@@ -182,7 +185,8 @@ export class CustomerCategoryComponent {
     console.log(this.editCurrCategory);
     const obj={
         "id":this.editCurrCategory.id,
-        "name":this.editCurrCategory.name.trim().toLowerCase(),
+        // "name":this.editCurrCategory.name.trim().toUpperCase(),
+        "name":this.editCurrCategory.name.trim(),
        "status":this.editCurrCategory.status,
        "companyId":this.companyId
     }
@@ -232,6 +236,7 @@ export class CustomerCategoryComponent {
 
       let filterData:any;
       if(mydata.name.toLowerCase().includes(value.toLowerCase())||mydata.status.toLowerCase().includes(value.toLowerCase())){
+      // if(mydata.name.includes(value)||mydata.status.includes(value)){
         filterData=mydata;
       }
       else{

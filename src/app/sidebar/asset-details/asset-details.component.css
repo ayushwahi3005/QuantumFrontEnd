@@ -1,9 +1,16 @@
+* {
+    font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+}
+  
+mat-icon {
+    font-family: 'Material Icons';
+}
+
 .main{
     display: flex;
     flex-direction: column;
     /* justify-content:space-evenly */
-    height: calc(100vh - 100px);
-    
+    /* height: calc(100vh - 100px); */
 }
 
 img{
@@ -13,17 +20,14 @@ img{
     height: 300px;
     margin-bottom: 30px;
 }
+
 .option{
-    
     /* width: 100px; */
     height: 70px;
     margin-right: 10px;
-   
    /* background-color: #c2c7cf; */
-   
-    
-    
 }
+
  .option span{
     /* border: 1px solid #8c8e91; */
     width: 50%;
@@ -31,15 +35,14 @@ img{
     justify-content: center;
     padding-top: 20px;
     border-radius: 5px;
-    font-size: large;
+    font-size: large;   
+}
 
-   
-} 
 .container{
     display: flex;
-    flex-direction: column;
-   
-} 
+    flex-direction: column;   
+}
+
 .selected-option{
     background-color: #12232E;
     color: white;
@@ -115,13 +118,13 @@ input{
 }
 .card-body input{
     color: #717275;
-    background-color: #F8F9F9;
-    margin-bottom: 30px;
+    /* background-color: #F8F9F9; */
+    /* margin-bottom: 30px; */
 }
 .card{
     width: 80vw;
     /* margin-right: 10px; */
-    margin-bottom: 100px;
+    margin-bottom: 50px;
 }
 input:focus {
     border: 3px solid #1a65ab;
@@ -134,11 +137,11 @@ input:focus {
     cursor: default;
     text-decoration: none;
     color: #8c8e91;
-    font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+    /* font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif; */
     /* margin-top: 10px; */
     font-size: larger;
     float: inline-start;
-    height: 100px;
+    /* height: 100px; */
     width: 100%;
     padding: 10px;
     /* margin: 10px; */
@@ -149,12 +152,12 @@ input:focus {
     position: sticky;
     top: 0;
     z-index: 1000;
-    overflow: visible;    
+    overflow: visible;
 }
 
 #asset-back:hover{
     color: #1a65ab;
-    
+    cursor: pointer;
 }
 body{
     float: left;
@@ -180,7 +183,7 @@ tr:hover td{
 } */
 
 .checkedIn-status{
-    background-color: green;
+    background-color: #085ED6;
     padding: 5px 5px;
     color: white;
     border-radius: 5px;
@@ -195,10 +198,13 @@ tr:hover td{
 }
 .danger-button{
     background-color: #DA3445;
-    padding: 5px 5px;
-    border-radius: 5px;
-    border-color: #DA3445;
+    padding: 6px 12px;
+    border-radius: 6px;
     color: white;
+    border: 1px solid #dc3545;
+    font-size: 16px;
+    font-weight: 400;
+    line-height: 1.5;
 }
 /* .{
     background-color: #1a65ab;
@@ -258,7 +264,7 @@ i:hover{
     width: 350px;
     height: 250px;
 }
-#customer,#technician,#status,#location{
+#customer,#status,#location{
     width: 80%;
     height: 48px;
     border-radius: 8px;
@@ -319,4 +325,36 @@ i:hover{
 } 
 .subTab:hover{
     border:2px solid darkgray; 
+}
+
+.form-control{
+    border-radius: 5px;
+    border: 0.5px solid #c0c0c0;
+    font-size: 16px;
+    padding-left: 11px;
+    margin-top: 5px;
+    width: 100%;
+    height: 35px;
+}
+
+.form-control:hover {
+    background-color: #fbfbfb;
+}
+
+.form-control:focus {
+    border-color: #007bff; /* Change border color */
+    box-shadow: 0 0 5px rgba(0, 123, 255, 0.5); /* Add a glowing effect */
+    outline: none; /* Remove default outline */
+}
+
+.form-select:focus {
+    border-color: #007bff; /* Change border color */
+    box-shadow: 0 0 5px rgba(0, 123, 255, 0.5); /* Add a glowing effect */
+    outline: none; /* Remove default outline */
+}
+
+.notes-cell {
+    max-width: 300px;
+    word-wrap: break-word;
+    white-space: normal;
 }

@@ -4,17 +4,31 @@
 
   <button type="button" class="btn-close" (click)="showAlert = false" aria-label="Close" style="float: right;"></button>
 </div>
-<div class="role-main">
+
+<div class="d-flex justify-content-center" style=" width: 98%;margin-top: 20px;">
+  <div class="d-flex justify-content-between" style=" width: 98%;">
+
+    <div style="height: 40px;">
+      <label style="font-size: 24px; font-weight: bold; padding: 10px 0;">Roles and Permissions</label>
+    </div>
+
+  </div>
+</div>
+
+<div class="role-main" style="display: flex; justify-content: center;">
   <!-- <div *ngIf="showAlert" class="alert" [ngClass]="'alert-' + alertType" role="alert" style="margin-top: 10px; position: fixed; width: calc(100vw - 300px); z-index: 100;">
     {{ alertMessage }}
  
     <button type="button" class="btn-close" (click)="showAlert = false" aria-label="Close" style="float: right;"></button>
   </div> -->
   <div class="background-tab">
+
     <div style="width: 100%;" class="d-flex justify-content-center">
       <div class="d-flex justify-content-between" style="width: 100%;">
-        <div class="search-bar" style="margin: 0 5px;">
+
+        <div class="search-bar" style="margin: 0;">
           <input type="text" id="import-history-input" placeholder="Search" style="margin: 0 0; border-radius: 5px; height: 30px;" (keyup)="find($event)" #data>
+
           <i class="bi bi-search searchIcon"></i>
         </div>
       <button class="btn btn-primary" style="max-width: 100px; width: 100%;" data-toggle="modal" data-target="#add-role">+ Role</button>
@@ -22,7 +36,7 @@
     </div>
 
     <!-- <div style="width: 100%; overflow-y: scroll; max-height: 80%;" class="d-flex justify-content-center" > -->
-    <div style="max-height: 90%; display: flex; justify-content: center;" class="role_table" >
+    <div style="display: flex; justify-content: center;" class="role_table" >
       
       <table class="table roleTable">
         <thead class="table-dark" >
@@ -46,7 +60,9 @@
             <td>{{item.ofUser}}</td>
             <td>{{item.status|titlecase}}</td>
             <td >
+
               <button mat-button [matMenuTriggerFor]="appMenu" [disabled]="item.name=='ADMIN'">
+
                 <mat-icon>more_vert</mat-icon>
               </button>
               <div>
@@ -73,6 +89,8 @@
     </ng-template>
     </div>
   </div>
+</div>
+
 
 
 <!-- Creating a new role -->
@@ -85,15 +103,14 @@
           <button type="button" class="btn btn-light btn-sm ms-auto" data-dismiss="modal" aria-label="Close" style="border-radius: 10px;" #closeBox>
             <i class="bi bi-x-lg"></i>
             
+
           </button>
         </div>
         <div class="modal-body" style="overflow-y: auto;">
           <form [formGroup]="roleAndPermissionForm" (ngSubmit)="addRoleAndPermission()">
-            <div class="form-group">
-              <label for="name">Name<span  class="text-danger"> *</span></label>
-              <input type="text" class="highlight-input" style="font-size: 16px; padding-left: 11px; width: 100%; margin-top: 10px; border-radius: 5px; height: 35px; border: 1px solid #c0c0c0; transition: border-color 0.3s, box-shadow 0.3s;" id="name"  formControlName="name"  placeholder="Name">
-             
-            </div>
+
+              <label for="name">Name<span class="text-danger"> *</span></label>
+              <input type="text" class="form-control" id="name" formControlName="name" placeholder="Name">
 
             <h2 class="mt-2">Permissions</h2>
             <table class="addTable table " style="margin: 10px auto; border-radius: 10px;">
@@ -185,6 +202,7 @@
                 <label for="roleAndPermissions">Roles And Permissions</label>
               </td>
               <td>
+                <div class="permissionlevel">
                   <select class="form-select form-control" id="roleAndPermissions" formControlName="roleAndPermissions" #roleAndPermissions>
                     <option value="none" selected>None</option>
                   <option value="view" selected>View</option>
@@ -193,6 +211,7 @@
                   <option value="full" selected>Full</option>
                   
                 </select>
+                </div>
               </td>
               </tr>
               <!-- <hr> -->
@@ -267,6 +286,7 @@
 
 <!-- Editing an existing Role -->
 
+
   <div class="modal fade" id="edit-role" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle" aria-hidden="true" style="z-index :10000;">
     <div class="modal-dialog modal-lg" role="document">
       <div class="modal-content" style="max-height: 90vh;">
@@ -274,19 +294,20 @@
           <h2 class="modal-title" id="exampleModalLongTitle" style="margin:0; display: flex; justify-content: center;">Edit Role</h2>
           <button type="button" class="btn btn-light btn-sm ms-auto" data-dismiss="modal" aria-label="Close" style="border-radius: 10px;" #closeBox2>
             <i class="bi bi-x-lg"></i>
+
           </button>
         </div>
         <div class="modal-body" style="overflow-y: auto;">
           <form [formGroup]="roleAndPermissionFormEdit" (ngSubmit)="updateRoleAndPermission()">
             <div class="form-group">
               <label for="name">Name<span  class="text-danger">*</span></label>
-              <input type="text" class="form-control" id="name"  formControlName="name"  placeholder="Name" [ngModel]="this.currItem?.name" style="font-size: 16px; padding-left: 11px; width: 100%; margin-top: 10px; border-radius: 5px; height: 35px; border: 1px solid #c0c0c0; transition: border-color 0.3s, box-shadow 0.3s;">
+              <input type="text" class="form-control" id="name"  formControlName="name"  placeholder="Name" [ngModel]="this.currItem?.name">
              
             </div>
 
             <div class="form-group" style="margin-top: 10px;">
               <label for="status">Status<span  class="text-danger">*</span></label>
-              <select class="form-select form-control" id="status" formControlName="status" #Asset [ngModel]="this.currItem?.status" style="font-size: 16px; padding-left: 11px; width: 100%; margin-top: 10px; border-radius: 5px; height: 35px; border: 1px solid #c0c0c0; transition: border-color 0.3s, box-shadow 0.3s;">
+              <select class="form-select form-control" id="status" formControlName="status" #Asset [ngModel]="this.currItem?.status">
                
                 <option value="active">Active</option>
                 <option value="inactive" >Inactive</option>
@@ -441,11 +462,13 @@
            
             </table>
             
+
             <div style="display: flex; justify-content: center; margin-top: 15px;">
               <button class="btn btn-light" data-dismiss="modal" aria-label="Close" (click)="closeBox.click()" style="margin: 10px; width: 100px; margin-right: 30px; border: 1px solid #c0c0c0" >Cancel</button>
               <button type="submit" class="btn btn-primary" (click)="closeBox2.click()" [disabled]="roleAndPermissionFormEdit.invalid" style="margin: 10px; width: 100px;">Save</button>
             </div>
             
+
           </form>
          
         </div>
@@ -638,4 +661,3 @@
     </div>
   </div>-->
 
-</div>

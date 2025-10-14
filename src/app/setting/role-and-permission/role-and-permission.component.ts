@@ -30,7 +30,7 @@ export class RoleAndPermissionComponent {
   ngOnInit(){
     this.companyId=localStorage.getItem('companyId');
     this.roleAndCountMapping=new Map<String,Number>();
-    
+    this.searchedRole=[];
     this.roleAndPermissionService.getRoleAndPermission(this.companyId).subscribe((data)=>{
       
       this.roleAndPermissionList=data;

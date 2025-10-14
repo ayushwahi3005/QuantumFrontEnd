@@ -1,19 +1,23 @@
+* {
+  font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+}
+
 .main{
   display: flex;
   flex-direction: column;
   /* justify-content:space-evenly */
-  /* width: calc(100vw - 400px); */
-  width: calc(100vw - 250px);
+  width: calc(100vw - 270px);
   /* height: calc(100vh - 300px); */
 }
 
 .customer-category {
-  margin: 0 50px;
+  margin: 0 30px;
+  margin-bottom: 50px;
   border-radius: 10px;
   border: 1px black lightgray;
   /* margin-top: 10px; */
   background-color: white;
-  height: 65vh;
+  /* max-height: 70vh; */
   /* width: 80%; */
   /* margin: 20px auto; */
   padding: 20px;
@@ -41,35 +45,25 @@
   top: 15.2rem;
 } */
 
-input{
-  border: 1px solid gray;
-  outline: none;
-  transition:  border-color 0.2s; /* Apply transition to border properties */
-}
-input:focus{
-  border: 2.5px solid #1a65ab; /* Change in border width */
-  -webkit-transition: border-width 0.2s, border-color 0.2s; /* Webkit for older browsers */
-  transition:  border-color 0.2s; 
-}
-
-/* #category-input:focus { */
-    /* border: 2.5px solid #1a65ab; Change in border width */
-    /* -webkit-transition: border-width 0.2s, border-color 0.2s; Webkit for older browsers */
-    /* transition:  border-color 0.2s; Define transition properties */
-/* } */
 .bi-trash3{
   color: red;
-  margin: 5px 5px;
+  margin: 3px 5px;
+  cursor: pointer;
 }
 .bi-pencil{
   color: #828385ad;
-  margin: 5px 5px;
+  margin: 3px 5px;
+  cursor: pointer;
 }
 table{
   width: 100%;
     margin: 20px auto;
     border-radius: 10px;
     border: 1px solid lightgray;
+}
+
+.table thead {
+  font-size: 15.5px;
 }
 
 .table tbody {
@@ -85,22 +79,27 @@ table{
   background-color: inherit;
 }
 
+
 .table-dark {
   --bs-table-bg: #12232E;
   --bs-table-color: white;
 }
 
-.form-group:focus {
-  border-color: #1a65ab; /* Change border color */
-  box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
-  outline: none;
-  transition: border-color 0.3s, box-shadow 0.3s;
+.form-control {
+  border-radius: 5px;
+  border: 1px solid #c0c0c0;
+  font-size: 16px;
+  padding-left: 11px;
+  margin-top: 5px;
+  width: 100%;
+  height: 35px;
 }
 
-.form-select:focus {
+.form-control:focus {
   border-color: #007bff; /* Change border color */
   box-shadow: 0 0 5px rgba(0, 123, 255, 0.5); /* Add a glowing effect */
-  outline: none; /* Remove default outline */
+  outline: none;
+  /* transition: border-color 0.2s ease-in-out, box-shadow 0.2s ease-in-out; */
 }
 
 .no-data {
@@ -121,11 +120,13 @@ table{
   overflow: hidden;
   width: 100%;
   height: 40px;
+
   max-width: 275px;
   background-color: #fff;
   /* background-color: lightgray; */
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   position: relative;
+
 }
 
 /* Search Input Field */
@@ -165,4 +166,12 @@ table{
   top: 50%;
   right: -13px; /*Adjust spacing between icon and divider*/
   transform: translateY(-50%);
+}
+
+thead th {
+  position: sticky;
+  top: 0;
+  /* background-color: #343a40; */
+  color: white;
+  z-index: 2;
 }

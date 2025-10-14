@@ -71,6 +71,7 @@ import { WorkorderCategoryComponent } from './setting/workorder-category/workord
 import { InventoryCategoryComponent } from './setting/inventory-category/inventory-category.component';
 import { CustomerCategoryComponent } from './setting/customer-category/customer-category.component';
 import { ImportHistoryComponent } from './setting/import-history/import-history.component';
+import {InspectionTemplateComponent} from './setting/inspection-template/inspection-template.component';
 import { MatSortModule } from '@angular/material/sort';
 import { MatRadioModule } from '@angular/material/radio';
 import { NgxStripeModule } from 'ngx-stripe';
@@ -131,9 +132,10 @@ import { SessionInterceptor } from './shared/SessionInterceptor';
     SubscriptionPlanComponent,
     PaymentComponent,
     CustomerResetPasswordComponent,
-    UserModuleComponent
 
- 
+    UserModuleComponent,
+    InspectionTemplateComponent
+
     
    
   ],
