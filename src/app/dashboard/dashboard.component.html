@@ -97,11 +97,17 @@
       </li>
 
 
-      <li class="nav-list-item" style=" margin-top: 400px; margin-bottom: 20px; position: absolute; bottom: 0;"
+      <!-- <li class="nav-list-item" style=" margin-top: 400px; margin-bottom: 20px; position: absolute; bottom: 0;"
         [routerLink]="['/setting-home']">
         <i class="bi bi-gear-fill"></i>
         <span>Settings</span>
-      </li>
+      </li> -->
+      <li class="nav-list-item" 
+    style="margin-top: 400px; margin-bottom: 20px; position: absolute; bottom: 0;"
+    (click)="openSettings()">
+  <i class="bi bi-gear-fill"></i>
+  <span>Settings</span>
+</li>
     </ul>
   </div>
   <div class="content-area" [ngClass]="{'content-area-onhover':!hoverOverSidebar}">

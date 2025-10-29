@@ -209,7 +209,7 @@ td{
   position: absolute;
   width: auto;
   max-height: 40vh;
-  overflow-y: hidden; /* Hide scrollbar by default */
+  overflow-y: hidden;
   border: 1px solid #ccc;
   border-radius: 4px;
   background-color: #fff;

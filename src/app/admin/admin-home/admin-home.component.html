@@ -1,3 +1,8 @@
+<div *ngIf="showAlert" class="alert" [ngClass]="'alert-' + alertType" role="alert" style="margin: 10px 2%; height: 60px; position: fixed; width: calc(95vw - 200px); z-index: 100; left: 230px; ">
+  {{ alertMessage }}
+
+  <button type="button" class="btn-close" (click)="showAlert = false" aria-label="Close" style="float: right;"></button>
+</div>
 <div class="admin-dashboard" [ngClass]="{'dark': dark_theme, 'light': !dark_theme}">
     <!-- Sidebar -->
     <aside class="sidebar">
@@ -5,10 +10,11 @@
         <h2>AssetYug Admin</h2>
       </div>
       <nav class="menu">
-        <a href="#" class="menu-item active">Home</a>
-        <a href="#" class="menu-item">Dashboard</a>
-        <a href="#" class="menu-item">Statistics</a>
-        <a href="#" class="menu-item">Settings</a>
+        <a class="menu-item" [ngClass]="{'active': selectedTab === 1}" (click)="updateTab(1)">Home</a>
+        <a class="menu-item" [ngClass]="{'active': selectedTab === 2}" (click)="updateTab(2)">Dashboard</a>
+        <a class="menu-item" [ngClass]="{'active': selectedTab === 3}" (click)="updateTab(3)">Customers</a>
+        <a class="menu-item" [ngClass]="{'active': selectedTab === 4}" (click)="updateTab(4)">Statistics</a>
+        <a class="menu-item" [ngClass]="{'active': selectedTab === 5}" (click)="updateTab(5)">Settings</a>
       </nav>
       <div class="integration">
         <h3>INTEGRATION</h3>
@@ -39,7 +45,7 @@
         </div>
       </header>
   
-      <section class="dashboard-content">
+      <section class="dashboard-content" *ngIf="selectedTab==1">
         <!-- Team Earnings -->
         <div class="card team-earnings">
           <h2>Team Earnings</h2>
@@ -95,6 +101,52 @@
           <h2>Day Activity</h2>
           <!-- Day activity chart placeholder -->
           <div class="activity-chart">[Activity chart goes here]</div>
+        </div>
+
+         <div class="card customers">
+          <h2>Customers</h2>
+          <!-- Day activity chart placeholder -->
+          <div class="activity-chart">
+
+          </div>
+        </div>
+      </section>
+         <section class="dashboard-content" *ngIf="selectedTab==3">
+        <!-- Team Earnings -->
+        <!-- <div class="card team-earnings">
+          <h2>Team Earnings</h2>
+          <p>In this section, you can find out the earnings of your team for a certain period of time.</p>
+          
+          
+          <div class="chart-controls d-flex justify-content-around" >
+            <button class="btn" [ngClass]="{'active':(earn_period=='WEEKLY')}" (click)="updateEarnPeriod('WEEKLY')">Week</button>
+            <button class="btn" [ngClass]="{'active':(earn_period=='MONTHLY')}" (click)="updateEarnPeriod('MONTHLY')">Month</button>
+            <button class="btn" [ngClass]="{'active':(earn_period=='YEARLY')}" (click)="updateEarnPeriod('YEARLY')">Year</button>
+          </div>
+          <div class="chart">[Chart goes here]</div>
+     
+          <div style="display: block; max-width: 400px; width: 100%;">
+         
+
+            <canvas baseChart
+                    [data]="donutChartData"
+                    [labels]="donutChartLabels"
+                    [type]="donutChartType"
+                    [options]="chartOptions">
+            </canvas>
+          </div>
+          
+        </div> -->
+
+  
+     
+
+         <div class="card card-customers">
+          <h2>Customers</h2>
+          <div style="width:-webkit-fill-available;">
+          <app-customers (messageEvent)="receiveMessage($event)"></app-customers>
+          </div>
+         
         </div>
       </section>
     </main>

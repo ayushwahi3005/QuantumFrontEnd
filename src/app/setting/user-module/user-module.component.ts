@@ -30,22 +30,27 @@ searchedFieldName!:ExtraFieldName[];
   companyId!:any;
   mandatoryFields=[{
     name:"Firstname",
+    value:"firstName",
     type:"String"
   },
   {
     name:"Lastname",
+    value:"lastName",
     type:"String"
   },
   {
     name:"Phone",
+    value:"phoneNumber",
     type:"String"
   },
   {
     name:"Job Title",
+    value:"jobTitle",
     type:"String"
   },
   {
     name:"Role",
+    value:"role",
     type:"String"
   }]
   constructor(private userModuleService:UserModuleService){}

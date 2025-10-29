@@ -119,6 +119,9 @@ export class CustomerModuleService {
     return this.httpClient.delete(this.companyCustomerEndpoint+"deleteShowAndMandatoryField/"+name+"/"+companyId,{headers:this.headers});
     // return this.httpClient.post("myCustomer/deleteShowAndMandatoryField",companyId,{headers});
   }
+  updateExtraFieldName(data:any):Observable<any>{
+    return this.httpClient.put(this.companyCustomerEndpoint+"extraFieldName",data,{headers:this.headers});
+  }
 
   
 }

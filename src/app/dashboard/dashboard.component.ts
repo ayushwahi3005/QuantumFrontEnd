@@ -217,6 +217,18 @@ console.log(localStorage.getItem('user'));
     );
   }
   }
+openSettings() {
+  // Get last selected tab from localStorage (used in SettingMainComponent)
+  const savedOption = localStorage.getItem('settingHomeOption');
+  const tabNumber = savedOption ? savedOption : 'company'; // default tab = 1
+
+  // Save it again to ensure consistency
+  localStorage.setItem('settingHomeOption', tabNumber.toString());
+
+  // Navigate to setting-home with query param 'tab'
+  // The SettingMainComponent will read this query param and show correct tab
+  this.router.navigate(['/setting-home'], { queryParams: { tab: tabNumber } });
+}
 
   
 

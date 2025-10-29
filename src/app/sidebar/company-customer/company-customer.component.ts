@@ -1,4 +1,4 @@
-import { Component, ElementRef, ViewChild } from '@angular/core';
+import { Component, ElementRef, OnDestroy, ViewChild } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { CompanyCustomerService } from './company-customer.service';
 import { CompanyCustomer } from './company-cutomer';
@@ -10,13 +10,15 @@ import { PageEvent } from '@angular/material/paginator';
 import { PaginationResult } from './paginationResult';
 import { DashboardComponent } from 'src/app/dashboard/dashboard.component';
 import { CategoryName } from './categoryName';
+import { Subscription } from 'rxjs';
+import { NavigationStart, Router } from '@angular/router';
 
 @Component({
   selector: 'app-company-customer',
   templateUrl: './company-customer.component.html',
   styleUrls: ['./company-customer.component.css']
 })
-export class CompanyCustomerComponent {
+export class CompanyCustomerComponent implements OnDestroy{
   @ViewChild('closeBox') closeBox: ElementRef | undefined ;
   companyCustomerForm!:FormGroup;
   filterForm!:FormGroup;
@@ -82,8 +84,26 @@ export class CompanyCustomerComponent {
   myArray=[]
   stateList=[]
   asc:Boolean=true;
-  constructor(private formBuilder:FormBuilder,private companyCustomerService:CompanyCustomerService,private dashboard:DashboardComponent){
-
+   private routerSubscription!: Subscription;
+  constructor(private formBuilder:FormBuilder,private companyCustomerService:CompanyCustomerService,private dashboard:DashboardComponent,private router: Router){
+this.routerSubscription = this.router.events.subscribe(event => {
+      if (event instanceof NavigationStart) {
+        // Run only when navigating to /setting-home
+        if (event.url === '/setting-home') {
+          console.log('destroy');
+          localStorage.removeItem('selectedExtraColumsCustomer');
+           localStorage.removeItem('selectedExtraColumsAssets');
+          this.savedExtraColumn = null;
+        }
+      }
+    });
+  }
+  ngOnDestroy(): void {
+     console.log("destory")
+     if (this.routerSubscription) {
+      this.routerSubscription.unsubscribe();
+    }
+    this.savedExtraColumn=null;
   }
 
   ngOnInit():void{
@@ -299,7 +319,11 @@ export class CompanyCustomerComponent {
     })
 
   }
-
+//  ngOnDestory(){
+//     console.log("destory")
+//     localStorage.removeItem("selectedExtraColumsCustomer")
+//     this.savedExtraColumn=null;
+//   }
   handlePageEvent(e: PageEvent) {
     this.pageEvent = e;
     console.log(this.pageEvent)
@@ -785,4 +809,5 @@ advanceFilterFunc() {
       this.searchClick();
     }
   }
+ 
 }

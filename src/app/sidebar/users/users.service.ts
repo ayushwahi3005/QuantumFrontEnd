@@ -72,7 +72,7 @@ export class UsersService {
       'Content-Type': 'application/json',
       'device-id': `${localStorage.getItem('deviceId')}`,
     });
-    return this.httpClient.get(this.customerEndpoint+"getExtraFieldName/"+id,{headers});
+    return this.httpClient.get(this.userEndpoint+"getExtraFieldName/"+id,{headers});
   }
   getExtraFieldNameValue(companyId:string):Observable<any>{
     const headers = new HttpHeaders({
@@ -80,7 +80,7 @@ export class UsersService {
       'Content-Type': 'application/json',
       'device-id': `${localStorage.getItem('deviceId')}`,
     });
-    return this.httpClient.get(this.customerEndpoint+"getExtraFieldNameValue/"+companyId,{headers});
+    return this.httpClient.get(this.userEndpoint+"getExtraFieldNameValue/"+companyId,{headers});
   }
 
   getMandatoryFields(name:any,companyId:any):Observable<any>{
@@ -90,7 +90,7 @@ export class UsersService {
       'device-id': `${localStorage.getItem('deviceId')}`,
     });
     console.log("name",name)
-    return this.httpClient.get(this.customerEndpoint+"getMandatoryFields/"+name+"/"+companyId,{headers});
+    return this.httpClient.get(this.userEndpoint+"getMandatoryFields/"+name+"/"+companyId,{headers});
   }
   getShowFields(name:any,companyId:any):Observable<any>{
     const headers = new HttpHeaders({
@@ -98,7 +98,7 @@ export class UsersService {
       'Content-Type': 'application/json',
       'device-id': `${localStorage.getItem('deviceId')}`,
     });
-    return this.httpClient.get(this.customerEndpoint+"getShowFields/"+name+"/"+companyId,{headers});
+    return this.httpClient.get(this.userEndpoint+"getShowFields/"+name+"/"+companyId,{headers});
   }
   getAllMandatoryFields(companyId:any):Observable<any>{
     const headers = new HttpHeaders({
@@ -106,7 +106,7 @@ export class UsersService {
       'Content-Type': 'application/json',
       'device-id': `${localStorage.getItem('deviceId')}`,
     });
-    return this.httpClient.get(this.customerEndpoint+"getAllMandatoryFields/"+companyId,{headers});
+    return this.httpClient.get(this.userEndpoint+"getAllMandatoryFields/"+companyId,{headers});
   }
   getAllShowFields(companyId:any):Observable<any>{
     const headers = new HttpHeaders({
@@ -114,7 +114,7 @@ export class UsersService {
       'Content-Type': 'application/json',
       'device-id': `${localStorage.getItem('deviceId')}`,
     });
-    return this.httpClient.get(this.customerEndpoint+"getAllShowFields/"+companyId,{headers});
+    return this.httpClient.get(this.userEndpoint+"getAllShowFields/"+companyId,{headers});
   }
   updateStatus(data:any):Observable<any>{
     const headers = new HttpHeaders({
@@ -131,6 +131,14 @@ export class UsersService {
       'device-id': `${localStorage.getItem('deviceId')}`,
     });
     return this.httpClient.post(this.userEndpoint+"resend-email-firebase-verification/"+companyId+"/"+email,null,{headers});
+  }
+    addExtraFields(data:any):Observable<any>{
+    const headers = new HttpHeaders({
+      'Authorization': `Bearer ${localStorage.getItem('authToken')}`,
+      'Content-Type': 'application/json',
+      'device-id': `${localStorage.getItem('deviceId')}`,
+    });
+    return this.httpClient.post(this.userEndpoint+"addfields",data,{headers});
   }
   
 }

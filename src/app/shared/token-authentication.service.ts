@@ -51,5 +51,13 @@ export class TokenAuthenticationService {
     
     return this.httpClient.delete(this.endpoint+'customer/removeSession/'+userId, { headers });
   }
+  getValidSubscription():Observable<any>{
+    const headers = new HttpHeaders({
+      'Authorization': `Bearer ${localStorage.getItem('authToken')}`,
+      'Content-Type': 'application/json',
+      'Device-ID': `${localStorage.getItem('deviceId')}`,
+    });
+    return this.httpClient.get(this.endpoint+'subscription/subscription-valid'+localStorage.getItem("companyId"),{headers});
+  }
 
 }

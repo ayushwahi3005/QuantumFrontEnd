@@ -49,5 +49,8 @@ export class AssetModuleService {
     deleteShowAndMandatoryFields(name:any,email:any):Observable<any>{
       return this.httpClient.delete(this.assetEndpoint+"deleteShowAndMandatoryField/"+name+"/"+email,{headers:this.headers});
     }
+    updateExtraFieldName(data:any):Observable<any>{
+    return this.httpClient.put(this.assetEndpoint+"extraFieldName",data,{headers:this.headers});
+  }
   
 }

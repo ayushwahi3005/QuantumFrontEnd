@@ -23,6 +23,8 @@ export class CustomerModuleComponent {
   editOn:boolean=true;
   deletionId:string='';
   deletionName!:string;
+  editId:string='';
+  editName!:string;
   showAlert: boolean = false; // Flag to toggle alert visibility
   alertMessage: string = ''; // Alert message
   alertType: string = 'success'; // Alert type: success, warning, error, etc.
@@ -344,4 +346,33 @@ export class CustomerModuleComponent {
         
         });
       }
+
+      updateEditId(id:string){
+        this.editId=id;
+      }
+      updateEditName(name:string){
+        this.editName=name;
+        console.log(this.editName)
+      }
+      updateCustomFieldName(){
+        console.log(this.editId+" "+this.editName)
+        if(this.editName?.trim()==''||this.editName==null){
+          this.triggerAlert("Name Field Empty!","warning");
+          // alert("Field Empty!!");
+        }
+        else{
+        const obj={
+          "id":this.editId,
+          "name":this.editName.trim(),
+        }
+        this.customerModuleService.updateExtraFieldName(obj).subscribe((data)=>{
+          console.log(data);
+          this.ngOnInit();
+          this.triggerAlert("Field Name Updated Successfully","success");
+        },
+        (err)=>{
+          console.log(err.error); 
+        });
+      }
+    }
 }

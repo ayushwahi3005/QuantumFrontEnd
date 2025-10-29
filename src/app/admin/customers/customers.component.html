@@ -1,0 +1,87 @@
+<div >
+            <div class="mat-elevation-z8">
+                <table mat-table [dataSource]="dataSource">
+
+                  <ng-container matColumnDef="rowNumber">
+                    <th mat-header-cell *matHeaderCellDef> No. </th>
+                    <td mat-cell *matCellDef="let element"> {{allCustomers.indexOf(element)+1}} </td>
+                  </ng-container>
+                  <!-- Position Column -->
+                  <ng-container matColumnDef="firstName">
+                    <th mat-header-cell *matHeaderCellDef> FirstName </th>
+                    <td mat-cell *matCellDef="let element"> {{element.firstName}} </td>
+                  </ng-container>
+
+                  <!-- Name Column -->
+                  <ng-container matColumnDef="lastName">
+                    <th mat-header-cell *matHeaderCellDef> LastName </th>
+                    <td mat-cell *matCellDef="let element"> {{element.lastName}} </td>
+                  </ng-container>
+
+                  <!-- Weight Column -->
+                  <ng-container matColumnDef="email">
+                    <th mat-header-cell *matHeaderCellDef> Email </th>
+                    <td mat-cell *matCellDef="let element"> {{element.email}} </td>
+                  </ng-container>
+
+                   <ng-container matColumnDef="title">
+                    <th mat-header-cell *matHeaderCellDef> Title </th>
+                    <td mat-cell *matCellDef="let element"> {{element.title|titlecase}} </td>
+                  </ng-container>
+
+                   <ng-container matColumnDef="mobileNumber">
+                    <th mat-header-cell *matHeaderCellDef> Mobile Number </th>
+                    <td mat-cell *matCellDef="let element"> {{element.mobileNumber}} </td>
+                  </ng-container>
+
+                  <ng-container matColumnDef="role">
+                    <th mat-header-cell *matHeaderCellDef> Role </th>
+                    <td mat-cell *matCellDef="let element"> {{element.role.name}} </td>
+                  </ng-container>
+
+                   <ng-container matColumnDef="companyId">
+                    <th mat-header-cell *matHeaderCellDef> Company Id </th>
+                    <td mat-cell *matCellDef="let element"> {{element.role.companyId}} </td>
+                  </ng-container>
+
+                  <!-- Symbol Column -->
+                  <ng-container matColumnDef="status">
+                    <th mat-header-cell *matHeaderCellDef> Status </th>
+                    <td mat-cell *matCellDef="let element"> {{element.status|titlecase}} </td>
+                  </ng-container>
+
+                  <ng-container matColumnDef="action">
+                    <th mat-header-cell *matHeaderCellDef> Action </th>
+                    <td mat-cell *matCellDef="let element"> 
+
+                      <button mat-button id="matbutton" [matMenuTriggerFor]="menuOption">
+                      <!-- <button mat-icon-button [matMenuTriggerFor]="menu" style="margin: 0;"> -->
+                        <mat-icon>more_vert</mat-icon>
+                      </button>
+                      
+                      <mat-menu #menuOption="matMenu">
+                        <!-- <button mat-menu-item [disabled]="registredUsersMap.get(item.email)==true" (click)="resendMail(item.email)">Resend Invite</button> -->
+                        <button mat-menu-item  (click)="resendEmailVerificationLink(element.email,element.companyId)">Resend Email Verification Link</button>
+                        <!-- <button mat-menu-item [disabled]="lockedInfo.get(item.email)!=true" (click)="unlockAccount(item.email)">Unlock User</button> -->
+                        <!-- <button mat-menu-item *ngIf="registredUsersMap.get(item.email)==true&&item.status=='active'" (click)="makeInActive(item)"><span class="text-danger" >In Activate</span></button>
+                        <button mat-menu-item *ngIf="registredUsersMap.get(item.email)==true&&item.status=='inActive'" (click)="makeActive(item)"><span class="text-success" >Activate</span></button>
+                        <button mat-menu-item [disabled]="this?.role != 'ADMIN' && !(this?.detailedRole === 'edit' || this?.detailedRole === 'full')" (click)="selectEditUserFunc(item.email)">
+                          <span data-toggle="modal" data-target="#editpopup">Edit</span>
+                        </button>  -->
+                        
+                        <!-- <button mat-menu-item [disabled]="registredUsersMap.get(item.email)==true" (click)="selectDeleteUserFunc(item.email)" ><span class="text-danger" data-toggle="modal" data-target="#deletepopup">Delete</span></button> -->
+                      </mat-menu>
+                    </td>
+                  </ng-container>
+
+                  <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+                  <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+                </table>
+
+                <mat-paginator [pageSizeOptions]="[5, 10, 20]"
+                              showFirstLastButtons
+                              aria-label="Select page of periodic elements">
+                </mat-paginator>
+              </div>
+
+          </div>

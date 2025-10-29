@@ -424,6 +424,7 @@ handleClickOutside(event: MouseEvent) {
     return str.replace(/\b\w/g, (char) => char.toUpperCase());
 }
   onCheck(){
+    console.log("OnCheck clicked");
     console.log(typeof(this.assetDetails));
     // this.mandatoryFieldsMap.forEach((val,key)=>{
     //   if(this.assetDetails.get(key))
@@ -491,15 +492,15 @@ handleClickOutside(event: MouseEvent) {
   if(mandatoryFlag==0){
     return;
   }
-  // this.onSave()
-  if(this.userRoleDetails?.customer=='full'||this.userRoleDetails?.customer=="edit"||this.userRole=="ADMIN"){
-    this.onSave();
+  this.onSave()
+  // if(this.userRoleDetails?.customer=='full'||this.userRoleDetails?.customer=="edit"||this.userRole=="ADMIN"){
+  //   this.onSave();
 
-    }
+  //   }
   }
   onSave(){
     
- 
+ console.log("onSave clicked");
     
   this.extraFieldName.forEach((x,ind)=>{
     let obj={}

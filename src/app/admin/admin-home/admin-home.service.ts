@@ -9,6 +9,8 @@ import { environment } from 'src/environments/environment';
 export class AdminHomeService {
 
   adminEndpoint=environment.endpoint+"admin/";
+  companyEndpoint=environment.endpoint+"customer/";
+  userEndpoint=environment.endpoint+"users/";
   private headers = new HttpHeaders({
       'Authorization': `Bearer ${localStorage.getItem('authToken')}`,
       'Content-Type': 'application/json',
@@ -19,4 +21,7 @@ export class AdminHomeService {
   public getAdminHomeData(startDate: string, endDate: string, period: string): Observable<any> {
     return this.httpClient.get(`${this.adminEndpoint}api/analytics/subscriptions/analytics?startDate=${startDate}&endDate=${endDate}&period=${period}`, { headers: this.headers } );
   }
+
+
+  
 }

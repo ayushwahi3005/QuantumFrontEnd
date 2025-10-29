@@ -784,8 +784,9 @@
 
           </div>
           <div class="savedCard d-flex justify-content-center" *ngIf="myCard?.length&&showSavedCard">
-            <div>
+            <div >
               <h2>Saved Card</h2>
+              <div class="d-flex justify-content-between">
               <div id="card-span" class="d-flex justify-content-between" *ngIf="!editCard">
                 <div *ngFor="let card of myCard">
                   <div>
@@ -800,12 +801,16 @@
                     </div>
                   </div>
                 </div>
-                <div>
+                <!-- <div>
                   <i class="bi bi-chevron-right" style="margin-top:20px;" (click)="editCardFunc(myCard?.[0]?.id)"></i>
-                </div>
+                </div> -->
+              </div>
+              <div class="change-card" style="width: 200px;" (click)="editSaveCard(card?.id)">
+                <h2 style="margin: 0;">Change Card</h2>
+              </div>
               </div>
 
-              <div id="edit-card-span" *ngIf="editCard">
+              <!-- <div id="edit-card-span" *ngIf="editCard">
                 <div *ngFor="let card of myCard">
                   <div>
                     <span>
@@ -823,7 +828,7 @@
                       (click)="editSaveCard(card?.id)">Edit</button>
                   </div>
                 </div>
-              </div>
+              </div> -->
 
             </div>
           </div>
@@ -1013,6 +1018,34 @@
           <div class="modal-footer">
             <button class="btn btn-success" (click)="startUpcomingPlan()" data-dismiss="modal">Start</button>
             <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+
+          </div>
+        </div>
+      </div>
+
+
+
+    </div>
+
+
+     <div class="modal fade" id="alertSubscription" tabindex="-1" role="dialog"
+      aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+      <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h2 class="modal-title" id="exampleModalLongTitle">Your subscription has expired or is invalid. Please update your payment information.</h2>
+            <button type="button" class="close  ms-auto" data-dismiss="modal" aria-label="Close" #closeBox>
+              <div aria-hidden="true">&times;</div>
+            </button>
+          </div>
+          <!-- <div class="modal-body">
+            
+            <button class="btn btn-light plus-minus-btn" (click)="removePerson()" ><div class="plus-minus">-</div></button><input type="number" style="width: 50px;" min=1 [(ngModel)]="person"><button class="btn btn-light plus-minus-btn" (click)="addPerson()"><div class="plus-minus" >+</div></button>
+            <button class="btn btn-light plus-minus-btn" (click)="removePerson()" ><div class="plus-minus">-</div></button><button class="btn btn-light" >{{person}}</button><button class="btn btn-light plus-minus-btn" (click)="addPerson()"><div class="plus-minus" >+</div></button>  -->
+          <!-- </div> -->
+          <div class="modal-footer">
+            <button class="btn btn-success"  data-dismiss="modal" (click)="closePaymentDialog()">Ok</button>
+            <!-- <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button> -->
 
           </div>
         </div>

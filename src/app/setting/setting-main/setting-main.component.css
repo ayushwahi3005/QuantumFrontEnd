@@ -152,11 +152,12 @@ a{
     padding-left: 250px;    
     /* height: calc(100vh - 80px); */
     height: calc(100vh - 63px);
+    /* margin-top: 15px; */
 }
 
 form{
     width: 500px;
-    margin-top: 50px;
+    margin-top: 55px;
     border: 1px solid gainsboro;
     padding: 20px;
     background-color: white;

@@ -1,8 +1,17 @@
-table i{
+table .bi-trash3{
     color: red;
     margin-bottom: 2px;
     font-size: larger;
     margin-left: 20px;
+    cursor: default;
+
+}
+table .bi-pencil{
+    color: rgb(96, 93, 93);
+    margin-bottom: 2px;
+    font-size: larger;
+    margin-left: 20px;
+    cursor: default;
 
 }
 table{

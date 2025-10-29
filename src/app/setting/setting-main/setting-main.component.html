@@ -53,16 +53,20 @@
   </ul>
 </div>
 
+<div *ngIf="showAlert" class="alert" [ngClass]="'alert-' + alertType" role="alert" style="margin: 10px 2%; height: 60px; position: fixed; width: calc(95vw - 200px); z-index: 100; left: 230px; ">
+  {{ alertMessage }}
 
+  <button type="button" class="btn-close" (click)="showAlert = false" aria-label="Close" style="float: right;"></button>
+</div>
 <!-- <div class="content-area d-flex justify-content-center" style="height: 85vh; overflow-y: scroll;"> -->
   <div class="content-area d-flex justify-content-center" style=" overflow-y: scroll;">
-
+    
     <!-- <app-workorder *ngIf="current==1" ></app-workorder> -->
     <div *ngIf="current==1" >
      
       <form class="row g-3" [formGroup]="companyInformationForm" (ngSubmit)="addCompanyInformation()" >
         <div class="col-md-12">
-          <label for="companyName" class="form-label">Company Name</label>
+          <label for="companyName" class="form-label">Company Name<span class="text-danger">*</span></label>
           <input type="text" class="form-control" formControlName="companyName" [ngModel]="companyInformation ? companyInformation.companyName : ''">
         </div>
         <div class="col-md-12">
@@ -77,7 +81,7 @@
           
         </div>
         <div class="col-12">
-          <label for="Address" class="form-label">Address</label>
+          <label for="Address" class="form-label">Address<span class="text-danger">*</span></label>
           <input type="text" class="form-control"  formControlName="address1" placeholder="Address 1" [ngModel]="companyInformation ? companyInformation.address1 : ''">
        </div >
        <div class="col-12">
@@ -109,11 +113,11 @@
         </div>
         </div>
         <div class="col-12">
-          <label for="phoneNo" class="form-label">Phone Number</label>
+          <label for="phoneNo" class="form-label">Phone Number<span class="text-danger">*</span></label>
           <input type="tel" class="form-control" formControlName="phoneNo" value="+1" [ngModel]="companyInformation ? companyInformation.phoneNo : ''"   maxlength="10" pattern="[0-9]{10}" minlength="10" maxlength="10">
         </div>
         <div class="col-12">
-          <label for="website" class="form-label" >Website</label>
+          <label for="website" class="form-label" >Website<span class="text-danger">*</span></label>
           <input type="text" class="form-control" formControlName="website" pattern="^.+\.com$" [ngModel]="companyInformation ? companyInformation.website : ''">
           <div *ngIf="companyInformationForm.get('website')?.invalid"  class="text-danger">
             
@@ -121,7 +125,8 @@
           </div>
         </div>
         <!-- <button type="submit" class="btn btn-primary" data-toggle="modal" data-target="#popup" [disabled]="companyInformationForm.invalid">Submit</button> -->
-         <button type="submit" class="btn btn-primary" data-toggle="modal" data-target="#popup" >Submit</button>
+         <!-- <button type="submit" class="btn btn-primary" data-toggle="modal" data-target="#popup" >Submit</button> -->
+          <button type="submit" class="btn btn-primary"  >Submit</button>
       </form>
     </div>
     <!-- <app-asset-module *ngIf="current==3"></app-asset-module> -->

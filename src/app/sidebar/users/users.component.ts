@@ -87,11 +87,13 @@ export class UsersComponent {
     this.isLoading=false;
     this.showMandatoryBasicFields=new Map<string,Boolean>();
     this.mandatoryFieldFilterList=new Map<string,Boolean>();
+    this.extraFieldFilterList=new Map<String,String>();
+    this.showFieldsMap=new Map<string,boolean>();
     this.savedExtraColumn=localStorage.getItem("selectedExtraColumsUsers")
     this.savedExtraColumn=localStorage.getItem("showMandatoryBasicFieldsAssets")
     this.myArray=JSON.parse(this.savedExtraColumn)
     console.log("MYARRAY"+this.myArray)
-
+    this.mandatoryFieldsMap = new Map<string, boolean>();
     this.myList=['name','title','email','role','status'];
     this.showMandatoryBasicFields.set('image',true);
     this.showMandatoryBasicFields.set('assetId',true);
@@ -228,74 +230,75 @@ export class UsersComponent {
       console.log("//////////-------------->"+actionCode)
     });
 
-    // this.userService.getAllMandatoryFields(this.companyId).subscribe((data)=>{
-    //   this.mandatoryFieldsList=data;
-    //   console.log("mandatory----------------------->",this.mandatoryFieldsList)
-    //   if(this.mandatoryFieldsList.length>0){
-    //   this.mandatoryFieldsList?.forEach((x)=>{
-    //     this.mandatoryFieldsMap.set(x.name,x.mandatory);
-    //   })
-    // }
-    // },
-    // (err)=>{
-    //   console.log(err);
-    // })
-    // this.userService.getAllShowFields(this.companyId).subscribe((data)=>{
-    //   this.showFieldsList=data;
-    //   console.log("show----------------------->",this.showFieldsList)
-    //   this.selectedFilterList=[]
-    //   if(this.showFieldsList.length>0){
-    //   this.showFieldsList?.forEach((x)=>{
-    //     this.filterList.push(x.name);
-    //     this.selectedFilterList.push(x.name);
-    //     // this.filterForm.addControl(x.name,this.formBuilder.control('',Validators.required));
-    //     this.showFieldsMap.set(x.name,x.show);
-    //     if(x.show==true){
-    //       this.extraFieldFilterList.set(x.name,x.type);
-    //     }
-    //   })
-    // }
+    this.userService.getAllMandatoryFields(this.companyId).subscribe((data)=>{
+      this.mandatoryFieldsList=data;
+      console.log("mandatory----------------------->",this.mandatoryFieldsList)
+      if(this.mandatoryFieldsList.length>0){
+      this.mandatoryFieldsList?.forEach((x)=>{
+        console.log(x.name+" "+x.mandatory)
+        this.mandatoryFieldsMap.set(x.name,x.mandatory);
+      })
+    }
+    },
+    (err)=>{
+      console.log(err);
+    })
+    this.userService.getAllShowFields(this.companyId).subscribe((data)=>{
+      this.showFieldsList=data;
+      console.log("show----------------------->",this.showFieldsList)
+      this.selectedFilterList=[]
+      if(this.showFieldsList.length>0){
+      this.showFieldsList?.forEach((x)=>{
+        this.filterList.push(x.name);
+        this.selectedFilterList.push(x.name);
+        // this.filterForm.addControl(x.name,this.formBuilder.control('',Validators.required));
+        this.showFieldsMap.set(x.name,x.show);
+        if(x.show==true){
+          this.extraFieldFilterList.set(x.name,x.type);
+        }
+      })
+    }
       
-    //   if(this.showFieldsList!=null){
-    //     if(this.showFieldsList.length>0){
-    //   // this.showFieldsList.forEach((x)=>{
-    //   //   if(x.show==true)
-    //   //   this.assetForm.addControl(x.name,this.formBuilder.control(''));
-    //   // })
-    // }
-    // }
+      if(this.showFieldsList!=null){
+        if(this.showFieldsList.length>0){
+      this.showFieldsList.forEach((x)=>{
+        if(x.show==true)
+        this.userForm.addControl(x.name,this.formBuilder.control(''));
+      })
+    }
+    }
     
-    // },
-    // (err)=>{
-    //   console.log(err);
-    // },
-    // ()=>{
-    //   this.userService.getExtraFieldName(this.companyId).subscribe((data)=>{
+    },
+    (err)=>{
+      console.log(err);
+    },
+    ()=>{
+      this.userService.getExtraFieldName(this.companyId).subscribe((data)=>{
       
      
-    //     this.extraFieldName=data;
-    //     let arr:string[]=[];
-    //   this.extraFieldName.forEach((x)=>{
+        this.extraFieldName=data;
+        let arr:string[]=[];
+      this.extraFieldName.forEach((x)=>{
       
-    //     console.log(x.name+" "+this.showFieldsMap.get(x.name))
-    //     this.extraFieldNameMap?.set(x.name,x);
-    //       if(this.showFieldsMap.get(x.name)==true){
-    //       arr.push(x.name);
-    //       }
-    //     })
+        console.log(x.name+" "+this.showFieldsMap.get(x.name))
+        this.extraFieldNameMap?.set(x.name,x);
+          if(this.showFieldsMap.get(x.name)==true){
+          arr.push(x.name);
+          }
+        })
      
-    //     this.extraFieldNameList=arr;
-    //     console.log(this.extraFieldNameList)
+        this.extraFieldNameList=arr;
+        console.log(this.extraFieldNameList)
         
      
        
         
         
-    //   },
-    //   (err)=>{
-    //     console.log(err);
-    //   })
-    // })
+      },
+      (err)=>{
+        console.log(err);
+      })
+    })
 
    
   }
@@ -309,6 +312,35 @@ export class UsersComponent {
   addUser(){
     console.log(this.userForm.value);
     console.log(this.companyId)
+    console.log(this.userForm.value)
+    //   this.showFieldsList?.forEach((x) => {
+    //   if (x.show == true) {
+    //     extraFieldValueMap.set(x.name, this.assetForm.get(x.name)?.value);
+    //     extraFieldTypeMap.set(x.name, this.assetForm.get(x.type)?.value);
+    //   }
+    // })
+    let valid=1;
+    this.mandatoryFieldsList.forEach((field)=>{
+      if(this.userForm.controls[field.name].value==''||this.userForm.controls[field.name].value==null){
+        console.log("Issueeeee");
+        let myField=field.name;
+        if(myField==='jobTitle'){
+          myField='Job Title';
+        }
+        else if(myField==='phoneNumber'){
+          myField='Phone';
+        }
+        else{
+          myField=myField.charAt(0).toUpperCase()+myField.slice(1);
+        }
+        this.triggerAlert(myField+" is mandatory","danger");
+        valid=0;
+        return;
+      }
+    })
+    if(valid==0){
+      return;
+    }
     let role=this.roleAndPermissionList.filter((x)=> x.id==this.userForm.controls['role'].value).at(0);
     let obj={
       "firstName":this.userForm.controls['firstName'].value,
@@ -330,10 +362,30 @@ export class UsersComponent {
       "title":this.userForm.controls['jobTitle'].value
     }
     console.log(user)
-    
+    let savedUser:User;
     this.userService.registerUser(user).subscribe((data)=>{
       console.log("data saved");
+      savedUser=data as User;
+      console.log(savedUser)
       this.triggerAlert("Successfully Invited","success");
+             this.showFieldsList?.forEach((x) => {
+          const obj = {
+            "email": this.email,
+            "companyId": this.companyId,
+            "name": x.name,
+            "value": this.userForm.controls[x.name].value,
+            "userId": savedUser.id,
+            "type":x.type
+          }
+          console.log("extra fields obj" + obj.companyId + " " + obj.name + " " + obj.value + " assetId " + obj.userId)
+          this.userService.addExtraFields(obj).subscribe((data) => {
+            console.log("added extra fields");
+          },
+            (err) => {
+              console.log(err);
+              this.triggerAlert(err.error.errorMessage, "danger");
+            })
+        })
       this.ngOnInit();
     },
     (err)=>{
@@ -353,7 +405,9 @@ export class UsersComponent {
       // (err)=>{
       //   console.log(err);
       // })
+
       this.sendMail(obj);
+     
     })
     
     // console.log("-------->",this.userForm.controls['usertype'].value)

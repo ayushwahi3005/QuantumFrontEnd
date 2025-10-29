@@ -457,12 +457,13 @@ export class CompanyCustomerDetailsComponent {
   }
   else{
     this.loadingScreen=true;
-    if(this.userRoleDetails?.customer=='full'||this.userRoleDetails?.customer=="edit"||this.userRole=="ADMIN"){
     this.onSave();
-    }
-    else{
-      this.loadingScreen=false;
-    }
+    // if(this.userRoleDetails?.customer=='full'||this.userRoleDetails?.customer=="edit"||this.userRole=="ADMIN"){
+    // this.onSave();
+    // }
+    // else{
+    //   this.loadingScreen=false;
+    // }
   }
 
   }

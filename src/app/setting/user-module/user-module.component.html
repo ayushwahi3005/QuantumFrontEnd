@@ -38,8 +38,8 @@
         <td *ngIf="item.name === 'Role' || item.name === 'Firstname' || item.name === 'Lastname'"><mat-slide-toggle
             color="primary" [ngModel]="true" disabled=""></mat-slide-toggle></td>
         <td *ngIf="item.name !== 'Role' && item.name !== 'Firstname' && item.name !== 'Lastname'"><mat-slide-toggle
-            color="primary" [ngModel]="getValueOfMandatoryMap(item.name)"
-            (change)="mandatoryField(ch,item.name,item.type)" #ch></mat-slide-toggle></td>
+            color="primary" [ngModel]="getValueOfMandatoryMap(item.value)"
+            (change)="mandatoryField(ch,item.value,item.type)" #ch></mat-slide-toggle></td>
         <td></td>
       </tr>
       <h2 *ngIf="extraFieldName.length>0" style="margin: 10px;">Custom Fields</h2>

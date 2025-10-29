@@ -1,4 +1,4 @@
-import { Component, ElementRef, inject, ViewChild, ViewEncapsulation, HostListener } from '@angular/core';
+import { Component, ElementRef, inject, ViewChild, ViewEncapsulation, HostListener, OnDestroy } from '@angular/core';
 import { AssetsService } from './assets.service';
 import { AuthService } from 'src/app/shared/auth.service';
 import * as XLSX from 'xlsx';
@@ -13,6 +13,8 @@ import { PageEvent } from '@angular/material/paginator';
 import { PaginationResult } from './paginationResult';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { CategoryName } from './categoryName';
+import { NavigationStart, Router } from '@angular/router';
+import { Subscription } from 'rxjs';
 
 
 @Component({
@@ -21,7 +23,7 @@ import { CategoryName } from './categoryName';
   styleUrls: ['./assets.component.css'],
   encapsulation: ViewEncapsulation.None
 })
-export class AssetsComponent {
+export class AssetsComponent implements OnDestroy{
   private _snackBar = inject(MatSnackBar);
   @ViewChild('closeBox2') closeBox2: ElementRef | undefined;
   loading: boolean = true;
@@ -119,8 +121,26 @@ export class AssetsComponent {
   selectedLocationOrBin: string | null = null;
   filteredLocationOrBinList: any = [];
   binLocationIdNameMap: Map<String, String> = new Map<String, String>();
-  constructor(private assetService: AssetsService, private authService: AuthService, private formBuilder: FormBuilder) {
-
+   private routerSubscription!: Subscription;
+  constructor(private assetService: AssetsService, private authService: AuthService, private formBuilder: FormBuilder,private router: Router) {
+      this.routerSubscription = this.router.events.subscribe(event => {
+            if (event instanceof NavigationStart) {
+              // Run only when navigating to /setting-home
+              if (event.url === '/setting-home') {
+                console.log('destroy');
+                localStorage.removeItem('selectedExtraColumsCustomer');
+                 localStorage.removeItem('selectedExtraColumsAssets');
+                this.savedExtraColumn = null;
+              }
+            }
+          });
+  }
+  ngOnDestroy(): void {
+    console.log("destory")
+     if (this.routerSubscription) {
+      this.routerSubscription.unsubscribe();
+    }
+    this.savedExtraColumn=null;
   }
   @ViewChild('dropdownContainerAsset', { static: false }) dropdownContainerAsset!: ElementRef;
   ngOnInit() {

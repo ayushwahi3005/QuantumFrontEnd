@@ -91,6 +91,7 @@ import { SessionInterceptor } from './shared/SessionInterceptor';
 import { NgChartsModule } from 'ng2-charts';
 import { TimeAgoPipe } from 'src/utils/pipes/time-ago.pipe';
 import { PageNotFoundComponent } from './page-not-found/page-not-found/page-not-found.component';
+import { CustomersComponent } from './admin/customers/customers.component';
 
 @NgModule({
   declarations: [
@@ -140,7 +141,8 @@ import { PageNotFoundComponent } from './page-not-found/page-not-found/page-not-
     UserModuleComponent,
     InspectionTemplateComponent,
     TimeAgoPipe,
-    PageNotFoundComponent
+    PageNotFoundComponent,
+    CustomersComponent
     
    
   ],

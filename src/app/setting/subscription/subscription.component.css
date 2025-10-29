@@ -758,3 +758,23 @@ td {
 .table th {
   border: 1px solid #dee2e6;
 }
+.change-card {
+  background-color: white;
+  width: 600px;
+  height: 70px;
+  margin: 10px 10px;
+  padding: 10px 10px;
+  border-radius: 10px;
+  border: 0.5px solid lightgray;
+  font-size: larger;
+  font-weight: 500;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+}
+
+.change-card:hover {
+  border: 1px solid darkgray;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}

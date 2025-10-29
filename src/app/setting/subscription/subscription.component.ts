@@ -11,6 +11,7 @@ import jsPDF from 'jspdf';
 import html2canvas from 'html2canvas';
 
 declare var bootstrap: any;
+declare var window: any; // For Bootstrap modal usage without jQuery
 import {
   StripeCardElement,
   StripeCardElementOptions,
@@ -21,15 +22,18 @@ import {
   StripeService,
   StripePaymentElementComponent,
 } from 'ngx-stripe';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { AuthService } from 'src/app/shared/auth.service';
 import { HttpClient } from '@angular/common/http';
+import { MatDialog } from '@angular/material/dialog';
+import { AlertDialogComponent } from 'src/app/shared/alert-dialog/alert-dialog.component';
 
 @Component({
   selector: 'app-subscription',
   templateUrl: './subscription.component.html',
   styleUrls: ['./subscription.component.css'],
 })
+
 export class SubscriptionComponent {
   @ViewChild(StripePaymentElementComponent)
   
@@ -83,9 +87,12 @@ export class SubscriptionComponent {
   displayEditCard: boolean = false;
   showSavedCard: boolean = true;
   editCardId: any;
+private modalInstance: any;
+  
   readonly stripe = injectStripe(
     'pk_test_51QJEvHDbrtjFAyfvm2UQu2ohdlUl814jAftZVEW9IHnfd4YrVOfh5ZBJyfYahnJcOMxwjgK3WjA8tU8XPg5nGpbM00J9CxIx3A'
   );
+  
   cardOptions: StripeCardElementOptions = {
     style: {
       base: {
@@ -122,7 +129,9 @@ export class SubscriptionComponent {
     private router: Router,
     private auth: AuthService,
     private stripeService: StripeService,
-    private http: HttpClient
+    private http: HttpClient,
+    private route: ActivatedRoute,
+    private dialog: MatDialog
   ) { }
   refresh() {
     this.subcriptionSerive.getCurrSubscription(this.companyId).subscribe(
@@ -192,6 +201,14 @@ export class SubscriptionComponent {
     this.curr_phase = 1;
   }
   ngOnInit() {
+    this.route.queryParams.subscribe(params => {
+      console.log('Query Params:', params);
+      if (params['alertDialog'] === 'true') {
+        // this.openPaymentDialog();
+        console.log('Show payment dialog as per query param');
+         setTimeout(() => this.openPaymentDialog(), 300);
+      }
+    });
     this.companyId = localStorage.getItem('companyId');
     this.displayEditCard = false;
     this.showSavedCard = true;
@@ -810,6 +827,7 @@ export class SubscriptionComponent {
     // this.subcriptionSerive.deleteCardDetails(cardId).subscribe(
     //   (data) => {
     //     console.log(data);
+    //     console.log('Card Deleted Successfully');
     //     this.triggerAlert('Card Deleted Successfully', 'success');
     //     this.ngOnInit();
     //     this.editCard = false;
@@ -819,7 +837,7 @@ export class SubscriptionComponent {
     //     this.triggerAlert(err.errorMessage, 'danger');
     //   }
     // );
-    // this.editCard = false;
+    this.editCard = false;
   }
   logout() {
     console.log('logging out');
@@ -1209,4 +1227,28 @@ export class SubscriptionComponent {
   scrollToManage() {
     this.manageSection.nativeElement.scrollIntoView({ behavior: 'smooth', block: 'start' });
   }
+
+  openPaymentDialog() {
+  // const modalElement = document.getElementById('alertSubscription');
+  // this.modalInstance = new window.bootstrap.Modal(modalElement);
+  // this.modalInstance.show();
+   this.dialog.open(AlertDialogComponent, {
+    width: '600px',
+    data: {
+      title: 'Subscription Updation Required',
+      message: 'Your subscription has expired or is invalid. Please upgrade your subscription or reduce Active Users.'
+    }
+  });
+  }
+
+  closePaymentDialog() {
+    if (this.modalInstance) {
+      this.modalInstance.hide();
+      const backdrops = document.getElementsByClassName('modal-backdrop');
+    while (backdrops[0]) {
+      backdrops[0].parentNode?.removeChild(backdrops[0]);
+    }
+    }
+  }
+
 }

@@ -1,10 +1,20 @@
 import { CommonModule } from '@angular/common';
-import { Component } from '@angular/core';
+import { Component, ViewChild } from '@angular/core';
 
 import { Router } from '@angular/router';
 import { ChartOptions, ChartType } from 'chart.js';
 import { AdminHomeService } from './admin-home.service';
-
+import { MatTableDataSource } from '@angular/material/table';
+import { MatPaginator } from '@angular/material/paginator';
+export interface PeriodicElement {
+  firstName: string;
+  lastName: string;
+  email: string;
+  title: string;
+  mobileNumber: number;
+  status: string;
+  role: string;
+}
 @Component({
   selector: 'app-admin-home',
 
@@ -12,11 +22,18 @@ import { AdminHomeService } from './admin-home.service';
   templateUrl: './admin-home.component.html',
   styleUrl: './admin-home.component.css'
 })
+
 export class AdminHomeComponent {
 
   constructor(private router:Router,private adminHomeService:AdminHomeService) { }
+   showAlert: boolean = false; // Flag to toggle alert visibility
+  alertMessage: string = ''; // Alert message
+  alertType: string = 'success'; // Alert type: success, warning, error, etc.
+  
+  selectedTab=1;
   earn_period = "WEEKLY";
   dark_theme= false;
+  
   public donutChartLabels: string[] = ['Download Sales', 'In-Store Sales', 'Mail Sales'];
  
   public donutChartType: ChartType = 'doughnut';
@@ -33,6 +50,14 @@ export class AdminHomeComponent {
     console.log(localStorage.getItem("authToken"))
       this.dark_theme= false;
      this.updateEarnPeriod('WEEKLY');
+      // this.adminHomeService.getAllCustomers().subscribe((data)=>{
+      //   this.allCustomers=data;
+      //   this.dataSource=new MatTableDataSource<PeriodicElement>(this.allCustomers)
+      //   console.log("All Customers:",this.allCustomers);    
+      // },
+      // (error)=>{
+      //   console.error("Error fetching customers:", error);
+      // });
   }
   updateEarnPeriod = (newPeriod:string) => {
     console.log("New Period:", newPeriod);
@@ -93,5 +118,32 @@ export class AdminHomeComponent {
     //   document.documentElement.setAttribute('data-theme', 'light');
     // }
 
+  }
+  updateTab(tab:number){
+    this.selectedTab=tab;
+  }
+  // resendEmailVerificationLink(email:any,companyId:any){
+  //   this.adminHomeService.resendFirebaseVerificationEmail(companyId,email).subscribe((data)=>{
+  //     console.log(data);
+  //     this.triggerAlert(data.message,data.status);
+  //   },
+  //   (err)=>{
+  //     console.log(err);
+  //     this.triggerAlert(err.error.errorMessage,"danger");
+  //   })
+  // }
+    triggerAlert(message: string, type: string) {
+    console.log("triiger")
+    this.alertMessage = message;
+    this.alertType = type;
+    this.showAlert = true;
+    // You can set a timeout to automatically hide the alert after a certain time
+    setTimeout(() => {
+      this.showAlert = false;
+    }, 5000); // Hide the alert after 5 seconds (adjust as needed)
+  }
+  receiveMessage($event: string[]) {
+    // console.log("received in admin home")
+    this.triggerAlert($event[0],$event[1]);
   }
 }

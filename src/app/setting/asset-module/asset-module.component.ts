@@ -31,6 +31,8 @@ export class AssetModuleComponent {
   isSubscribedToEmailsMessage!:boolean;
   companyId!:any;
   selectedExtraColums :string[]=[];
+   editId:string='';
+  editName!:string;
   mandatoryFields=[
     {
       name:"name",
@@ -354,4 +356,35 @@ export class AssetModuleComponent {
         
         });
       }
+
+       updateEditId(id:string){
+         
+        this.editId=id;
+        console.log(this.editId)
+      }
+      updateEditName(name:string){
+        this.editName=name;
+        console.log(this.editName)
+      }
+      updateCustomFieldName(){
+        console.log(this.editId+" "+this.editName)
+        if(this.editName?.trim()==''||this.editName==null){
+          this.triggerAlert("Name Field Empty!","warning");
+          // alert("Field Empty!!");
+        }
+        else{
+        const obj={
+          "id":this.editId,
+          "name":this.editName.trim(),
+        }
+        this.assetModuleService.updateExtraFieldName(obj).subscribe((data)=>{
+          console.log(data);
+          this.ngOnInit();
+          this.triggerAlert("Field Name Updated Successfully","success");
+        },
+        (err)=>{
+          console.log(err.error); 
+        });
+      }
+    }
 }

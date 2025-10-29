@@ -49,7 +49,9 @@
         <th scope="col">Job Title</th>
         <th scope="col">Email</th>
         <th scope="col">Role</th>
+        <th scope="col" *ngFor="let col of selectedExtraColums">{{col}}</th>
         <th scope="col">Status</th>
+        
         <th></th>
       </tr>
     </thead>
@@ -61,6 +63,7 @@
         <td>{{item.title}}</td>
         <td>{{item.email}}</td>
         <td>{{item.role?.name}}</td>
+        <td *ngFor="let col of selectedExtraColums">{{item[col]}}</td>
         <td *ngIf="lockedInfo.get(item.email)==true; else invitedBlock">Locked <i class="bi bi-lock"></i></td>
         <ng-template #invitedBlock>
         <td *ngIf="registredUsersMap.get(item.email)==true&&item.status=='active'">Active</td>
@@ -78,7 +81,7 @@
             <button mat-menu-item  (click)="resendEmailVerificationLink(item.email)">Resend Email Verification Link</button>
             <button mat-menu-item [disabled]="lockedInfo.get(item.email)!=true" (click)="unlockAccount(item.email)">Unlock User</button>
             <!-- <button mat-menu-item [disabled]="registredUsersMap.get(item.email)==undefined" (click)="makeInActive(item)"><span class="text-danger" >In Active</span></button> -->
-            <button mat-menu-item *ngIf="registredUsersMap.get(item.email)==true&&item.status=='active'" (click)="makeInActive(item)"><span class="text-danger" >In Activate</span></button>
+            <button mat-menu-item *ngIf="registredUsersMap.get(item.email)==true&&item.status=='active'&&item.email!=this.email" (click)="makeInActive(item)" ><span class="text-danger" >In Activate</span></button>
             <button mat-menu-item *ngIf="registredUsersMap.get(item.email)==true&&item.status=='inActive'" (click)="makeActive(item)"><span class="text-success" >Activate</span></button>
             <button mat-menu-item [disabled]="this?.role != 'ADMIN' && !(this?.detailedRole === 'edit' || this?.detailedRole === 'full')" (click)="selectEditUserFunc(item.email)">
               <span data-toggle="modal" data-target="#editpopup">Edit</span>
@@ -304,10 +307,19 @@
                  
                 </select>
             </div>
+             <div *ngFor="let input of selectedFilterList; let i = index" style="margin-top: 5px;">
+              <div class="form-group">
+                <label for={{input}}>{{input}} (Custom)</label>
+                <div class="d-flex justify-content-around">
+                  <input [formControlName]="input" type={{extraFieldFilterList?.get(input)}} class="extraFieldInput"
+                    class="form-control"> <!-- Since each form group is wrapped in a form array -->
+                </div>
+              </div>
+            </div>
            <div style="display: flex; justify-content: center; margin-top: 15px;">
             
             <button class="btn btn-light" data-dismiss="modal" aria-label="Close"  style="margin: 10px; width: 100px; margin-right: 30px; border: 1px solid #c0c0c0" >Cancel</button>
-            <button type="submit" class="btn btn-primary" [disabled]="userForm.invalid" (click)="closeBoxInvitePop.click()" style="margin: 10px; width: 100px">Invite</button>
+            <button type="submit" class="btn btn-primary"  (click)="closeBoxInvitePop.click()" style="margin: 10px; width: 100px">Invite</button>
           </div>
           </form>
         </div>
@@ -377,14 +389,16 @@
           <h3>Select Checkbox</h3>
 
             <div style="width: 95%;">
-            <div>  <mat-checkbox  [color]="checkBoxColor"  [checked]="showMandatoryBasicFields.get('name')==true?true:false"   disabled="true">Name</mat-checkbox></div>
-            <div>  <mat-checkbox  [color]="checkBoxColor"  [checked]="showMandatoryBasicFields.get('title')==true?true:false"  disabled="true" >Title</mat-checkbox></div>
-            <div>  <mat-checkbox  [color]="checkBoxColor"  [checked]="showMandatoryBasicFields.get('name')==true?true:false"  (change)="mandatoryFieldCheckBox($event.checked,'name')" disabled="true">Name</mat-checkbox></div>
+            <div>  <mat-checkbox  [color]="checkBoxColor"  [checked]="true"   disabled="true">FirstName</mat-checkbox></div>
+            <div>  <mat-checkbox  [color]="checkBoxColor"  [checked]="true"  disabled="true" >LastName</mat-checkbox></div>
+            <div>  <mat-checkbox  [color]="checkBoxColor"  [checked]="true"   disabled="true">phone Number</mat-checkbox></div>
+            <div>  <mat-checkbox  [color]="checkBoxColor"  [checked]="true"  disabled="true" >Job Title</mat-checkbox></div>
+            <!-- <div>  <mat-checkbox  [color]="checkBoxColor"  [checked]="showMandatoryBasicFields.get('name')==true?true:false"  (change)="mandatoryFieldCheckBox($event.checked,'name')" disabled="true">Name</mat-checkbox></div>
             <div>  <mat-checkbox  [color]="checkBoxColor"  [checked]="showMandatoryBasicFields.get('serialNumber')==true?true:false"  (change)="mandatoryFieldCheckBox($event.checked,'serialNumber')">Serial Number</mat-checkbox></div>
             <div>  <mat-checkbox  [color]="checkBoxColor"  [checked]="showMandatoryBasicFields.get('category')==true?true:false"  (change)="mandatoryFieldCheckBox($event.checked,'category')">Category</mat-checkbox></div>
             <div>  <mat-checkbox  [color]="checkBoxColor"  [checked]="showMandatoryBasicFields.get('customer')==true?true:false"  (change)="mandatoryFieldCheckBox($event.checked,'customer')">Customer</mat-checkbox></div>
             <div>  <mat-checkbox  [color]="checkBoxColor"  [checked]="showMandatoryBasicFields.get('location')==true?true:false"  (change)="mandatoryFieldCheckBox($event.checked,'location')">Location</mat-checkbox></div>
-            <div>  <mat-checkbox  [color]="checkBoxColor"  [checked]="showMandatoryBasicFields.get('status')==true?true:false"  (change)="mandatoryFieldCheckBox($event.checked,'status')">Status</mat-checkbox></div>
+            <div>  <mat-checkbox  [color]="checkBoxColor"  [checked]="showMandatoryBasicFields.get('status')==true?true:false"  (change)="mandatoryFieldCheckBox($event.checked,'status')">Status</mat-checkbox></div> -->
 
             <div  *ngFor="let item of extraFieldNameList">
               

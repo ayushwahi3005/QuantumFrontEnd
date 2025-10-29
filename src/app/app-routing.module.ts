@@ -21,27 +21,30 @@ import { AdminAuthenticationService } from './shared/admin-authentication.servic
 import { PaymentComponent } from './setting/payment/payment.component';
 import { CustomerResetPasswordComponent } from './customer-reset-password/customer-reset-password.component';
 import { PageNotFoundComponent } from './page-not-found/page-not-found/page-not-found.component';
+import { PaymentLockGuard } from './shared/PaymentLockGuard';
+import { CustomersComponent } from './admin/customers/customers.component';
 
 const routes: Routes = [
   {path: '', component:HomeComponent, pathMatch:'full'},
   {path:'login', component:LoginComponent},
   {path:'reset-password', component:  CustomerResetPasswordComponent},
   {path:'register', component:RegisterComponent},
- {path:'dashboard', component:DashboardComponent,canActivate:[AuthenticationService]},
+ {path:'dashboard', component:DashboardComponent,canActivate:[AuthenticationService,PaymentLockGuard]},
   // {path:'dashboard', component:DashboardComponent},
-  {path:'workorder/:id',component:WorkorderDetailsComponent,canActivate:[AuthenticationService]},
-  {path:'inventory',component:InventoryComponent,canActivate:[AuthenticationService]},
-  {path:'custom-setting',component:SettingHomeComponent,canActivate:[AuthenticationService]},
-  {path:'edit-inventory/:id',component:EditInventoryComponent,canActivate:[AuthenticationService]},
+  {path:'workorder/:id',component:WorkorderDetailsComponent,canActivate:[AuthenticationService,PaymentLockGuard]},
+  {path:'inventory',component:InventoryComponent,canActivate:[AuthenticationService,PaymentLockGuard]},
+  {path:'custom-setting',component:SettingHomeComponent,canActivate:[AuthenticationService,PaymentLockGuard]},
+  {path:'edit-inventory/:id',component:EditInventoryComponent,canActivate:[AuthenticationService,PaymentLockGuard]},
   {path:'setting-home',component:SettingMainComponent,canActivate:[AuthenticationService]},
-  {path:'assets/:id',component:AssetPreviewComponent,canActivate:[AuthenticationService]},
+  {path:'assets/:id',component:AssetPreviewComponent,canActivate:[AuthenticationService,PaymentLockGuard]},
   {path:'invitation/:id/:details',component:InvitationComponent},
-  {path:'customer/preview/:id',component:CompanyCustomerDetailsPreviewComponent,canActivate:[AuthenticationService]},
-  {path:'customer/:id',component:CompanyCustomerDetailsComponent,canActivate:[AuthenticationService]},
-  {path:'payment',component:PaymentComponent,canActivate:[AuthenticationService]},
+  {path:'customer/preview/:id',component:CompanyCustomerDetailsPreviewComponent,canActivate:[AuthenticationService,PaymentLockGuard]},
+  {path:'customer/:id',component:CompanyCustomerDetailsComponent,canActivate:[AuthenticationService,PaymentLockGuard]},
+  {path:'payment',component:PaymentComponent,canActivate:[AuthenticationService,PaymentLockGuard]},
   {path:'admin',component:AdminLoginComponent},
   {path:'admin/reset',component:ResetPasswordAdminComponent},
   {path:'admin/home',component:AdminHomeComponent,canActivate:[AdminAuthenticationService]},
+  // {path:'admin/customers',component:CustomersComponent,canActivate:[AdminAuthenticationService]},
   {path: '**', component: PageNotFoundComponent }  
 
 
