@@ -1,22 +1,12 @@
-<ul class="nav justify-content-between header">
+<!-- <ul class="nav justify-content-between header">
 
   <div class="header-centre">
-    <!-- <img src='../../assets/logo.png'> -->
     <h1>AssetYug</h1>
   </div>
 
 
   <li class="nav-item d-flex align-items-center" style="padding-right: 5px; margin: 15px;gap: 25px;">
     <b>Welcome</b> <span style="margin-left: -10px;">{{username}}</span>
-
-    <!-- Notification Icon -->
-
-
-
-    <!--  -->
-
-
- <!-- Profile Dropdown -->
   <div class="d-flex justify-content-between" >
 <div class="dropdown" >
   <a class="dropdown-toggle" type="button" id="profileDropdown" data-toggle="dropdown" style="text-decoration: none;">
@@ -29,7 +19,6 @@
   </ul>
 </div>
 
-<!-- Notification Dropdown -->
 <div class="dropdown">
   <a class="dropdown-toggle demo-section" type="button" id="notificationDropdown" data-toggle="dropdown" style="text-decoration: none;"
    [matBadge]="unReadCount > 0 ? unReadCount : null" matBadgeOverlap="false" (click)="notificationClick()">
@@ -69,11 +58,10 @@
 
 
     <a (click)="logout()" style="cursor: pointer;">Log out</a>
-    <!-- </span> -->
   </li>
 
-</ul>
-
+</ul> -->
+<app-header></app-header>
 <div class="main">
 
   <div class="side-navbar" (mouseover)="onHover()" (mouseleave)="offHover()"
@@ -116,7 +104,7 @@
     <app-inventory *ngIf="current==3" [ngClass]="{'app-assets-open':!hoverOverSidebar}"></app-inventory>
     <app-company-customer *ngIf="current==1" [ngClass]="{'app-assets-open':!hoverOverSidebar}"></app-company-customer>
     <!-- <app-company-customer-details *ngIf="current==6" [ngClass]="{'app-assets-open':!hoverOverSidebar}"></app-company-customer-details> -->
-
+    <div class="loading" style="height: 100vh; width: 500px;" *ngIf="current==undefined||current==null"></div>
 
 
   </div>

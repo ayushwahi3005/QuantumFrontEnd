@@ -50,7 +50,7 @@ import {MatTableModule} from '@angular/material/table';
 import { NgSelectModule } from '@ng-select/ng-select';
 import { InventoryModuleComponent } from './setting/inventory-module/inventory-module.component';
 import { MatButtonModule } from '@angular/material/button';
-import { MatDialogModule } from '@angular/material/dialog';
+import { MatDialogContent, MatDialogModule } from '@angular/material/dialog';
 import { MatMenuModule } from '@angular/material/menu';
 import {MatIconModule} from '@angular/material/icon';
 import {MatDividerModule} from '@angular/material/divider';
@@ -92,6 +92,7 @@ import { NgChartsModule } from 'ng2-charts';
 import { TimeAgoPipe } from 'src/utils/pipes/time-ago.pipe';
 import { PageNotFoundComponent } from './page-not-found/page-not-found/page-not-found.component';
 import { CustomersComponent } from './admin/customers/customers.component';
+import { HeaderComponent } from './header/header.component';
 
 @NgModule({
   declarations: [
@@ -142,7 +143,8 @@ import { CustomersComponent } from './admin/customers/customers.component';
     InspectionTemplateComponent,
     TimeAgoPipe,
     PageNotFoundComponent,
-    CustomersComponent
+    CustomersComponent,
+    HeaderComponent
     
    
   ],

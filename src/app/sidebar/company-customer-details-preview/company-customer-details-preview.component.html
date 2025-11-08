@@ -3,49 +3,7 @@
    
     <button type="button" class="btn-close" (click)="showAlert = false" aria-label="Close" style="float: right;"></button>
     </div>
-    <ul class="nav justify-content-between header">
-  
-      <div class="header-centre">
-        <!-- <img src='../../assets/logo.png'> -->
-        <h1>AssetYug</h1>
-      </div>
-    
-    
-    
-    
-      <li class="nav-item"  style="padding-right: 5px; margin-top: 10px;">
-      <b>Welcome</b> <span style="margin: 10px;">{{username}}</span>
-      <i class="bi bi-bell-fill" matBadge="15" matBadgeColor="warn"></i>
-      
-      <span class="dropdown">
-        <a class="dropdown-toggle" type="button" data-toggle="dropdown" style="text-decoration: none; color: white;"><i class="bi bi-person-circle"></i>
-       
-        <span class="caret"></span></a>
-        <ul class="dropdown-menu" style="z-index: 10000;">
-         
-          <li><a href="#" style="text-decoration: none; color: black;">Profile ({{email}})</a></li>
-          <hr>
-          <li>More Details</li>
-       
-         
-         
-    
-        </ul>
-        <a (click)="logout()" style="margin-left: 5px; cursor: pointer;">Logout</a>
-      </span>
-      
-      </li>
-    
-    
-    
-    
-    
-    
-    
-      
-      
-      
-    </ul>
+    <app-header></app-header>
     <div class="side-navbar"  (mouseover)="onHover()" (mouseleave)="offHover()" [ngClass]="{'nav-list-open':hoverOverSidebar}" >
       <ul class="nav-list"  >
       <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="currentColor" class="bi bi-list" viewBox="0 0 16 16" style="margin-left: 10px;"> 

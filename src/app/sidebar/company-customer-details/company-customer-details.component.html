@@ -1,7 +1,6 @@
-<ul class="nav justify-content-between header">
+<!-- <ul class="nav justify-content-between header">
   
   <div class="header-centre">
-    <!-- <img src='../../assets/logo.png'> -->
     <h1>AssetYug</h1>
   </div>
 
@@ -40,8 +39,9 @@
   
   
   
-</ul>
+</ul> -->
 
+<app-header></app-header>
   
   
   <div *ngIf="showAlert" class="alert" [ngClass]="'alert-' + alertType" role="alert" style="margin-left:70px ;margin-top: 5px; position: fixed; width: calc(98% - 70px); z-index: 10000;">
@@ -235,9 +235,9 @@
    
     <div class="card-body">
       <div>
-        <input type="file" style="width: 100%"  (change)="fileUpload($event)"  #imageFile>
-        
-      </div>
+        <input type="file" style="width: 100%"  (change)="fileUpload($event)"  #imageFile  style="display:none">
+        <button type="button" class="btn btn-primary" (click)="imageFile.click()" style="margin-bottom: 10px;">Upload File</button>
+          
       <div class="progress my-3" *ngIf="currentFile">
         <div
           class="progress-bar progress-bar-info progress-bar-striped"

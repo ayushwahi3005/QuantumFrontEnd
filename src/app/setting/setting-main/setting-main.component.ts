@@ -5,6 +5,8 @@ import { SettingMainService } from './setting-main.service';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import Lottie from 'lottie-web';
 import { CompanyInformation } from './companyInformation';
+import { Subject } from 'rxjs';
+import { NotificationService } from 'src/app/notification/notification.service';
 
 @Component({
   selector: 'app-setting-main',
@@ -24,6 +26,10 @@ export class SettingMainComponent {
   showAlert: boolean = false; // Flag to toggle alert visibility
   alertMessage: string = ''; // Alert message
   alertType: string = 'success';
+    unReadCount:number=0;
+    private notificationSubject = new Subject<string>();
+    notificationList:Notification[]=[];
+    
   sideBarOption=[
     // {
   //   number:1,
@@ -100,9 +106,10 @@ export class SettingMainComponent {
     { number: 10, name: 'Asset QR code', icon: 'bi bi-qr-code', tab: 'asset-qr' },
   
 ];
-constructor(private settingMainService:SettingMainService,private auth:AuthService,private router:Router,private formBuilder:FormBuilder,    private route: ActivatedRoute,){}
+constructor(private settingMainService:SettingMainService,private auth:AuthService,private router:Router,private formBuilder:FormBuilder,    private route: ActivatedRoute,private notificationService:NotificationService){}
 
   ngOnInit(){
+    document.body.style.overflow = 'hidden';
     if(localStorage.getItem('settingHomeOption')!=null){
       console.log("localStorage.getItem('settingHomeOption')->",localStorage.getItem('settingHomeOption'));
       // localStorage.getItem('settingHomeOption')
@@ -144,6 +151,49 @@ constructor(private settingMainService:SettingMainService,private auth:AuthServi
     website:['',Validators.required],
     customerEmail:['']
    }))
+
+    this.settingMainService.getNotification(this.email).subscribe((data)=>{
+      // console.log("Notification Data",data);  
+      this.unReadCount=0;
+      if(data!=null){
+        // console.log("Notification",data);
+        this.notificationList=data;
+        console.log("Notification",this.notificationList);
+        this.notificationList.forEach((notification: any) => {
+          console.log("Is Unread",notification.isRead);
+          if(notification.read === false) {
+            this.unReadCount++;
+          }
+        });
+        console.log("Unread Count",this.unReadCount);
+      }
+      else{
+        this.notificationList=[];
+      }
+    },
+    (err)=>{
+      console.log("Notification Error",err);
+      this.notificationList=[];
+    });
+
+
+
+    this.notificationService.getNotificationObservable().subscribe((message) => {
+      try {
+        this.unReadCount=0;
+        this.notificationList = typeof message === 'string' ? JSON.parse(message) : message;
+        this.notificationList.forEach((notification: any) => {
+          console.log("Is Unread",notification.isRead);
+          if(notification.read === false) {
+            this.unReadCount++;
+          }
+        });
+      } catch (e) {
+        this.notificationList = [];
+        console.error('Failed to parse notification message:', e);
+      }
+      console.log("Notification received:", this.notificationList);
+    });
 
    this.settingMainService.dashboard(this.email).subscribe((data)=>{
     
@@ -313,5 +363,20 @@ constructor(private settingMainService:SettingMainService,private auth:AuthServi
     setTimeout(() => {
       this.showAlert = false;
     }, 5000); // Hide the alert after 5 seconds (adjust as needed)
+  }
+
+   notificationClick() {
+    console.log("Notification Clicked");
+    if(this.unReadCount > 0) {  
+    this.settingMainService.updateNotification(this.notificationList,this.email).subscribe(
+      (response) => {
+        console.log( response);
+        this.unReadCount = 0; // Reset unread count after marking as read
+      },
+      (error) => {
+        console.error("Error updating notification", error);
+      }
+    );
+  }
   }
 }

@@ -34,7 +34,9 @@
             <div class="form-group" class="form-control" (change)="FileUpload($event)" style="border: 0px;">
               
                     <label style="font-size: x-large;margin-top: 50px;">CSV File</label><br>
-                    <input type="file" class="mt-1" formControlName="file" #myFile>
+                    <input type="file" class="mt-1" formControlName="file" #myFile style="display:none" accept=".csv" (change)="onFileSelected($event)">
+                    <button type="button" class="btn btn-secondary mt-2" (click)="myFile.click()" >Choose File</button>
+                    <span class="file-name" style="margin-left: 10px;">{{ selectedFileName }}</span>
                
             </div>
             <button type="submit" class="btn btn-primary mt-5"  [disabled]="importForm.invalid" (click)="myFile.value=''">Submit</button>

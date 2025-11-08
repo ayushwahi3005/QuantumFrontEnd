@@ -5,15 +5,34 @@ import {
     HttpEvent,
     HttpErrorResponse,
   } from '@angular/common/http';
-  import { Injectable } from '@angular/core';
+  import { inject, Injectable } from '@angular/core';
   import { AuthService } from './auth.service';
   import { Observable, throwError } from 'rxjs';
   import { catchError } from 'rxjs/operators';
 import { Router } from '@angular/router';
+import { MatDialog } from '@angular/material/dialog';
+import { DialogueComponent } from '../dialogue/dialogue.component';
   
   @Injectable()
   export class SessionInterceptor implements HttpInterceptor {
     constructor(private authService: AuthService,private router:Router) {}
+    readonly dialog = inject(MatDialog);
+    
+        openSessionExpiredDialog(): void {
+        const dialogRef = this.dialog.open(DialogueComponent, {
+           disableClose: true, 
+        });
+    
+        dialogRef.afterClosed().subscribe(result => {
+           this.authService.logout().then(() => {
+                      this.router.navigate(['/login']); // Redirect after logout
+                    }).catch(err => {
+                      console.error('Logout failed:', err);
+                    });
+          console.log('The dialog was closed');
+         
+        });
+      }
   
     intercept(
       req: HttpRequest<any>,
@@ -38,14 +57,16 @@ import { Router } from '@angular/router';
                     localStorage.setItem('isLoggedIn', 'false');
                     this.authService.sessionExpired$.next(true);
                     console.log('Session expired - Interceptor: Session has expired. User will be logged out.');
-                    alert('Session Expired');
+                    
+                    // alert('Session Expired');
                     console.log(error);
+                    this.openSessionExpiredDialog();
                   //   this.router.navigate(['/login']);
-                    this.authService.logout().then(() => {
-                      this.router.navigate(['/login']); // Redirect after logout
-                    }).catch(err => {
-                      console.error('Logout failed:', err);
-                    });
+                    // this.authService.logout().then(() => {
+                    //   this.router.navigate(['/login']); // Redirect after logout
+                    // }).catch(err => {
+                    //   console.error('Logout failed:', err);
+                    // });
                 }  
            
                  

@@ -20,6 +20,8 @@ import { QR } from './qr';
 import html2canvas from 'html2canvas';
 import * as jspdf from 'jspdf';
 import { User } from './user';
+import { Subject } from 'rxjs';
+import { NotificationService } from 'src/app/notification/notification.service';
 
 @Component({
   selector: 'app-asset-preview',
@@ -73,6 +75,11 @@ loading=true;
   userRoleDetails:any;
   selectEmployeeName:any
   selectedEmpName:any;
+
+  unReadCount:number=0;
+  private notificationSubject = new Subject<string>();
+  notificationList:Notification[]=[];
+
   sideBarOption=[{
     number:1,
     name:'Customers',
@@ -82,12 +89,12 @@ loading=true;
     number:2,
     name:'Assets',
     icon:'bi bi-boxes'
-  },
-  {
-    number:3,
-    name:'Inventory',
-    icon:'bi bi-journal-text'
-  },
+  }
+  // {
+  //   number:3,
+  //   name:'Inventory',
+  //   icon:'bi bi-journal-text'
+  // },
   // {
   //   number:4,
   //   name:'Preventive Maintainance',
@@ -106,7 +113,7 @@ loading=true;
   
 ];
 
-  constructor(private activatedRoute:ActivatedRoute,private assetPreviewService:AssetPreviewService,private datePipe: DatePipe,private auth:AuthService,private router:Router,private assetService:AssetsService){
+  constructor(private activatedRoute:ActivatedRoute,private assetPreviewService:AssetPreviewService,private datePipe: DatePipe,private auth:AuthService,private router:Router,private assetService:AssetsService,private notificationService:NotificationService){
   }
   ngOnInit(){
     this.loading=true;
@@ -162,6 +169,7 @@ loading=true;
     ()=>{
       this.loading=false;
     })
+
 
     
     this.userRole=localStorage.getItem('role');
@@ -341,22 +349,7 @@ onClick(option:number){
   console.log(option)
   this.currOption=option;
 }
-logout(){
-  console.log("logging out")
-  this.auth.currUser=null;
-  this.auth.isLoggedIn=false;
-  // localStorage.removeItem('token');
-  // localStorage.removeItem('currOption');
-  // localStorage.removeItem('authToken');
-  // localStorage.removeItem('companyId');
-  //   localStorage.removeItem('user');
-  //   localStorage.removeItem('selectedExtraColumsAssets')
-  //   localStorage.removeItem("showMandatoryBasicFieldsAssets")
-    localStorage.clear()
-  this.router.navigate(['/login']);
 
- 
-}
 
 onHover(){
   this.hoverOverSidebar=false;
@@ -561,4 +554,7 @@ offHover(){
         this.deleteFileId='';
       })
     }
+
+
 }
+

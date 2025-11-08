@@ -8,7 +8,7 @@ import { ExtraFields } from './extraFields';
 import { ExtraFieldName } from './extraFieldName';
 import { CheckInOut } from './checkInOut';
 import { DatePipe } from '@angular/common';
-import { HttpEventType, HttpResponse } from '@angular/common/http';
+import { HttpErrorResponse, HttpEvent, HttpEventType, HttpResponse } from '@angular/common/http';
 import { AssetFile } from './assetFile';
 import { Observable } from 'rxjs';
 import * as fileSaver from 'file-saver';
@@ -603,82 +603,149 @@ handleClickOutside(event: MouseEvent) {
       
     })
   }
-  fileUpload(event:any){
-    this.currentFile= event.target.files[0];
+  // fileUpload(event:any){
+  //   this.currentFile= event.target.files[0];
     
     
 
-    this.assetDetailService.addAssetFile(this.currentFile, this.assetId).subscribe(
-      event => {
-        if (event.type === HttpEventType.UploadProgress) {
-          // Progress event
-          if (event.total) {
-            this.progress = Math.round((100 * event.loaded) / event.total);
-            console.log(`Progress: ${this.progress}%`);
-          }
-        } else if (event.type === HttpEventType.Response) {
-          // Response event
-          console.log('Upload Complete:', event.body);
-          this.progress = 100;
-          setTimeout(() => {
-            alert('Successfully uploaded');
-            this.currentFile = null;
-            this.ngOnInit();
-          }, 1500);
-        }
-      },
-      err => {
-        this.currentFile= null;
-        this.progress = 0;
-        this.message = 'Could not upload the file!';
-        console.log(this.message);
-         if(err.error.error==="TRIAL_EXPIRED"){
-        this.triggerAlert(err.error.message,"danger");
-      }
-      else{
-      this.triggerAlert(err.error.errorMessage,"danger");
-      }
-      }
-    );
+  //   this.assetDetailService.addAssetFile(this.currentFile, this.assetId).subscribe(
+  //     event => {
+  //       if (event.type === HttpEventType.UploadProgress) {
+  //         // Progress event
+  //         if (event.total) {
+  //           this.progress = Math.round((100 * event.loaded) / event.total);
+  //           console.log(`Progress: ${this.progress}%`);
+  //         }
+  //       } else if (event.type === HttpEventType.Response) {
+  //         // Response event
+  //         console.log('Upload Complete:', event.body);
+  //         this.progress = 100;
+  //         setTimeout(() => {
+  //           alert('Successfully uploaded');
+  //           this.currentFile = null;
+  //           this.ngOnInit();
+  //         }, 1500);
+  //       }
+  //     },
+  //     err => {
+  //       this.currentFile= null;
+  //       this.progress = 0;
+  //       this.message = 'Could not upload the file!';
+  //       console.log(err);
+  //       console.log(this.message);
+  //        if(err.error.error==="TRIAL_EXPIRED"){
+  //       this.triggerAlert(err.error.message,"danger");
+  //     }
+  //     else{
+  //     this.triggerAlert(err.error.errorMessage,"danger");
+  //     }
+  //     }
+  //   );
     
  
 
     
     
     
-      // this.assetDetailService.addAssetFile(this.currentFile,this.assetId).subscribe(event => {
-      //   console.log(event.status)
-      //   if (event.status === 'progress') {
-      //     this.progress = event.message;
-      //     console.log(`Progress: ${this.progress}%`);
-      //   } else if (event.status === 'done') {
-      //     console.log('Upload Complete:', event.message);
-      //     this.progress = 100;
-      //     setTimeout(() => {
-      //       alert('Successfully uploaded');
-      //       this.currentFile = null;
-      //       this.ngOnInit();
-      //     }, 1500);
-      //   }
-      // },
-      // err => {
-      //   this.progress = 0;
-      //   this.message = 'Could not upload the file!';
-      //   console.log(this.message);
+  //     // this.assetDetailService.addAssetFile(this.currentFile,this.assetId).subscribe(event => {
+  //     //   console.log(event.status)
+  //     //   if (event.status === 'progress') {
+  //     //     this.progress = event.message;
+  //     //     console.log(`Progress: ${this.progress}%`);
+  //     //   } else if (event.status === 'done') {
+  //     //     console.log('Upload Complete:', event.message);
+  //     //     this.progress = 100;
+  //     //     setTimeout(() => {
+  //     //       alert('Successfully uploaded');
+  //     //       this.currentFile = null;
+  //     //       this.ngOnInit();
+  //     //     }, 1500);
+  //     //   }
+  //     // },
+  //     // err => {
+  //     //   this.progress = 0;
+  //     //   this.message = 'Could not upload the file!';
+  //     //   console.log(this.message);
        
-      // },()=>{
-      //   if(this.progress==100){
-      //     setTimeout(()=>{
-      //       alert("successfully uploaded");
-      //       this.currentFile=null;
-      //     this.ngOnInit();
-      //     },1500);
+  //     // },()=>{
+  //     //   if(this.progress==100){
+  //     //     setTimeout(()=>{
+  //     //       alert("successfully uploaded");
+  //     //       this.currentFile=null;
+  //     //     this.ngOnInit();
+  //     //     },1500);
           
-      //   }
-      // })
+  //     //   }
+  //     // })
      
     
+  // }
+
+  fileUpload(event: any) {
+  this.currentFile = event.target.files[0];
+  console.log("Cuurent file upload", this.currentFile.size);
+  if(this.currentFile.size>5*1024*1024){
+    this.triggerAlert("File size exceeds maximum limit (5MB)","danger");
+     this.currentFile = null;
+      this.progress = 0;
+    return;
   }
+  this.assetDetailService.addAssetFile(this.currentFile, this.assetId).subscribe({
+    next: (event: HttpEvent<any>) => {
+      if (event.type === HttpEventType.UploadProgress && event.total) {
+        this.progress = Math.round((100 * event.loaded) / event.total);
+      } else if (event.type === HttpEventType.Response) {
+        console.log('✅ Upload Complete:', event.body);
+        this.progress = 100;
+        
+        setTimeout(() => {
+          const message = event.body?.responseMessage || 'Successfully uploaded';
+          this.triggerAlert(message, 'success');
+          this.currentFile = null;
+          this.progress = 0;
+          this.ngOnInit();
+        }, 1500);
+      }
+    },
+    error: (err: HttpErrorResponse) => {
+      console.error('❌ Upload Error Details:', {
+        status: err.status,
+        statusText: err.statusText,
+        error: err.error,
+        message: err.message,
+        url: err.url
+      });
+
+      this.currentFile = null;
+      this.progress = 0;
+
+      let errorMessage = 'Could not upload the file. Some issue occurred. Try again later.';
+
+      // ✅ Handle different error scenarios
+      if (err.status === 413) {
+        errorMessage = 'File size exceeds maximum limit (5MB)';
+      } else if (err.error && typeof err.error === 'object') {
+        errorMessage = err.error.responseMessage || 
+                      err.error.errorMessage || 
+                      err.error.message || 
+                      errorMessage;
+      } else if (typeof err.error === 'string') {
+        errorMessage = err.error;
+      } else if (err.status === 0) {
+        errorMessage = 'Connection lost. Please check your network or try again.';
+      } else if (err.status === 401) {
+        errorMessage = 'Unauthorized. Please login again.';
+      } else if (err.status === 403) {
+        errorMessage = 'Access denied. No active subscription.';
+      } else if (err.status >= 500) {
+        errorMessage = 'Server error. Please try again later.';
+      }
+
+      this.triggerAlert(errorMessage, 'danger');
+    }
+  });
+}
+
   download(id:string,name:string){
     this.assetDetailService.download(id).subscribe((data:any)=>{
 

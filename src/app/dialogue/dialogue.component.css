@@ -1,0 +1,52 @@
+:host {
+  display: block;
+  text-align: center;
+  padding: 10px 0;
+  min-width: 320px;
+}
+
+/* Dialog title */
+h2[mat-dialog-title] {
+  font-size: 22px;
+  font-weight: 400;
+  color: white; /* red accent for warning */
+  margin-bottom: 8px;
+  background-color: #12232E;
+  margin-top: -10px;
+}
+
+/* Dialog content */
+mat-dialog-content {
+  font-size: 16px;
+  color: #444;
+  margin: 10px 0 20px;
+  line-height: 1.5;
+}
+
+/* Dialog container shadow & border radius */
+::ng-deep .mat-mdc-dialog-container {
+  border-radius: 35px !important;
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.25) !important;
+  background-color: #fff !important;
+}
+
+/* OK button */
+/* button[matButton] {
+  background-color: #1976d2;
+  color: #fff;
+  font-weight: 500;
+  border-radius: 8px;
+  padding: 6px 18px;
+  transition: background-color 0.3s ease, transform 0.1s ease;
+}
+
+button[matButton]:hover {
+  background-color: #1565c0;
+  transform: scale(1.03);
+} */
+
+mat-dialog-actions {
+  display: flex;
+  justify-content: center;
+  margin-top: 10px;
+}

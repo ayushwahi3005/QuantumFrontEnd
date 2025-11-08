@@ -1,132 +1,192 @@
 <div style="background-color: #f5f5f5; height: 100vh">
-<ul class="nav justify-content-between header">
-  
+  <ul class="nav justify-content-between header">
+
     <div class="header-centre">
       <!-- <img src='../../assets/logo.png'> -->
       <h1>AssetYug</h1>
     </div>
-  
-  
- 
-  
-    <li class="nav-item d-flex align-items-center" style="padding-right: 5px; gap: 25px;margin: 15px;">
-    <b>Welcome</b> <span style="margin-left: -10px;">{{username}}</span>
-    <i class="bi bi-bell-fill" matBadgeColor="warn" style="cursor: pointer;font-size: 20px;"></i>
-    
-    <!-- <span class="dropdown"> -->
-      <a class="dropdown-toggle" type="button" data-toggle="dropdown" style="text-decoration: none;">
-        <i class="bi bi-person-circle" style="font-size: 20px;"></i></a>
-     
-      <!-- <span class="caret"></span></a> -->
-      <ul class="dropdown-menu" style="margin-top: 30px;">
-       
-        <b class="dropdown-item" href="#" style="text-decoration: none; color: black;">Profile ({{email}})</b>
-        <b class="dropdown-item">More Details</b>
-     
-      </ul>
+
+
+
+
+    <li class="nav-item d-flex align-items-center" style="padding-right: 5px; margin: 15px;gap: 25px;">
+      <b>Welcome</b> <span style="margin-left: -10px;">{{username}}</span>
+
+      <!-- Notification Icon -->
+
+
+
+      <!--  -->
+
+
+      <!-- Profile Dropdown -->
+      <div class="d-flex justify-content-between">
+        <div class="dropdown">
+          <a class="dropdown-toggle" type="button" id="profileDropdown" data-toggle="dropdown"
+            style="text-decoration: none;">
+            <i class="bi bi-person-circle" style="font-size: 20px;"></i>
+          </a>
+          <ul class="dropdown-menu"
+            style="margin-top: 30px; padding: 8px; margin-right: 10px; font-size: 17px; left: -400px; position: absolute;"
+            aria-labelledby="profileDropdown">
+            <b class="dropdown-item" style="text-decoration: none; color: black;">Profile ({{email}})</b>
+            <b class="dropdown-item">More Details</b>
+            <b class="dropdown-item">Contact Support</b>
+          </ul>
+        </div>
+
+        <!-- Notification Dropdown -->
+        <div class="dropdown">
+          <a class="dropdown-toggle demo-section" type="button" id="notificationDropdown" data-toggle="dropdown"
+            style="text-decoration: none;" [matBadge]="unReadCount > 0 ? unReadCount : null" matBadgeOverlap="false"
+            (click)="notificationClick()">
+            <i class="bi bi-bell-fill" matBadgeColor="warn" style="cursor: pointer; font-size: 20px;"></i>
+          </a>
+
+          <ul class="dropdown-menu  shadow" style="margin-top: 30px; width: 300px; left: -400px;"
+            aria-labelledby="notificationDropdown">
+
+            <div class="dropdown-header border-bottom p-3" style="font-size: x-large;">Notifications</div>
+
+
+            <div *ngIf="notificationList && notificationList.length > 0" class="notification-list">
+              <div *ngFor="let item of notificationList" class="py-2 border-bottom p-3 notification-list-item">
+                <div class="d-flex align-items-start mb-1">
+                  <span class="notification-dot me-2 mt-2"></span>
+                  <span class="notification-text flex-grow-1">{{ item?.notification.message }}</span>
+                </div>
+
+                <div class="d-flex justify-content-start mt-2 ms-3">
+                  <small class="text-muted">{{ item?.deliveredAt | timeAgo }}</small>
+                </div>
+              </div>
+            </div>
+
+
+            <div *ngIf="!notificationList || notificationList.length === 0" class="text-muted text-center py-2">
+              No notifications
+            </div>
+
+          </ul>
+
+        </div>
+      </div>
+
+
+
+
+
       <a (click)="logout()" style="cursor: pointer;">Log out</a>
-    <!-- </span> -->
-    
+      <!-- </span> -->
     </li>
-    
-</ul>
-
-
-<div class="side-navbar"   >
-  <div class="back-button">
-    <a [routerLink]="['/dashboard']" style="margin-right: 30px; text-decoration: none; font-weight: bold ;" class="backarrow" >&larr; Back to Dashboard</a>
-  </div>
-  <!-- <hr> -->
-    <h2 style="padding: 10px 15px;">Modules</h2>
-    <ul class="nav-list"  >
-    
-   
-    <ng-container *ngFor="let item of sideBarOption">
-      <li class="nav-list-item" [ngClass]="{'selected':(current==item.number)}" (click)="update(item.number)" *ngIf="item.name !== 'Subscription' || role === 'ADMIN'">
-        <i class="{{item.icon}}"></i>
-        <span>
-          {{item.name}}
-        </span>
-      </li>
-    </ng-container>
 
   </ul>
-</div>
 
-<div *ngIf="showAlert" class="alert" [ngClass]="'alert-' + alertType" role="alert" style="margin: 10px 2%; height: 60px; position: fixed; width: calc(95vw - 200px); z-index: 100; left: 230px; ">
-  {{ alertMessage }}
 
-  <button type="button" class="btn-close" (click)="showAlert = false" aria-label="Close" style="float: right;"></button>
-</div>
-<!-- <div class="content-area d-flex justify-content-center" style="height: 85vh; overflow-y: scroll;"> -->
+  <div class="side-navbar">
+    <div class="sidebar-header">
+      <div class="back-button">
+        <a [routerLink]="['/dashboard']" style="margin-right: 30px; text-decoration: none; font-weight: bold ;"
+          class="backarrow">&larr; Back to Dashboard</a>
+      </div>
+      <!-- <hr> -->
+      <h2 style="padding: 5px 15px;">Modules</h2>
+    </div>
+    <ul class="nav-list">
+
+
+      <ng-container *ngFor="let item of sideBarOption">
+        <li class="nav-list-item" [ngClass]="{'selected':(current==item.number)}" (click)="update(item.number)"
+          *ngIf="item.name !== 'Subscription' || role === 'ADMIN'">
+          <i class="{{item.icon}}"></i>
+          <span>
+            {{item.name}}
+          </span>
+        </li>
+      </ng-container>
+
+    </ul>
+  </div>
+
+  <div *ngIf="showAlert" class="alert" [ngClass]="'alert-' + alertType" role="alert"
+    style="margin: 10px 2%; height: 60px; position: fixed; width: calc(95vw - 200px); z-index: 100; left: 230px; ">
+    {{ alertMessage }}
+
+    <button type="button" class="btn-close" (click)="showAlert = false" aria-label="Close"
+      style="float: right;"></button>
+  </div>
+  <!-- <div class="content-area d-flex justify-content-center" style="height: 85vh; overflow-y: scroll;"> -->
   <div class="content-area d-flex justify-content-center" style=" overflow-y: scroll;">
-    
+
     <!-- <app-workorder *ngIf="current==1" ></app-workorder> -->
-    <div *ngIf="current==1" >
-     
-      <form class="row g-3" [formGroup]="companyInformationForm" (ngSubmit)="addCompanyInformation()" >
+    <div *ngIf="current==1">
+
+      <form class="row g-3" [formGroup]="companyInformationForm" (ngSubmit)="addCompanyInformation()">
         <div class="col-md-12">
           <label for="companyName" class="form-label">Company Name<span class="text-danger">*</span></label>
-          <input type="text" class="form-control" formControlName="companyName" [ngModel]="companyInformation ? companyInformation.companyName : ''">
+          <input type="text" class="form-control" formControlName="companyName"
+            [ngModel]="companyInformation ? companyInformation.companyName : ''">
         </div>
         <div class="col-md-12">
-          <img src={{companyInformation?.comapanyLogo}} >
+          <img src={{companyInformation?.comapanyLogo}}>
           <label for="comapanyLogo" class="form-label">Company Logo</label>
-          <input type="file" class="form-control"  (change)="imageUpload($event)">
-          
+          <input type="file" class="form-control" (change)="imageUpload($event)">
+
         </div>
         <div class="col-12">
           <label for="accountId" class="form-label">Account ID</label><br>
           <input value={{companyInformation?.id}} disabled style="width: 440px;">
-          
+
         </div>
         <div class="col-12">
           <label for="Address" class="form-label">Address<span class="text-danger">*</span></label>
-          <input type="text" class="form-control"  formControlName="address1" placeholder="Address 1" [ngModel]="companyInformation ? companyInformation.address1 : ''">
-       </div >
-       <div class="col-12">
-          <input type="text" class="form-control"  formControlName="address2" placeholder="Address 2" [ngModel]="companyInformation ? companyInformation.address2 : ''">
+          <input type="text" class="form-control" formControlName="address1" placeholder="Address 1"
+            [ngModel]="companyInformation ? companyInformation.address1 : ''">
+        </div>
+        <div class="col-12">
+          <input type="text" class="form-control" formControlName="address2" placeholder="Address 2"
+            [ngModel]="companyInformation ? companyInformation.address2 : ''">
         </div>
         <div class="col-md-4">
-          
-          <input type="text" class="form-control" formControlName="city" placeholder="City" [ngModel]="companyInformation ? companyInformation.city : ''">
-        </div>
-        <div class="col-md-4">
-          
-          <input type="text" class="form-control" formControlName="state" placeholder="State" [ngModel]="companyInformation ? companyInformation.state : ''">
-        </div>
-        <div class="col-md-4">
-          
-              <input 
-          type="text"
-          class="form-control"
-          formControlName="zipCode"
-          placeholder="Enter ZIP Code"
-          [ngModel]="companyInformation ? companyInformation.zipCode : ''"
-          maxlength="6"
-          pattern="^[a-z0-9]*$"
-        />
 
-        <div *ngIf="companyInformationForm.get('zipCode')?.invalid && companyInformationForm.get('zipCode')?.touched"  class="text-danger">
-          <span *ngIf="this.companyInformationForm.get('zipCode')?.errors?.required">ZIP Code is required.</span>
-          <span *ngIf="this.companyInformationForm.get('zipCode')?.errors?.pattern">Enter a valid ZIP Code (e.g., 123456).</span>
+          <input type="text" class="form-control" formControlName="city" placeholder="City"
+            [ngModel]="companyInformation ? companyInformation.city : ''">
         </div>
+        <div class="col-md-4">
+
+          <input type="text" class="form-control" formControlName="state" placeholder="State"
+            [ngModel]="companyInformation ? companyInformation.state : ''">
+        </div>
+        <div class="col-md-4">
+
+          <input type="text" class="form-control" formControlName="zipCode" placeholder="Enter ZIP Code"
+            [ngModel]="companyInformation ? companyInformation.zipCode : ''" maxlength="6" pattern="^[a-z0-9]*$" />
+
+          <div *ngIf="companyInformationForm.get('zipCode')?.invalid && companyInformationForm.get('zipCode')?.touched"
+            class="text-danger">
+            <span *ngIf="this.companyInformationForm.get('zipCode')?.errors?.required">ZIP Code is required.</span>
+            <span *ngIf="this.companyInformationForm.get('zipCode')?.errors?.pattern">Enter a valid ZIP Code (e.g.,
+              123456).</span>
+          </div>
         </div>
         <div class="col-12">
           <label for="phoneNo" class="form-label">Phone Number<span class="text-danger">*</span></label>
-          <input type="tel" class="form-control" formControlName="phoneNo" value="+1" [ngModel]="companyInformation ? companyInformation.phoneNo : ''"   maxlength="10" pattern="[0-9]{10}" minlength="10" maxlength="10">
+          <input type="tel" class="form-control" formControlName="phoneNo" value="+1"
+            [ngModel]="companyInformation ? companyInformation.phoneNo : ''" maxlength="10" pattern="[0-9]{10}"
+            minlength="10" maxlength="10">
         </div>
         <div class="col-12">
-          <label for="website" class="form-label" >Website<span class="text-danger">*</span></label>
-          <input type="text" class="form-control" formControlName="website" pattern="^.+\.com$" [ngModel]="companyInformation ? companyInformation.website : ''">
-          <div *ngIf="companyInformationForm.get('website')?.invalid"  class="text-danger">
-            
+          <label for="website" class="form-label">Website<span class="text-danger">*</span></label>
+          <input type="text" class="form-control" formControlName="website" pattern="^.+\.com$"
+            [ngModel]="companyInformation ? companyInformation.website : ''">
+          <div *ngIf="companyInformationForm.get('website')?.invalid" class="text-danger">
+
             <span *ngIf="this.companyInformationForm.get('website')?.errors?.pattern">Enter a valid Website Name.</span>
           </div>
         </div>
         <!-- <button type="submit" class="btn btn-primary" data-toggle="modal" data-target="#popup" [disabled]="companyInformationForm.invalid">Submit</button> -->
-         <!-- <button type="submit" class="btn btn-primary" data-toggle="modal" data-target="#popup" >Submit</button> -->
-          <button type="submit" class="btn btn-primary"  >Submit</button>
+        <!-- <button type="submit" class="btn btn-primary" data-toggle="modal" data-target="#popup" >Submit</button> -->
+        <button type="submit" class="btn btn-primary">Submit</button>
       </form>
     </div>
     <!-- <app-asset-module *ngIf="current==3"></app-asset-module> -->
@@ -143,22 +203,23 @@
     <app-asset-qr *ngIf="current==10"></app-asset-qr>
     <app-import-history *ngIf="current==11" style="width: 100%;"></app-import-history>
     <app-inspection-template *ngIf="current==12" style="width: 100%;"></app-inspection-template>
-</div>
+  </div>
 
 
-<div class="modal fade" id="popup" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle" aria-hidden="true">
-  <div class="modal-dialog" role="document">
-    <div class="modal-content">
-      <div class="modal-header d-flex justify-content-center">
-        Successfully Updated
-        
-      </div>
-      <div class="d-flex justify-content-center">
-      <app-tick-animation></app-tick-animation>
-       
+  <div class="modal fade" id="popup" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle"
+    aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header d-flex justify-content-center">
+          Successfully Updated
+
+        </div>
+        <div class="d-flex justify-content-center">
+          <app-tick-animation></app-tick-animation>
+
+        </div>
       </div>
     </div>
   </div>
-</div>
 
 </div>

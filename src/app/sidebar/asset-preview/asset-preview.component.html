@@ -1,39 +1,4 @@
-<div class="nav justify-content-between header">
-  
-  <div class="header-centre">
-    <!-- <img src='../../assets/logo.png'> -->
-    <h1>AssetYug</h1>
-  </div>
-
-
-
-
-  <li class="nav-item d-flex align-items-center" style="padding-right: 5px; margin: 15px;gap: 25px;" >
-  <b>Welcome</b> <span style="margin-left: -10px;">{{username}}</span>
-  
-  <!-- Notification Icon -->
-  <i class="bi bi-bell-fill" matBadgeColor="warn" style="cursor: pointer;font-size: 20px;"></i>
-
-  <!-- <span class="dropdown" style="margin-left: 15px;"> -->
-    <a class="dropdown-toggle" type="button" data-toggle="dropdown" style="text-decoration: none;">
-      <i class="bi bi-person-circle" style="font-size: 20px;"></i>
-    </a>
-   
-    <!-- <span class="caret" ></span></a> -->
-    <ul class="dropdown-menu" style="margin-top: 25px;padding: 8px;margin-right: 10px;font-size: 16px; z-index: 100000;">
-     
-      <b class="dropdown-item" href="#" style="text-decoration: none; color: black; ">Profile ({{email}})</b>
-      <hr style="margin: 0.5rem 0;">
-      <b class="dropdown-item">More Details</b>
-      <b class="dropdown-item">Contact Support</b>
-      <b class="dropdown-item">Manage account</b>
-
-    </ul>
-    <a (click)="logout()" style="cursor: pointer;">Log out</a>
-  
-  </li>
-  
-</div>
+<app-header></app-header>
 
 
 
@@ -45,7 +10,7 @@
   <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="currentColor" class="bi bi-list" viewBox="0 0 16 16" style="margin-left: 10px;"> 
     <path fill-rule="evenodd" d="M2.5 12a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5zm0-4a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5zm0-4a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5z"/>
   </svg>
-  <hr style="margin: 0.5rem 0;">
+  <hr >
   <li class="nav-list-item" *ngFor="let item of sideBarOption"  [ngClass]="{'selected':(current==item.number)}" (click)="update(item.number)"  >
     
     <i class={{item.icon}} style="color:white;"></i>
@@ -55,7 +20,7 @@
     </span>
   
   </li>
-  <hr style="margin: 0.5rem 0;">
+  <!-- <hr style="margin: 0.5rem 0;"> -->
 
 
   <li  class="nav-list-item" style=" position: absolute; bottom: 0;" [routerLink]="['/setting-home']">

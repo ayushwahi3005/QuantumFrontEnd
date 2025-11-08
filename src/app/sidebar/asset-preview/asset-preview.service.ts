@@ -99,4 +99,15 @@ export class AssetPreviewService {
   getLocationBinDetails(companyId:string,name:string):Observable<any>{
     return this.httpClient.get(this.assetEndpoint+"locationBinDetails/"+companyId+'/'+name,{headers:this.headers,responseType: 'text'});
   }
+    getNotification(email:any):Observable<any>{
+      const headers = new HttpHeaders().set('Authorization', `Bearer ${localStorage.getItem('authToken')}`).set('device-id', `${localStorage.getItem('deviceId')}`);;
+      return this.httpClient.get(environment.endpoint+'notification/user/'+email,{ headers });
+    }
+      updateNotification(notificationList:any,email:any):Observable<any>{
+      const headers = new HttpHeaders().set('Authorization', `Bearer ${localStorage.getItem('authToken')}`).set('device-id', `${localStorage.getItem('deviceId')}`);;
+      return this.httpClient.post(environment.endpoint+'notification/user/'+email,notificationList,{
+         headers,
+          responseType: 'text' as 'json'
+         });
+    }
 }

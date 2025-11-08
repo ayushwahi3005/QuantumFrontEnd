@@ -62,6 +62,7 @@ export class ImportComponent {
   uploadInProgress: boolean = false;
   currExportModuel:any;
   currExportTemplate:any;
+  selectedFileName!: string;
   constructor(private formBuilder:FormBuilder,private importService:ImportService,private assetService:AssetsService,private dialog: MatDialog){
 
   }
@@ -73,7 +74,7 @@ export class ImportComponent {
     this.loading=false;
     this.email=localStorage.getItem('user');
     this.companyId=localStorage.getItem('companyId');
-
+    this.selectedFileName = 'No file chosen';
    
     
     this.importForm=this.formBuilder.group({
@@ -531,6 +532,10 @@ export class ImportComponent {
     link.download = 'Customer_Template.csv';        // name of the file to be downloaded
     link.click();
     }
+  }
+  onFileSelected(event: any): void {
+    const file: File = event.target.files[0];
+    this.selectedFileName = file ? file.name : 'No file chosen';
   }
 
 }

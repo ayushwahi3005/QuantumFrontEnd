@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { inject, Injectable } from '@angular/core';
 import { AngularFireAuth } from '@angular/fire/compat/auth';
 import { Router } from '@angular/router';
 import { BehaviorSubject, Observable } from 'rxjs';
@@ -13,6 +13,8 @@ import { HttpClient } from '@angular/common/http';
 import { RegisterService } from '../register/register.service';
 import { InvitationService } from '../invitation/invitation.service';
 import { jwtDecode } from 'jwt-decode';
+import { MatDialog } from '@angular/material/dialog';
+import { DialogueComponent } from '../dialogue/dialogue.component';
 
 
 
@@ -41,6 +43,23 @@ export class AuthService {
   sessionExpired$ = new BehaviorSubject<boolean>(false);
   constructor(private fireAuth: AngularFireAuth,private router:Router,private tokenAuthenticationService:TokenAuthenticationService,private loginService:LoginService,private http: HttpClient, private registerService:RegisterService,private invitationService:InvitationService) { }
  
+  readonly dialog = inject(MatDialog);
+      
+          openSessionExpiredDialog(): void {
+          const dialogRef = this.dialog.open(DialogueComponent, {
+             disableClose: true, 
+          });
+      
+          dialogRef.afterClosed().subscribe(result => {
+             this.logout().then(() => {
+                        this.router.navigate(['/login']); // Redirect after logout
+                      }).catch(err => {
+                        console.error('Logout failed:', err);
+                      });
+            console.log('The dialog was closed');
+           
+          });
+        }
 
  
   ngOnInit(){
@@ -454,8 +473,9 @@ export class AuthService {
             const currentUrl = this.router.url;
             if(currentUrl.length!=0 &&!currentUrl.startsWith('/login')&&!currentUrl.startsWith('/register')&&!currentUrl.startsWith('/admin')&&!currentUrl.startsWith('/invitation')){
               console.log('Session expired - Auth Service: Session has expired. Redirecting to login.');
-              alert('Session has expired. Please log in again.');
-              this.router.navigate(['/login']);
+              // alert('Session has expired. Please log in again.');
+              this.openSessionExpiredDialog();
+              // this.router.navigate(['/login']);
             }
        
 

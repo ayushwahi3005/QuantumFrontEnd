@@ -633,7 +633,14 @@ export class CompanyCustomerDetailsComponent {
     let fileName=event.target.files[0].name;
     console.log("Filename"+fileName);
     
-
+     this.currentFile = event.target.files[0];
+  console.log("Cuurent file upload", this.currentFile.size);
+  if(this.currentFile.size>5*1024*1024){
+    this.triggerAlert("File size exceeds maximum limit (5MB)","danger");
+     this.currentFile = null;
+      this.progress = 0;
+    return;
+  }
    
  
 

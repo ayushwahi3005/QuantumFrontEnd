@@ -314,7 +314,8 @@
       </div> -->
       <div class="card-body">
         <div>
-          <input type="file" (change)="fileUpload($event)"  #imageFile>
+          <input type="file" (change)="fileUpload($event)"  #imageFile style="display:none">
+          <button type="button" class="btn btn-primary" (click)="imageFile.click()" style="margin-bottom: 10px;">Upload File</button>
           
         </div>
         <div class="progress my-3" *ngIf="currentFile">

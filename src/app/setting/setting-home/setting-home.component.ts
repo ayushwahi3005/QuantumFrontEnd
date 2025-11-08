@@ -2,6 +2,8 @@ import { Component } from '@angular/core';
 import { SettingHomeService } from './setting-home.service';
 import { AuthService } from 'src/app/shared/auth.service';
 import { Router } from '@angular/router';
+import { Subject } from 'rxjs/internal/Subject';
+import { NotificationService } from 'src/app/notification/notification.service';
 
 @Component({
   selector: 'app-setting-home',
@@ -12,6 +14,9 @@ export class SettingHomeComponent {
   email:any='';
   current:number=1;
   username:any='';
+    unReadCount:number=0;
+    private notificationSubject = new Subject<string>();
+    notificationList:Notification[]=[];
   sideBarOption=[{
     number:1,
     name:'Work Order',
@@ -44,7 +49,7 @@ export class SettingHomeComponent {
   }
   
 ];
-constructor(private settingHomeService:SettingHomeService,private auth:AuthService,private router:Router){}
+constructor(private settingHomeService:SettingHomeService,private auth:AuthService,private router:Router,private notificationService:NotificationService){}
 
   ngOnInit(){
   
@@ -74,6 +79,49 @@ constructor(private settingHomeService:SettingHomeService,private auth:AuthServi
       
       
     })
+
+    this.settingHomeService.getNotification(this.email).subscribe((data)=>{
+      // console.log("Notification Data",data);  
+      this.unReadCount=0;
+      if(data!=null){
+        // console.log("Notification",data);
+        this.notificationList=data;
+        console.log("Notification",this.notificationList);
+        this.notificationList.forEach((notification: any) => {
+          console.log("Is Unread",notification.isRead);
+          if(notification.read === false) {
+            this.unReadCount++;
+          }
+        });
+        console.log("Unread Count",this.unReadCount);
+      }
+      else{
+        this.notificationList=[];
+      }
+    },
+    (err)=>{
+      console.log("Notification Error",err);
+      this.notificationList=[];
+    });
+
+
+
+    this.notificationService.getNotificationObservable().subscribe((message) => {
+      try {
+        this.unReadCount=0;
+        this.notificationList = typeof message === 'string' ? JSON.parse(message) : message;
+        this.notificationList.forEach((notification: any) => {
+          console.log("Is Unread",notification.isRead);
+          if(notification.read === false) {
+            this.unReadCount++;
+          }
+        });
+      } catch (e) {
+        this.notificationList = [];
+        console.error('Failed to parse notification message:', e);
+      }
+      console.log("Notification received:", this.notificationList);
+    });
    
   }
   update(val:number){
@@ -89,5 +137,23 @@ constructor(private settingHomeService:SettingHomeService,private auth:AuthServi
     this.router.navigate(['/login']);
 
    
+  }
+
+  getNotificationObservable() {
+    return this.notificationSubject.asObservable();
+  }
+  notificationClick() {
+    console.log("Notification Clicked");
+    if(this.unReadCount > 0) {  
+    this.settingHomeService.updateNotification(this.notificationList,this.email).subscribe(
+      (response) => {
+        console.log( response);
+        this.unReadCount = 0; // Reset unread count after marking as read
+      },
+      (error) => {
+        console.error("Error updating notification", error);
+      }
+    );
+  }
   }
 }

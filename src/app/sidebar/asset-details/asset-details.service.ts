@@ -1,4 +1,4 @@
-import { HttpClient, HttpHeaders, HttpRequest, HttpResponse } from '@angular/common/http';
+import { HttpClient, HttpEvent, HttpHeaders, HttpRequest, HttpResponse } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable, Subject, catchError } from 'rxjs';
 import { environment } from 'src/environments/environment';
@@ -58,37 +58,55 @@ export class AssetDetailsService {
   addCheckInOut(data:any):Observable<any>{
     return this.httpClient.post(this.assetEndpoint+"addCheckInOut",data,{headers:this.headers});
   }
-  addAssetFile(file:File,asseId:string):Observable<any>{
+  // addAssetFile(file:File,asseId:string):Observable<any>{
 
-    // let myHeaders = new HttpHeaders({
-    //   'Authorization': `Bearer ${localStorage.getItem('authToken')}`,
-    //   'Content-Type': 'multipart/form-data'
-    // });
-    // myHeaders.append('Content-Type', 'multipart/form-data');
-    let myHeaders = new HttpHeaders({
-      'Authorization': `Bearer ${localStorage.getItem('authToken')}`,
-       'Device-ID': `${localStorage.getItem('deviceId')}`
-      // Don't set 'Content-Type' here!
-    });
-    const formData: FormData = new FormData();
+  //   // let myHeaders = new HttpHeaders({
+  //   //   'Authorization': `Bearer ${localStorage.getItem('authToken')}`,
+  //   //   'Content-Type': 'multipart/form-data'
+  //   // });
+  //   // myHeaders.append('Content-Type', 'multipart/form-data');
+  //   let myHeaders = new HttpHeaders({
+  //     'Authorization': `Bearer ${localStorage.getItem('authToken')}`,
+  //      'Device-ID': `${localStorage.getItem('deviceId')}`
+  //     // Don't set 'Content-Type' here!
+  //   });
+  //   const formData: FormData = new FormData();
 
-    formData.append('file', file);
-    const req = new HttpRequest('POST', this.assetEndpoint+"addFile/"+asseId, formData, {
-      // headers:myHeaders,
-      headers: myHeaders,  
-    reportProgress: true,
-      responseType: 'json'
+  //   formData.append('file', file);
+  //   const req = new HttpRequest('POST', this.assetEndpoint+"addFile/"+asseId, formData, {
+  //     // headers:myHeaders,
+  //     headers: myHeaders,  
+  //   reportProgress: true,
+  //     responseType: 'json'
      
-    });
+  //   });
 
-    return this.httpClient.request(req).pipe(
-      catchError(error => {
-        console.error('File upload failed:', error);
-        throw error; // You can handle the error as needed
-      })
-    );
+  //   return this.httpClient.request(req).pipe(
+  //     catchError(error => {
+  //       console.error('File upload failed:', error);
+  //       throw error; // You can handle the error as needed
+  //     })
+  //   );
     
-  }
+  // }
+  addAssetFile(file: File, assetId: string): Observable<HttpEvent<any>> {
+  const formData: FormData = new FormData();
+  formData.append('file', file);
+
+  let myHeaders = new HttpHeaders({
+    'Authorization': `Bearer ${localStorage.getItem('authToken')}`,
+    'Device-ID': `${localStorage.getItem('deviceId')}`
+    // ✅ DO NOT set 'Content-Type' - browser sets it automatically with boundary
+  });
+
+  const req = new HttpRequest('POST', `${this.assetEndpoint}addFile/${assetId}`, formData, {
+    headers: myHeaders,
+    reportProgress: true,
+    responseType: 'json'
+  });
+
+  return this.httpClient.request(req);
+}
   getAssetFile(assetId:string):Observable<any>{
     return this.httpClient.get(this.assetEndpoint+"getFile/"+assetId,{
       reportProgress: true,

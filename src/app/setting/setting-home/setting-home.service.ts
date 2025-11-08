@@ -1,4 +1,4 @@
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { environment } from 'src/environments/environment';
@@ -15,4 +15,15 @@ export class SettingHomeService {
   dashboard(email:string):Observable<any>{
     return this.httpClient.get(this.endpoint+'customer/get/'+email);
   }
+   getNotification(email:any):Observable<any>{
+        const headers = new HttpHeaders().set('Authorization', `Bearer ${localStorage.getItem('authToken')}`).set('device-id', `${localStorage.getItem('deviceId')}`);;
+        return this.httpClient.get(environment.endpoint+'notification/user/'+email,{ headers });
+      }
+        updateNotification(notificationList:any,email:any):Observable<any>{
+        const headers = new HttpHeaders().set('Authorization', `Bearer ${localStorage.getItem('authToken')}`).set('device-id', `${localStorage.getItem('deviceId')}`);;
+        return this.httpClient.post(environment.endpoint+'notification/user/'+email,notificationList,{
+           headers,
+            responseType: 'text' as 'json'
+           });
+      }
 }
