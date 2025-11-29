@@ -88,7 +88,7 @@
                               <div style="margin: 10px;">
                                 <!-- <p *ngIf="companyCustomer.status">{{companyCustomer.status}}</p> -->
                                 <td *ngIf="companyCustomer.status=='active'">Active</td>
-                                <td *ngIf="companyCustomer.status=='inActive'">In Active</td>
+                                <td *ngIf="companyCustomer.status=='inActive'">Inactive</td>
                                 <p *ngIf="!companyCustomer.status">&nbsp; </p>
                                 <hr style="width: 20vw;">
                               </div>
@@ -124,7 +124,7 @@
                   
                      <div style="display: flex; flex-direction: row;"  class="d-flex justify-content-center"> 
                           <div style="margin: 0px 2vw;">
-                            <label for="address"  style="color: black; font-weight: bold;">Address/Street<span *ngIf="mandatoryFieldsMap.get('address')" class="text-danger">*</span></label>
+                            <label for="address"  style="color: black; font-weight: bold;">Address<span *ngIf="mandatoryFieldsMap.get('address')" class="text-danger">*</span></label>
                             <!-- <input type="text"  id="address"   [(ngModel)]=" companyCustomer.address" disabled> -->
                             <div style="margin: 10px;">
                               <p *ngIf="companyCustomer.address">{{companyCustomer.address}}</p>
