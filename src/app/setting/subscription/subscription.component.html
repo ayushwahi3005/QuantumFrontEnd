@@ -24,14 +24,14 @@
       <div class="card" *ngIf="curr_phase==1">
         <div class="logo d-flex justify-content-center" style=" background-color: #bac9bbeb;">
           <div style="display: flex; flex-direction: column;">
-            <label class="title">Basic Duo</label>
+            <label class="title">Growth</label>
             <label class="price" *ngIf="basicIsMonthly">${{curr_amount}}<sub>/mo</sub></label>
             <label class="price" *ngIf="!basicIsMonthly"> <span
                 style="text-decoration:line-through;">${{this.basicMonthlyCharge}}</span>${{this.basicAnnualChargeInMonth}}
               <sub>/mo</sub></label>
             <label *ngIf="!basicIsMonthly" style="margin-top: 5px; font-size: large;">{{basicAnnualDiscount}}%
               Discount</label>
-            <label class="person">per person</label>
+            <label class="person">per user</label>
           </div>
         </div>
         <div class="tab-container">
@@ -142,7 +142,7 @@
         <div>
           <div class="curr-plan-card">
             <div class="curr-plan-title">Your Selected Plan</div>
-            <div class="curr-plan">Basic</div>
+            <div class="curr-plan">Growth</div>
 
           </div>
 
@@ -153,8 +153,8 @@
 
             <table style="width: 30%;">
               <tr>
-                <td>Total Person:</td>
-                <td>{{ person }} Person</td>
+                <td>Total user:</td>
+                <td>{{ person }} User</td>
               </tr>
               <tr>
                 <td>Subscription Type:</td>
@@ -321,9 +321,10 @@
                   </div>
                   <div style="display: flex; flex-direction: row; gap: 10px">
                     <mat-form-field appearance="outline" style="flex: 1">
-                      <mat-label>ZIP Code</mat-label>
-                      <input matInput formControlName="zipcode" />
+                      <mat-label>City</mat-label>
+                      <input matInput formControlName="city" />
                     </mat-form-field>
+                   
                     <mat-form-field appearance="outline" style="flex: 1">
                       <mat-label>State</mat-label>
                       <select matNativeControl formControlName="state" class="form-select custom-dropdown" id="state"
@@ -331,11 +332,27 @@
                         <option *ngFor="let state of stateList" [value]="state">{{ state }}</option>
                       </select>
                     </mat-form-field>
-                    <mat-form-field appearance="outline" style="flex: 1">
-                      <mat-label>City</mat-label>
-                      <input matInput formControlName="city" />
+                    
+                      <mat-form-field appearance="outline" style="flex: 1">
+                    <mat-label>Country</mat-label>
+                    <select
+                      matNativeControl
+                      formControlName="country"
+                      class="form-select custom-dropdown"
+                      (change)="getStateList($event.target.value)"
+                      id="country"
+                    >
+                      <option *ngFor="let c of countryList" [value]="c">
+                        {{ c }}
+                      </option>
+                    </select>
+                  </mat-form-field>
+                   <mat-form-field appearance="outline" style="flex: 1">
+                      <mat-label>ZIP Code</mat-label>
+                      <input matInput formControlName="zipcode" />
                     </mat-form-field>
                   </div>
+                  
                   <div style="margin-bottom: 10px"></div>
                   <!-- <ng-container *ngIf="elementsOptions.clientSecret"> -->
                   <!-- <ngx-stripe-elements
@@ -409,9 +426,12 @@
           <div class="icon-container">
             <mat-icon color="primary" class="success-icon">check_circle</mat-icon>
           </div>
-          <h2>Payment succeeded!</h2>
+          <!-- <h2>Payment succeeded!</h2>
           <p>Thank you for processing your most recent payment.</p>
-          <p>Your premium subscription will expire on {{ expiryDate | date: 'MMMM d, y' }}.</p>
+          <p>Your premium subscription will expire on {{ expiryDate | date: 'MMMM d, y' }}.</p> -->
+          <h2>✅ Payment successful!</h2>
+          <p>Your Premium subscription is active.</p>
+          <p>Next billing date: {{ expiryDate | date: 'MMMM d, y' }}</p>
           <button mat-stroked-button color="primary" (click)="this.goToManageTab()">Your dashboard</button>
         </div>
       </div>
@@ -425,7 +445,7 @@
             <div style="display: flex; flex-direction: column;">
               <label class="title">{{this.currSubscription?.plan|titlecase}}</label>
               <label class="price" style="font-weight: 400;">${{this.currSubscription?.amount}}</label>
-              <label style="margin: 10px auto; font-size: large;">{{this.currSubscription?.person}} person</label>
+              <label style="margin: 10px auto; font-size: large;">{{this.currSubscription?.person}} user</label>
               <ng-container *ngIf="this.currSubscription?.expiryDate > this.todayDate; else expiredTemplate">
 
                 <!-- <label>
@@ -433,7 +453,7 @@
                 </label> -->
                 <label style="display: flex; flex-direction: column;align-items: center; text-align: center;">
                   <span style="font-size: large; font-weight: bold; ">
-                    Current Plan
+                    Current Plan : {{currSubscription.subscriptionName}}
                   </span>
 
                   <span> Will Expire on {{ this.currSubscription?.expiryDate | date: 'dd/MM/yyyy' }}</span>
@@ -515,7 +535,7 @@
             <div style="display: flex; flex-direction: column;">
               <label class="title">{{this.upcomingSubscription?.plan|titlecase}}</label>
               <label class="price" style="font-weight: 400;">${{this.upcomingSubscription?.amount}}</label>
-              <label style="margin: 10px auto; font-size: large;">{{this.upcomingSubscription?.person}} person</label>
+              <label style="margin: 10px auto; font-size: large;">{{this.upcomingSubscription?.person}} user</label>
               <ng-container>
                 <label style="display: flex; flex-direction: column;align-items: center; text-align: center;">
                   <span style="font-size: large; font-weight: bold; text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);">
@@ -931,14 +951,14 @@
           <div class="modal-body">
             <table style="width: 100%;">
               <thead>
-                <th style="text-align: center;">Total Person</th>
+                <th style="text-align: center;">Total User</th>
                 <th style="text-align: center;">Subscription Type</th>
                 <th style="text-align: center;">Amount</th>
                 <th style="text-align: center;">Duration</th>
               </thead>
               <tbody>
                 <tr>
-                  <td style="text-align: center;">Person <button class="btn btn-light plus-minus-btn"
+                  <td style="text-align: center;">User <button class="btn btn-light plus-minus-btn"
                       (click)="removePerson()">
                       <div class="plus-minus">-</div>
                     </button><button class="btn btn-light">{{person}}</button><button
@@ -946,7 +966,7 @@
                       <div class="plus-minus">+</div>
                     </button> </td>
                   <td style="text-align: center;">
-                    <div style=" background-color:#bac9bbeb; padding: 10px 10px; border-radius: 10px; ">Basic</div>
+                    <div style=" background-color:#bac9bbeb; padding: 10px 10px; border-radius: 10px; ">Growth</div>
                   </td>
                   <td style="text-align: center; font-size: 18px ;" *ngIf="basicIsMonthly">${{person*curr_amount}}</td>
                   <td style="text-align: center; font-size: 18px ;" *ngIf="!basicIsMonthly">${{person*curr_amount*12}}

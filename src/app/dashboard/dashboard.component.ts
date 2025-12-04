@@ -17,6 +17,11 @@ export class DashboardComponent  {
   username:any='';
   hoverOverSidebar=true;
   loading:boolean=true;
+  freeTrialDetails:any;
+  trialDayLeft!:number;
+  currentSubscription:any;
+  currentSubcriptionMessage:string='';
+  currentSubscriptionMessageStyle:string='color: wheat; border-radius: 5px ; padding: 5px; margin-left:-4px; font-weight: 500;';
   sideBarOption=[{
     number:1,
     name:'Customers',
@@ -26,6 +31,11 @@ export class DashboardComponent  {
     number:2,
     name:'Assets',
     icon:'bi bi-boxes'
+  },
+  {
+    number:6,
+    name:'Analytics',
+    icon:'bi bi-bar-chart'
   },
   // {
   //   number:3,
@@ -149,6 +159,7 @@ export class DashboardComponent  {
     // })
     let companyId=localStorage.getItem('companyId');
     console.log(companyId);
+    
     this.dashService.getCompanyInformation(companyId).subscribe((data)=>{
       console.log("Company Information",data)
       localStorage.setItem('companyEmail',data.customerEmail)
@@ -156,6 +167,43 @@ export class DashboardComponent  {
     },(err)=>{
       console.log("Company Information Error",err)
     });
+
+    this.dashService.getFreeTrailDetails(companyId).subscribe((data)=>{
+      console.log("Free Trial Details",data)
+      this.freeTrialDetails=data;
+       if(this.freeTrialDetails.trialExpired==false){
+        
+        const today = new Date();
+        const trialEndDate = new Date(this.freeTrialDetails.trialEndDate);
+        const timeDiff = trialEndDate.getTime() - today.getTime();
+        this.trialDayLeft = Math.ceil(timeDiff / (1000 * 3600 * 24));
+      }
+      this.dashService.getCurrSubscription(companyId).subscribe((data)=>{
+      console.log("Current Subscription",data)
+      this.currentSubscription=data;
+      if(this.currentSubscription!=null&&this.currentSubscription.status==='ACTIVE'){
+        this.currentSubcriptionMessage=' Plan : '+this.currentSubscription.subscriptionName;
+        
+        this.currentSubscriptionMessageStyle+=' border:solid #800e94ff 1px; background-color: #9C27B0';
+      }
+      else if((this.currentSubscription==null||this.currentSubscription.status!='ACTIVE')&&this.freeTrialDetails.trialExpired===false &&this.trialDayLeft>0){
+        this.currentSubcriptionMessage='Trial Period - '+this.trialDayLeft+ ' Days Left';
+        this.currentSubscriptionMessageStyle+='border:solid #ffab00 1px; background-color: #ff9600;';
+      }
+      else{
+        this.currentSubcriptionMessage='No Plan';
+        this.currentSubscriptionMessageStyle+=' border:solid #dd1e10ff 1px; background-color: #F44336';
+      }
+    },
+    (err)=>{
+      console.log("Current Subscription Error",err)
+    });
+      this.loading=false;
+    },(err)=>{
+      console.log("Free Trial Details Error",err)
+      this.loading=false;
+    });
+    
    
   }
   update(val:number){

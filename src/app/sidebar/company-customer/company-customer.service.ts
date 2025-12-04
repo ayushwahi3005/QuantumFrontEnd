@@ -15,6 +15,7 @@ export class CompanyCustomerService {
 
   constructor(private httpClient:HttpClient) { }
   companyCustomerEndpoint=environment.endpoint+"companycustomer/"
+  countryEndpoint=environment.endpoint+"country/"
 
   customerEndpoint=environment.endpoint+"customer/";
   // companyCustomerEndpoint="http://localhost:8081/companycustomer/"
@@ -222,6 +223,16 @@ export class CompanyCustomerService {
     return this.httpClient.get(this.companyCustomerEndpoint+"statelist",{headers});
    
   }
+  countryStateList(country:any):Observable<any>{
+      const headers = new HttpHeaders({
+      'Authorization': `Bearer ${localStorage.getItem('authToken')}`,
+      'Content-Type': 'application/json',
+      'device-id': `${localStorage.getItem('deviceId')}`,
+      'companyId': `${localStorage.getItem('companyId')}`,
+    });
+      return this.httpClient.get(this.countryEndpoint+"states/"+country,{headers:headers});
+     
+    }
 
   getCompanyCustomerCategory(companyId:any):Observable<any>{
     const headers = new HttpHeaders({

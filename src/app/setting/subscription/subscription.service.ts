@@ -20,10 +20,16 @@ export class SubscriptionService {
  companyCustomerEndpoint=environment.endpoint+"companycustomer/"
  subscriptionEndpoint=environment.endpoint+"subscription/"
   paymentEndpoint=environment.endpoint+"payment/"
-  customerEndpoint=environment.endpoint+"customer/"
+  customerEndpoint=environment.endpoint+"customer/";
+  countryEndpoint=environment.endpoint+"country/"
   stateList():Observable<any>{
 
     return this.httpClient.get(this.companyCustomerEndpoint+"statelist",{headers:this.headers});
+   
+  }
+  countryStateList(country:any):Observable<any>{
+
+    return this.httpClient.get(this.countryEndpoint+"states/"+country,{headers:this.headers});
    
   }
   addPayment(payment:any):Observable<any>{
@@ -57,7 +63,7 @@ export class SubscriptionService {
 
     return this.httpClient.get(this.subscriptionEndpoint+'getAllSubscription/'+companyId,{headers:this.headers});
   }
-  createPaymentIntent(paymentMethodId:any,email:any,name:any,companyId:any,quantity:any,plan:any,amount:any,cardholderName:any): Observable<any> {
+  createPaymentIntent(paymentMethodId:any,email:any,name:any,companyId:any,quantity:any,plan:any,amount:any,cardholderName:any,currPlanName:any): Observable<any> {
     // return this.http.post<PaymentIntent>(
     //   `${PlutoService.BASE_URL}/payments/create-payment-intent`,
     //   params,
@@ -69,7 +75,7 @@ export class SubscriptionService {
       'Device-ID': `${localStorage.getItem('deviceId')}`
     });
     // this.headers.append( merchant: this.clientId )
-    return this.httpClient.post(this.paymentEndpoint+'create-subscription',{paymentMethodId: paymentMethodId,email:email,name:name,companyId:companyId,quantity:quantity,subscriptionPlan:plan,amount:amount,cardHolderName:cardholderName}, { headers: myheaders});
+    return this.httpClient.post(this.paymentEndpoint+'create-subscription',{paymentMethodId: paymentMethodId,email:email,name:name,companyId:companyId,quantity:quantity,subscriptionPlan:plan,amount:amount,cardHolderName:cardholderName,currentPlanName:currPlanName}, { headers: myheaders});
   }
   // createPaymentIntent(params: any): Observable<any> {
   //   // return this.http.post<PaymentIntent>(

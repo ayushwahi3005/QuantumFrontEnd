@@ -34,96 +34,97 @@ import { IDropdownSettings } from 'ng-multiselect-dropdown';
 export class AssetDetailsComponent {
 
   @ViewChild('dropdownContainer', { static: false }) dropdownContainer!: ElementRef;
-  @Input() assetDetails!:Assets;
+  @Input() assetDetails!: Assets;
   @Output() backStatus = new EventEmitter<{ show: boolean }>();
   @ViewChild('notes') notesRef!: ElementRef;
   @ViewChild('location') locationRef!: ElementRef;
-  username:any;
-  assetId:any='';
-  img:string=''
-  newObjName:string='';
-  newObjVal:string='';
-  currOption:number=1;
-  extraFields!:ExtraFields[];
-  checkInOut:CheckInOut[]=[];
-  assetCategoryList!:CategoryName[];
-  extraFieldOption!:string;
-  email:any;
-  extraFieldName!:ExtraFieldName[];
-  extraFieldValue:string[]=[];
-  extraFieldNameString:string[]=[];
-  extraFieldString:string[]=[];
-  progress!:number;
-  workOrderList:WorkOrder[]=[];
-  fileInfos!:AssetFile[];
-  message!:string;
+  username: any;
+  assetId: any = '';
+  img: string = ''
+  newObjName: string = '';
+  newObjVal: string = '';
+  currOption: number = 1;
+  extraFields!: ExtraFields[];
+  checkInOut: CheckInOut[] = [];
+  assetCategoryList!: CategoryName[];
+  extraFieldOption!: string;
+  email: any;
+  extraFieldName!: ExtraFieldName[];
+  extraFieldValue: string[] = [];
+  extraFieldNameString: string[] = [];
+  extraFieldString: string[] = [];
+  progress!: number;
+  workOrderList: WorkOrder[] = [];
+  fileInfos!: AssetFile[];
+  message!: string;
   currentFile!: any;
-  assetFileList:AssetFile[]=[];
-  showFieldsList!:ShowFieldsData[];
-  mandatoryFieldsList!:MandatoryFields[];
-  mandatoryFieldsMap!:Map<string,boolean>;
-  extraFieldMap!:Map<string,boolean>;
-  showFieldsMap!:Map<string,boolean>;
+  assetFileList: AssetFile[] = [];
+  showFieldsList!: ShowFieldsData[];
+  mandatoryFieldsList!: MandatoryFields[];
+  mandatoryFieldsMap!: Map<string, boolean>;
+  extraFieldMap!: Map<string, boolean>;
+  showFieldsMap!: Map<string, boolean>;
   showAlert: boolean = false; // Flag to toggle alert visibility
   alertMessage: string = ''; // Alert message
   alertType: string = 'success'; // Alert type: success, warning, error, etc.
-  deleteFileId!:string;
-  companyId!:any;
+  deleteFileId!: string;
+  companyId!: any;
 
-  technicalUserList!:User[];
-  qr!:QR;
-  qrData!:string;
-  qrSize!:number;
+  technicalUserList!: User[];
+  qr!: QR;
+  qrData!: string;
+  qrSize!: number;
 
-  companyCustomerList!:CompanyCustomer[];
-  companyCustomerArr!:string[];
-  selectedCompanyCustomer!:string;
-  selectedCustomerId!:string;
+  companyCustomerList!: CompanyCustomer[];
+  companyCustomerArr!: string[];
+  selectedCompanyCustomer!: string;
+  selectedCustomerId!: string;
 
-  changedCustomerName!:string;
-  changedCustomerId!:string;
-  loading=false;
-  userRole:any;
-  userRoleDetails:any;
-  selectedEmpName:any;
-  allInspection:any=[]
-  allInspectionInstance:any=[]
-  currentInspection:any;
-  checkBoxColor="primary"
-  selectedInspectionInstance:any;
+  changedCustomerName!: string;
+  changedCustomerId!: string;
+  loading = false;
+  userRole: any;
+  userRoleDetails: any;
+  selectedEmpName: any;
+  allInspection: any = []
+  allInspectionInstance: any = []
+  currentInspection: any;
+  checkBoxColor = "primary"
+  selectedInspectionInstance: any;
   inspectionInstance: InspectionInstance = {
     assetId: '',
     companyId: '',
     assetCategoryInspectionId: '',
     assetCategoryInspectionName: '',
-    actionPerformedBy:'',
-    notes:'',
-    createdAt:'',
-    updatedAt:'',
+    actionPerformedBy: '',
+    notes: '',
+    createdAt: '',
+    updatedAt: '',
     status: 'PENDING',
     stepValues: [],
     inspectionTemplates: [],
     selectedItemList: []
   };
-  filteredLocationOrBinList: any=[];
-  locationWithBins:any=[];
-  dropdownOptions:any = [];
+  inspectionMap: Map<string, Object> = new Map<string, Object>();
+  filteredLocationOrBinList: any = [];
+  locationWithBins: any = [];
+  dropdownOptions: any = [];
   dropdownOpenLocation = false;
-    selectedLocation: any = null;
-    selectedLocationId:any=null;
-    loggedUser!:User;
+  selectedLocation: any = null;
+  selectedLocationId: any = null;
+  loggedUser!: User;
   // username:any;
 
 
-   dropdownList:any = [];
-  selectedItems:any = [];
-  dropdownSettings:IDropdownSettings = {};
-  inspectionMap:Map<string,Object> = new Map<string,Object>();
-  stepObject:any[]=[];
-  notedData!:string;
-  constructor(private activatedRoute:ActivatedRoute,private assetDetailService:AssetDetailsService,private assetComponent:AssetsComponent,private datePipe: DatePipe,private router:Router){}
-  ngOnInit(){
-    this.inspectionMap=new Map<string,Object>();
+  dropdownList: any = [];
+  selectedItems: any = [];
+  dropdownSettings: IDropdownSettings = {};
+
+  stepObject: any[] = [];
+  notedData!: string;
+  constructor(private activatedRoute: ActivatedRoute, private assetDetailService: AssetDetailsService, private assetComponent: AssetsComponent, private datePipe: DatePipe, private router: Router) { }
+  ngOnInit() {
+    this.inspectionMap = new Map<string, Object>();
     this.selectedItems = [];
     this.dropdownSettings = {
       singleSelection: false,
@@ -138,231 +139,232 @@ export class AssetDetailsComponent {
 
 
 
-    
-    this.loggedUser=new User();
-    this.selectedCustomerId=this.assetDetails.customerId;
-    this.selectedLocation= this.assetDetails.location;
+
+    this.loggedUser = new User();
+    this.selectedCustomerId = this.assetDetails.customerId;
+    this.selectedLocation = this.assetDetails.location;
 
     console.log(this.selectedEmpName)
-    console.log("----//////------------>>>>>>>>"+this.assetDetails.customerId)
+    console.log("----//////------------>>>>>>>>" + this.assetDetails.customerId)
     console.log(this.assetDetails);
 
-    this.currentInspection=null;
-    this.username= localStorage.getItem('name')
-    this.selectedEmpName=this.username;
-    this.message='';
-    this.progress=20;
-    this.extraFieldString=[];
-    this.extraFieldNameString=[];
+    this.currentInspection = null;
+    this.username = localStorage.getItem('name')
+    this.selectedEmpName = this.username;
+    this.message = '';
+    this.progress = 20;
+    this.extraFieldString = [];
+    this.extraFieldNameString = [];
     this.mandatoryFieldsMap = new Map<string, boolean>();
     this.extraFieldMap = new Map<string, boolean>();
     this.showFieldsMap = new Map<string, boolean>();
-    this.qrSize=3;
-    this.email=localStorage.getItem('user');
-    this.companyId=localStorage.getItem('companyId');
-    this.activatedRoute.paramMap.subscribe((data)=>{
+    this.qrSize = 3;
+    this.email = localStorage.getItem('user');
+    this.companyId = localStorage.getItem('companyId');
+    this.activatedRoute.paramMap.subscribe((data) => {
       console.log(this.assetDetails)
-      this.assetId=data.get('id');
-      this.assetId=this.assetDetails.id
-      console.log("assetid",this.assetDetails.id);
-   
-      
-      this.img=this.assetDetails.image;
+      this.assetId = data.get('id');
+      this.assetId = this.assetDetails.id
+      console.log("assetid", this.assetDetails.id);
+
+
+      this.img = this.assetDetails.image;
     });
-    this.userRole=localStorage.getItem('role');
-    this.assetDetailService.getRoleAndPermission(this.companyId,this.userRole).subscribe((data)=>{
+    this.userRole = localStorage.getItem('role');
+    this.assetDetailService.getRoleAndPermission(this.companyId, this.userRole).subscribe((data) => {
       console.log("ROLE")
-      console.log( this.userRole)
-      this.userRoleDetails=data;
+      console.log(this.userRole)
+      this.userRoleDetails = data;
       console.log(this.userRoleDetails);
     },
-    err=>{
-      console.log(err);
-    });
-    this.assetDetailService.getAllAssetInspectionInstanceByAssetId(this.assetId).subscribe((data)=>{
-      this.allInspectionInstance=data;
-       
+      err => {
+        console.log(err);
+      });
+    this.assetDetailService.getAllAssetInspectionInstanceByAssetId(this.assetId).subscribe((data) => {
+      this.allInspectionInstance = data;
+
       console.log(this.allInspectionInstance)
     },
-    (err)=>{
-      console.log(err);
-    })
-    this.assetDetailService.getCompanyCustomerList(this.companyId).subscribe((data)=>{
-      this.companyCustomerList=data;
-      this.companyCustomerList.forEach((x)=>{
-        console.log(x.name+" "+(x.id===this.assetDetails.customerId))
+      (err) => {
+        console.log(err);
+      })
+    this.assetDetailService.getCompanyCustomerList(this.companyId).subscribe((data) => {
+      this.companyCustomerList = data;
+      this.companyCustomerList.forEach((x) => {
+        console.log(x.name + " " + (x.id === this.assetDetails.customerId))
       })
       console.log(this.companyCustomerList)
     },
-    (err)=>{
-      console.log(err);
-    })
+      (err) => {
+        console.log(err);
+      })
 
     //inspection
-    this.assetDetailService.getAllAssetInspection(this.companyId,this.assetDetails.category).subscribe((data)=>{
-      this.allInspection=data;
+    console.log(this.assetDetails.category)
+    this.assetDetailService.getAllAssetInspection(this.companyId, this.assetDetails.category).subscribe((data) => {
+      this.allInspection = data;
       console.log(this.allInspection)
       this.dropdownList = this.allInspection;
-      this.allInspection.forEach((x:any)=>{
-        const obj={
-          "name":x.name,
-          "stepsList":x.steps
+      this.allInspection.forEach((x: any) => {
+        const obj = {
+          "name": x.name,
+          "stepsList": x.steps
         }
-        this.inspectionMap.set(x.id,obj);
+        this.inspectionMap.set(x.id, obj);
 
 
       })
-          console.log(this.inspectionMap)
-          
-        //   this.inspectionInstance=localStorage.getItem(this.assetId+'tempInspection') ? JSON.parse(localStorage.getItem(this.assetId+'tempInspection') || '{}') : {
-        //   assetId: '',
-        //   companyId: '',
-        //   assetCategoryInspectionId: '',
-        //   assetCategoryInspectionName: '',
-        //   actionPerformedBy:'',
-        //   notes:'',
-        //   date:'',
-        //   stepValues: [],
-        //   inspectionTemplates: []
-        // };
-        // if(localStorage.getItem(this.assetId+'tempInspection')!=null){
-        // this.inspectionInstance=JSON.parse(localStorage.getItem(this.assetId+'tempInspection') || '{}')
-        // }
-      
-        // console.log("saved Inspection Instances1",localStorage.getItem(this.assetId+'tempInspection'))
-        // console.log("saved Inspection Instance", this.inspectionInstance)
-        // this.selectedItems= localStorage.getItem(this.assetId+'selectedItems') ? JSON.parse(localStorage.getItem(this.assetId+'selectedItems') || '[]') : [];
-        // console.log("selectedItems",this.selectedItems)
-        // if(this.selectedItems.length>0){
-        //   this.updateStepListFromLocalStorage()
-        // }
+      console.log(this.inspectionMap)
+
+      //   this.inspectionInstance=localStorage.getItem(this.assetId+'tempInspection') ? JSON.parse(localStorage.getItem(this.assetId+'tempInspection') || '{}') : {
+      //   assetId: '',
+      //   companyId: '',
+      //   assetCategoryInspectionId: '',
+      //   assetCategoryInspectionName: '',
+      //   actionPerformedBy:'',
+      //   notes:'',
+      //   date:'',
+      //   stepValues: [],
+      //   inspectionTemplates: []
+      // };
+      // if(localStorage.getItem(this.assetId+'tempInspection')!=null){
+      // this.inspectionInstance=JSON.parse(localStorage.getItem(this.assetId+'tempInspection') || '{}')
+      // }
+
+      // console.log("saved Inspection Instances1",localStorage.getItem(this.assetId+'tempInspection'))
+      // console.log("saved Inspection Instance", this.inspectionInstance)
+      // this.selectedItems= localStorage.getItem(this.assetId+'selectedItems') ? JSON.parse(localStorage.getItem(this.assetId+'selectedItems') || '[]') : [];
+      // console.log("selectedItems",this.selectedItems)
+      // if(this.selectedItems.length>0){
+      //   this.updateStepListFromLocalStorage()
+      // }
     })
-    
-   
-    this.assetDetailService.getAssetCategory(this.companyId).subscribe((data)=>{
-      this.assetCategoryList=data;
+
+
+    this.assetDetailService.getAssetCategory(this.companyId).subscribe((data) => {
+      this.assetCategoryList = data;
     },
-    (err)=>{
-      console.log(err)
-    })
+      (err) => {
+        console.log(err)
+      })
     // this.assetDetailService.getWorkOrders(this.assetId).subscribe((data)=>{
     //   this.workOrderList=data;
     //   console.log("workorders",this.workOrderList)
     // },(err)=>{
     //   console.log(err);
     // });
-    this.assetDetailService.getAssetFile(this.assetId).subscribe((data)=>{
+    this.assetDetailService.getAssetFile(this.assetId).subscribe((data) => {
       //console.log("total",data);
-      this.fileInfos=data;
-      console.log("total",this.fileInfos);
+      this.fileInfos = data;
+      console.log("total", this.fileInfos);
     },
-    (err)=>{
-      console.log(err);
-    })
-    this.assetDetailService.getExtraFields(this.assetDetails.id).subscribe((data)=>{
-      
-      this.extraFields=data;
-      this.extraFields?.sort((a,b)=>(a.name<b.name)?-1:1)
-      if(this.extraFields!=null){
-        this.extraFields.forEach((x)=>{
+      (err) => {
+        console.log(err);
+      })
+    this.assetDetailService.getExtraFields(this.assetDetails.id).subscribe((data) => {
+
+      this.extraFields = data;
+      this.extraFields?.sort((a, b) => (a.name < b.name) ? -1 : 1)
+      if (this.extraFields != null) {
+        this.extraFields.forEach((x) => {
           this.extraFieldString.push(x.name);
-          this.extraFieldMap.set(x.name,true);
-        
+          this.extraFieldMap.set(x.name, true);
+
         })
       }
-      else{
-        console.log("empty ExtraField",data)
+      else {
+        console.log("empty ExtraField", data)
       }
       console.log(this.extraFields);
     },
-    (err)=>{
-      console.log(err);
-    })
-
-    this.assetDetailService.getExtraFieldName(this.companyId).subscribe((data)=>{
-      this.extraFieldName=data;
-      this.extraFieldName.sort((a,b)=>(a.name<b.name)?-1:1)
-      console.log(data);
-      if(this.extraFieldName!=null){
-      this.extraFieldName.forEach((x)=>{
-        this.extraFieldNameString.push(x.name);
-      
+      (err) => {
+        console.log(err);
       })
-      console.log(this.extraFieldNameString)
-    }
-    else{
-      console.log("empty extraFieldName")
-    }
-     
-    },
-    (err)=>{
-      console.log(err);
-    })
 
-    this.assetDetailService.getCheckInOutList(this.assetDetails.id).subscribe((data)=>{
-      this.checkInOut=data;
+    this.assetDetailService.getExtraFieldName(this.companyId).subscribe((data) => {
+      this.extraFieldName = data;
+      this.extraFieldName.sort((a, b) => (a.name < b.name) ? -1 : 1)
+      console.log(data);
+      if (this.extraFieldName != null) {
+        this.extraFieldName.forEach((x) => {
+          this.extraFieldNameString.push(x.name);
+
+        })
+        console.log(this.extraFieldNameString)
+      }
+      else {
+        console.log("empty extraFieldName")
+      }
+
+    },
+      (err) => {
+        console.log(err);
+      })
+
+    this.assetDetailService.getCheckInOutList(this.assetDetails.id).subscribe((data) => {
+      this.checkInOut = data;
       console.log(this.checkInOut)
       console.log(this.checkInOut[0])
     },
-    (err)=>{
-      console.log(err);
-    })
-    this.assetDetailService.getAllMandatoryFields(this.companyId).subscribe((data)=>{
-      this.mandatoryFieldsList=data;
+      (err) => {
+        console.log(err);
+      })
+    this.assetDetailService.getAllMandatoryFields(this.companyId).subscribe((data) => {
+      this.mandatoryFieldsList = data;
       //console.log("mandatory----------------------->",this.mandatoryFieldsList)
-      this.mandatoryFieldsList.forEach((x)=>{
-        this.mandatoryFieldsMap.set(x.name,x.mandatory);
+      this.mandatoryFieldsList.forEach((x) => {
+        this.mandatoryFieldsMap.set(x.name, x.mandatory);
       })
     },
-    (err)=>{
-      console.log(err);
-    })
-    this.assetDetailService.getAllShowFields(this.companyId).subscribe((data)=>{
-      this.showFieldsList=data;
+      (err) => {
+        console.log(err);
+      })
+    this.assetDetailService.getAllShowFields(this.companyId).subscribe((data) => {
+      this.showFieldsList = data;
       // console.log("show----------------------->",this.showFieldsList)
-      this.showFieldsList.forEach((x)=>{
-        this.showFieldsMap.set(x.name,x.show);
+      this.showFieldsList.forEach((x) => {
+        this.showFieldsMap.set(x.name, x.show);
       })
     },
-    (err)=>{
-      console.log(err);
-    })
+      (err) => {
+        console.log(err);
+      })
 
 
-    this.assetDetailService.getTechnicalUsers(this.companyId).subscribe((data)=>{
+    this.assetDetailService.getTechnicalUsers(this.companyId).subscribe((data) => {
       console.log("Userss=====>")
-      this.technicalUserList=data;
-      
+      this.technicalUserList = data;
+
       // this.loggedUser.firstName=this.username.split(' ')[0];
       // this.loggedUser.lastName=this.username.split(' ')[1];
 
 
       // this.technicalUserList.push(this.loggedUser);
-      
+
       console.log(this.technicalUserList);
     }
-    ,(err)=>{
-      console.log(err);
-    })
+      , (err) => {
+        console.log(err);
+      })
 
 
-    this.assetDetailService.getQR(this.companyId).subscribe((data)=>{
-      this.qr=data;
-      
+    this.assetDetailService.getQR(this.companyId).subscribe((data) => {
+      this.qr = data;
+
     },
-    (err)=>{
-      console.log(err);
-    })
+      (err) => {
+        console.log(err);
+      })
 
-    this.qrData="assets/id?"+this.assetDetails.id;
+    this.qrData = "assets/id?" + this.assetDetails.id;
 
-    this.assetDetailService.getAllLocationWithBin(this.companyId).subscribe((data)=>{
-      this.locationWithBins=data;
+    this.assetDetailService.getAllLocationWithBin(this.companyId).subscribe((data) => {
+      this.locationWithBins = data;
       this.filteredLocationOrBinList = this.locationWithBins;
 
-      this.locationWithBins.forEach((loc:any) => {
+      this.locationWithBins.forEach((loc: any) => {
         if (loc.bins && loc.bins.length > 0) {
-          loc.bins.forEach((bin:any) => {
+          loc.bins.forEach((bin: any) => {
             this.dropdownOptions.push({
               label: `${loc.name} → ${bin.binNumber}`,
               value: `bin:${bin.id}`
@@ -377,236 +379,236 @@ export class AssetDetailsComponent {
       });
       console.log(this.dropdownOptions)
     },
-    (err)=>{
-      console.log(err);
-    });
+      (err) => {
+        console.log(err);
+      });
 
   }
 
   @HostListener('document:click', ['$event'])
-handleClickOutside(event: MouseEvent) {
-  // console.log("clicked outside")
-  const clickedInside = this.dropdownContainer.nativeElement.contains(event.target);
-  if (!clickedInside) {
-    // this.dropdownOpenLocation = false; // ✅ Close the dropdown
-    this.dropdownOpenLocation=false;
+  handleClickOutside(event: MouseEvent) {
+    // console.log("clicked outside")
+    const clickedInside = this.dropdownContainer.nativeElement.contains(event.target);
+    if (!clickedInside) {
+      // this.dropdownOpenLocation = false; // ✅ Close the dropdown
+      this.dropdownOpenLocation = false;
+    }
   }
-}
-  show(){
+  show() {
     console.log(this.extraFieldString)
   }
-  onBack(){
+  onBack() {
     this.assetComponent.ngOnInit();
-    this.backStatus.emit({show:false})
-    
+    this.backStatus.emit({ show: false })
+
   }
-  onDelete(){
-    console.log("removed id is"+this.assetDetails.id);
-    this.assetDetailService.removeAsset(this.assetDetails.id).subscribe((data)=>{
-      console.log(data+this.assetDetails.id+" removed");
+  onDelete() {
+    console.log("removed id is" + this.assetDetails.id);
+    this.assetDetailService.removeAsset(this.assetDetails.id).subscribe((data) => {
+      console.log(data + this.assetDetails.id + " removed");
 
     },
-    (err)=>{
-      console.log(err);
-       if(err.error.error==="TRIAL_EXPIRED"){
-        this.triggerAlert(err.error.message,"danger");
-      }
-      else{
-      this.triggerAlert(err.error.errorMessage,"danger");
-      }
-    },
-    ()=>{
-      this.assetComponent.ngOnInit();
-      this.backStatus.emit({show:false});
-    })
+      (err) => {
+        console.log(err);
+        if (err.error.error === "TRIAL_EXPIRED") {
+          this.triggerAlert(err.error.message, "danger");
+        }
+        else {
+          this.triggerAlert(err.error.errorMessage, "danger");
+        }
+      },
+      () => {
+        this.assetComponent.ngOnInit();
+        this.backStatus.emit({ show: false });
+      })
   }
   toCamelCase(str: string): string {
     return str.replace(/\b\w/g, (char) => char.toUpperCase());
-}
-  onCheck(){
+  }
+  onCheck() {
     console.log("OnCheck clicked");
-    console.log(typeof(this.assetDetails));
+    console.log(typeof (this.assetDetails));
     // this.mandatoryFieldsMap.forEach((val,key)=>{
     //   if(this.assetDetails.get(key))
     // })
-    if(this.mandatoryFieldsMap.get("customer")==true){
-      if(this.assetDetails.customer==''||this.assetDetails.customer==null){
-       
-       
-        this.triggerAlert("Fill Mandatory field 'Customer'","danger")
-        return;
-      }
-    }
-    if(this.mandatoryFieldsMap.get("category")==true){
-      if(this.assetDetails.category==''||this.assetDetails.category==null){
-        this.triggerAlert("Fill Mandatory field 'Category'","danger")
-        return;
-      }
-    }
-    if(this.mandatoryFieldsMap.get("serial")==true){
-      if(this.assetDetails.serialNumber==''||this.assetDetails.serialNumber==null){
-        this.triggerAlert("Fill Mandatory field 'Serial Number'","danger")
-        return;
-      }
-    }
-    if(this.mandatoryFieldsMap.get("name")==true){
-      if(this.assetDetails.name==''||this.assetDetails.name==null){
-        this.triggerAlert("Fill Mandatory field 'Name'","danger")
-        return;
-      }
-    }
-    if(this.mandatoryFieldsMap.get("location")==true){
-      if(this.assetDetails.location==''||this.assetDetails.location==null){
-        this.triggerAlert("Fill Mandatory field 'Location'","danger")
-        return ;
-      }
-    }
-    if(this.mandatoryFieldsMap.get("status")==true){
-      if(this.assetDetails.status==''||this.assetDetails.status==null){
-        this.triggerAlert("Fill Mandatory field 'Status'","danger")
-        return ;
-      }
-    }
-    let mandatoryFlag=1;
-    console.log("extraField",this.extraFields)
-    
-  this.extraFields?.forEach((x)=>{
-    if((x.value==''||x.value==null)&&(this.showFieldsMap.get(x.name)==true)&&(this.mandatoryFieldsMap.get(x.name)==true)){
-      this.triggerAlert("Fill Mandatory field '"+this.toCamelCase(x.name)+"' in Custom","danger")
-      mandatoryFlag=0;
-    }
-  })
-  if(mandatoryFlag==0){
-    return ;
-  }
-  this.extraFieldName?.forEach((x,ind)=>{
-    
-    console.log(ind+" "+x.name+" "+this.mandatoryFieldsMap.get(x.name)+" "+this.extraFieldValue);
-    if((this.extraFieldMap.get(x.name)!=true)&&(this.showFieldsMap.get(x.name)==true)&&(this.extraFieldValue[this.extraFieldName.indexOf(x)]==''||this.extraFieldValue[this.extraFieldName.indexOf(x)]==null)&&(this.mandatoryFieldsMap.get(x.name)==true)){
-      this.triggerAlert("Fill Mandatory field '"+this.toCamelCase(x.name)+"' in Custom","danger")
-      mandatoryFlag=0;
-      
-    }
-  })
-  
-  if(mandatoryFlag==0){
-    return;
-  }
-  this.onSave()
-  // if(this.userRoleDetails?.customer=='full'||this.userRoleDetails?.customer=="edit"||this.userRole=="ADMIN"){
-  //   this.onSave();
+    if (this.mandatoryFieldsMap.get("customer") == true) {
+      if (this.assetDetails.customer == '' || this.assetDetails.customer == null) {
 
-  //   }
-  }
-  onSave(){
-    
- console.log("onSave clicked");
-    
-  this.extraFieldName.forEach((x,ind)=>{
-    let obj={}
-    if(this.extraFieldString.includes(x.name)){
-      
-      const index = this.extraFields.findIndex(ele => ele.name === x.name);
-       obj={
-        
-        "id":this.extraFields[index].id,
-        "email":this.email,
-        "name":x.name,
-        "value":this.extraFields[index].value,
-        "assetId":this.assetId,
-        "type":x.type,
-        "companyId":x.companyId
+
+        this.triggerAlert("Fill Mandatory field 'Customer'", "danger")
+        return;
       }
     }
-    else{
-      obj={
-       
-              "email":this.email,
-              "name":x.name,
-              "value":this.extraFieldValue[ind],
-              "assetId":this.assetId,
-              "type":x.type,
-              "companyId":x.companyId
-            }
+    if (this.mandatoryFieldsMap.get("category") == true) {
+      if (this.assetDetails.category == '' || this.assetDetails.category == null) {
+        this.triggerAlert("Fill Mandatory field 'Category'", "danger")
+        return;
+      }
     }
-      
-      if(x.type=='checkbox'){
+    if (this.mandatoryFieldsMap.get("serial") == true) {
+      if (this.assetDetails.serialNumber == '' || this.assetDetails.serialNumber == null) {
+        this.triggerAlert("Fill Mandatory field 'Serial Number'", "danger")
+        return;
+      }
+    }
+    if (this.mandatoryFieldsMap.get("name") == true) {
+      if (this.assetDetails.name == '' || this.assetDetails.name == null) {
+        this.triggerAlert("Fill Mandatory field 'Name'", "danger")
+        return;
+      }
+    }
+    if (this.mandatoryFieldsMap.get("location") == true) {
+      if (this.assetDetails.location == '' || this.assetDetails.location == null) {
+        this.triggerAlert("Fill Mandatory field 'Location'", "danger")
+        return;
+      }
+    }
+    if (this.mandatoryFieldsMap.get("status") == true) {
+      if (this.assetDetails.status == '' || this.assetDetails.status == null) {
+        this.triggerAlert("Fill Mandatory field 'Status'", "danger")
+        return;
+      }
+    }
+    let mandatoryFlag = 1;
+    console.log("extraField", this.extraFields)
+
+    this.extraFields?.forEach((x) => {
+      if ((x.value == '' || x.value == null) && (this.showFieldsMap.get(x.name) == true) && (this.mandatoryFieldsMap.get(x.name) == true)) {
+        this.triggerAlert("Fill Mandatory field '" + this.toCamelCase(x.name) + "' in Custom", "danger")
+        mandatoryFlag = 0;
+      }
+    })
+    if (mandatoryFlag == 0) {
+      return;
+    }
+    this.extraFieldName?.forEach((x, ind) => {
+
+      console.log(ind + " " + x.name + " " + this.mandatoryFieldsMap.get(x.name) + " " + this.extraFieldValue);
+      if ((this.extraFieldMap.get(x.name) != true) && (this.showFieldsMap.get(x.name) == true) && (this.extraFieldValue[this.extraFieldName.indexOf(x)] == '' || this.extraFieldValue[this.extraFieldName.indexOf(x)] == null) && (this.mandatoryFieldsMap.get(x.name) == true)) {
+        this.triggerAlert("Fill Mandatory field '" + this.toCamelCase(x.name) + "' in Custom", "danger")
+        mandatoryFlag = 0;
+
+      }
+    })
+
+    if (mandatoryFlag == 0) {
+      return;
+    }
+    this.onSave()
+    // if(this.userRoleDetails?.customer=='full'||this.userRoleDetails?.customer=="edit"||this.userRole=="ADMIN"){
+    //   this.onSave();
+
+    //   }
+  }
+  onSave() {
+
+    console.log("onSave clicked");
+
+    this.extraFieldName.forEach((x, ind) => {
+      let obj = {}
+      if (this.extraFieldString.includes(x.name)) {
+
+        const index = this.extraFields.findIndex(ele => ele.name === x.name);
+        obj = {
+
+          "id": this.extraFields[index].id,
+          "email": this.email,
+          "name": x.name,
+          "value": this.extraFields[index].value,
+          "assetId": this.assetId,
+          "type": x.type,
+          "companyId": x.companyId
+        }
+      }
+      else {
+        obj = {
+
+          "email": this.email,
+          "name": x.name,
+          "value": this.extraFieldValue[ind],
+          "assetId": this.assetId,
+          "type": x.type,
+          "companyId": x.companyId
+        }
+      }
+
+      if (x.type == 'checkbox') {
         console.log(this.extraFieldValue[ind])
       }
-      this.assetDetailService.addExtraFields(obj).subscribe((data)=>{
+      this.assetDetailService.addExtraFields(obj).subscribe((data) => {
         console.log("added extra fields");
       },
-      (err)=>{
-        console.log(err);
-         if(err.error.error==="TRIAL_EXPIRED"){
-        this.triggerAlert(err.error.message,"danger");
-      }
-      else{
-      this.triggerAlert(err.error.errorMessage,"danger");
-      }
-      })
-      })
+        (err) => {
+          console.log(err);
+          if (err.error.error === "TRIAL_EXPIRED") {
+            this.triggerAlert(err.error.message, "danger");
+          }
+          else {
+            this.triggerAlert(err.error.errorMessage, "danger");
+          }
+        })
+    })
 
     console.log(this.assetDetails);
-    this.selectedCompanyCustomer=this.assetDetails.customer
+    this.selectedCompanyCustomer = this.assetDetails.customer
     console.log(this.selectedCompanyCustomer);
-    if(this.changedCustomerName!=null&& this.changedCustomerId!=null){
-      
-      this.assetDetails.customer=this.changedCustomerName
-      this.assetDetails.customerId=this.changedCustomerId;
-      }
-      
-      console.log(this.assetDetails);
-      this.assetDetails.location=this.selectedLocationId;
-    this.assetDetailService.updateAsset(this.assetDetails).subscribe((data)=>{
-      console.log(data);
-      this.triggerAlert("Successfully Updated","success");
-      this.router.navigate(['/assets/'+this.assetDetails.id])
-    },
-    (err)=>{
-      console.log(err.error.errorMessage);
-       if(err.error.error==="TRIAL_EXPIRED"){
-        this.triggerAlert(err.error.message,"danger");
-      }
-      else{
-      this.triggerAlert(err.error.errorMessage,"danger");
-      }
-    })
+    if (this.changedCustomerName != null && this.changedCustomerId != null) {
 
-
-    
-  
-   
-    
-  }
-  
-  removeTheImage(){
-    console.log("new click remove"+this.assetDetails.id)
-
-    this.assetDetailService.removeImage(this.assetDetails.id).subscribe((data)=>{
-      console.log(data);
-    },
-    (err)=>{
-      console.log(err);
-       if(err.error.error==="TRIAL_EXPIRED"){
-        this.triggerAlert(err.error.message,"danger");
-      }
-      else{
-      this.triggerAlert(err.error.errorMessage,"danger");
-      }
+      this.assetDetails.customer = this.changedCustomerName
+      this.assetDetails.customerId = this.changedCustomerId;
     }
-    ,()=>{
-     console.log(this.img);
-     this.getAsset(this.assetDetails.id);
-     this.assetComponent.ngOnInit();
-      
-      
-    })
+
+    console.log(this.assetDetails);
+    this.assetDetails.location = this.selectedLocationId;
+    this.assetDetailService.updateAsset(this.assetDetails).subscribe((data) => {
+      console.log(data);
+      this.triggerAlert("Successfully Updated", "success");
+      this.router.navigate(['/assets/' + this.assetDetails.id])
+    },
+      (err) => {
+        console.log(err.error.errorMessage);
+        if (err.error.error === "TRIAL_EXPIRED") {
+          this.triggerAlert(err.error.message, "danger");
+        }
+        else {
+          this.triggerAlert(err.error.errorMessage, "danger");
+        }
+      })
+
+
+
+
+
+
+  }
+
+  removeTheImage() {
+    console.log("new click remove" + this.assetDetails.id)
+
+    this.assetDetailService.removeImage(this.assetDetails.id).subscribe((data) => {
+      console.log(data);
+    },
+      (err) => {
+        console.log(err);
+        if (err.error.error === "TRIAL_EXPIRED") {
+          this.triggerAlert(err.error.message, "danger");
+        }
+        else {
+          this.triggerAlert(err.error.errorMessage, "danger");
+        }
+      }
+      , () => {
+        console.log(this.img);
+        this.getAsset(this.assetDetails.id);
+        this.assetComponent.ngOnInit();
+
+
+      })
   }
   // fileUpload(event:any){
   //   this.currentFile= event.target.files[0];
-    
-    
+
+
 
   //   this.assetDetailService.addAssetFile(this.currentFile, this.assetId).subscribe(
   //     event => {
@@ -641,12 +643,12 @@ handleClickOutside(event: MouseEvent) {
   //     }
   //     }
   //   );
-    
- 
 
-    
-    
-    
+
+
+
+
+
   //     // this.assetDetailService.addAssetFile(this.currentFile,this.assetId).subscribe(event => {
   //     //   console.log(event.status)
   //     //   if (event.status === 'progress') {
@@ -666,7 +668,7 @@ handleClickOutside(event: MouseEvent) {
   //     //   this.progress = 0;
   //     //   this.message = 'Could not upload the file!';
   //     //   console.log(this.message);
-       
+
   //     // },()=>{
   //     //   if(this.progress==100){
   //     //     setTimeout(()=>{
@@ -674,271 +676,271 @@ handleClickOutside(event: MouseEvent) {
   //     //       this.currentFile=null;
   //     //     this.ngOnInit();
   //     //     },1500);
-          
+
   //     //   }
   //     // })
-     
-    
+
+
   // }
 
   fileUpload(event: any) {
-  this.currentFile = event.target.files[0];
-  console.log("Cuurent file upload", this.currentFile.size);
-  if(this.currentFile.size>5*1024*1024){
-    this.triggerAlert("File size exceeds maximum limit (5MB)","danger");
-     this.currentFile = null;
-      this.progress = 0;
-    return;
-  }
-  this.assetDetailService.addAssetFile(this.currentFile, this.assetId).subscribe({
-    next: (event: HttpEvent<any>) => {
-      if (event.type === HttpEventType.UploadProgress && event.total) {
-        this.progress = Math.round((100 * event.loaded) / event.total);
-      } else if (event.type === HttpEventType.Response) {
-        console.log('✅ Upload Complete:', event.body);
-        this.progress = 100;
-        
-        setTimeout(() => {
-          const message = event.body?.responseMessage || 'Successfully uploaded';
-          this.triggerAlert(message, 'success');
-          this.currentFile = null;
-          this.progress = 0;
-          this.ngOnInit();
-        }, 1500);
-      }
-    },
-    error: (err: HttpErrorResponse) => {
-      console.error('❌ Upload Error Details:', {
-        status: err.status,
-        statusText: err.statusText,
-        error: err.error,
-        message: err.message,
-        url: err.url
-      });
-
+    this.currentFile = event.target.files[0];
+    console.log("Cuurent file upload", this.currentFile.size);
+    if (this.currentFile.size > 5 * 1024 * 1024) {
+      this.triggerAlert("File size exceeds maximum limit (5MB)", "danger");
       this.currentFile = null;
       this.progress = 0;
-
-      let errorMessage = 'Could not upload the file. Some issue occurred. Try again later.';
-
-      // ✅ Handle different error scenarios
-      if (err.status === 413) {
-        errorMessage = 'File size exceeds maximum limit (5MB)';
-      } else if (err.error && typeof err.error === 'object') {
-        errorMessage = err.error.responseMessage || 
-                      err.error.errorMessage || 
-                      err.error.message || 
-                      errorMessage;
-      } else if (typeof err.error === 'string') {
-        errorMessage = err.error;
-      } else if (err.status === 0) {
-        errorMessage = 'Connection lost. Please check your network or try again.';
-      } else if (err.status === 401) {
-        errorMessage = 'Unauthorized. Please login again.';
-      } else if (err.status === 403) {
-        errorMessage = 'Access denied. No active subscription.';
-      } else if (err.status >= 500) {
-        errorMessage = 'Server error. Please try again later.';
-      }
-
-      this.triggerAlert(errorMessage, 'danger');
+      return;
     }
-  });
-}
+    this.assetDetailService.addAssetFile(this.currentFile, this.assetId).subscribe({
+      next: (event: HttpEvent<any>) => {
+        if (event.type === HttpEventType.UploadProgress && event.total) {
+          this.progress = Math.round((100 * event.loaded) / event.total);
+        } else if (event.type === HttpEventType.Response) {
+          console.log('✅ Upload Complete:', event.body);
+          this.progress = 100;
 
-  download(id:string,name:string){
-    this.assetDetailService.download(id).subscribe((data:any)=>{
+          setTimeout(() => {
+            const message = event.body?.responseMessage || 'Successfully uploaded';
+            this.triggerAlert(message, 'success');
+            this.currentFile = null;
+            this.progress = 0;
+            this.ngOnInit();
+          }, 1500);
+        }
+      },
+      error: (err: HttpErrorResponse) => {
+        console.error('❌ Upload Error Details:', {
+          status: err.status,
+          statusText: err.statusText,
+          error: err.error,
+          message: err.message,
+          url: err.url
+        });
+
+        this.currentFile = null;
+        this.progress = 0;
+
+        let errorMessage = 'Could not upload the file. Some issue occurred. Try again later.';
+
+        // ✅ Handle different error scenarios
+        if (err.status === 413) {
+          errorMessage = 'File size exceeds maximum limit (5MB)';
+        } else if (err.error && typeof err.error === 'object') {
+          errorMessage = err.error.responseMessage ||
+            err.error.errorMessage ||
+            err.error.message ||
+            errorMessage;
+        } else if (typeof err.error === 'string') {
+          errorMessage = err.error;
+        } else if (err.status === 0) {
+          errorMessage = 'Connection lost. Please check your network or try again.';
+        } else if (err.status === 401) {
+          errorMessage = 'Unauthorized. Please login again.';
+        } else if (err.status === 403) {
+          errorMessage = 'Access denied. No active subscription.';
+        } else if (err.status >= 500) {
+          errorMessage = 'Server error. Please try again later.';
+        }
+
+        this.triggerAlert(errorMessage, 'danger');
+      }
+    });
+  }
+
+  download(id: string, name: string) {
+    this.assetDetailService.download(id).subscribe((data: any) => {
 
       console.log(name);
-      const blob:any=new Blob([data],{type:'text/json; charset=utf-8'});
-      const link=document.createElement("a");
-      const url=window.URL.createObjectURL(blob);
+      const blob: any = new Blob([data], { type: 'text/json; charset=utf-8' });
+      const link = document.createElement("a");
+      const url = window.URL.createObjectURL(blob);
       // link.download=name;
       // link.click();
       // window.URL.revokeObjectURL(link.href);
       // link.remove();
       saveAs(blob, name);
-    
+
     },
-    (err)=>{
-      console.log(err);
-       if(err.error.error==="TRIAL_EXPIRED"){
-        this.triggerAlert(err.error.message,"danger");
-      }
-      else{
-      this.triggerAlert(err.error.errorMessage,"danger");
-      }
-    })
+      (err) => {
+        console.log(err);
+        if (err.error.error === "TRIAL_EXPIRED") {
+          this.triggerAlert(err.error.message, "danger");
+        }
+        else {
+          this.triggerAlert(err.error.errorMessage, "danger");
+        }
+      })
   }
-  deleteFile(){
-    this.assetDetailService.deleteFile(this.deleteFileId).subscribe((data)=>{
+  deleteFile() {
+    this.assetDetailService.deleteFile(this.deleteFileId).subscribe((data) => {
       console.log(data);
     },
-    (err)=>{
-      console.log(err);
-       if(err.error.error==="TRIAL_EXPIRED"){
-        this.triggerAlert(err.error.message,"danger");
-      }
-      else{
-      this.triggerAlert(err.error.errorMessage,"danger");
-      }
-    },
-    ()=>{
-      this.ngOnInit();
-      this.deleteFileId='';
-    })
+      (err) => {
+        console.log(err);
+        if (err.error.error === "TRIAL_EXPIRED") {
+          this.triggerAlert(err.error.message, "danger");
+        }
+        else {
+          this.triggerAlert(err.error.errorMessage, "danger");
+        }
+      },
+      () => {
+        this.ngOnInit();
+        this.deleteFileId = '';
+      })
   }
-  imageUpload(event:any){
+  imageUpload(event: any) {
     console.log(this.assetId)
     const file = event.target.files[0];
-  const reader = new FileReader();
-  reader.readAsDataURL(file);
-  reader.onload = () => {
+    const reader = new FileReader();
+    reader.readAsDataURL(file);
+    reader.onload = () => {
       console.log(reader.result);
-  
-  const obj={
-    "id":this.assetDetails.id,
-    "image": reader.result
-  }
 
-  this.assetDetailService.uploadImage(obj).subscribe((data)=>{
+      const obj = {
+        "id": this.assetDetails.id,
+        "image": reader.result
+      }
+
+      this.assetDetailService.uploadImage(obj).subscribe((data) => {
         console.log(data);
-      
+
       },
-      (err)=>{
+        (err) => {
+          console.log(err);
+          if (err.error.error === "TRIAL_EXPIRED") {
+            this.triggerAlert(err.error.message, "danger");
+          }
+          else {
+            this.triggerAlert(err.error.errorMessage, "danger");
+          }
+
+        },
+        () => {
+          this, this.getAsset(this.assetDetails.id);
+          this.assetComponent.ngOnInit();
+
+        })
+    };
+
+
+
+
+  }
+  getAsset(id: any) {
+    this.assetDetailService.getAsset(id).subscribe((data) => {
+      this.assetDetails = data;
+    },
+      (err) => {
         console.log(err);
-         if(err.error.error==="TRIAL_EXPIRED"){
-        this.triggerAlert(err.error.message,"danger");
-      }
-      else{
-      this.triggerAlert(err.error.errorMessage,"danger");
-      }
-        
       },
-      ()=>{
-        this,this.getAsset(this.assetDetails.id);
-        this.assetComponent.ngOnInit();
-        
+      () => {
+        this.ngOnInit();
       })
-      };
-  
- 
-
-
   }
-  getAsset(id:any){
-    this.assetDetailService.getAsset(id).subscribe((data)=>{
-      this.assetDetails=data;
-    },
-    (err)=>{
-      console.log(err);
-    },
-    ()=>{
-      this.ngOnInit();
-    })
-  }
-  onClick(option:number){
+  onClick(option: number) {
     console.log(option)
-    this.currOption=option;
+    this.currOption = option;
   }
-  onTechnicianChange(data:any){
+  onTechnicianChange(data: any) {
     console.log(data.target.value)
     this.selectedEmpName = data.target.value;
   }
   handleSubmit(employee: any, notes: string, location: string) {
-    console.log("emp=> "+this.selectedEmpName)
-    console.log("emp=> "+employee)
-    if(this.selectedEmpName==null||this.selectedEmpName==''){
+    console.log("emp=> " + this.selectedEmpName)
+    console.log("emp=> " + employee)
+    if (this.selectedEmpName == null || this.selectedEmpName == '') {
       this.CheckInOutSubmit(employee, notes, location);
     }
-    else{
+    else {
       this.CheckInOutSubmit(this.selectedEmpName, notes, location);
     }
-   
-   
+
+
     if (employee) employee = '';
-    this.selectedEmpName=this.username;
+    this.selectedEmpName = this.username;
     if (notes) notes = '';
     if (location) location = '';
-     this.notesRef.nativeElement.value = '';
+    this.notesRef.nativeElement.value = '';
     this.locationRef.nativeElement.value = '';
   }
-  
-  CheckInOutSubmit(employee:any,notes:string,location:string){
-    console.log(employee+ " "+notes)
-    if(employee==null&&this.userRole.toLowerCase()!='admin'){
-      
-      employee=this.username
+
+  CheckInOutSubmit(employee: any, notes: string, location: string) {
+    console.log(employee + " " + notes)
+    if (employee == null && this.userRole.toLowerCase() != 'admin') {
+
+      employee = this.username
     }
-    let obj={};
-    var today=new Date();
-    if(employee==null||employee==''||notes==null||notes==''){
+    let obj = {};
+    var today = new Date();
+    if (employee == null || employee == '' || notes == null || notes == '') {
       // alert("Fields are Empty");
-      this.triggerAlert("Check In/Out Fields are Empty","warning");
+      this.triggerAlert("Check In/Out Fields are Empty", "warning");
     }
-    else{
-      if(this.userRole.toLowerCase()!='admin'){
-        if(localStorage.getItem('name')!=null){
-          employee=localStorage.getItem('name');
+    else {
+      if (this.userRole.toLowerCase() != 'admin') {
+        if (localStorage.getItem('name') != null) {
+          employee = localStorage.getItem('name');
         }
-        
+
       }
-      if(this.checkInOut.length==0){
-        obj={
-          "assetId":this.assetId,
-          "status":"Checked Out",
-          "date":this.datePipe.transform(today,'yyyy-MM-dd'),
-          "employee":employee,
-          "notes":notes,
-          "location":location,
-          "companyId":this.companyId
-        }
-      }
-      else if(this.checkInOut[0].status=='Checked In'){
-        obj={
-          "assetId":this.assetId,
-          "status":"Checked Out",
-          "date":this.datePipe.transform(today,'yyyy-MM-dd'),
-          "employee":employee,
-          "notes":notes,
-          "location":location,
-          "companyId":this.companyId
+      if (this.checkInOut.length == 0) {
+        obj = {
+          "assetId": this.assetId,
+          "status": "Checked Out",
+          "date": this.datePipe.transform(today, 'yyyy-MM-dd'),
+          "employee": employee,
+          "notes": notes,
+          "location": location,
+          "companyId": this.companyId
         }
       }
-      else{
-        obj={
-          "assetId":this.assetId,
-          "status":"Checked In",
-          "date":this.datePipe.transform(today,'yyyy-MM-dd'),
-          "employee":employee,
-          "notes":notes,
-          "location":location,
-          "companyId":this.companyId
+      else if (this.checkInOut[0].status == 'Checked In') {
+        obj = {
+          "assetId": this.assetId,
+          "status": "Checked Out",
+          "date": this.datePipe.transform(today, 'yyyy-MM-dd'),
+          "employee": employee,
+          "notes": notes,
+          "location": location,
+          "companyId": this.companyId
+        }
+      }
+      else {
+        obj = {
+          "assetId": this.assetId,
+          "status": "Checked In",
+          "date": this.datePipe.transform(today, 'yyyy-MM-dd'),
+          "employee": employee,
+          "notes": notes,
+          "location": location,
+          "companyId": this.companyId
         }
       }
       console.log(obj)
-      this.assetDetailService.addCheckInOut(obj).subscribe((data)=>{
+      this.assetDetailService.addCheckInOut(obj).subscribe((data) => {
         console.log(data);
 
       },
-      (err)=>{
-        console.log(err);
-         if(err.error.error==="TRIAL_EXPIRED"){
-        this.triggerAlert(err.error.message,"danger");
-      }
-      else{
-      this.triggerAlert(err.error.errorMessage,"danger");
-      }
-  
-      },
-      ()=>{
-        this.ngOnInit()
-      })
-     
+        (err) => {
+          console.log(err);
+          if (err.error.error === "TRIAL_EXPIRED") {
+            this.triggerAlert(err.error.message, "danger");
+          }
+          else {
+            this.triggerAlert(err.error.errorMessage, "danger");
+          }
+
+        },
+        () => {
+          this.ngOnInit()
+        })
+
     }
-    
-    
-    
+
+
+
   }
   triggerAlert(message: string, type: string) {
     this.alertMessage = message;
@@ -949,38 +951,38 @@ handleClickOutside(event: MouseEvent) {
       this.showAlert = false;
     }, 5000); // Hide the alert after 5 seconds (adjust as needed)
   }
-  removeExtraField(id:string){
-    this.assetDetailService.removeExtraField(id).subscribe((data)=>{
+  removeExtraField(id: string) {
+    this.assetDetailService.removeExtraField(id).subscribe((data) => {
       console.log(data);
     },
-    (err)=>{
-      console.log(err);
-       if(err.error.error==="TRIAL_EXPIRED"){
-        this.triggerAlert(err.error.message,"danger");
+      (err) => {
+        console.log(err);
+        if (err.error.error === "TRIAL_EXPIRED") {
+          this.triggerAlert(err.error.message, "danger");
+        }
+        else {
+          this.triggerAlert(err.error.errorMessage, "danger");
+        }
+      },
+      () => {
+        this.ngOnInit();
+
       }
-      else{
-      this.triggerAlert(err.error.errorMessage,"danger");
-      }
-    },
-    ()=>{
-      this.ngOnInit();
-      
-    }
     )
   }
-  addFieldOption(id:string){
-    this.extraFieldOption=id;
+  addFieldOption(id: string) {
+    this.extraFieldOption = id;
   }
-  removeFieldOption(){
-    this.extraFieldOption='none';
+  removeFieldOption() {
+    this.extraFieldOption = 'none';
   }
-  itemDeleteDetails(id:string){
-    this.deleteFileId=id;
+  itemDeleteDetails(id: string) {
+    this.deleteFileId = id;
 
   }
 
   generatePdf(elementId: string, fileName: string) {
-    const element:any = document.getElementById(elementId);
+    const element: any = document.getElementById(elementId);
 
     html2canvas(element, {
       scale: 2,  // Increase scale to improve quality
@@ -998,338 +1000,292 @@ handleClickOutside(event: MouseEvent) {
       pdf.addImage(imgData, 'PNG', 0, 0, pdfWidth, pdfHeight);
       pdf.save(fileName + '.pdf');
     });
-    
+
   }
-  downloadQR(){
-    this.generatePdf('myqr',this.assetDetails.name+"_"+this.assetDetails.serialNumber+"_QR");
+  downloadQR() {
+    this.generatePdf('myqr', this.assetDetails.name + "_" + this.assetDetails.serialNumber + "_QR");
   }
-  customerChange(event:any) {
-    console.log("changed->"+event.target.value)
-    let myData:string=event.target.value;
-    if(myData!=null){
-      this.companyCustomerArr=myData.split(',');
-      this.changedCustomerName=this.companyCustomerArr[0];
-      this.changedCustomerId=this.companyCustomerArr[1];
-      }
+  customerChange(event: any) {
+    console.log("changed->" + event.target.value)
+    let myData: string = event.target.value;
+    if (myData != null) {
+      this.companyCustomerArr = myData.split(',');
+      this.changedCustomerName = this.companyCustomerArr[0];
+      this.changedCustomerId = this.companyCustomerArr[1];
     }
-    preview(){
-      console.log("clicked")
-      this.router.navigate(['/assets/'+this.assetId])
+  }
+  preview() {
+    console.log("clicked")
+    this.router.navigate(['/assets/' + this.assetId])
+  }
+
+  // inspectionChanged(){
+  //   console.log(this.currentInspection)
+  //   console.log(this.assetId)
+
+  //   this.inspectionInstance.assetId = this.assetId;
+  //   this.inspectionInstance.companyId = this.companyId;
+  //   this.inspectionInstance.assetCategoryInspectionId = this.currentInspection.id;
+  //   this.inspectionInstance.assetCategoryInspectionName = this.currentInspection.name;
+
+  //   let steps: any[] = [];
+
+  //   this.currentInspection.steps.forEach((step: any,ind:any) => {
+  //         let obj: any = {
+  //           name: step.name,
+  //           inspectionStepId: ind,
+  //           value: step.type=='CHECKBOX'?false:'',
+  //           type:step.type
+  //         };
+  //         steps.push(obj);
+  //       });
+
+  //   this.inspectionInstance.stepValues = steps;
+  // }
+ 
+  saveInpectionValue() {
+    console.log(this.inspectionInstance)
+    console.log(this.stepObject)
+    this.inspectionInstance.actionPerformedBy = this.username;
+    const currDateTime = new Date();
+    if (this.inspectionInstance.createdAt == null || this.inspectionInstance.createdAt == '') {
+      this.inspectionInstance.createdAt = currDateTime.toLocaleString();
     }
-
-    // inspectionChanged(){
-    //   console.log(this.currentInspection)
-    //   console.log(this.assetId)
-      
-    //   this.inspectionInstance.assetId = this.assetId;
-    //   this.inspectionInstance.companyId = this.companyId;
-    //   this.inspectionInstance.assetCategoryInspectionId = this.currentInspection.id;
-    //   this.inspectionInstance.assetCategoryInspectionName = this.currentInspection.name;
-
-    //   let steps: any[] = [];
-
-    //   this.currentInspection.steps.forEach((step: any,ind:any) => {
-    //         let obj: any = {
-    //           name: step.name,
-    //           inspectionStepId: ind,
-    //           value: step.type=='CHECKBOX'?false:'',
-    //           type:step.type
-    //         };
-    //         steps.push(obj);
-    //       });
-
-    //   this.inspectionInstance.stepValues = steps;
-    // }
-     inspectionChanged(){
-      console.log(this.currentInspection)
-      console.log(this.assetId)
-      
-      this.inspectionInstance.assetId = this.assetId;
-      this.inspectionInstance.companyId = this.companyId;
-      this.inspectionInstance.assetCategoryInspectionId = this.currentInspection.id;
-      this.inspectionInstance.assetCategoryInspectionName = this.currentInspection.name;
-
-      let steps: any[] = [];
-      let stepObj:any[]=[]
-      // this.selectedItems
-      this.selectedItems.forEach((item:any)=>{
-        let inspectionMapValue = this.inspectionMap.get(item.id);
-        if (inspectionMapValue !== null && inspectionMapValue !== undefined) {
-          const inspectionMap = inspectionMapValue as any;
-          const stepList= inspectionMap['stepsList'];
-          
-          let myCurrStep:any[]=[];
-          stepList.forEach((step:any)=>{
-              let obj: any = {
-                name: step['name'],
-                // The following variables (ind, step) are not defined in this context.
-                // You may need to adjust this logic as per your requirements.
-                inspectionStepId: null,
-                value: step['type']=='CHECKBOX'?false:'',
-                type:step['type']
-              };
-
-              steps.push(obj);
-              myCurrStep.push(obj);
-          })
-          let myObj={
-            "inspectionName": item.name,
-            "stepValues": myCurrStep
-          }
-          stepObj.push(myObj);
-        
-          // You may want to push obj to steps or handle it as needed.
-        }
-      })
-      console.log("stepObj",stepObj)
-      console.log(steps)
-      this.stepObject=stepObj;
-       this.inspectionInstance.stepValues = steps;
-       this.inspectionInstance.inspectionTemplates = this.stepObject;
-       console.log(this.inspectionInstance.stepValues)
-    }
-    saveInpectionValue(){
-      console.log(this.inspectionInstance)
-      console.log(this.stepObject)
-      this.inspectionInstance.actionPerformedBy=this.username;
-      const currDateTime=new Date();
-      if(this.inspectionInstance.createdAt==null || this.inspectionInstance.createdAt==''){
-      this.inspectionInstance.createdAt=currDateTime.toLocaleString();
-      }
-      this.inspectionInstance.updatedAt=currDateTime.toLocaleString();
-      this.inspectionInstance.status='COMPLETED';
-      this.inspectionInstance.selectedItemList= this.selectedItems;
-      console.log(this.inspectionInstance)
-      this.assetDetailService.addAssetInspection(this.inspectionInstance).subscribe((data)=>{
-        console.log("Inspection Saved"+data);
-        this.triggerAlert("Inspection saved sucessfully","success");
-        this.selectedItems=[]
-      },
-      (err)=>{
+    this.inspectionInstance.updatedAt = currDateTime.toLocaleString();
+    this.inspectionInstance.status = 'COMPLETED';
+    this.inspectionInstance.selectedItemList = this.selectedItems;
+    console.log(this.inspectionInstance)
+    this.assetDetailService.addAssetInspection(this.inspectionInstance).subscribe((data) => {
+      console.log("Inspection Saved" + data);
+      this.triggerAlert("Inspection saved sucessfully", "success");
+      this.selectedItems = []
+    },
+      (err) => {
         console.log(err);
-         if(err.error.error==="TRIAL_EXPIRED"){
-        this.triggerAlert(err.error.message,"danger");
-      }
-      else{
-      this.triggerAlert(err.error.errorMessage,"danger");
-      }
-        this.selectedItems=[]
+        if (err.error.error === "TRIAL_EXPIRED") {
+          this.triggerAlert(err.error.message, "danger");
+        }
+        else {
+          this.triggerAlert(err.error.errorMessage, "danger");
+        }
+        this.selectedItems = []
       },
-      ()=>{
-        this.selectedItems=[]
+      () => {
+        this.selectedItems = []
         this.clearSavedData();
         this.ngOnInit();
       })
+  }
+  handleStepChange(event: any, index: number, type: string): void {
+    if (!this.inspectionInstance.stepValues[index]) return;
+    console.log(type)
+    if (type === 'checkbox') {
+      // For checkbox, use `event.target.checked`
+      console.log(event.target.checked)
+      this.inspectionInstance.stepValues[index].value = event.target.checked ? 'checked' : '';
+    } else {
+      // For text, number, etc., use `event.target.value`
+      this.inspectionInstance.stepValues[index].value = event.target.value;
     }
-    handleStepChange(event: any, index: number, type: string): void {
-      if (!this.inspectionInstance.stepValues[index]) return;
-      console.log(type)
-      if (type === 'checkbox') {
-        // For checkbox, use `event.target.checked`
-        console.log(event.target.checked)
-        this.inspectionInstance.stepValues[index].value = event.target.checked ? 'checked' : '';
-      } else {
-        // For text, number, etc., use `event.target.value`
-        this.inspectionInstance.stepValues[index].value = event.target.value;
-      }
-    }
-    handleStepCheckox(isChecked:any, index: number, type: string){
-        
-        this.inspectionInstance.stepValues[index].value = isChecked
-     
-    }
-    addNote(event:any){
-      this.inspectionInstance.notes=event.target.value;
-    }
-    selectedInspectionInstanceFunc(data:InspectionInstance){
-      console.log(data)
-      
+  }
+  handleStepCheckox(isChecked: any, index: number, type: string) {
 
-      data.stepValues
-      ?.forEach((step: { type: string; value: string | boolean; }) => {
-   
-              if (typeof step.value === 'string') {
-        step.value = step.value === 'true';}
-      
-      });
-
-   
-      this.selectedInspectionInstance=data;
-    
-      this.inspectionInstance=data;
-      this.inspectionInstance.assetId=this.assetId;
-      this.inspectionInstance.companyId=this.companyId;
-      this.inspectionInstance.actionPerformedBy=this.username;
-
-    }
-    ParseInt(val:string):number{
-      return parseInt(val);
-    }
-    updateInspectionInstance(){
-      console.log(this.selectedInspectionInstance)
-      this.selectedInspectionInstance.notes=this.notedData;
-      this.inspectionInstance.selectedItemList= this.selectedItems;
-      this.assetDetailService.updateAssetInspection(this.selectedInspectionInstance).subscribe((data)=>{
-        console.log("Updated Inspection"+data);
-        this.triggerAlert("Inspection updated sucessfully","success");
-      },
-      (err)=>{
-        console.log(err);
-         if(err.error.error==="TRIAL_EXPIRED"){
-        this.triggerAlert(err.error.message,"danger");
-      }
-      else{
-      this.triggerAlert(err.error.errorMessage,"danger");
-      }
-      },
-      ()=>{
-         this.inspectionInstance.stepValues = [];
-         this.inspectionInstance.notes='';
-        this.ngOnInit();
-      })
-    }
-
-    
-    toggleDropdownLocation() {
-      console.log(this.filteredLocationOrBinList)
-      this.dropdownOpenLocation = !this.dropdownOpenLocation;
-    }
-  
-    selectLocationOrBin(locationOrBinId:any,locationOrBin: any) {
-      console.log(locationOrBin)
-      this.selectedLocation = locationOrBin;
-      this.selectedLocationId = locationOrBinId;
-      console.log(this.selectedLocationId)
-      // this.selectedCustomerId=customer.companyCustomerId;
-      this.dropdownOpenLocation = false;
-    }
-    // selectLocationOrBinId(locationOrBinId: any) {
-    //   // console.log(locationOrBinId)
-    //   this.selectedLocationId = locationOrBinId;
-    //   // this.selectedCustomerId=customer.companyCustomerId;
-    //   this.dropdownOpenLocation = false;
-    // }
-    filterLocations(event: Event) {
-      const searchValue = (event.target as HTMLInputElement).value.toLowerCase();
-      console.log("searchValue"+searchValue)
-      this.filteredLocationOrBinList = this.locationWithBins.filter((loc: any) => {
-        const locationMatch = loc.name?.toLowerCase().includes(searchValue);
-      
-        const binMatch = loc.bins?.some((bin: any) =>
-          bin.binNumber?.toLowerCase().includes(searchValue)
-        );
-      
-        return locationMatch || binMatch;
-      });
-      
-    }
-    
-
-  updateStepList(){
-    //  console.log(this.currentInspection)
-    //   console.log(this.assetId)
-      
-      this.inspectionInstance.assetId = this.assetId;
-      this.inspectionInstance.companyId = this.companyId;
-      // this.inspectionInstance.assetCategoryInspectionId = this.currentInspection.id;
-      this.inspectionInstance.assetCategoryInspectionName = "";
-      this.selectedItems.forEach((item:any)=>{
-        this.inspectionInstance.assetCategoryInspectionName += item.name + " ";
-      })
-
-      let steps: any[] = [];
-      let stepObj:any[]=[]
-      // this.selectedItems
-      console.log("updateStepListCalled")
-      console.log("selectedItems",this.selectedItems)
-      this.selectedItems.forEach((item:any)=>{
-        let inspectionMapValue = this.inspectionMap.get(item.id);
-        console.log("inspectionMapValue",inspectionMapValue)
-        if (inspectionMapValue !== null && inspectionMapValue !== undefined) {
-          const inspectionMap = inspectionMapValue as any;
-          const stepList= inspectionMap['stepsList'];
-          
-          let myCurrStep:any[]=[];
-          stepList.forEach((step:any)=>{
-              let obj: any = {
-                name: step['name'],
-                // The following variables (ind, step) are not defined in this context.
-                // You may need to adjust this logic as per your requirements.
-                inspectionStepId: null,
-                value: step['type']=='CHECKBOX'?false:'',
-                type:step['type']
-              };
-
-              steps.push(obj);
-              myCurrStep.push(obj);
-          })
-          let myObj={
-            "inspectionName": item.name,
-            "stepValues": myCurrStep
-          }
-          stepObj.push(myObj);
-        
-          // You may want to push obj to steps or handle it as needed.
-        }
-      })
-      console.log("stepObj",stepObj)
-      console.log(steps)
-      this.stepObject=stepObj;
-       this.inspectionInstance.stepValues = steps;
-       this.inspectionInstance.inspectionTemplates = this.stepObject;
-       console.log(this.inspectionInstance.stepValues)
-        
+    this.inspectionInstance.stepValues[index].value = isChecked
 
   }
-  updateStepListFromLocalStorage(){
-      
-      this.inspectionInstance.assetId = this.assetId;
-      this.inspectionInstance.companyId = this.companyId;
-      this.inspectionInstance.assetCategoryInspectionName = "";
-      this.selectedItems.forEach((item:any)=>{
-        this.inspectionInstance.assetCategoryInspectionName += item.name + " ";
+  addNote(event: any) {
+    this.inspectionInstance.notes = event.target.value;
+  }
+  selectedInspectionInstanceFunc(data: InspectionInstance) {
+    console.log(data)
+
+
+    data.stepValues
+      ?.forEach((step: { type: string; value: string | boolean; }) => {
+
+        if (typeof step.value === 'string') {
+          step.value = step.value === 'true';
+        }
+
+      });
+
+
+    this.selectedInspectionInstance = data;
+
+    this.inspectionInstance = data;
+    this.inspectionInstance.assetId = this.assetId;
+    this.inspectionInstance.companyId = this.companyId;
+    this.inspectionInstance.actionPerformedBy = this.username;
+
+  }
+  ParseInt(val: string): number {
+    return parseInt(val);
+  }
+  updateInspectionInstance() {
+    console.log(this.selectedInspectionInstance)
+    this.selectedInspectionInstance.notes = this.notedData;
+    this.inspectionInstance.selectedItemList = this.selectedItems;
+    this.assetDetailService.updateAssetInspection(this.selectedInspectionInstance).subscribe((data) => {
+      console.log("Updated Inspection" + data);
+      this.triggerAlert("Inspection updated sucessfully", "success");
+    },
+      (err) => {
+        console.log(err);
+        if (err.error.error === "TRIAL_EXPIRED") {
+          this.triggerAlert(err.error.message, "danger");
+        }
+        else {
+          this.triggerAlert(err.error.errorMessage, "danger");
+        }
+      },
+      () => {
+        this.inspectionInstance.stepValues = [];
+        this.inspectionInstance.notes = '';
+        this.ngOnInit();
       })
+  }
 
-      let steps: any[] = [];
-      let stepObj:any[]=[]
-      // this.selectedItems
-      console.log("updateStepListCalled")
-      console.log("selectedItems",this.selectedItems)
-      this.inspectionInstance.inspectionTemplates.forEach((item:any)=>{
 
-          const stepList= item['stepValues'];
-          
-          let myCurrStep:any[]=[];
-          stepList.forEach((step:any)=>{
-              let obj: any = {
-                name: step['name'],
-                // The following variables (ind, step) are not defined in this context.
-                // You may need to adjust this logic as per your requirements.
-                inspectionStepId: null,
-                value: step['value'],
-                type:step['type']
-              };
+  toggleDropdownLocation() {
+    console.log(this.filteredLocationOrBinList)
+    this.dropdownOpenLocation = !this.dropdownOpenLocation;
+  }
 
-              steps.push(obj);
-              myCurrStep.push(obj);
-          })
-          let myObj={
-            "inspectionName": item.inspectionName,
-            "stepValues": myCurrStep
-          }
-          stepObj.push(myObj);
-        
-          // You may want to push obj to steps or handle it as needed.
-    
+  selectLocationOrBin(locationOrBinId: any, locationOrBin: any) {
+    console.log(locationOrBin)
+    this.selectedLocation = locationOrBin;
+    this.selectedLocationId = locationOrBinId;
+    console.log(this.selectedLocationId)
+    // this.selectedCustomerId=customer.companyCustomerId;
+    this.dropdownOpenLocation = false;
+  }
+  // selectLocationOrBinId(locationOrBinId: any) {
+  //   // console.log(locationOrBinId)
+  //   this.selectedLocationId = locationOrBinId;
+  //   // this.selectedCustomerId=customer.companyCustomerId;
+  //   this.dropdownOpenLocation = false;
+  // }
+  filterLocations(event: Event) {
+    const searchValue = (event.target as HTMLInputElement).value.toLowerCase();
+    console.log("searchValue" + searchValue)
+    this.filteredLocationOrBinList = this.locationWithBins.filter((loc: any) => {
+      const locationMatch = loc.name?.toLowerCase().includes(searchValue);
+
+      const binMatch = loc.bins?.some((bin: any) =>
+        bin.binNumber?.toLowerCase().includes(searchValue)
+      );
+
+      return locationMatch || binMatch;
+    });
+
+  }
+
+
+  updateStepList() {
+    //  console.log(this.currentInspection)
+    //   console.log(this.assetId)
+
+    this.inspectionInstance.assetId = this.assetId;
+    this.inspectionInstance.companyId = this.companyId;
+    // this.inspectionInstance.assetCategoryInspectionId = this.currentInspection.id;
+    this.inspectionInstance.assetCategoryInspectionName = "";
+    this.selectedItems.forEach((item: any) => {
+      this.inspectionInstance.assetCategoryInspectionName += item.name + " ";
+    })
+
+    let steps: any[] = [];
+    let stepObj: any[] = []
+    // this.selectedItems
+    console.log("updateStepListCalled")
+    console.log("selectedItems", this.selectedItems)
+    this.selectedItems.forEach((item: any) => {
+      let inspectionMapValue = this.inspectionMap.get(item.id);
+      console.log("inspectionMapValue", inspectionMapValue)
+      if (inspectionMapValue !== null && inspectionMapValue !== undefined) {
+        const inspectionMap = inspectionMapValue as any;
+        const stepList = inspectionMap['stepsList'];
+
+        let myCurrStep: any[] = [];
+        stepList.forEach((step: any) => {
+          let obj: any = {
+            name: step['name'],
+            // The following variables (ind, step) are not defined in this context.
+            // You may need to adjust this logic as per your requirements.
+            inspectionStepId: null,
+            value: step['type'] == 'CHECKBOX' ? false : '',
+            type: step['type']
+          };
+
+          steps.push(obj);
+          myCurrStep.push(obj);
+        })
+        let myObj = {
+          "inspectionName": item.name,
+          "stepValues": myCurrStep
+        }
+        stepObj.push(myObj);
+
+        // You may want to push obj to steps or handle it as needed.
+      }
+    })
+    console.log("stepObj", stepObj)
+    console.log(steps)
+    this.stepObject = stepObj;
+    this.inspectionInstance.stepValues = steps;
+    this.inspectionInstance.inspectionTemplates = this.stepObject;
+    console.log(this.inspectionInstance.stepValues)
+
+
+  }
+  updateStepListFromLocalStorage() {
+
+    this.inspectionInstance.assetId = this.assetId;
+    this.inspectionInstance.companyId = this.companyId;
+    this.inspectionInstance.assetCategoryInspectionName = "";
+    this.selectedItems.forEach((item: any) => {
+      this.inspectionInstance.assetCategoryInspectionName += item.name + " ";
+    })
+
+    let steps: any[] = [];
+    let stepObj: any[] = []
+    // this.selectedItems
+    console.log("updateStepListCalled")
+    console.log("selectedItems", this.selectedItems)
+    this.inspectionInstance.inspectionTemplates.forEach((item: any) => {
+
+      const stepList = item['stepValues'];
+
+      let myCurrStep: any[] = [];
+      stepList.forEach((step: any) => {
+        let obj: any = {
+          name: step['name'],
+          // The following variables (ind, step) are not defined in this context.
+          // You may need to adjust this logic as per your requirements.
+          inspectionStepId: null,
+          value: step['value'],
+          type: step['type']
+        };
+
+        steps.push(obj);
+        myCurrStep.push(obj);
       })
-      console.log("stepObj",stepObj)
-      console.log(steps)
-      this.stepObject=stepObj;
-       this.inspectionInstance.stepValues = steps;
-       this.inspectionInstance.inspectionTemplates = this.stepObject;
-       console.log(this.inspectionInstance.notes)
-      //  console.log(this.inspectionInstance.stepValues)
-        
+      let myObj = {
+        "inspectionName": item.inspectionName,
+        "stepValues": myCurrStep
+      }
+      stepObj.push(myObj);
+
+      // You may want to push obj to steps or handle it as needed.
+
+    })
+    console.log("stepObj", stepObj)
+    console.log(steps)
+    this.stepObject = stepObj;
+    this.inspectionInstance.stepValues = steps;
+    this.inspectionInstance.inspectionTemplates = this.stepObject;
+    console.log(this.inspectionInstance.notes)
+    //  console.log(this.inspectionInstance.stepValues)
+
 
   }
 
@@ -1342,74 +1298,74 @@ handleClickOutside(event: MouseEvent) {
     console.log(this.selectedItems);
     console.log(items);
     this.selectedItems = items;
-     this.updateStepList();
+    this.updateStepList();
   }
-  onItemDeSelect(items: any){
-console.log(this.selectedItems);
+  onItemDeSelect(items: any) {
+    console.log(this.selectedItems);
     console.log(items);
-     this.updateStepList();
+    this.updateStepList();
   }
-  clearSteps(){
+  clearSteps() {
     this.inspectionInstance.stepValues = [];
   }
-  tempSave(){
-    this.inspectionInstance.actionPerformedBy=this.username;
-      const currDateTime=new Date();
+  tempSave() {
+    this.inspectionInstance.actionPerformedBy = this.username;
+    const currDateTime = new Date();
 
-       if(this.inspectionInstance.createdAt==null || this.inspectionInstance.createdAt==''){
-      this.inspectionInstance.createdAt=currDateTime.toLocaleString();
-      }
-      this.inspectionInstance.updatedAt=currDateTime.toLocaleString();
-      this.inspectionInstance.status='PENDING';
-      this.inspectionInstance.selectedItemList= this.selectedItems;
-      this.assetDetailService.addAssetInspection(this.inspectionInstance).subscribe((data)=>{
-        console.log("Inspection Saved"+data);
-        this.triggerAlert("Inspection saved sucessfully","success");
-        this.selectedItems=[]
-      },
-      (err)=>{
+    if (this.inspectionInstance.createdAt == null || this.inspectionInstance.createdAt == '') {
+      this.inspectionInstance.createdAt = currDateTime.toLocaleString();
+    }
+    this.inspectionInstance.updatedAt = currDateTime.toLocaleString();
+    this.inspectionInstance.status = 'PENDING';
+    this.inspectionInstance.selectedItemList = this.selectedItems;
+    this.assetDetailService.addAssetInspection(this.inspectionInstance).subscribe((data) => {
+      console.log("Inspection Saved" + data);
+      this.triggerAlert("Inspection saved sucessfully", "success");
+      this.selectedItems = []
+    },
+      (err) => {
         console.log(err);
-         if(err.error.error==="TRIAL_EXPIRED"){
-        this.triggerAlert(err.error.message,"danger");
-      }
-      else{
-      this.triggerAlert(err.error.errorMessage,"danger");
-      }
-        this.selectedItems=[]
+        if (err.error.error === "TRIAL_EXPIRED") {
+          this.triggerAlert(err.error.message, "danger");
+        }
+        else {
+          this.triggerAlert(err.error.errorMessage, "danger");
+        }
+        this.selectedItems = []
       },
-      ()=>{
-        this.selectedItems=[]
+      () => {
+        this.selectedItems = []
         this.clearSavedData();
         this.ngOnInit();
       })
-      console.log(this.inspectionInstance)
-      console.log(this.selectedItems)
-      // localStorage.setItem(this.assetId+'tempInspection', JSON.stringify(this.inspectionInstance));
-      // localStorage.setItem(this.assetId+'selectedItems', JSON.stringify(this.selectedItems));
-      this.triggerAlert("Inspection Instance Saved","success");
+    console.log(this.inspectionInstance)
+    console.log(this.selectedItems)
+    // localStorage.setItem(this.assetId+'tempInspection', JSON.stringify(this.inspectionInstance));
+    // localStorage.setItem(this.assetId+'selectedItems', JSON.stringify(this.selectedItems));
+    this.triggerAlert("Inspection Instance Saved", "success");
   }
-  clearSavedData(){
-    localStorage.removeItem(this.assetId+'tempInspection');
-    localStorage.removeItem(this.assetId+'selectedItems');
+  clearSavedData() {
+    localStorage.removeItem(this.assetId + 'tempInspection');
+    localStorage.removeItem(this.assetId + 'selectedItems');
     this.inspectionInstance = new InspectionInstance();
 
     this.selectedItems = [];
-    this.notedData="";
+    this.notedData = "";
   }
-  updateNotedData(data:any){
-    this.notedData=data;
+  updateNotedData(data: any) {
+    this.notedData = data;
   }
 
-  mySelectedInspectionInstanceFunc(instance:any){
+  mySelectedInspectionInstanceFunc(instance: any) {
     console.log("mySelectedInspectionInstanceFunc called")
     console.log(instance)
     this.selectedItems = instance.selectedItemList;
-    this.selectedInspectionInstance=instance;
-    this.inspectionInstance=instance;
-    this.inspectionInstance.assetId=this.assetId;
-    this.inspectionInstance.companyId=this.companyId;
-    this.inspectionInstance.actionPerformedBy=this.username;
-    this.notedData=instance.notes;
+    this.selectedInspectionInstance = instance;
+    this.inspectionInstance = instance;
+    this.inspectionInstance.assetId = this.assetId;
+    this.inspectionInstance.companyId = this.companyId;
+    this.inspectionInstance.actionPerformedBy = this.username;
+    this.notedData = instance.notes;
     this.updateStepListFromLocalStorage();
   }
 }

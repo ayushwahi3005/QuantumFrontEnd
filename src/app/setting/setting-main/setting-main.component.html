@@ -1,93 +1,12 @@
 <div style="background-color: #f5f5f5; height: 100vh">
-  <ul class="nav justify-content-between header">
-
-    <div class="header-centre">
-      <!-- <img src='../../assets/logo.png'> -->
-      <h1>AssetYug</h1>
-    </div>
-
-
-
-
-    <li class="nav-item d-flex align-items-center" style="padding-right: 5px; margin: 15px;gap: 25px;">
-      <b>Welcome</b> <span style="margin-left: -10px;">{{username}}</span>
-
-      <!-- Notification Icon -->
-
-
-
-      <!--  -->
-
-
-      <!-- Profile Dropdown -->
-      <div class="d-flex justify-content-between">
-        <div class="dropdown">
-          <a class="dropdown-toggle" type="button" id="profileDropdown" data-toggle="dropdown"
-            style="text-decoration: none;">
-            <i class="bi bi-person-circle" style="font-size: 20px;"></i>
-          </a>
-          <ul class="dropdown-menu"
-            style="margin-top: 30px; padding: 8px; margin-right: 10px; font-size: 17px; left: -400px; position: absolute;"
-            aria-labelledby="profileDropdown">
-            <b class="dropdown-item" style="text-decoration: none; color: black;">Profile ({{email}})</b>
-            <b class="dropdown-item">More Details</b>
-            <b class="dropdown-item">Contact Support</b>
-          </ul>
-        </div>
-
-        <!-- Notification Dropdown -->
-        <div class="dropdown">
-          <a class="dropdown-toggle demo-section" type="button" id="notificationDropdown" data-toggle="dropdown"
-            style="text-decoration: none;" [matBadge]="unReadCount > 0 ? unReadCount : null" matBadgeOverlap="false"
-            (click)="notificationClick()">
-            <i class="bi bi-bell-fill" matBadgeColor="warn" style="cursor: pointer; font-size: 20px;"></i>
-          </a>
-
-          <ul class="dropdown-menu  shadow" style="margin-top: 30px; width: 300px; left: -400px;"
-            aria-labelledby="notificationDropdown">
-
-            <div class="dropdown-header border-bottom p-3" style="font-size: x-large;">Notifications</div>
-
-
-            <div *ngIf="notificationList && notificationList.length > 0" class="notification-list">
-              <div *ngFor="let item of notificationList" class="py-2 border-bottom p-3 notification-list-item">
-                <div class="d-flex align-items-start mb-1">
-                  <span class="notification-dot me-2 mt-2"></span>
-                  <span class="notification-text flex-grow-1">{{ item?.notification.message }}</span>
-                </div>
-
-                <div class="d-flex justify-content-start mt-2 ms-3">
-                  <small class="text-muted">{{ item?.deliveredAt | timeAgo }}</small>
-                </div>
-              </div>
-            </div>
-
-
-            <div *ngIf="!notificationList || notificationList.length === 0" class="text-muted text-center py-2">
-              No notifications
-            </div>
-
-          </ul>
-
-        </div>
-      </div>
-
-
-
-
-
-      <a (click)="logout()" style="cursor: pointer;">Log out</a>
-      <!-- </span> -->
-    </li>
-
-  </ul>
+  <app-header></app-header>
 
 
   <div class="side-navbar">
     <div class="sidebar-header">
       <div class="back-button">
         <a [routerLink]="['/dashboard']" style="margin-right: 30px; text-decoration: none; font-weight: bold ;"
-          class="backarrow">&larr; Back to Dashboard</a>
+          class="backarrow">&larr; Dashboard</a>
       </div>
       <!-- <hr> -->
       <h2 style="padding: 5px 15px;">Modules</h2>
@@ -115,10 +34,29 @@
     <button type="button" class="btn-close" (click)="showAlert = false" aria-label="Close"
       style="float: right;"></button>
   </div>
-  <!-- <div class="content-area d-flex justify-content-center" style="height: 85vh; overflow-y: scroll;"> -->
-  <div class="content-area d-flex justify-content-center" style=" overflow-y: scroll;">
+  
+  <!-- Trial expiry alert: fixed to the right of the sidebar so it doesn't overlap -->
+  <div *ngIf="showTrialAlert" class="alert alert-warning d-flex align-items-center justify-content-between"
+    style="margin: 10px 5px; height: 60px; position: fixed; width: calc(100vw - 285px); z-index: 101; left: 250px;">
+    <div>
+      <strong>Free trial expiring soon:</strong>
+      <span style="margin-left:8px">Your free trial will expire in {{trialDayLeft}} days. Please subscribe to a plan.</span>
+    </div>
+    <div>
+      <button type="button" class="btn btn-sm btn-outline-secondary" (click)="showTrialAlert = false">Dismiss</button>
+    </div>
+  </div>
 
-    <!-- <app-workorder *ngIf="current==1" ></app-workorder> -->
+  <div class="content-area d-flex justify-content-center" style=" overflow-y: scroll;">
+    <!-- <div class="alert" [ngClass]="'alert-' + alertType" role="alert"
+    style="margin: 10px 2%; height: 60px; position: fixed; width: calc(95vw - 200px); z-index: 100; left: 230px; ">
+   Hello
+
+    <button type="button" class="btn-close" (click)="showAlert = false" aria-label="Close"
+      style="float: right;"></button>
+  </div> -->
+  <!-- <div>
+  <div class="alert alert-danger" style="margin:0px 2%; height: 40px; position: fixed; width: calc(95vw - 200px); left: 230px;">Hellooooo</div> -->
     <div *ngIf="current==1">
 
       <form class="row g-3" [formGroup]="companyInformationForm" (ngSubmit)="addCompanyInformation()">
@@ -189,10 +127,7 @@
         <button type="submit" class="btn btn-primary">Submit</button>
       </form>
     </div>
-    <!-- <app-asset-module *ngIf="current==3"></app-asset-module> -->
-    <!-- <app-users *ngIf="current==6"></app-users> -->
-    <!-- <div *ngIf="current==3" >
-    Hello</div> -->
+
     <app-location *ngIf="current==2"></app-location>
     <app-custom-fields-settings *ngIf="current==3"></app-custom-fields-settings>
     <app-category *ngIf="current==4"></app-category>
@@ -204,6 +139,7 @@
     <app-import-history *ngIf="current==11" style="width: 100%;"></app-import-history>
     <app-inspection-template *ngIf="current==12" style="width: 100%;"></app-inspection-template>
   </div>
+  <!-- </div> -->
 
 
   <div class="modal fade" id="popup" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle"

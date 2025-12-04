@@ -90,12 +90,19 @@
         <i class="bi bi-gear-fill"></i>
         <span>Settings</span>
       </li> -->
-      <li class="nav-list-item" 
-    style="margin-top: 400px; margin-bottom: 20px; position: absolute; bottom: 0;"
-    (click)="openSettings()">
-  <i class="bi bi-gear-fill"></i>
-  <span>Settings</span>
-</li>
+      <li class="free-trial-banner" style="margin-top: 400px; margin-bottom: 20px; position: absolute; bottom: 45px;">
+                  <span *ngIf="!freeTrialDetails.trialExpired"  [attr.style]="currentSubscriptionMessageStyle">
+  {{ currentSubcriptionMessage }}
+</span>
+      </li>
+
+      <li class="nav-list-item" style="margin-top: 400px; margin-bottom: 20px; position: absolute; bottom: 0;"
+        (click)="openSettings()">
+
+        <i class="bi bi-gear-fill"></i>
+        <span>Settings</span>
+
+      </li>
     </ul>
   </div>
   <div class="content-area" [ngClass]="{'content-area-onhover':!hoverOverSidebar}">
@@ -103,6 +110,7 @@
     <app-assets *ngIf="current==2" [ngClass]="{'app-assets-open':!hoverOverSidebar}"></app-assets>
     <app-inventory *ngIf="current==3" [ngClass]="{'app-assets-open':!hoverOverSidebar}"></app-inventory>
     <app-company-customer *ngIf="current==1" [ngClass]="{'app-assets-open':!hoverOverSidebar}"></app-company-customer>
+    <app-asset-insights *ngIf="current==6" [ngClass]="{'app-assets-open':!hoverOverSidebar}"></app-asset-insights>
     <!-- <app-company-customer-details *ngIf="current==6" [ngClass]="{'app-assets-open':!hoverOverSidebar}"></app-company-customer-details> -->
     <div class="loading" style="height: 100vh; width: 500px;" *ngIf="current==undefined||current==null"></div>
 

@@ -1,4 +1,4 @@
-import { Component, ElementRef, inject, signal, ViewChild } from '@angular/core';
+import { ChangeDetectorRef, Component, ElementRef, inject, signal, ViewChild } from '@angular/core';
 import { SubscriptionService } from './subscription.service';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Subscriber } from 'rxjs';
@@ -27,6 +27,7 @@ import { AuthService } from 'src/app/shared/auth.service';
 import { HttpClient } from '@angular/common/http';
 import { MatDialog } from '@angular/material/dialog';
 import { AlertDialogComponent } from 'src/app/shared/alert-dialog/alert-dialog.component';
+import { countryList } from './country';
 
 @Component({
   selector: 'app-subscription',
@@ -87,6 +88,41 @@ export class SubscriptionComponent {
   displayEditCard: boolean = false;
   showSavedCard: boolean = true;
   editCardId: any;
+  currPlanName='Growth';
+
+  selectedCountryCode='United States of America';
+  countryCodeList=countryList;
+  currentSelectedCountryCode='US'
+
+  countryList=[
+  "Canada",
+  "Mexico",
+  "United States of America",
+
+  "Antigua and Barbuda",
+  "The Bahamas",
+  "Barbados",
+  "Cuba",
+  "Dominica",
+  "Dominican Republic",
+  "Grenada",
+  "Haiti",
+  "Jamaica",
+  "Saint Kitts and Nevis",
+  "Saint Lucia",
+  "Saint Vincent and the Grenadines",
+  "Trinidad and Tobago",
+
+  "Belize",
+  "Costa Rica",
+  "El Salvador",
+  "Guatemala",
+  "Honduras",
+  "Nicaragua",
+  "Panama"
+]
+
+  
 private modalInstance: any;
   
   readonly stripe = injectStripe(
@@ -131,7 +167,8 @@ private modalInstance: any;
     private stripeService: StripeService,
     private http: HttpClient,
     private route: ActivatedRoute,
-    private dialog: MatDialog
+    private dialog: MatDialog,
+    private cdr: ChangeDetectorRef
   ) { }
   refresh() {
     this.subcriptionSerive.getCurrSubscription(this.companyId).subscribe(
@@ -201,6 +238,7 @@ private modalInstance: any;
     this.curr_phase = 1;
   }
   ngOnInit() {
+    this.currPlanName='Growth';
     this.route.queryParams.subscribe(params => {
       console.log('Query Params:', params);
       if (params['alertDialog'] === 'true') {
@@ -209,6 +247,7 @@ private modalInstance: any;
          setTimeout(() => this.openPaymentDialog(), 300);
       }
     });
+    
     this.companyId = localStorage.getItem('companyId');
     this.displayEditCard = false;
     this.showSavedCard = true;
@@ -261,6 +300,7 @@ private modalInstance: any;
       zipcode: ['', [Validators.required]],
       city: ['', [Validators.required]],
       state: ['', [Validators.required]],
+      country:['United States of America',[Validators.required]],
       amount: [''],
     });
     const amount = this.checkoutForm.get('amount')?.value;
@@ -337,11 +377,13 @@ private modalInstance: any;
     this.basicAnnualDiscount = 10;
     this.curr_amount = this.basicMonthlyCharge;
     this.basicIsMonthly = true;
+    this.stateList = [];
     this.basicMonthClick();
-    this.subcriptionSerive.stateList().subscribe((data) => {
-      this.stateList = data;
-      console.log('stateList-------->' + this.stateList);
-    });
+    this.getStateList(this.selectedCountryCode);
+    // this.subcriptionSerive.stateList().subscribe((data) => {
+    //   this.stateList = data;
+    //   console.log('stateList-------->' + this.stateList);
+    // });
 
     // this.subcriptionSerive
     //   .createPaymentIntent({
@@ -390,6 +432,7 @@ private modalInstance: any;
       address: '',
       zipcode: '',
       city: '',
+      country:'',
       state: '',
     });
   }
@@ -461,7 +504,7 @@ private modalInstance: any;
             this.subscription = new Subscription();
             this.subscription.companyId = this.companyId;
             this.subscription.person = this.person;
-            this.subscription.plan = 'basic duo';
+            this.subscription.plan = 'Growth';
             this.subscription.amount = this.res_amount;
             this.subscription.status = SubscriptionEnum.ACTIVE;
             this.subscription.subscriptionDate = new Date();
@@ -547,6 +590,7 @@ private modalInstance: any;
             postal_code: this.checkoutForm.controls['zipcode'].value,
             state: this.checkoutForm.controls['state'].value,
             city: this.checkoutForm.controls['city'].value,
+            country: this.countryCodeList[this.checkoutForm.controls['country'].value]||'',
           },
         },
       })
@@ -563,7 +607,8 @@ private modalInstance: any;
               this.person,
               plan,
               this.res_amount,
-              this.checkoutForm.controls['name'].value
+              this.checkoutForm.controls['name'].value,
+              this.currPlanName
             )
             .subscribe(
               (data) => {
@@ -1076,7 +1121,8 @@ private modalInstance: any;
         this.person,
         plan,
         this.res_amount,
-        this.checkoutForm.controls['name'].value
+        this.checkoutForm.controls['name'].value,
+        this.currPlanName
       )
       .subscribe(
         (data) => {
@@ -1149,11 +1195,11 @@ private modalInstance: any;
       <div style="display: flex; justify-content: space-between; margin-bottom: 10px;">
         <div>
           <div style="font-weight: bold;">Item</div>
-          <div style="font-size: 12px; color: #555;">BASIC ${item.planSelected} PLAN</div>
+          <div style="font-size: 12px; color: #555;">GROWTH ${item.planSelected} PLAN</div>
         </div>
         <div>
            <div style="font-weight: bold;">$${item.amount.toFixed(2)}</div>
-           <div style="font-size: 12px; color: #555;">${item.person} Person</div>
+           <div style="font-size: 12px; color: #555;">${item.person} User(s)</div>
         </div>
       </div>
 
@@ -1250,5 +1296,22 @@ private modalInstance: any;
     }
     }
   }
+
+ getStateList(country: any) {
+  this.currentSelectedCountryCode=countryList[country]||'';
+
+
+  this.subcriptionSerive.countryStateList(country).subscribe(
+    (data) => {
+      this.stateList = data;
+      this.checkoutForm.get('state')?.setValue('');   // reset state
+
+      this.cdr.detectChanges();               // prevents ExpressionChanged error
+    },
+    (err) => {
+      console.log(err);
+    }
+  );
+}
 
 }

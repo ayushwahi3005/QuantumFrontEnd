@@ -39,7 +39,7 @@ import { CustomFieldsSettingsComponent } from './setting/custom-fields-settings/
 import { TickAnimationComponent } from './tick-animation/tick-animation.component';
 import { AssetPreviewComponent } from './sidebar/asset-preview/asset-preview.component';
 import { ImportComponent } from './setting/import/import.component';
-
+import { AssetInsightsComponent } from './sidebar/Analytics/asset-insights/asset-insights.component';
 
 import {MatSlideToggleModule} from '@angular/material/slide-toggle';
 import { WorkorderModuleComponent } from './setting/workorder-module/workorder-module.component';
@@ -144,7 +144,8 @@ import { HeaderComponent } from './header/header.component';
     TimeAgoPipe,
     PageNotFoundComponent,
     CustomersComponent,
-    HeaderComponent
+    HeaderComponent,
+    AssetInsightsComponent
     
    
   ],

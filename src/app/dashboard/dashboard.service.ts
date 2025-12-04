@@ -37,6 +37,7 @@ import { DashboardComponent } from './dashboard.component';
 export class DashboardService {
   private componentMethodCallSource = new BehaviorSubject<any>(null);
   componentMethodCalled$ = this.componentMethodCallSource.asObservable();
+   subscriptionEndpoint=environment.endpoint+"subscription/"
 
   // Service method to emit data
   callComponentMethod(data: any) {
@@ -70,21 +71,15 @@ export class DashboardService {
     const headers = new HttpHeaders().set('Authorization', `Bearer ${localStorage.getItem('authToken')}`).set('device-id', `${localStorage.getItem('deviceId')}`);;
     return this.httpClient.get(this.endpoint+'customer/getCompanyInformation/'+email,{ headers });
   }
-
-  //  getNotification(email:any):Observable<any>{
-  //   const headers = new HttpHeaders().set('Authorization', `Bearer ${localStorage.getItem('authToken')}`).set('device-id', `${localStorage.getItem('deviceId')}`);;
-  //   return this.httpClient.get(this.endpoint+'notification/user/'+email,{ headers });
-  // }
-  //   updateNotification(notificationList:any,email:any):Observable<any>{
-  //   const headers = new HttpHeaders().set('Authorization', `Bearer ${localStorage.getItem('authToken')}`).set('device-id', `${localStorage.getItem('deviceId')}`);;
-  //   return this.httpClient.post(this.endpoint+'notification/user/'+email,notificationList,{
-  //      headers,
-  //       responseType: 'text' as 'json'
-  //      });
-  // }
- 
+  getFreeTrailDetails(companyId: any): Observable<any> {
+      const headers = new HttpHeaders().set('Authorization', `Bearer ${localStorage.getItem('authToken')}`).set('device-id', `${localStorage.getItem('deviceId')}`);;
+      return this.httpClient.get(this.endpoint + 'customer/trial-status-details/' + companyId, { headers });
   
-
-
+    }
+     getCurrSubscription(companyId:any):Observable<any>{
+    const headers = new HttpHeaders().set('Authorization', `Bearer ${localStorage.getItem('authToken')}`).set('device-id', `${localStorage.getItem('deviceId')}`);;
+      
+        return this.httpClient.get(this.subscriptionEndpoint+'currentSubscription/'+companyId, { headers });
+      }
 }
 

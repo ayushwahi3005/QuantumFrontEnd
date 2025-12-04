@@ -11,6 +11,7 @@ export class Subscription{
     expiryDate!:any;
     subscriptionPlan!:SubscriptionPlan
     amount!:number;
+    subscriptionName!:string;
  
 
 

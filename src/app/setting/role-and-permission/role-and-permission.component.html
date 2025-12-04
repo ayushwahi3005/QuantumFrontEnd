@@ -86,7 +86,7 @@
         <div class="modal-header" style="padding: 13px 15px">
           <h2 class="modal-title" id="exampleModalLongTitle" style="margin:0; display: flex; justify-content: center;">Create Role</h2>
         
-          <button type="button" class="btn btn-light btn-sm ms-auto" data-dismiss="modal" aria-label="Close" style="border-radius: 10px; border: 1px solid #c0c0c0;--bs-btn-bg: white" #closeBox>
+          <button type="button" class="btn btn-light btn-sm ms-auto" data-dismiss="modal" aria-label="Close" style="border-radius: 10px; border: 1px solid #c0c0c0;--bs-btn-bg: white" #closeBoxAddPermission>
             <!-- <span aria-hidden="true">&times;</span> -->
             <i class="bi bi-x-lg"></i>
           </button>
@@ -150,7 +150,7 @@
               </tr>
             
               <!-- <hr> -->
-              <tr class="form-group">
+              <!-- <tr class="form-group">
                 <td>
                 <label for="workOrders">Work Orders</label>
               </td>
@@ -166,7 +166,7 @@
                 </select>
                 </div>
               </td>
-              </tr>
+              </tr> -->
               <!-- <hr> -->
               <tr class="form-group">
                 <td>
@@ -240,7 +240,7 @@
               </td>
               </tr>
               <!-- <hr> -->
-              <tr class="form-group">
+              <!-- <tr class="form-group">
               <td>
                 <label for="inventory">Inventory</label>
               </td>
@@ -256,16 +256,16 @@
                 </select>
               </div>
               </td>
-            </tr>
+            </tr> -->
            
             </table>
             
             <!-- <button type="submit" class="btn btn-primary mt-3" (click)="closeBox.click()" [disabled]="workorderform.invalid">Submit</button> -->
             <div style="display: flex; justify-content: center; margin-top: 15px;">
             
-            <button class="btn btn-light" data-dismiss="modal" aria-label="Close" (click)="closeBox.click()" style="margin: 10px; width: 100px; margin-right: 30px; border: 1px solid #c0c0c0" >Cancel</button>
+            <button class="btn btn-light" data-dismiss="modal" aria-label="Close"  style="margin: 10px; width: 100px; margin-right: 30px; border: 1px solid #c0c0c0" >Cancel</button>
             <!-- <button type="submit" class="btn btn-primary mt-2" (click)="closeBox.click()" [disabled]="roleAndPermissionForm.invalid" style="margin: 10px; width: 100px;">Save</button> -->
-             <button type="submit" class="btn btn-primary mt-2" (click)="closeBox.click()"  style="margin: 10px; width: 100px;">Save</button>
+             <button type="submit" class="btn btn-primary mt-2" (click)="closeBoxAddPermission.click()"  style="margin: 10px; width: 100px;">Save</button>
             </div>
           </form>
          

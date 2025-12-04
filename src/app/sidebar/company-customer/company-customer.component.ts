@@ -1,4 +1,4 @@
-import { Component, ElementRef, OnDestroy, ViewChild } from '@angular/core';
+import { ChangeDetectorRef, Component, ElementRef, OnDestroy, ViewChild } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { CompanyCustomerService } from './company-customer.service';
 import { CompanyCustomer } from './company-cutomer';
@@ -12,6 +12,7 @@ import { DashboardComponent } from 'src/app/dashboard/dashboard.component';
 import { CategoryName } from './categoryName';
 import { Subscription } from 'rxjs';
 import { NavigationStart, Router } from '@angular/router';
+import { countryList } from 'src/app/setting/subscription/country';
 
 @Component({
   selector: 'app-company-customer',
@@ -85,7 +86,38 @@ export class CompanyCustomerComponent implements OnDestroy{
   stateList=[]
   asc:Boolean=true;
    private routerSubscription!: Subscription;
-  constructor(private formBuilder:FormBuilder,private companyCustomerService:CompanyCustomerService,private dashboard:DashboardComponent,private router: Router){
+   selectedCountryCode='United States of America';
+     countryCodeList=countryList;
+     currentSelectedCountryCode='US'
+   
+     countryList=[
+     "Canada",
+     "Mexico",
+     "United States of America",
+   
+     "Antigua and Barbuda",
+     "The Bahamas",
+     "Barbados",
+     "Cuba",
+     "Dominica",
+     "Dominican Republic",
+     "Grenada",
+     "Haiti",
+     "Jamaica",
+     "Saint Kitts and Nevis",
+     "Saint Lucia",
+     "Saint Vincent and the Grenadines",
+     "Trinidad and Tobago",
+   
+     "Belize",
+     "Costa Rica",
+     "El Salvador",
+     "Guatemala",
+     "Honduras",
+     "Nicaragua",
+     "Panama"
+   ]
+  constructor(private formBuilder:FormBuilder,private companyCustomerService:CompanyCustomerService,private dashboard:DashboardComponent,private router: Router, private cdr: ChangeDetectorRef){
 this.routerSubscription = this.router.events.subscribe(event => {
       if (event instanceof NavigationStart) {
         // Run only when navigating to /setting-home
@@ -119,6 +151,7 @@ this.routerSubscription = this.router.events.subscribe(event => {
       apartment: [''],
       city: [''],
       state: [''],
+      country: ['United States of America'],
       zipCode: ['', Validators.pattern('^[a-z0-9]{6}$')]
     });
   
@@ -147,6 +180,7 @@ this.routerSubscription = this.router.events.subscribe(event => {
     this.showMandatoryBasicFields=new Map<string,Boolean>();
     this.email=localStorage.getItem('user');
     this.userRole=localStorage.getItem('role');
+    this.getStateList(this.selectedCountryCode);
     
     this.mandatoryFieldsMap = new Map<string, boolean>();
     this.showFieldsMap = new Map<string, boolean>();
@@ -808,6 +842,23 @@ advanceFilterFunc() {
     if (event.key === 'Enter') {
       this.searchClick();
     }
+  }
+  getStateList(country: any) {
+    this.currentSelectedCountryCode=countryList[country]||'';
+  
+  
+    this.companyCustomerService.countryStateList(country).subscribe(
+      (data) => {
+        this.stateList = data;
+        this.companyCustomerForm.get('state')?.setValue('');
+           // reset state
+  
+        this.cdr.detectChanges();               // prevents ExpressionChanged error
+      },
+      (err) => {
+        console.log(err);
+      }
+    );
   }
  
 }

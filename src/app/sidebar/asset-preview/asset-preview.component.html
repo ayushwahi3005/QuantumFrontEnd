@@ -2,307 +2,399 @@
 
 
 
-<div  class="loading" *ngIf="loading" >
+<div class="loading" *ngIf="loading">
 </div>
 
-<div class="side-navbar"  (mouseover)="onHover()" (mouseleave)="offHover()" [ngClass]="{'nav-list-open':hoverOverSidebar}" >
-  <ul class="nav-list"  >
-  <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="currentColor" class="bi bi-list" viewBox="0 0 16 16" style="margin-left: 10px;"> 
-    <path fill-rule="evenodd" d="M2.5 12a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5zm0-4a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5zm0-4a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5z"/>
-  </svg>
-  <hr >
-  <li class="nav-list-item" *ngFor="let item of sideBarOption"  [ngClass]="{'selected':(current==item.number)}" (click)="update(item.number)"  >
-    
-    <i class={{item.icon}} style="color:white;"></i>
-    <span >
-      
-      {{item.name}}
-    </span>
-  
-  </li>
-  <!-- <hr style="margin: 0.5rem 0;"> -->
+<div class="side-navbar" (mouseover)="onHover()" (mouseleave)="offHover()"
+  [ngClass]="{'nav-list-open':hoverOverSidebar}">
+  <ul class="nav-list">
+    <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="currentColor" class="bi bi-list"
+      viewBox="0 0 16 16" style="margin-left: 10px;">
+      <path fill-rule="evenodd"
+        d="M2.5 12a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5zm0-4a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5zm0-4a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5z" />
+    </svg>
+    <hr>
+    <li class="nav-list-item" *ngFor="let item of sideBarOption" [ngClass]="{'selected':(current==item.number)}"
+      (click)="update(item.number)">
+
+      <i class={{item.icon}} style="color:white;"></i>
+      <span>
+
+        {{item.name}}
+      </span>
+
+    </li>
+    <!-- <hr style="margin: 0.5rem 0;"> -->
 
 
-  <li  class="nav-list-item" style=" position: absolute; bottom: 0;" [routerLink]="['/setting-home']">
-    <i class="bi bi-gear-fill" style="color:white;"></i>
-    <span >Settings</span>
-  </li>
+    <li class="nav-list-item" style=" position: absolute; bottom: 0;" [routerLink]="['/setting-home']">
+      <i class="bi bi-gear-fill" style="color:white;"></i>
+      <span>Settings</span>
+    </li>
 
-  <!-- <li  class="nav-list-item" [routerLink]="['/setting-home']">
+    <!-- <li  class="nav-list-item" [routerLink]="['/setting-home']">
     <i class="bi bi-gear-fill" style="color:white;"></i>
     <span >Settings</span>
   </li> -->
 
-</ul>
+  </ul>
 </div>
 
 
 <div class="content-area" [ngClass]="{'content-area-onhover':!hoverOverSidebar}">
-  
-  <div *ngIf="showAlert" class="alert" [ngClass]="'alert-' + alertType" role="alert" style="margin: 5px; position: fixed; width: 95%; z-index: 10000;">
+
+  <div *ngIf="showAlert" class="alert" [ngClass]="'alert-' + alertType" role="alert"
+    style="margin: 5px; position: fixed; width: 95%; z-index: 10000;">
     {{ alertMessage }}
     <!-- Optionally, add a close button -->
-    <button type="button" class="btn-close" (click)="showAlert = false" aria-label="Close" style="float: right;"></button>
+    <button type="button" class="btn-close" (click)="showAlert = false" aria-label="Close"
+      style="float: right;"></button>
   </div>
 
-  <div style="display: flex; flex-direction: column; width: calc(100vw);" >
+  <div style="display: flex; flex-direction: column; width: calc(100vw);">
     <div class="back-button" style="padding: 0;">
       <div class="d-flex justify-content-between" style="padding: 3px 20px 5px 20px;">
-        <div  style="margin-right: 30px;display: flex; justify-content: center; align-items: center;">
-          <a  (click)="onBack()" style="margin-right: 20px; font-size: large;" id="asset-back"  >&larr; Back to Assets</a>
+        <div style="margin-right: 30px;display: flex; justify-content: center; align-items: center;">
+          <a (click)="onBack()" style="margin-right: 20px; font-size: large;" id="asset-back">&larr; Back to Assets</a>
           <div class="v1"></div>
-          <div style="margin: 0; font-size: larger; color: black;"><b style="margin-left: 20px;">{{assetDetails?.name|titlecase}}</b></div>
+          <div style="margin: 0; font-size: larger; color: black;"><b
+              style="margin-left: 20px;">{{assetDetails?.name|titlecase}}</b></div>
         </div>
-      
-      <!-- <div class="d-flex justify-content-around"> -->
-      <div class="button-container">
-        <button class="centered-button btn btn-primary submit" style="margin: 5px; padding: 7px 28px;" (click)="edit()" >Edit</button>
-        <!-- <button class="btn btn-primary" data-toggle="modal" data-target="#popup" style="margin: 5px;">Save</button> -->
-      </div>
-      
+
+        <!-- <div class="d-flex justify-content-around"> -->
+        <div class="button-container">
+          <button class="centered-button btn btn-primary submit" style="margin: 5px; padding: 7px 28px;"
+            (click)="edit()">Edit</button>
+          <!-- <button class="btn btn-primary" data-toggle="modal" data-target="#popup" style="margin: 5px;">Save</button> -->
+        </div>
+
       </div>
     </div>
     <div class="d-flex justify-content-center" *ngIf="!loading" style="margin-top: 15px;">
-  
+
       <!-- <div class="back-button">
         <a  (click)="onBack()" style="margin-right: 30px;"  >&larr; Back to Assets</a>
       </div> -->
-    
-      
-        <div style="margin-top: 10px; color:  #74777a;" >
-          
-          
-          
-            <div class="card mt-2" style="margin-bottom: 40px;">
 
-              <div class="d-flex justify-content-around">
-                <h1 style="display: flex; justify-content: center; margin-top: 10px; width: 95%;">Asset Details</h1>
-                <i class="bi bi-qr-code" style="display: flex; flex-direction: row-reverse; width: 5%; float: right; margin-top: 15px;font-size: x-large;margin-right: 15px;cursor: pointer;" data-target="#qrPopUp" data-toggle="modal" ></i>
-              </div>
-              
-              <div class="d-flex justify-content-around" style="color: #717275; font-size: 16px;">
-                <img src="../../../assets/asset_image.jpg" class="image" *ngIf="!assetDetails?.image" data-toggle="modal"><img src={{assetDetails.image}} class="image" data-toggle="modal" *ngIf="assetDetails?.image"  >
-                
-                <div style="margin-top: 30px;margin-left: 30px;">
-                  <div style="margin: 0px 2vw;">
-                    <label for="name" style="color: black; font-weight: bold;">Name<span *ngIf="mandatoryFieldsMap.get('name')" class="text-danger">*</span></label>
-                    <!-- <input type="text"  id="name"   [(ngModel)]=" companyCustomer.name" disabled> -->
-                    <div style="margin: 10px;">
-                    <p *ngIf="assetDetails?.name" style="word-wrap: break-word; word-break: break-word; max-width: 20vw; white-space: normal;">{{assetDetails.name|titlecase}}</p>
-                    <p *ngIf="!assetDetails?.name">&nbsp; </p>
-                    <hr style="width: 20vw;">
-                    </div>
-                  </div>
-    
-                  <div style="margin: 0px 2vw;">
-                    <label for="name" style="color: black; font-weight: bold;">Serial Number<span *ngIf="mandatoryFieldsMap.get('name')" class="text-danger">*</span></label>
-                    <!-- <input type="text"  id="name"   [(ngModel)]=" companyCustomer.name" disabled> -->
-                    <div style="margin: 10px;">
-                    <p *ngIf="assetDetails?.serialNumber" style="word-wrap: break-word; word-break: break-word; max-width: 20vw; white-space: normal;">{{assetDetails.serialNumber}}</p>
-                    <p *ngIf="!assetDetails?.serialNumber">&nbsp; </p>
-                    <hr style="width: 20vw;">
-                    </div>
-                  </div>
-                  <div style="margin: 0px 2vw;">
-                    <label for="name" style="color: black; font-weight: bold;">Category<span *ngIf="mandatoryFieldsMap.get('name')" class="text-danger">*</span></label>
-                    <!-- <input type="text"  id="name"   [(ngModel)]=" companyCustomer.name" disabled> -->
-                    <div style="margin: 10px;">
-                    <p *ngIf="assetDetails?.category">{{assetDetails.category|titlecase}}</p>
-                    <p *ngIf="!assetDetails?.category">&nbsp; </p>
-                    <hr style="width: 20vw;">
-                    </div>
-                  </div>
+
+      <div style="margin-top: 10px; color:  #74777a;">
+
+
+
+        <div class="card mt-2" style="margin-bottom: 40px;">
+
+          <div class="d-flex justify-content-around">
+            <h1 style="display: flex; justify-content: center; margin-top: 10px; width: 95%;">Asset Details</h1>
+            <i class="bi bi-qr-code"
+              style="display: flex; flex-direction: row-reverse; width: 5%; float: right; margin-top: 15px;font-size: x-large;margin-right: 15px;cursor: pointer;"
+              data-target="#qrPopUp" data-toggle="modal"></i>
+          </div>
+
+          <div class="d-flex justify-content-around" style="color: #717275; font-size: 16px;">
+            <img src="../../../assets/asset_image.jpg" class="image" *ngIf="!assetDetails?.image"
+              data-toggle="modal"><img src={{assetDetails.image}} class="image" data-toggle="modal"
+              *ngIf="assetDetails?.image">
+
+            <div style="margin-top: 30px;margin-left: 30px;">
+              <div style="margin: 0px 2vw;">
+                <label for="name" style="color: black; font-weight: bold;">Name<span
+                    *ngIf="mandatoryFieldsMap.get('name')" class="text-danger">*</span></label>
+                <!-- <input type="text"  id="name"   [(ngModel)]=" companyCustomer.name" disabled> -->
+                <div style="margin: 10px;">
+                  <p *ngIf="assetDetails?.name"
+                    style="word-wrap: break-word; word-break: break-word; max-width: 20vw; white-space: normal;">
+                    {{assetDetails.name|titlecase}}</p>
+                  <p *ngIf="!assetDetails?.name">&nbsp; </p>
+                  <hr style="width: 20vw;">
                 </div>
-               <div style="margin-top: 30px;">
-                <div style="margin: 0px 2vw;">
-                  <label for="name" style="color: black; font-weight: bold;">Customer<span *ngIf="mandatoryFieldsMap.get('name')" class="text-danger">*</span></label>
-                  <!-- <input type="text"  id="name"   [(ngModel)]=" companyCustomer.name" disabled> -->
-                  <div style="margin: 10px;">
+              </div>
+
+              <div style="margin: 0px 2vw;">
+                <label for="name" style="color: black; font-weight: bold;">Serial Number<span
+                    *ngIf="mandatoryFieldsMap.get('name')" class="text-danger">*</span></label>
+                <!-- <input type="text"  id="name"   [(ngModel)]=" companyCustomer.name" disabled> -->
+                <div style="margin: 10px;">
+                  <p *ngIf="assetDetails?.serialNumber"
+                    style="word-wrap: break-word; word-break: break-word; max-width: 20vw; white-space: normal;">
+                    {{assetDetails.serialNumber}}</p>
+                  <p *ngIf="!assetDetails?.serialNumber">&nbsp; </p>
+                  <hr style="width: 20vw;">
+                </div>
+              </div>
+              <div style="margin: 0px 2vw;">
+                <label for="name" style="color: black; font-weight: bold;">Category<span
+                    *ngIf="mandatoryFieldsMap.get('name')" class="text-danger">*</span></label>
+                <!-- <input type="text"  id="name"   [(ngModel)]=" companyCustomer.name" disabled> -->
+                <div style="margin: 10px;">
+                  <p *ngIf="assetDetails?.category">{{assetDetails.category|titlecase}}</p>
+                  <p *ngIf="!assetDetails?.category">&nbsp; </p>
+                  <hr style="width: 20vw;">
+                </div>
+              </div>
+            </div>
+            <div style="margin-top: 30px;">
+              <div style="margin: 0px 2vw;">
+                <label for="name" style="color: black; font-weight: bold;">Customer<span
+                    *ngIf="mandatoryFieldsMap.get('name')" class="text-danger">*</span></label>
+                <!-- <input type="text"  id="name"   [(ngModel)]=" companyCustomer.name" disabled> -->
+                <div style="margin: 10px;">
                   <p *ngIf="assetDetails?.customer">{{assetDetails.customer|titlecase}}</p>
                   <p *ngIf="!assetDetails?.customer">&nbsp; </p>
                   <hr style="width: 20vw;">
-                  </div>
                 </div>
-              
-               
-                
-                <div style="margin: 0px 2vw;">
-                  <label for="name" style="color: black; font-weight: bold;">Location<span *ngIf="mandatoryFieldsMap.get('name')" class="text-danger">*</span></label>
-                  <!-- <input type="text"  id="name"   [(ngModel)]=" companyCustomer.name" disabled> -->
-                  <div style="margin: 10px;">
-                  <p *ngIf="assetDetails?.location" style="word-wrap: break-word; word-break: break-word; max-width: 20vw; white-space: normal;">{{assetDetails.location|titlecase}}</p>
+              </div>
+
+
+
+              <div style="margin: 0px 2vw;">
+                <label for="name" style="color: black; font-weight: bold;">Location<span
+                    *ngIf="mandatoryFieldsMap.get('name')" class="text-danger">*</span></label>
+                <!-- <input type="text"  id="name"   [(ngModel)]=" companyCustomer.name" disabled> -->
+                <div style="margin: 10px;">
+                  <p *ngIf="assetDetails?.location"
+                    style="word-wrap: break-word; word-break: break-word; max-width: 20vw; white-space: normal;">
+                    {{assetDetails.location|titlecase}}</p>
                   <p *ngIf="!assetDetails?.location">&nbsp; </p>
                   <hr style="width: 20vw;">
-                  </div>
                 </div>
-               
-                
-                
-               
-                
-                <!-- <p class="card-text">Status<br><input type="text" value="{{assetDetails ? assetDetails.status : ''}}" class="status"  disabled></p> -->
-                <div style="margin: 0px 2vw;">
-                  <label for="name" style="color: black; font-weight: bold;">Status<span *ngIf="mandatoryFieldsMap.get('name')" class="text-danger">*</span></label>
-                  <!-- <input type="text"  id="name"   [(ngModel)]=" companyCustomer.name" disabled> -->
-                  <div style="margin: 10px;">
+              </div>
+
+
+
+
+
+              <!-- <p class="card-text">Status<br><input type="text" value="{{assetDetails ? assetDetails.status : ''}}" class="status"  disabled></p> -->
+              <div style="margin: 0px 2vw;">
+                <label for="name" style="color: black; font-weight: bold;">Status<span
+                    *ngIf="mandatoryFieldsMap.get('name')" class="text-danger">*</span></label>
+                <!-- <input type="text"  id="name"   [(ngModel)]=" companyCustomer.name" disabled> -->
+                <div style="margin: 10px;">
                   <p *ngIf="assetDetails?.status">
-                        <span *ngIf="assetDetails.status=='active'">Active</span>
-                        <span *ngIf="assetDetails.status=='inactive'">Inactive</span>
-                        <span *ngIf="assetDetails.status=='outofservice'">Out of Service</span>
+                    <span *ngIf="assetDetails.status=='active'">Active</span>
+                    <span *ngIf="assetDetails.status=='inactive'">Inactive</span>
+                    <span *ngIf="assetDetails.status=='outofservice'">Out of Service</span>
                   </p>
                   <p *ngIf="!assetDetails?.status">&nbsp; </p>
                   <hr style="width: 20vw;">
                 </div>
               </div>
-               
-              </div>
-                
-              
-                
-        
-                
-              </div>
+
             </div>
 
 
-            <!-- <div class="option d-flex flex-row bd-highlight mb-4"> -->
-            <!-- <div class="option d-flex flex-row mb-3" style="color: black"> -->
-            <div class="option d-flex flex-row bd-highlight " style="width: 100%; margin: 30px auto;color: black;">
-              <span [ngClass]="{'selected-option':(currOption==1),'subTab':(currOption!=1)}" (click)="onClick(1)">Check In/Out</span>
-              <span [ngClass]="{'selected-option':(currOption==6),'subTab':(currOption!=6)}" (click)="onClick(6)">Inspection</span>
-              <span [ngClass]="{'selected-option':(currOption==2),'subTab':(currOption!=2)}" (click)="onClick(2)">Files</span>
-              <!-- <span [ngClass]="{'selected-option':(currOption==3),'subTab':(currOption!=3)}" (click)="onClick(3)">Work Orders</span> -->
-              <!-- <span [ngClass]="{'selected-option':(currOption==4),'subTab':(currOption!=4)}" (click)="onClick(4)">Parts</span> -->
-              <span [ngClass]="{'selected-option':(currOption==5),'subTab':(currOption!=5)}" (click)="onClick(5)">Custom</span>
+
+
+
+          </div>
+        </div>
+
+
+        <!-- <div class="option d-flex flex-row bd-highlight mb-4"> -->
+        <!-- <div class="option d-flex flex-row mb-3" style="color: black"> -->
+        <div class="option d-flex flex-row bd-highlight " style="width: 100%; margin: 30px auto;color: black;">
+          <span [ngClass]="{'selected-option':(currOption==1),'subTab':(currOption!=1)}" (click)="onClick(1)">Check
+            In/Out</span>
+          <span [ngClass]="{'selected-option':(currOption==6),'subTab':(currOption!=6)}"
+            (click)="onClick(6)">Inspection</span>
+          <span [ngClass]="{'selected-option':(currOption==2),'subTab':(currOption!=2)}"
+            (click)="onClick(2)">Files</span>
+          <!-- <span [ngClass]="{'selected-option':(currOption==3),'subTab':(currOption!=3)}" (click)="onClick(3)">Work Orders</span> -->
+          <!-- <span [ngClass]="{'selected-option':(currOption==4),'subTab':(currOption!=4)}" (click)="onClick(4)">Parts</span> -->
+          <span [ngClass]="{'selected-option':(currOption==5),'subTab':(currOption!=5)}"
+            (click)="onClick(5)">Custom</span>
+        </div>
+
+        <div class="card mt-2" *ngIf="currOption==1">
+
+          <div class="card-body">
+
+            <div class="d-flex justify-content-between align-items-center">
+              <div>
+                <!-- <button class="btn btn-light" style="padding: 2px 5px; margin-right: 5px;">Current Status : </button> -->
+                <label style="padding: 5px 5px; margin-right: 5px;">Current Status :</label> <span
+                  [ngClass]="{'checkedIn-status':((checkInOut.length==0)||(checkInOut[0].status=='Checked In')),'checkedOut-status':((checkInOut.length>0)&&(checkInOut[0].status=='Checked Out'))}">{{(checkInOut.length==0)
+                  ? 'Checked In': checkInOut[0].status}}</span>
+              </div>
+              <button data-target="#checkInOut"
+                [ngClass]="{'danger-button':((checkInOut.length==0)||(checkInOut[0].status=='Checked In')),'btn btn-primary':((checkInOut.length>0)&&(checkInOut[0].status=='Checked Out'))}"
+                data-toggle="modal">{{(checkInOut.length==0) ? 'Check Out': (checkInOut[0].status=='Checked In' ? 'Check
+                Out':'Check In')}}</button>
             </div>
 
-            <div class="card mt-2" *ngIf="currOption==1">
-      
-              <div class="card-body">
-                
-                <div class="d-flex justify-content-between align-items-center">
-                  <div>
-                    <!-- <button class="btn btn-light" style="padding: 2px 5px; margin-right: 5px;">Current Status : </button> -->
-                    <label style="padding: 5px 5px; margin-right: 5px;">Current Status :</label> <span  [ngClass]="{'checkedIn-status':((checkInOut.length==0)||(checkInOut[0].status=='Checked In')),'checkedOut-status':((checkInOut.length>0)&&(checkInOut[0].status=='Checked Out'))}">{{(checkInOut.length==0) ? 'Checked In': checkInOut[0].status}}</span>
+            <table class="table" id="asset-detial table" *ngIf="(checkInOut.length!=0)"
+              style="margin-top: 10px;font-size: 15px;">
+              <thead class="table-dark">
+                <tr>
+
+                  <th scope="col">Status</th>
+                  <th scope="col">Date</th>
+                  <th scope="col">Employee</th>
+                  <th scope="col">Notes</th>
+                  <th scope="col">Location</th>
+
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let item of checkInOut[0].detailsList">
+
+                  <td>{{item.status}}</td>
+
+                  <td>{{ item.updateTime | date: 'yyyy-MM-dd HH:mm:ss' }}
+                  </td>
+                  <td>{{item.employee|titlecase}}</td>
+                  <td class="notes-cell">{{item.notes|titlecase}}</td>
+                  <td>{{item.location|titlecase}}</td>
+
+
+
+
+                </tr>
+
+              </tbody>
+            </table>
+
+          </div>
+        </div>
+
+        <div class="card mt-2" *ngIf="currOption==6">
+
+          <div class="card-body">
+
+            <div class="d-flex justify-content-between align-items-center">
+
+              <div class="ms-auto">
+                <button class="btn btn-primary" style="height: 38px; max-width: 150px; width: 100%;" data-toggle="modal"
+                  data-target="#inspection">+ Inspection</button>
+              </div>
+
+            </div>
+
+            <div class="modal fade" id="inspection" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle"
+              aria-hidden="true">
+              <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                  <div class="modal-header" style="padding: 13px 15px;">
+                    <h2 class="modal-title" style="margin:0; display: flex; justify-content: center;"
+                      id="exampleModalLongTitle">Add Inspection</h2>
+                    <button type="button" class="close ms-auto" data-dismiss="modal" aria-label="Close"
+                      style="border-radius: 10px; border: 1px solid #c0c0c0;--bs-btn-bg: white" #closeBox>
+                      <i class="bi bi-x-lg"></i>
+                    </button>
                   </div>
-                    <button data-target="#checkInOut" [ngClass]="{'danger-button':((checkInOut.length==0)||(checkInOut[0].status=='Checked In')),'btn btn-primary':((checkInOut.length>0)&&(checkInOut[0].status=='Checked Out'))}"  data-toggle="modal">{{(checkInOut.length==0) ? 'Check Out': (checkInOut[0].status=='Checked In' ? 'Check Out':'Check In')}}</button>
-                </div>
 
-                <table class="table" id="asset-detial table" *ngIf="(checkInOut.length!=0)" style="margin-top: 10px;font-size: 15px;">
-                  <thead class="table-dark">
-                      <tr >
-                         
-                          <th scope="col">Status</th>
-                          <th scope="col">Date</th>
-                          <th scope="col">Employee</th>
-                          <th scope="col">Notes</th>
-                          <th scope="col">Location</th>
-           
-                        </tr>
-                  </thead>
-                  <tbody>
-                      <tr *ngFor="let item of checkInOut[0].detailsList">
-                         
-                          <td>{{item.status}}</td>
-                         
-                          <td>{{ item.updateTime | date: 'yyyy-MM-dd HH:mm:ss' }}
-                          </td>
-                          <td>{{item.employee|titlecase}}</td>
-                          <td class="notes-cell">{{item.notes|titlecase}}</td>
-                          <td>{{item.location|titlecase}}</td>
-                          
-                          
-                          
-                          
-                        </tr>
-                       
-                  </tbody>
-                </table>
-        
-              </div>
-            </div>
+                  <div class="modal-body">
 
-            <div class="card mt-2" *ngIf="currOption==6">
+                    <ng-multiselect-dropdown 
+                    [placeholder]="'Inspection List'" 
+                    [settings]="dropdownSettings"
+                    [data]="dropdownList" 
+                    [(ngModel)]="selectedItems" 
+                    (onSelect)="onItemSelect($event)"
+                    (onSelectAll)="onSelectAll($event)" (onDeSelect)="onItemDeSelect($event)">
+                    </ng-multiselect-dropdown>
+                    <div *ngIf="this.selectedItems.length > 0">
+                      <div *ngFor="let myStep of stepObject">
+                        <h1>{{ myStep.inspectionName }}</h1>
+                        <table class="table" id="asset-detial table">
+                          <thead class="table-dark text-center">
+                            <tr>
 
-              <div class="card-body">
 
-                <div class="d-flex justify-content-between align-items-center">
+                              <th scope="col">#Step</th>
 
-                    <div class="ms-auto">
-                      <button class="btn btn-primary" style="height: 38px; max-width: 120px; width: 100%;" data-toggle="modal" data-target="#inspection">+ Inspection</button>
-                    </div>
+                              <th scope="col">Name</th>
+                              <th scope="col">Value</th>
 
-                </div>
 
-                <div class="modal fade" id="inspection" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle" aria-hidden="true">
-                  <div class="modal-dialog" role="document">
-                    <div class="modal-content">
-                      <div class="modal-header" style="padding: 13px 15px;">
-                        <h2 class="modal-title" style="margin: 0; display: flex; justify-content: center;" id="exampleModalLongTitle">Add Inspection</h2>
-                        <button type="button" class="btn btn-light btn-sm ms-auto" data-dismiss="modal" aria-label="Close" style="border-radius: 10px;" #closeBox3>
-                          <b class="bi bi-x-lg"></b>
-                        </button>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            <tr *ngFor="let step of myStep.stepValues; let i = index" style="height:50px">
+                              <td>{{i+1}}</td>
+                              <td>{{ step.name }}</td>
+                              <td>
+                                <ng-container *ngIf="step.type === 'CHECKBOX'; else elseBlock">
+
+                                  <!-- <input
+                        type="checkbox"
+                        [checked]="inspectionInstance.steps[i]?.value"
+                        (change)="handleStepCheckox($event,i,step.type)"> -->
+
+                                  <!-- <mat-checkbox  [color]="checkBoxColor"  (change)="handleStepCheckox($event.checked,i,step.type)" ></mat-checkbox> -->
+                                  <mat-checkbox [color]="checkBoxColor" [(ngModel)]="step.value"></mat-checkbox>
+                                </ng-container>
+
+                                <ng-template #elseBlock>
+                                  <!-- <input 
+                      [type]="step.type || 'TEXT'" 
+                     
+                     
+                      (change)="handleStepChange($event, i, step.type)"
+                    /> -->
+                                  <input [type]="step.type || 'TEXT'" [(ngModel)]="step.value" />
+                                </ng-template>
+
+                              </td>
+                            </tr>
+
+
+
+                          </tbody>
+                        </table>
                       </div>
-                      <div class="modal-body">
-                        <form >
-
-                          <div>
-                          <label>Template<span class="text-danger"> *</span></label>
-                          <select class="form-select form-control" id="technician"  #employeeName>
-                          
-                            <option value="number" >12-point inspection<i class="bi bi-123" style="color: black;"></i></option>
-                            
-                          </select>
-                          </div>
-
-                          <div style="display:flex; justify-content:center; margin-top: 15px;">
-                  
-                            <button class="btn btn-light" (click)="closeBox3.click()" (click)="employeeName.value=''" (click)="notes.value=''" (click)="location.value=''" style="margin: 10px; border: 1px solid #c0c0c0; width: 100px; margin-right: 30px;">Cancel</button>
-                            <button class="btn btn-primary" (click)="CheckInOutSubmit(employeeName.value,notes.value,location.value)" (click)="closeBox3.click()" (click)="employeeName.value=''" (click)="notes.value=''" (click)="location.value=''" style="margin: 10px; width: 100px;">Next</button>
-                           </div> 
-                        </form>
-                       
-                      </div>
+                      Notes<input type="text" [ngModel]="this.inspectionInstance.notes" (change)="addNote($event)">
                     </div>
                   </div>
+                  <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <!-- <button type="button" class="btn btn-secondary" (click)="clearSavedData()" (click)="closeBox.click()">Clear</button> -->
+                    <button type="button" class="btn btn-primary" (click)="saveInpectionValue()"
+                      (click)="closeBox.click()" [disabled]="this.selectedItems.length==0">Submit</button>
+                    <button type="button" class="btn btn-primary" (click)="tempSave()" (click)="closeBox.click()"
+                      [disabled]="this.selectedItems.length==0">Save changes</button>
+
+                  </div>
                 </div>
-
-                <table class="table" id="asset-detial table" *ngIf="(checkInOut.length!=0)" style="margin-top: 10px;font-size: 15px;">
-                  <thead class="table-dark">
-                      <tr >
-                         
-                          <th scope="col">Date</th>
-                          <th scope="col">Inspection Template</th>
-                          <th scope="col">Performed By</th>
-                          <th scope="col">Notes</th>
-           
-                        </tr>
-                  </thead>
-                  <tbody>
-                      <tr *ngFor="let item of checkInOut[0].detailsList">
-                         
-                          <td>{{ item.updateTime | date: 'yyyy-MM-dd HH:mm:ss' }}</td>
-                          <td>{{item.notes|titlecase}}</td>
-                          <td>{{item.employee|titlecase}}</td>
-                          <td>{{item.location|titlecase}}</td>
-                          
-                        </tr>
-                       
-                  </tbody>
-                </table>
-
               </div>
-
             </div>
 
-            <div class="card mt-2" *ngIf="currOption==2">
-              <!-- <h1 style="display: flex; justify-content: center; margin-top: 10px;">Files</h1> -->
-              <div class="card-body">
-                <!-- <div>
+            <table class="table" id="asset-detial table" *ngIf="(checkInOut.length!=0)"
+              style="margin-top: 10px;font-size: 15px;">
+              <thead class="table-dark">
+                <tr>
+
+                  <th scope="col">Date</th>
+                  <th scope="col">Inspection Template</th>
+                  <th scope="col">Performed By</th>
+                  <th scope="col">Notes</th>
+
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let item of checkInOut[0].detailsList">
+
+                  <td>{{ item.updateTime | date: 'yyyy-MM-dd HH:mm:ss' }}</td>
+                  <td>{{item.notes|titlecase}}</td>
+                  <td>{{item.employee|titlecase}}</td>
+                  <td>{{item.location|titlecase}}</td>
+
+                </tr>
+
+              </tbody>
+            </table>
+
+          </div>
+
+        </div>
+
+        <div class="card mt-2" *ngIf="currOption==2">
+          <!-- <h1 style="display: flex; justify-content: center; margin-top: 10px;">Files</h1> -->
+          <div class="card-body">
+            <!-- <div>
                   <input type="file" (change)="fileUpload($event)"  #imageFile>
                   
                 </div> -->
-                <!-- <div class="progress my-3" *ngIf="currentFile">
+            <!-- <div class="progress my-3" *ngIf="currentFile">
                   <div
                     class="progress-bar progress-bar-info progress-bar-striped"
                     role="progressbar"
@@ -315,104 +407,118 @@
                   </div>
                   
                 </div> -->
-                <div *ngFor="let item of fileInfos">
-                <div class="d-flex justify-content-between" style="margin: 5px;">
-                  
-                  <span style="font-size: large;">{{item.fileName|titlecase}}</span>
-                  <div>
-                   
-                    <a (click)="download(item.id,item.fileName)"  style="margin: 0px 5px;cursor: pointer;"><i class="bi bi-file-earmark-arrow-down"></i></a>
-                    <a (click)="itemDeleteDetails(item.id)" data-target="#popupDelete" data-toggle="modal" style="margin: 0px 5px;cursor: pointer;"><i class="bi bi-trash-fill delete"></i></a>
-                    
-                  </div>
-                </div>
+            <div *ngFor="let item of fileInfos">
+              <div class="d-flex justify-content-between" style="margin: 5px;">
+
+                <span style="font-size: large;">{{item.fileName|titlecase}}</span>
+                <div>
+
+                  <a (click)="download(item.id,item.fileName)" style="margin: 0px 5px;cursor: pointer;"><i
+                      class="bi bi-file-earmark-arrow-down"></i></a>
+                  <a (click)="itemDeleteDetails(item.id)" data-target="#popupDelete" data-toggle="modal"
+                    style="margin: 0px 5px;cursor: pointer;"><i class="bi bi-trash-fill delete"></i></a>
+
                 </div>
               </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="card mt-2" *ngIf="currOption==3">
+          <!-- <h1 style="display: flex; justify-content: center; margin-top: 10px;">WOs</h1> -->
+          <div class="card-body">
+            <table class="table" id="asset-table" *ngIf="workOrderList?.length">
+              <thead class="table-dark">
+                <tr>
+                  <th scope="col">#</th>
+                  <th scope="col">Description</th>
+                  <th scope="col">Customer</th>
+                  <th scope="col">Status</th>
+                  <th scope="col">Priority</th>
+                  <th scope="col">Assigned Technician</th>
+
+
+
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let item of workOrderList">
+                  <th scope="row">{{workOrderList.indexOf(item)+1}}</th>
+
+
+                  <td style="color: black;"><b>{{item.description|titlecase}}</b></td>
+                  <td>{{item.customer|titlecase}}</td>
+                  <td>
+                    <div class="onhold" *ngIf='(item.status=="onHold")'></div>
+                    <div class="open" *ngIf='(item.status=="open")'></div>
+                    <div class="inprogress" *ngIf='(item.status=="inProgress")'></div>
+                    <div class="closed" *ngIf='(item.status=="closed")'></div>{{item.status|titlecase}}
+                  </td>
+                  <td>
+                    <div style="border-radius: 4px;"
+                      [ngClass]="{'low':(item.priority  =='Low'),'medium':(item.priority=='Medium'),'high':(item.priority=='High'),'none':(item.priority=='None')}">
+                      {{item.priority}}</div>
+                  </td>
+
+                  <td>{{item.assignedTechnician|titlecase}}</td>
+
+
+
+
+                </tr>
+
+              </tbody>
+            </table>
+
+
+
+
+
+          </div>
+        </div>
+        <div class="card mt-2" *ngIf="currOption==4">
+          <!-- <h1 style="display: flex; justify-content: center; margin-top: 10px;">Parts</h1> -->
+          <!-- <div class="card-body">Parts</div> -->
+        </div>
+
+
+        <div class="card mt-2" *ngIf="currOption==5">
+          <!-- <h1 style="display: flex; justify-content: center; margin-top: 10px;">Custom Fields</h1> -->
+          <div class="card-body">
+
+
+
+            <div>
+              <div *ngFor="let item of extraFieldName">
+                <div *ngIf="!extraFieldString.includes(item.name) && showFieldsMap.get(item.name)">
+                  <span>{{item.name|titlecase}}<span *ngIf="mandatoryFieldsMap.get(item.name) "
+                      class="text-danger">*</span></span>
+                  <input id="value" type="{{item.type}}" [(ngModel)]="extraFieldValue[extraFieldName.indexOf(item)]"
+                    disabled>
+
+                </div>
+              </div>
+
+            </div>
+            <div>
+              <div *ngFor="let item of extraFields">
+                <div *ngIf="showFieldsMap.get(item.name)">
+                  <span>{{item.name|titlecase}}<span *ngIf="mandatoryFieldsMap.get(item.name) "
+                      class="text-danger">*</span></span>
+                  <input id="value" type="{{item.type}}" [(ngModel)]="item.value" disabled>
+
+                </div>
+              </div>
+
+
             </div>
 
-            <div class="card mt-2" *ngIf="currOption==3">
-              <!-- <h1 style="display: flex; justify-content: center; margin-top: 10px;">WOs</h1> -->
-              <div class="card-body">
-                <table class="table" id="asset-table" *ngIf="workOrderList?.length">
-                  <thead class="table-dark">
-                      <tr>
-                          <th scope="col">#</th>
-                          <th scope="col">Description</th>
-                          <th scope="col">Customer</th>                 
-                          <th scope="col">Status</th>
-                          <th scope="col">Priority</th>
-                          <th scope="col">Assigned Technician</th>
-                         
-                         
-                          
-                        </tr>
-                  </thead>
-                  <tbody>
-                      <tr *ngFor="let item of workOrderList"  >
-                          <th scope="row">{{workOrderList.indexOf(item)+1}}</th>
-                          
-                    
-                          <td style="color: black;"><b>{{item.description|titlecase}}</b></td>
-                          <td>{{item.customer|titlecase}}</td>
-                          <td><div class="onhold" *ngIf='(item.status=="onHold")'></div><div class="open" *ngIf='(item.status=="open")'></div><div class="inprogress" *ngIf='(item.status=="inProgress")'></div><div class="closed" *ngIf='(item.status=="closed")'></div>{{item.status|titlecase}}</td>
-                          <td ><div style="border-radius: 4px;" [ngClass]="{'low':(item.priority  =='Low'),'medium':(item.priority=='Medium'),'high':(item.priority=='High'),'none':(item.priority=='None')}">{{item.priority}}</div></td>
-                        
-                          <td>{{item.assignedTechnician|titlecase}}</td>
-                         
-                         
-                          
-                          
-                        </tr>
-                       
-                  </tbody>
-                </table>
-        
-        
-        
-        
-        
-              </div>
-            </div>
-            <div class="card mt-2" *ngIf="currOption==4">
-              <!-- <h1 style="display: flex; justify-content: center; margin-top: 10px;">Parts</h1> -->
-              <!-- <div class="card-body">Parts</div> -->
-            </div>
-        
-        
-            <div class="card mt-2" *ngIf="currOption==5">
-              <!-- <h1 style="display: flex; justify-content: center; margin-top: 10px;">Custom Fields</h1> -->
-              <div class="card-body">
-        
-              
-                
-                <div > 
-                <div *ngFor="let item of extraFieldName" >
-                  <div *ngIf="!extraFieldString.includes(item.name) && showFieldsMap.get(item.name)">
-                    <span>{{item.name|titlecase}}<span *ngIf="mandatoryFieldsMap.get(item.name) " class="text-danger">*</span></span>
-                    <input id="value" type="{{item.type}}" [(ngModel)]="extraFieldValue[extraFieldName.indexOf(item)]" disabled>
-                    
-                  </div>
-                </div>
-               
-              </div>
-              <div >
-                <div *ngFor="let item of extraFields" >
-                    <div *ngIf="showFieldsMap.get(item.name)">
-                    <span>{{item.name|titlecase}}<span *ngIf="mandatoryFieldsMap.get(item.name) " class="text-danger">*</span></span>
-                    <input id="value" type="{{item.type}}" [(ngModel)]="item.value" disabled>
-                    
-                    </div>
-                </div>
-               
-               
-              </div>
-                
-              </div>
-            </div>
-        
-          
-            
-            <!-- <div class="modal fade" id="popup" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle" aria-hidden="true">
+          </div>
+        </div>
+
+
+
+        <!-- <div class="modal fade" id="popup" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle" aria-hidden="true">
               <div class="modal-dialog" role="document">
                 <div class="modal-content">
                   <div class="modal-header">
@@ -432,7 +538,7 @@
                 </div>
               </div>
             </div> -->
-            <!-- <div class="modal fade" id="imageUploadModel1" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle" aria-hidden="true">
+        <!-- <div class="modal fade" id="imageUploadModel1" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle" aria-hidden="true">
               <div class="modal-dialog" role="document">
                 <div class="modal-content">
                   <div class="modal-header">
@@ -452,7 +558,7 @@
                 </div>
               </div>
             </div> -->
-            <!-- <div class="modal fade" id="assetdeleteModel" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle" aria-hidden="true">
+        <!-- <div class="modal fade" id="assetdeleteModel" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle" aria-hidden="true">
               <div class="modal-dialog" role="document">
                 <div class="modal-content">
                   <div class="modal-header">
@@ -471,9 +577,9 @@
                 </div>
               </div>
             </div> -->
-            
-          </div>
-          <!-- <div class="nav-button" >
+
+      </div>
+      <!-- <div class="nav-button" >
            
             <button class="btn btn-primary" data-toggle="modal" data-target="#popup" >Save</button>
             
@@ -482,13 +588,13 @@
            
          
           </div> -->
-        
-        </div>
+
+    </div>
   </div>
 
-    
-  </div>
-    <!-- <div class="modal fade" id="popup2" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle" aria-hidden="true">
+
+</div>
+<!-- <div class="modal fade" id="popup2" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle" aria-hidden="true">
       <div class="modal-dialog" role="document">
         <div class="modal-content">
           <div class="modal-header d-flex justify-content-center">
@@ -508,136 +614,155 @@
 
 <!-- Check In/Out -->
 
-    <div class="modal fade" id="checkInOut" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle" aria-hidden="true">
-      <div class="modal-dialog" role="document">
-        <div class="modal-content">
-          <div class="modal-header" style="padding: 13px 15px;">
-            <h2 class="modal-title" style="margin: 0; display: flex; justify-content: center;" id="exampleModalLongTitle">Check In/Out Details</h2>
-            <button type="button" class="btn btn-light btn-sm ms-auto" data-dismiss="modal" aria-label="Close" style="border-radius: 10px;" #closeBox3>
-              <b class="bi bi-x-lg"></b>
-            </button>
-          </div>
-          <div class="modal-body">
-            <!-- <form > -->
+<div class="modal fade" id="checkInOut" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle"
+  aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header" style="padding: 13px 15px;">
+        <h2 class="modal-title" style="margin: 0; display: flex; justify-content: center;" id="exampleModalLongTitle">
+          Check In/Out Details</h2>
+        <button type="button" class="btn btn-light btn-sm ms-auto" data-dismiss="modal" aria-label="Close"
+          style="border-radius: 10px;" #closeBox3>
+          <b class="bi bi-x-lg"></b>
+        </button>
+      </div>
+      <div class="modal-body">
+        <!-- <form > -->
 
-              <div>
-              <label>Employee<span class="text-danger"> *</span></label>
-              <select class="form-select form-control" id="technician"  #employeeName>
-              
-                <option value="{{technician.firstName}}  {{technician.lastName}}" *ngFor="let technician of technicalUserList">{{technician.firstName}} {{technician.lastName}}</option>
-                
-              </select>
-              </div>
-              <br>
+        <div>
+          <label>Employee<span class="text-danger"> *</span></label>
+          <select class="form-select form-control" id="technician" #employeeName>
 
-              <div>
-              <label>Notes<span class="text-danger"> *</span></label>
-              <textarea id="textArea" class="form-control" #notes></textarea>
-              </div>
-              <br>
-              
-              <div>
-              <label>Location</label>
-              <input type="text" class="form-control" #location>
-              </div>
+            <option value="{{technician.firstName}}  {{technician.lastName}}"
+              *ngFor="let technician of technicalUserList">{{technician.firstName}} {{technician.lastName}}</option>
 
-              <div style="display:flex; justify-content:center; margin-top: 15px;">
-      
-                <button class="btn btn-light" (click)="closeBox3.click()" (click)="employeeName.value=''" (click)="notes.value=''" (click)="location.value=''" style="margin: 10px; border: 1px solid #c0c0c0; width: 100px; margin-right: 30px;">Cancel</button>
-                <button class="btn btn-primary" (click)="CheckInOutSubmit(employeeName.value,notes.value,location.value)" (click)="closeBox3.click()" (click)="employeeName.value=''" (click)="notes.value=''" (click)="location.value=''" style="margin: 10px; width: 100px;">Submit</button>
-               </div> 
-            <!-- </form> -->
-           
-          </div>
+          </select>
         </div>
+        <br>
+
+        <div>
+          <label>Notes<span class="text-danger"> *</span></label>
+          <textarea id="textArea" class="form-control" #notes></textarea>
+        </div>
+        <br>
+
+        <div>
+          <label>Location</label>
+          <input type="text" class="form-control" #location>
+        </div>
+
+        <div style="display:flex; justify-content:center; margin-top: 15px;">
+
+          <button class="btn btn-light" (click)="closeBox3.click()" (click)="employeeName.value=''"
+            (click)="notes.value=''" (click)="location.value=''"
+            style="margin: 10px; border: 1px solid #c0c0c0; width: 100px; margin-right: 30px;">Cancel</button>
+          <button class="btn btn-primary" (click)="CheckInOutSubmit(employeeName.value,notes.value,location.value)"
+            (click)="closeBox3.click()" (click)="employeeName.value=''" (click)="notes.value=''"
+            (click)="location.value=''" style="margin: 10px; width: 100px;">Submit</button>
+        </div>
+        <!-- </form> -->
+
       </div>
     </div>
+  </div>
+</div>
 
 <!-- Deleting an attachment -->
 
-    <div class="modal fade" id="popupDelete" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle" aria-hidden="true">
-      <div class="modal-dialog" role="document">
-        <div class="modal-content">
-          <div class="modal-header" style="padding: 13px 15px;">
-            <h2 class="modal-title" style="margin: 0; display: flex; justify-content: center;">Confirm Delete</h2>
-            <button type="button" class="btn btn-light btn-sm ms-auto" data-dismiss="modal" aria-label="Close" style="border-radius: 10px;" #closeBox4>
-              <b class="bi bi-x-lg"></b>
-            </button>
-          </div>
-          <div class="d-flex justify-content-center">
-            <div class="modal-body">
+<div class="modal fade" id="popupDelete" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle"
+  aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header" style="padding: 13px 15px;">
+        <h2 class="modal-title" style="margin: 0; display: flex; justify-content: center;">Confirm Delete</h2>
+        <button type="button" class="btn btn-light btn-sm ms-auto" data-dismiss="modal" aria-label="Close"
+          style="border-radius: 10px;" #closeBox4>
+          <b class="bi bi-x-lg"></b>
+        </button>
+      </div>
+      <div class="d-flex justify-content-center">
+        <div class="modal-body">
 
-              <h3>Are you sure you want to delete this file '<strong></strong>'?</h3>
+          <h3>Are you sure you want to delete this file '<strong></strong>'?</h3>
 
-                <div class="d-flex justify-content-center" style="margin-top: 15px;">
-                <button class="btn btn-light" data-dismiss="modal" style="margin: 10px; border: 1px solid #c0c0c0; width: 100px; margin-right: 30px;" aria-label="Close" (click)="closeBox4.click()">Cancel</button>
-              <button class="btn btn-danger" (click)="deleteFile()" style="margin: 10px; width: 100px" (click)="closeBox4.click()">Delete</button>
-                </div>
-             
-            </div>
-           
+          <div class="d-flex justify-content-center" style="margin-top: 15px;">
+            <button class="btn btn-light" data-dismiss="modal"
+              style="margin: 10px; border: 1px solid #c0c0c0; width: 100px; margin-right: 30px;" aria-label="Close"
+              (click)="closeBox4.click()">Cancel</button>
+            <button class="btn btn-danger" (click)="deleteFile()" style="margin: 10px; width: 100px"
+              (click)="closeBox4.click()">Delete</button>
           </div>
+
         </div>
+
       </div>
     </div>
+  </div>
+</div>
 
 <!-- View/Download QR Code -->
 
-    <div class="modal fade" id="qrPopUp" tabindex="-1" role="dialog"  aria-hidden="true">
-      <div class="modal-dialog" role="document" style="max-width: 450px; width: 100%;">
-        <div class="modal-content">
-          <div class="modal-header" style="padding: 13px 15px;">
-            <h2 class="modal-title" style="margin: 0; display: flex; justify-content: center;">Download QR</h2>
-            <button type="button" class="btn btn-light btn-sm ms-auto" data-dismiss="modal" aria-label="Close" style="border-radius: 10px;" #closeBox4>
-              <b class="bi bi-x-lg"></b>
-            </button>
-          </div>
-          <div class="d-flex ">
-            <div class="modal-body justify-content-around">
-              
-              <div class="d-flex justify-content-around qr" >
-           
-            
-                <div class="qr first"  id="myqr" *ngIf="qr?.type=='1'">
-                  <div class="inside">
-                      <p style="display: flex; justify-content: center; padding-top: 5px; margin-bottom: 0px;">{{qr.custom}}</p>
-                      <qrcode [qrdata]="qrData" [width]="200" [errorCorrectionLevel]="'M'" style="display: flex; justify-content: center;"></qrcode>
-                      <p style="display: flex; justify-content: center;">{{qr.optional}}</p>
-                  </div>
+<div class="modal fade" id="qrPopUp" tabindex="-1" role="dialog" aria-hidden="true">
+  <div class="modal-dialog" role="document" style="max-width: 450px; width: 100%;">
+    <div class="modal-content">
+      <div class="modal-header" style="padding: 13px 15px;">
+        <h2 class="modal-title" style="margin: 0; display: flex; justify-content: center;">Download QR</h2>
+        <button type="button" class="btn btn-light btn-sm ms-auto" data-dismiss="modal" aria-label="Close"
+          style="border-radius: 10px;" #closeBox4>
+          <b class="bi bi-x-lg"></b>
+        </button>
+      </div>
+      <div class="d-flex ">
+        <div class="modal-body justify-content-around">
+
+          <div class="d-flex justify-content-around qr">
+
+
+            <div class="qr first" id="myqr" *ngIf="qr?.type=='1'">
+              <div class="inside">
+                <p style="display: flex; justify-content: center; padding-top: 5px; margin-bottom: 0px;">{{qr.custom}}
+                </p>
+                <qrcode [qrdata]="qrData" [width]="200" [errorCorrectionLevel]="'M'"
+                  style="display: flex; justify-content: center;"></qrcode>
+                <p style="display: flex; justify-content: center;">{{qr.optional}}</p>
               </div>
-              <div class="qr second " *ngIf="qr?.type=='2'"  id="myqr" style="display: flex;">
-                  <div class="inside d-flex justify-content-around" >
-                      <qrcode [qrdata]="qrData" [width]="200" [errorCorrectionLevel]="'M'" style="margin: auto 0px;"></qrcode>
-                      <div style="margin: auto; width: 70px; margin-left: 30px; " >
-                          <p style="font-family: Copperplate Gothic Light; font-weight: bolder;text-align: center;margin: auto; margin-bottom: 13px; ">AssetYug</p>
-                          <p style="width: 70px; justify-content: center;">Serial#: <b> {{assetDetails.serialNumber}}</b></p>
-                          <p style="width: 70px; justify-content: center;">{{qr.optional}}</p>
-        
-                      </div>
-                  </div>
-              </div>
-        
-              
-              </div>
-              <div class="d-flex justify-content-center" style="margin-top: 15px;">
-                <div>
-                  <label>Please Select Size </label>
-                  <select style="margin: 10px; margin-right: 80px;" [(ngModel)]="qrSize" #size>
-                    <option value="3">3 x 3</option>
-                    <option value="5">5 x 5</option>
-                    <option value="7">7 x 7</option>
-                  </select>
-                </div>
-                <button (click)="downloadQR()" class="btn btn-success" style="float: right; align-self: center;" >Download</button>
-              </div>
-              
-             
             </div>
-           
-            
-            
-           
+            <div class="qr second " *ngIf="qr?.type=='2'" id="myqr" style="display: flex;">
+              <div class="inside d-flex justify-content-around">
+                <qrcode [qrdata]="qrData" [width]="200" [errorCorrectionLevel]="'M'" style="margin: auto 0px;"></qrcode>
+                <div style="margin: auto; width: 70px; margin-left: 30px; ">
+                  <p
+                    style="font-family: Copperplate Gothic Light; font-weight: bolder;text-align: center;margin: auto; margin-bottom: 13px; ">
+                    AssetYug</p>
+                  <p style="width: 70px; justify-content: center;">Serial#: <b> {{assetDetails.serialNumber}}</b></p>
+                  <p style="width: 70px; justify-content: center;">{{qr.optional}}</p>
+
+                </div>
+              </div>
+            </div>
+
+
           </div>
+          <div class="d-flex justify-content-center" style="margin-top: 15px;">
+            <div>
+              <label>Please Select Size </label>
+              <select style="margin: 10px; margin-right: 80px;" [(ngModel)]="qrSize" #size>
+                <option value="3">3 x 3</option>
+                <option value="5">5 x 5</option>
+                <option value="7">7 x 7</option>
+              </select>
+            </div>
+            <button (click)="downloadQR()" class="btn btn-success"
+              style="float: right; align-self: center;">Download</button>
+          </div>
+
+
         </div>
+
+
+
+
       </div>
     </div>
+  </div>
+</div>

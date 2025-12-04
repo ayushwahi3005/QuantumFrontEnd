@@ -15,85 +15,88 @@ import { NotificationService } from 'src/app/notification/notification.service';
 })
 export class SettingMainComponent {
   @ViewChild('lottieAnimation') lottieAnimationContainer!: ElementRef;
-  email:any='';
-  current:number=1;
-  username:any='';
-  companyInformationForm!:FormGroup;
-  companyImage:any;
-  companyInformation!:CompanyInformation;
-  companyId!:any;
-  role:any;
+  email: any = '';
+  current: number = 1;
+  username: any = '';
+  companyInformationForm!: FormGroup;
+  companyImage: any;
+  companyInformation!: CompanyInformation;
+  companyId!: any;
+  role: any;
   showAlert: boolean = false; // Flag to toggle alert visibility
   alertMessage: string = ''; // Alert message
   alertType: string = 'success';
-    unReadCount:number=0;
-    private notificationSubject = new Subject<string>();
-    notificationList:Notification[]=[];
-    
-  sideBarOption=[
+  showTrialAlert: boolean = false; // Flag for trial expiry alert in template
+  unReadCount: number = 0;
+  private notificationSubject = new Subject<string>();
+  notificationList: Notification[] = [];
+  trialStatus:any;
+  trialDayLeft!:number;
+  currentSubscription:any;
+  sideBarOption = [
     // {
-  //   number:1,
-  //   name:'Company Information',
-  //   icon:'bi bi-bookshelf'
-  // },
-  // {
-  //   number:2,
-  //   name:'Locations and Bins',
-  //   icon:'bi bi-geo-alt-fill'
-  // },
+    //   number:1,
+    //   name:'Company Information',
+    //   icon:'bi bi-bookshelf'
+    // },
+    // {
+    //   number:2,
+    //   name:'Locations and Bins',
+    //   icon:'bi bi-geo-alt-fill'
+    // },
 
-  // {
-  //   number:3,
-  //   name:'Custom Fields',
-  //   icon:'bi bi-boxes'
-  // },
-  // {
-  //   number:4,
-  //   name:'Categories',
-  //   icon:'bi bi-boxes'
-  // },
-  //   {
-  //   number:12,
-  //   name:'Inspection Template',
-  //   icon:'bi bi-boxes'
-  // },
-  // {
-  //   number:5,
-  //   name:'Import',
-  //   icon:'bi bi-journal-text'
-  // },
-  // {
-  //   number:11,
-  //   name:'Import History',
-  //   icon:'bi bi-clock-history'
-  // },
-  // {
-  //   number:6,
-  //   name:'Roles and Permissions',
-  //   icon:'bi bi-person'
-  // },
-  // {
-  //   number:7,
-  //   name:'Users',
-  //   icon:'bi bi-people-fill'
-  // },
-  // {
-  //   number:8,
-  //   name:'Labor Rates',
-  //   icon:'bi bi-currency-dollar'
-  // },
-  // {
-  //   number:9,
-  //   name:'Subscription',
-  //   icon:'bi bi-clipboard-check'
-  // },
-  // {
-  //   number:10,
-  //   name:'Asset QR code',
-  //   icon:'bi bi-qr-code'
-  // }
+    // {
+    //   number:3,
+    //   name:'Custom Fields',
+    //   icon:'bi bi-boxes'
+    // },
+    // {
+    //   number:4,
+    //   name:'Categories',
+    //   icon:'bi bi-boxes'
+    // },
+    //   {
+    //   number:12,
+    //   name:'Inspection Template',
+    //   icon:'bi bi-boxes'
+    // },
+    // {
+    //   number:5,
+    //   name:'Import',
+    //   icon:'bi bi-journal-text'
+    // },
+    // {
+    //   number:11,
+    //   name:'Import History',
+    //   icon:'bi bi-clock-history'
+    // },
+    // {
+    //   number:6,
+    //   name:'Roles and Permissions',
+    //   icon:'bi bi-person'
+    // },
+    // {
+    //   number:7,
+    //   name:'Users',
+    //   icon:'bi bi-people-fill'
+    // },
+    // {
+    //   number:8,
+    //   name:'Labor Rates',
+    //   icon:'bi bi-currency-dollar'
+    // },
+    // {
+    //   number:9,
+    //   name:'Subscription',
+    //   icon:'bi bi-clipboard-check'
+    // },
+    // {
+    //   number:10,
+    //   name:'Asset QR code',
+    //   icon:'bi bi-qr-code'
+    // }
 
-   { number: 1, name: 'Company Information', icon: 'bi bi-bookshelf', tab: 'company' },
+    { number: 1, name: 'Company Information', icon: 'bi bi-bookshelf', tab: 'company' },
     { number: 2, name: 'Locations and Bins', icon: 'bi bi-geo-alt-fill', tab: 'location' },
     { number: 3, name: 'Custom Fields', icon: 'bi bi-boxes', tab: 'custom-fields' },
     { number: 4, name: 'Categories', icon: 'bi bi-boxes', tab: 'category' },
@@ -104,18 +107,18 @@ export class SettingMainComponent {
     { number: 7, name: 'Users', icon: 'bi bi-people-fill', tab: 'users' },
     { number: 9, name: 'Subscription', icon: 'bi bi-clipboard-check', tab: 'subscription' },
     { number: 10, name: 'Asset QR code', icon: 'bi bi-qr-code', tab: 'asset-qr' },
-  
-];
-constructor(private settingMainService:SettingMainService,private auth:AuthService,private router:Router,private formBuilder:FormBuilder,    private route: ActivatedRoute,private notificationService:NotificationService){}
 
-  ngOnInit(){
+  ];
+  constructor(private settingMainService: SettingMainService, private auth: AuthService, private router: Router, private formBuilder: FormBuilder, private route: ActivatedRoute, private notificationService: NotificationService) { }
+
+  ngOnInit() {
     document.body.style.overflow = 'hidden';
-    if(localStorage.getItem('settingHomeOption')!=null){
-      console.log("localStorage.getItem('settingHomeOption')->",localStorage.getItem('settingHomeOption'));
+    if (localStorage.getItem('settingHomeOption') != null) {
+      console.log("localStorage.getItem('settingHomeOption')->", localStorage.getItem('settingHomeOption'));
       // localStorage.getItem('settingHomeOption')
-      this.current=Number(this.sideBarOption.find(opt => opt.tab === localStorage.getItem('settingHomeOption'))?.number);
+      this.current = Number(this.sideBarOption.find(opt => opt.tab === localStorage.getItem('settingHomeOption'))?.number);
     }
-        this.route.queryParams.subscribe(params => {
+    this.route.queryParams.subscribe(params => {
       const tab = params['tab'];
       console.log("Tab Param:", tab);
       if (tab) {
@@ -127,64 +130,92 @@ constructor(private settingMainService:SettingMainService,private auth:AuthServi
         }
       }
     });
-    this.email=localStorage.getItem('user');
+    this.email = localStorage.getItem('user');
     console.log(this.email);
-    this.companyId=localStorage.getItem('companyId');
-    this.role=localStorage.getItem('role')
-    this.settingMainService.dashboard(this.email).subscribe((data)=>{
-      this.username=data.firstName+" "+data.lastName;
-    },(err)=>{
+    this.companyId = localStorage.getItem('companyId');
+    this.role = localStorage.getItem('role')
+    this.settingMainService.dashboard(this.email).subscribe((data) => {
+      this.username = data.firstName + " " + data.lastName;
+    }, (err) => {
       console.log(err);
-    
-    })
-    this.fetchCompanyInformation();
-   this.companyInformationForm=this.formBuilder.group(({
-    companyName:['',Validators.required],
-    comapanyLogo:[''],
-    id:[''],
-    address1:['',Validators.required],
-    address2:['',Validators.required],
-    city:['',Validators.required],
-    state:['',Validators.required],
-    zipCode:['',Validators.required],
-    phoneNo:['',Validators.required],
-    website:['',Validators.required],
-    customerEmail:['']
-   }))
 
-    this.settingMainService.getNotification(this.email).subscribe((data)=>{
+    })
+    this.settingMainService.getFreeTrail(this.companyId).subscribe((data)=>{
+      this.trialStatus=data;
+      if(this.trialStatus.trialExpired==false){
+       
+        const today = new Date();
+        const trialEndDate = new Date(this.trialStatus.trialEndDate);
+        const timeDiff = trialEndDate.getTime() - today.getTime();
+        this.trialDayLeft = Math.ceil(timeDiff / (1000 * 3600 * 24));
+      }
+      console.log(this.trialStatus)
+       this.settingMainService.getCurrSubscription(this.companyId).subscribe((data)=>{
+        console.log("Current Subscription",data)
+        this.currentSubscription=data;
+       
+      if((this.currentSubscription==null||this.currentSubscription.status!='ACTIVE')&&this.trialStatus.trialExpired===false &&this.trialDayLeft>0){
+         this.showTrialAlert=true;
+      }
+      else{
+        this.showTrialAlert=false;
+      }
+      },
+      (err)=>{
+        console.log(err);
+      });
+    },
+    (err)=>{
+      console.log(err);
+    });
+    this.fetchCompanyInformation();
+    this.companyInformationForm = this.formBuilder.group(({
+      companyName: ['', Validators.required],
+      comapanyLogo: [''],
+      id: [''],
+      address1: ['', Validators.required],
+      address2: ['', Validators.required],
+      city: ['', Validators.required],
+      state: ['', Validators.required],
+      zipCode: ['', Validators.required],
+      phoneNo: ['', Validators.required],
+      website: ['', Validators.required],
+      customerEmail: ['']
+    }))
+
+    this.settingMainService.getNotification(this.email).subscribe((data) => {
       // console.log("Notification Data",data);  
-      this.unReadCount=0;
-      if(data!=null){
+      this.unReadCount = 0;
+      if (data != null) {
         // console.log("Notification",data);
-        this.notificationList=data;
-        console.log("Notification",this.notificationList);
+        this.notificationList = data;
+        console.log("Notification", this.notificationList);
         this.notificationList.forEach((notification: any) => {
-          console.log("Is Unread",notification.isRead);
-          if(notification.read === false) {
+          console.log("Is Unread", notification.isRead);
+          if (notification.read === false) {
             this.unReadCount++;
           }
         });
-        console.log("Unread Count",this.unReadCount);
+        console.log("Unread Count", this.unReadCount);
       }
-      else{
-        this.notificationList=[];
+      else {
+        this.notificationList = [];
       }
     },
-    (err)=>{
-      console.log("Notification Error",err);
-      this.notificationList=[];
-    });
+      (err) => {
+        console.log("Notification Error", err);
+        this.notificationList = [];
+      });
 
 
 
     this.notificationService.getNotificationObservable().subscribe((message) => {
       try {
-        this.unReadCount=0;
+        this.unReadCount = 0;
         this.notificationList = typeof message === 'string' ? JSON.parse(message) : message;
         this.notificationList.forEach((notification: any) => {
-          console.log("Is Unread",notification.isRead);
-          if(notification.read === false) {
+          console.log("Is Unread", notification.isRead);
+          if (notification.read === false) {
             this.unReadCount++;
           }
         });
@@ -195,47 +226,49 @@ constructor(private settingMainService:SettingMainService,private auth:AuthServi
       console.log("Notification received:", this.notificationList);
     });
 
-   this.settingMainService.dashboard(this.email).subscribe((data)=>{
-    
-    this.username=data.firstName+" "+data.lastName;
-    console.log("dashboard"+ this.username)
-   
-    if(this.username==''||this.username==null){
-      this.ngOnInit();
-    }
-    else{
-     
-      localStorage.setItem('name',this.username);
-    
-    }
-    
-  },
-  (err)=>{
-    console.log("myerr------------>",err.status);
-// <<<<<<< HEAD
- 
-// =======
-    
-//     if(err.status=="403"||err.status=="401"){
-//       // localStorage.clear()
-//       // alert("Session expired");
-     
-//       // this.logout();
+    this.settingMainService.dashboard(this.email).subscribe((data) => {
 
-//     }
-// >>>>>>> c76357d6ff37298b2abc3a005a33f527121f016e
-  })
+      this.username = data.firstName + " " + data.lastName;
+      console.log("dashboard" + this.username)
+
+      if (this.username == '' || this.username == null) {
+        this.ngOnInit();
+      }
+      else {
+
+        localStorage.setItem('name', this.username);
+
+      }
+
+    },
+      (err) => {
+        console.log("myerr------------>", err.status);
+        // <<<<<<< HEAD
+
+        // =======
+
+        //     if(err.status=="403"||err.status=="401"){
+        //       // localStorage.clear()
+        //       // alert("Session expired");
+
+        //       // this.logout();
+
+        //     }
+        // >>>>>>> c76357d6ff37298b2abc3a005a33f527121f016e
+      })
+
+     
   }
-  fetchCompanyInformation(){
-    this.settingMainService.getCompanyInformation(this.companyId).subscribe((data)=>{
-      
-      this.companyInformation=data;
-      this.companyImage=this.companyInformation?.comapanyLogo;
+  fetchCompanyInformation() {
+    this.settingMainService.getCompanyInformation(this.companyId).subscribe((data) => {
+
+      this.companyInformation = data;
+      this.companyImage = this.companyInformation?.comapanyLogo;
       console.log(this.companyInformation)
     },
-    (err)=>{
-      console.log(err);
-    })
+      (err) => {
+        console.log(err);
+      })
   }
 
   playLottieAnimation() {
@@ -247,80 +280,80 @@ constructor(private settingMainService:SettingMainService,private auth:AuthServi
       path: 'assets/tick.json' // Path to your animation JSON file
     });
   }
-  update(val:number){
+  update(val: number) {
     console.log(val);
-    this.current=val;
+    this.current = val;
     const selectedVal = this.sideBarOption.find(opt => opt.number === this.current);
     console.log("Selected Value:", selectedVal?.tab);
-        localStorage.setItem('settingHomeOption',selectedVal?.tab.toString() || 'company');
-  const selected = this.sideBarOption.find(opt => opt.number === val);
-  if (selected) {
-    // Update the URL with query param ?tab=tabName
-    this.router.navigate(['/setting-home'], { queryParams: { tab: selected.tab } });
-  }
-    
+    localStorage.setItem('settingHomeOption', selectedVal?.tab.toString() || 'company');
+    const selected = this.sideBarOption.find(opt => opt.number === val);
+    if (selected) {
+      // Update the URL with query param ?tab=tabName
+      this.router.navigate(['/setting-home'], { queryParams: { tab: selected.tab } });
+    }
+
     // if(val==3){
     //   this.router.navigate(['/custom-setting'])
     // }
   }
-  logout(){
-    this.auth.currUser=null;
-    this.auth.isLoggedIn=false;
-    this.settingMainService.removeSession(this.email).subscribe((data)=>{
+  logout() {
+    this.auth.currUser = null;
+    this.auth.isLoggedIn = false;
+    this.settingMainService.removeSession(this.email).subscribe((data) => {
       console.log("Session Removed")
     },
-    (err)=>{
-      console.log("Session delete error ",err)
-    })
+      (err) => {
+        console.log("Session delete error ", err)
+      })
     localStorage.removeItem('token');
-      localStorage.removeItem('user');
-   
+    localStorage.removeItem('user');
+
     localStorage.removeItem('currOption');
     localStorage.removeItem('authToken');
     localStorage.removeItem('companyId');
 
     this.router.navigate(['/login']);
 
-   
+
   }
-  imageUpload(event:any){
+  imageUpload(event: any) {
     console.log(event);
     const file = event.target.files[0];
-  const reader = new FileReader();
-  reader.readAsDataURL(file);
-  reader.onload = () => {
+    const reader = new FileReader();
+    reader.readAsDataURL(file);
+    reader.onload = () => {
       console.log(reader.result);
-  
-      this.companyImage=reader.result;
 
- 
-      };
-  
- 
+      this.companyImage = reader.result;
+
+
+    };
+
+
 
 
   }
-  addCompanyInformation(){
-    
+  addCompanyInformation() {
+
     this.companyInformationForm.controls['customerEmail'].setValue(this.email);
     this.companyInformationForm.controls['comapanyLogo'].setValue(this.companyImage);
     this.companyInformationForm.controls['id'].setValue(this.companyId);
 
-    
-    const includedFields = ['companyName', 'address1', 'address2','city','state','zipCode','phoneNo','website'];
-     let allFieldsValid = true;
+
+    const includedFields = ['companyName', 'address1', 'address2', 'city', 'state', 'zipCode', 'phoneNo', 'website'];
+    let allFieldsValid = true;
     includedFields.forEach(field => {
       const value = this.companyInformationForm.get(field)?.value;
       if (!value || (typeof value === 'string' && value.trim() === '')) {
-          this.triggerAlert(`Please Fill all Fields.`, 'danger');
-          allFieldsValid = false;
-          return; // Stop submission if any field is invalid
+        this.triggerAlert(`Please Fill all Fields.`, 'danger');
+        allFieldsValid = false;
+        return; // Stop submission if any field is invalid
 
       } else {
         console.log(`Field "${field}" has value:`, value);
       }
     })
-   if (!allFieldsValid) {
+    if (!allFieldsValid) {
       return; // Stop submission if any field is invalid
     }
     // for (const key of Object.keys(this.companyInformationForm.controls)) {
@@ -339,21 +372,21 @@ constructor(private settingMainService:SettingMainService,private auth:AuthServi
     // if (!allFieldsValid) {
     //   return; // Stop submission if any field is invalid
     // }
-    this.settingMainService.addCompanyInformation(this.companyInformationForm.value).subscribe((data)=>{
+    this.settingMainService.addCompanyInformation(this.companyInformationForm.value).subscribe((data) => {
       console.log("Company Data Uploaded");
-      this.triggerAlert("Company Information Updated Successfully",'success');
+      this.triggerAlert("Company Information Updated Successfully", 'success');
       // this.ngOnInit()
     },
-    (err)=>{
-      console.log(err);
-      
-      alert(err)
-    }
-    ,()=>{
-      console.log("Update")
-      // this.ngOnInit()
-      this.fetchCompanyInformation();
-    })
+      (err) => {
+        console.log(err);
+
+        alert(err)
+      }
+      , () => {
+        console.log("Update")
+        // this.ngOnInit()
+        this.fetchCompanyInformation();
+      })
   }
   triggerAlert(message: string, type: string) {
     this.alertMessage = message;
@@ -365,18 +398,20 @@ constructor(private settingMainService:SettingMainService,private auth:AuthServi
     }, 5000); // Hide the alert after 5 seconds (adjust as needed)
   }
 
-   notificationClick() {
+  notificationClick() {
     console.log("Notification Clicked");
-    if(this.unReadCount > 0) {  
-    this.settingMainService.updateNotification(this.notificationList,this.email).subscribe(
-      (response) => {
-        console.log( response);
-        this.unReadCount = 0; // Reset unread count after marking as read
-      },
-      (error) => {
-        console.error("Error updating notification", error);
-      }
-    );
+    if (this.unReadCount > 0) {
+      this.settingMainService.updateNotification(this.notificationList, this.email).subscribe(
+        (response) => {
+          console.log(response);
+          this.unReadCount = 0; // Reset unread count after marking as read
+        },
+        (error) => {
+          console.error("Error updating notification", error);
+        }
+      );
+    }
   }
-  }
+
+  
 }
