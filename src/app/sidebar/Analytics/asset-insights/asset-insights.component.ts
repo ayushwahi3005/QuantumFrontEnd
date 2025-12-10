@@ -1,12 +1,14 @@
 import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
 import { FormsModule } from '@angular/forms';
+import { AssetInsightsService } from './asset-insights.service';
 interface AssetRecord {
   assetId: string;
   assetName: string;
   customerId: string;
   customerName: string;
-  action: string;
+  // action: 'Check In' | 'Check Out' | 'Maintenance';
+    action: 'Checked In' | 'Checked Out';
   date: string;
   time: string;
   location: string;
@@ -20,103 +22,90 @@ interface AssetRecord {
 })
 export class AssetInsightsComponent {
 
+   records!: AssetRecord[]
+  companyId!: string;
+
+  constructor(private assetInsightsService:AssetInsightsService) {}
+
+  filteredRecords: AssetRecord[] = [];
   searchTerm: string = '';
-  actionFilter: string = 'All Actions';
-  
-  assetData: AssetRecord[] = [
-    {
-      assetId: 'Asset1',
-      assetName: 'Asset1',
-      customerId: '6358',
-      customerName: 'Harsh Nisar',
-      action: 'Check In',
-      date: '11/15/2025',
-      time: '14:52',
-      location: 'Ohio',
-      username: '@harshnisar'
-    },
-    {
-      assetId: 'Asset2',
-      assetName: 'Asset2',
-      customerId: '6359',
-      customerName: 'John Smith',
-      action: 'Check Out',
-      date: '11/14/2025',
-      time: '10:30',
-      location: 'California',
-      username: '@johnsmith'
-    },
-    {
-      assetId: 'Asset3',
-      assetName: 'Asset3',
-      customerId: '6360',
-      customerName: 'Sarah Johnson',
-      action: 'Maintenance',
-      date: '11/13/2025',
-      time: '09:15',
-      location: 'Texas',
-      username: '@sarahjohnson'
-    },
-    {
-      assetId: 'Asset4',
-      assetName: 'Asset4',
-      customerId: '6361',
-      customerName: 'Mike Davis',
-      action: 'Check In',
-      date: '11/12/2025',
-      time: '16:20',
-      location: 'New York',
-      username: '@mikedavis'
-    }
-  ];
+  selectedAction: string = '';
+  lastUpdated: string = '11/16/2025 at 6:08:00 PM';
 
-  filteredData: AssetRecord[] = [];
-  stats = {
-    total: 0,
-    checkIn: 0,
-    checkOut: 0,
-    maintenance: 0
-  };
-
-  ngOnInit(): void {
-    this.calculateStats();
-    this.filteredData = [...this.assetData];
+  get totalRecords(): number {
+    return this.records.length;
   }
 
-  calculateStats(): void {
-    this.stats.total = this.assetData.length;
-    this.stats.checkIn = this.assetData.filter(item => item.action === 'Check In').length;
-    this.stats.checkOut = this.assetData.filter(item => item.action === 'Check Out').length;
-    this.stats.maintenance = this.assetData.filter(item => item.action === 'Maintenance').length;
+  get checkInCount(): number {
+    return this.records.filter(r => r.action === 'Checked In').length;
   }
 
-  filterData(): void {
-    this.filteredData = this.assetData.filter(item => {
-      const matchesSearch = this.searchTerm === '' || 
-        Object.values(item).some(val => 
-          val.toString().toLowerCase().includes(this.searchTerm.toLowerCase())
-        );
-      const matchesAction = this.actionFilter === 'All Actions' || item.action === this.actionFilter;
+  get checkOutCount(): number {
+    return this.records.filter(r => r.action === 'Checked Out').length;
+  }
+
+  // get maintenanceCount(): number {
+  //   return this.records.filter(r => r.action === 'Maintenance').length;
+  // }
+
+  ngOnInit() {
+    // this.filteredRecords = [...this.records];
+    this.companyId = localStorage.getItem('companyId') || '';
+    this.assetInsightsService.getCheckinOutData(this.companyId).subscribe(data => {
+      console.log('Check-in/out data:', data);
+      this.records = data as AssetRecord[];
+      this.filteredRecords = data as AssetRecord[];
+      // You can process and assign the data to this.records here
+    });
+  }
+
+  filterRecords() {
+    this.filteredRecords = this.records.filter(record => {
+      const matchesSearch = !this.searchTerm || 
+        record.assetId.toLowerCase().includes(this.searchTerm.toLowerCase()) ||
+        record.assetName.toLowerCase().includes(this.searchTerm.toLowerCase()) ||
+        record.customerName.toLowerCase().includes(this.searchTerm.toLowerCase()) ||
+        record.location.toLowerCase().includes(this.searchTerm.toLowerCase()) ||
+        record.username.toLowerCase().includes(this.searchTerm.toLowerCase());
+
+      const matchesAction = !this.selectedAction || record.action === this.selectedAction;
+
       return matchesSearch && matchesAction;
     });
   }
 
-  getActionClass(action: string): string {
-    switch(action) {
-      case 'Check In':
-        return 'bg-green-100 text-green-700 px-3 py-1 rounded text-xs font-medium';
-      case 'Check Out':
-        return 'bg-blue-100 text-blue-700 px-3 py-1 rounded text-xs font-medium';
-      case 'Maintenance':
-        return 'bg-orange-100 text-orange-700 px-3 py-1 rounded text-xs font-medium';
-      default:
-        return 'bg-gray-100 text-gray-700 px-3 py-1 rounded text-xs font-medium';
-    }
+  sortByDate() {
+    this.filteredRecords.sort((a, b) => {
+      const dateA = new Date(a.date);
+      const dateB = new Date(b.date);
+      return dateB.getTime() - dateA.getTime();
+    });
   }
 
-  exportToExcel(): void {
-    console.log('Exporting to Excel...');
-    alert('Export functionality would be implemented here');
+  getActionClass(action: string): string {
+    console.log('Action:', action);
+    return action.toLowerCase().replace(' ', '-');
+  }
+
+  exportToExcel() {
+    // Create CSV content
+    const headers = ['ASSET ID', 'ASSET NAME', 'CUSTOMER ID', 'CUSTOMER NAME', 'ACTION', 'DATE', 'TIME', 'LOCATION', 'USERNAME'];
+    const csvContent = [
+      headers.join(','),
+      ...this.filteredRecords.map(record => 
+        [record.assetId, record.assetName, record.customerId, record.customerName, 
+         record.action, record.date, record.time, record.location, record.username].join(',')
+      )
+    ].join('\n');
+
+    // Create download link
+    const blob = new Blob([csvContent], { type: 'text/csv' });
+    const url = window.URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = 'asset-reports.csv';
+    link.click();
+    window.URL.revokeObjectURL(url);
   }
 
 }

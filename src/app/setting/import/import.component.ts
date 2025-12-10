@@ -79,7 +79,7 @@ export class ImportComponent {
     
     this.importForm=this.formBuilder.group({
       module:['asset',Validators.required],
-      importType:['',Validators.required],
+      importType:['add',Validators.required],
       file:['',Validators.required]
     })
     localStorage.removeItem('uploadProgress');
@@ -112,8 +112,8 @@ export class ImportComponent {
     this.inventoryDatabaseColumnsToUpdate.push("InventoryId","PartId","PartName","Price","Cost","Category","Quantity");
     this.inventoryDatabaseColumnsToAdd.push("PartId","PartName","Price","Cost","Category","Quantity");
 
-    this.customerDatabaseColumnsToUpdate.push("CompanyCustomerId","Name","Category","Phone","Email","Address","Apartment","City","State","Status","Zipcode");
-    this.customerDatabaseColumnsToAdd.push("Name","Category","Phone","Email","Address","Apartment","City","State","Status","Zipcode");
+    this.customerDatabaseColumnsToUpdate.push("CompanyCustomerId","Name","Category","Phone","Email","Address","City","State","Status","Zip code");
+    this.customerDatabaseColumnsToAdd.push("Name","Category","Phone","Email","Address","City","State","Status","Zip Code");
 
     this.importService.getAssetExtraFields(this.companyId).subscribe((data)=>{
       this.assetExtraFieldsColumns=data;
@@ -139,6 +139,7 @@ export class ImportComponent {
         this.customerDatabaseColumnsToUpdate.push(x.name);
         this.customerDatabaseColumnsToAdd.push(x.name);
       })
+      this.updateType("add");
       console.log(this.customerDatabaseColumns)
     })
     // this.columnMappings=new Array(this.assetDatabaseColumns.length).fill({excel:"",database:""});
