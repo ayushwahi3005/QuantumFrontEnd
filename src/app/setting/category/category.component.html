@@ -6,14 +6,14 @@
             <span [ngClass]="{'selected-option':(currOption==1)}" (click)="onClick(1)">Customers</span>
             <span [ngClass]="{'selected-option':(currOption==2)}" (click)="onClick(2)">Inventory</span>
             <span [ngClass]="{'selected-option':(currOption==3)}" (click)="onClick(3)">Assets</span>
-            <span [ngClass]="{'selected-option':(currOption==4)}" (click)="onClick(4)">Work Orders</span>
+            <!-- <span [ngClass]="{'selected-option':(currOption==4)}" (click)="onClick(4)">Work Orders</span> -->
            
         </div>
         <div>
 
             <app-customer-category *ngIf="currOption==1"></app-customer-category>
             <app-asset-category *ngIf="currOption==3"></app-asset-category>
-            <app-workorder-category *ngIf="currOption==4"></app-workorder-category>
+            <!-- <app-workorder-category *ngIf="currOption==4"></app-workorder-category> -->
             <app-inventory-category *ngIf="currOption==2"></app-inventory-category>
         
         </div>

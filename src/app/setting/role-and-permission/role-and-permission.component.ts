@@ -213,6 +213,7 @@ export class RoleAndPermissionComponent {
     }
     }
     selectIdDeleteRole(id:string){
+      this.showAlert=false;
       this.deleteRoleId=id;
     }
     deleteRole(){

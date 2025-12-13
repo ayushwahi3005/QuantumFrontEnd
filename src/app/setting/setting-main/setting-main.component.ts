@@ -8,6 +8,8 @@ import { CompanyInformation } from './companyInformation';
 import { Subject } from 'rxjs';
 import { NotificationService } from 'src/app/notification/notification.service';
 
+declare var bootstrap: any; // important
+
 @Component({
   selector: 'app-setting-main',
   templateUrl: './setting-main.component.html',
@@ -378,5 +380,16 @@ constructor(private settingMainService:SettingMainService,private auth:AuthServi
       }
     );
   }
+  }
+
+  forgotpassword() {
+    const modalElement = document.getElementById('manageaccount');
+  const modalInstance = bootstrap.Modal.getInstance(modalElement);
+
+  if (modalInstance) {
+    modalInstance.hide();  // closes modal cleanly
+  }
+
+  this.router.navigate(['/reset-password']);
   }
 }
