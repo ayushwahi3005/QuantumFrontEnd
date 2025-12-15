@@ -6,12 +6,19 @@
     <button type="button" class="btn-close" (click)="showAlert = false" aria-label="Close"
         style="float: right;"></button>
 </div>
-<div class="inspection-main">
-    <!-- <div *ngIf="showAlert" class="alert" [ngClass]="'alert-' + alertType" role="alert" style="margin-top: 10px; position: fixed; width: calc(100vw - 300px); z-index: 100;">
-      {{ alertMessage }}
-   
-      <button type="button" class="btn-close" (click)="showAlert = false" aria-label="Close" style="float: right;"></button>
-    </div> -->
+
+<div class="d-flex justify-content-center" style=" width: 98%;margin-top: 20px;">
+  <div class="d-flex justify-content-between" style=" width: 98%;">
+
+    <div style="height: 40px;">
+      <label style="font-size: 24px; font-weight: bold; padding: 10px 0;">Inspection Templates</label>
+    </div>
+
+  </div>
+</div>
+
+<div id="inspection-main" class="d-flex justify-content-center">
+
     <div class="background-tab">
         <div style="width: 100%;" class="d-flex justify-content-center">
             <div class="d-flex justify-content-between" style="width: 100%;">
@@ -90,7 +97,7 @@
     </div>
 
 
-    <!-- Creating a new role -->
+    <!-- Creating a new Inspection template -->
 
     <div class="modal fade" id="add-inspection" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle"
         aria-hidden="true">

@@ -1,3 +1,7 @@
+* {
+    font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+}
+
 #logo{
     text-decoration: none;
     color: black;
@@ -26,7 +30,6 @@ li{
 } */
 
 .nav-item {
-    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
     font-size: 18px;
 }
 
@@ -58,7 +61,7 @@ img{
     align-items: center;
     flex-direction: row;
     /* padding: 1.25em; */
-    padding: 14px;
+    padding: 12.5px;
 }
 
 .header-centre h1{
@@ -76,9 +79,9 @@ img{
 .side-navbar{
     position: absolute;
     left: 0rem;
-    width: 250px;
+    width: 270px;
     /* height: calc(100vh - 76px); */
-    height: calc(100vh - 63px);
+    height: calc(100vh - 53px);
     /* background-color: #FAFAFA; */
     background-color: #FFFFFF;
     box-shadow:rgba(255, 255, 255, 0.5);
@@ -86,8 +89,7 @@ img{
     transition: width 150ms linear;
     overflow-x: hidden;
     border: 1px solid lightgray;
-    font-size: 15px;
-    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
+    font-size: 16px;
 }
 
 .nav-list{
@@ -95,6 +97,7 @@ img{
     /* height: 100%; */
     padding: 0%;
     margin-bottom: 0%;
+    font-size: 16px;
 }
 
 .nav-list-item i{
@@ -126,9 +129,9 @@ img{
 
 .nav-list-item{
     padding-right: 0px;
-    margin: 10px;
+    margin: 11px;
     padding: 10px;
-    width: 230px;
+    width: 245px;
 }
 
 /* .nav-list-item:hover{
@@ -149,9 +152,9 @@ a{
 
 .content-area{
     /* width: calc(100vw - 120px); */
-    padding-left: 250px;    
+    padding-left: 270px;    
     /* height: calc(100vh - 80px); */
-    height: calc(100vh - 63px);
+    height: calc(100vh - 53px);
     /* margin-top: 15px; */
 }
 
@@ -183,12 +186,11 @@ body{
     cursor: default;
     text-decoration: none;
     /* color: #8c8e91;*/
-    font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
     /* margin: 10px 0px; */
-    font-size: 16px;
+    font-size: large;
     /* float: inline-start; */
     height: 20px;
-    margin: 10px 20px;
+    margin: 20px 20px;
 }
 
 .backarrow{
@@ -196,9 +198,7 @@ body{
 }
 
 .backarrow:hover{
-    /* color: #1a65ab; */
     color:#1a65ab
-    
 }
 
 .form-control:focus {
@@ -220,27 +220,18 @@ body{
   /* max-height: 200px; */
   overflow-y: auto;
   border: 1px solid #ccc;
-  border-radius: 4px;
+  border-radius: 10px;
   background-color: #fff;
   z-index: 1000;
   display: none;
   list-style: none;
   padding: 0;
   margin: 0;
-  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 16px 32px rgba(0, 0, 0, 0.2);
 }
 
 .dropdown-menu.show {
   display: block;
-}
-
-.dropdown-item {
-  padding: 8px 100px 8px 12px;
-  cursor: pointer;
-}
-
-.dropdown-item:hover {
-  background-color: #f1f1f1;
 }
 
 .dropdown-toggle::after {
@@ -260,7 +251,7 @@ body{
   max-height: 40vh;
   overflow-y: hidden;
   border: 1px solid #ccc;
-  border-radius: 4px;
+  border-radius: 10px;
   background-color: #fff;
   z-index: 1001;
   display: none;
@@ -275,27 +266,19 @@ body{
   overflow-y: auto; /* Show scrollbar on hover */
 }
 
-.dropdown-menu.show {
-    display: block;
-}
-
 .dropdown-item {
     padding: 10px 90px 10px 7px;
     cursor: pointer;
-    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
 }
   
 .dropdown-item:hover {
     background-color: #f1f1f1;
-    border-radius: 5px;
+    border-radius: 10px;
 }
 
-.dropdown-toggle::after {
-    display: none;
-}
-.dropdown{
+/* .dropdown{
     margin: 10px;
-}
+} */
 .dropdown-header {
   position: sticky;
   top: 0;

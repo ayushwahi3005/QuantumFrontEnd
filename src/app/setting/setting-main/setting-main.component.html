@@ -1,7 +1,6 @@
 <div style="background-color: #f5f5f5; height: 100vh">
   <app-header></app-header>
 
-
   <div class="side-navbar">
     <div class="sidebar-header">
       <div class="back-button">
@@ -9,7 +8,7 @@
           class="backarrow">&larr; Dashboard</a>
       </div>
       <!-- <hr> -->
-      <h2 style="padding: 5px 15px;">Modules</h2>
+      <!-- <h2 style="padding: 5px 15px;">Modules</h2> -->
     </div>
     <ul class="nav-list">
 
@@ -137,7 +136,7 @@
     <app-subscription *ngIf="current==9" style="width: 100%;"></app-subscription>
     <app-asset-qr *ngIf="current==10"></app-asset-qr>
     <app-import-history *ngIf="current==11" style="width: 100%;"></app-import-history>
-    <app-inspection-template *ngIf="current==12" style="width: 100%;"></app-inspection-template>
+    <app-inspection-template *ngIf="current==12"></app-inspection-template>
   </div>
   <!-- </div> -->
 
@@ -152,6 +151,23 @@
         </div>
         <div class="d-flex justify-content-center">
           <app-tick-animation></app-tick-animation>
+
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal fade" id="manageaccount" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle"
+    aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header d-flex justify-content-center">
+          Successfully Updated
+          
+
+        </div>
+        <div class="d-flex justify-content-center">
+          <button class="btn btn-primary" (click)="forgotpassword()">If you don't remember old password</button>
 
         </div>
       </div>

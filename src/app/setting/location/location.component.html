@@ -49,8 +49,8 @@
                     <td>
                       <div style="display: flex; align-items: center; gap: 15px;">
                         <!-- <img src="../../../assets/edit.svg" id="edit-button" [ngClass]="{'editoption':!(editVisibility&&(editButtonId==locationList.indexOf(item)+1))}" style="float: inline-start; height: 25px; width: 25px;"  > -->
-                        <i class="bi bi-pencil edit-icon" [ngClass]="{'editoption':!(editVisibility&&(editButtonId==searchedLocationList.indexOf(item)+1))}" style="float: inline-start; margin: 5px 5px;" id="dropdownMenuButton" data-toggle="modal" data-target="#editLocation" (click)="editLocation(item)"></i>
-                        <i class="bi bi-trash delete-icon"  [ngClass]="{'editoption':!(editVisibility&&(editButtonId==searchedLocationList.indexOf(item)+1))}" style="color: red; float: inline-start; margin: 5px 5px;" (click)="deleteLocation(item.id,item.name)" id="dropdownMenuButton" data-toggle="modal" data-target="#confirmDeleteLocation"></i>
+                        <i class="bi bi-pencil edit-icon" [ngClass]="{'editoption':!(editVisibility&&(editButtonId==searchedLocationList.indexOf(item)+1))}" style="float: inline-start; margin: 3px 5px;" id="dropdownMenuButton" data-toggle="modal" data-target="#editLocation" (click)="editLocation(item)"></i>
+                        <i class="bi bi-trash delete-icon"  [ngClass]="{'editoption':!(editVisibility&&(editButtonId==searchedLocationList.indexOf(item)+1))}" style="color: red; float: inline-start; margin: 3px 5px;" (click)="deleteLocation(item.id,item.name)" id="dropdownMenuButton" data-toggle="modal" data-target="#confirmDeleteLocation"></i>
                       </div>
                     </td>
                   </tr>
@@ -76,7 +76,7 @@
 
       <div class="d-flex justify-content-between">
           <div class="search-bar">
-              <input type="text" placeholder="Search" class="location-search" style="margin: 10px 10px; border-radius: 5px; height: 30px;" (keyup)="binSearch($event)" #bin>
+              <input type="text" placeholder="Search" class="location-search" style="margin: 10px 0; border-radius: 5px; height: 30px;" (keyup)="binSearch($event)" #bin>
               <i class="bi bi-search searchIcon"></i>
           </div>
           <div>
@@ -103,8 +103,8 @@
                   <td>{{ item.status === 'active' ? 'Active' : 'In Active' }}</td>
                   <td style="display: flex; align-items: center; gap: 15px;">
                       <!-- <img src="../../../assets/edit.svg" id="edit-button" [ngClass]="{'editoption':!(editVisibility&&(editButtonId==locationList.indexOf(item)+1))}" style="float: inline-start; height: 25px; width: 25px;"  > -->
-                      <i class="bi bi-pencil" [ngClass]="{'editoption':!(editVisibility&&(editButtonId==searchedBinList.indexOf(item)+1))}"  style="float: inline-start; margin: 15px 5px;" id="dropdownMenuButton" data-toggle="modal" data-target="#editBin" (click)="editBin(item)"></i>
-                    <i class="bi bi-trash"  [ngClass]="{'editoption':!(editVisibility&&(editButtonId==searchedBinList.indexOf(item)+1))}" style="color: red; float: inline-start; margin: 15px 5px;" (click)="deleteBin(item.id,item.binNumber)" id="dropdownMenuButton" data-toggle="modal" data-target="#confirmDeleteBin"></i>
+                      <i class="bi bi-pencil" [ngClass]="{'editoption':!(editVisibility&&(editButtonId==searchedBinList.indexOf(item)+1))}"  style="float: inline-start; margin: 3px 5px;" id="dropdownMenuButton" data-toggle="modal" data-target="#editBin" (click)="editBin(item)"></i>
+                    <i class="bi bi-trash"  [ngClass]="{'editoption':!(editVisibility&&(editButtonId==searchedBinList.indexOf(item)+1))}" style="color: red; float: inline-start; margin: 3px 5px;" (click)="deleteBin(item.id,item.binNumber)" id="dropdownMenuButton" data-toggle="modal" data-target="#confirmDeleteBin"></i>
                   </td>
                 </tr>
               </ng-container>
@@ -391,6 +391,8 @@
     </div>
   </div>
 
+<!-- Delete Location -->
+
   <div class="modal fade" id="confirmDeleteLocation" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle" aria-hidden="true">
     <div class="modal-dialog" role="document">
       <div class="modal-content">
@@ -413,6 +415,8 @@
       </div>
     </div>
   </div>
+
+<!-- Delete Bin -->
 
   <div class="modal fade" id="confirmDeleteBin" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle" aria-hidden="true">
     <div class="modal-dialog" role="document">

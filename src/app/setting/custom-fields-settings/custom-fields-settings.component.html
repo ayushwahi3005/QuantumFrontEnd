@@ -1,20 +1,21 @@
 
     <div class="main" >
         <div style="height: calc(100vh - 120px);">
-            <div class="option d-flex flex-row mb-3">
+            <!-- <div class="option d-flex flex-row mb-3"> -->
+            <div class="option d-flex flex-row bd-highlight " style="width: 90%; margin: 30px auto;">
                 <span [ngClass]="{'selected-option':(currOption==1)}" (click)="onClick(1)">Customers</span>
                 <!-- <span [ngClass]="{'selected-option':(currOption==2)}" (click)="onClick(2)">Inventory</span> -->
                 <span [ngClass]="{'selected-option':(currOption==3)}" (click)="onClick(3)">Assets</span>
-                <!-- <span [ngClass]="{'selected-option':(currOption==4)}" (click)="onClick(4)">Work Orders</span> -->
+                <span [ngClass]="{'selected-option':(currOption==4)}" (click)="onClick(4)">Work Orders</span>
                 <span [ngClass]="{'selected-option':(currOption==5)}" (click)="onClick(5)">Employees</span>
             </div>
             <div>
 
                 <app-customer-module  *ngIf="currOption==1"></app-customer-module>
                 <app-asset-module *ngIf="currOption==3"></app-asset-module>
-                <app-workorder-module *ngIf="currOption==4"></app-workorder-module>
+                <!-- <app-workorder-module *ngIf="currOption==4"></app-workorder-module> -->
                 <app-inventory-module *ngIf="currOption==2"></app-inventory-module>
-                <app-user-module *ngIf="currOption==5"></app-user-module>
+                <!-- <app-user-module *ngIf="currOption==5"></app-user-module> -->
             
             </div>
         </div>

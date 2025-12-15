@@ -91,7 +91,7 @@
         <span>Settings</span>
       </li> -->
       <li class="free-trial-banner" style="margin-top: 400px; margin-bottom: 20px; position: absolute; bottom: 45px;">
-                  <span *ngIf="!freeTrialDetails.trialExpired"  [attr.style]="currentSubscriptionMessageStyle">
+                  <span *ngIf="!freeTrialDetails?.trialExpired"  [attr.style]="currentSubscriptionMessageStyle">
   {{ currentSubcriptionMessage }}
 </span>
       </li>

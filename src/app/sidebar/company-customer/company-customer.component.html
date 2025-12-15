@@ -130,7 +130,7 @@
                 <div class="d-flex justify-content-around">
                 <select class="form-select" id="status" formControlName="status" #status>
                   <option value="active">Active</option>
-                  <option value="inactive">In Active</option>      
+                  <option value="inactive">Inactive</option>      
                 </select>
                 <!-- <i class="bi bi-trash-fill delete" style="display: inline-flex; margin-top: 12px; margin-left: 10px; color: red; margin-right: 5px;" (click)="removeMandatoryFieldFilter('status')"></i> -->
                 </div>
@@ -384,7 +384,7 @@
                   <input type="email" class="form-control" id="email" formControlName="email">
                   <br>
 
-                  <label for="address">Address 1<span *ngIf="mandatoryFieldsMap.get('address')" class="text-danger">*</span></label>
+                  <label for="address">Address<span *ngIf="mandatoryFieldsMap.get('address')" class="text-danger">*</span></label>
                   <input type="text" class="form-control" id="address" formControlName="address"  placeholder="Address">
                   <br>
 
