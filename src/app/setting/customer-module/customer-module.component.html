@@ -50,7 +50,7 @@
           
         </div> -->
       <!-- </div> -->
-      <div class="table-container">
+      <!-- <div class="table-container"> -->
       <table class="table" *ngIf="extraFieldName">
         <thead class="table-dark">
           <tr>
@@ -91,90 +91,96 @@
          
         </tbody>
       </table>
-      </div>
+      <!-- </div> -->
     <!-- <div class="d-flex justify-content-center ">
       <button class="btn btn-primary mb-2" (click)="onEdit()"><span *ngIf="!editOn">Save</span><span *ngIf="editOn">Edit</span></button>
     </div> -->
     </div>
   </div>
 
-   <div class="modal fade" id="popupEdit" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle" aria-hidden="true">
-    <div class="modal-dialog" role="document">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h2 class="modal-title" id="exampleModalLongTitle">Alert. All associated customer's field name will be changed!!</h2>
-          <button type="button" class="close  ms-auto" data-dismiss="modal" aria-label="Close" #closeBox>
-            <span aria-hidden="true">&times;</span>
-          </button>
-        </div>
-        <div >
+
+
+<div class="modal fade" id="popupEdit" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header" style="padding: 13px 15px;">
+        <h2 class="modal-title" style="margin: 0; display: flex; justify-content: center;" id="exampleModalLongTitle">Alert. All associated customer's field name will be changed!!</h2>
+        <button type="button" class="btn btn-light btn-sm ms-auto" data-dismiss="modal" aria-label="Close" style="border-radius: 10px;" #closeBox>
+          <i class="bi bi-x-lg"></i>
+        </button>
+      </div>
+      <div class="modal-body">
           
-          <div>
-          <input type="text" [(ngModel)]="editName" style="margin: 10px; width: 90%;" >
-          </div>
-          <div class="d-flex justify-content-around">
-          <button class="btn btn-primary close" data-dismiss="modal" aria-label="Close" (click)="updateCustomFieldName()" (click)="closeBox.click()" style="margin-right: 20px; margin: 10px;">Save</button>
-          <button class="btn btn-danger close" data-dismiss="modal" aria-label="Close" (click)="closeBox.click()" style="margin: 10px;" >Cancel</button>
-          </div>
+        <div>
+          <input type="text" class="form-control" [(ngModel)]="editName">
+        </div>
+        <div style="display: flex; justify-content: center; margin-top: 15px;">
+          <button class="btn btn-light" data-dismiss="modal" aria-label="Close" (click)="closeBox.click()" style="margin: 10px; width: 100px; margin-right: 30px; border: 1px solid #c0c0c0">Cancel</button>
+          <button class="btn btn-primary" data-dismiss="modal" aria-label="Close" (click)="updateCustomFieldName()" (click)="closeBox.click()" style="width: 100px;; margin: 10px;">Save</button>
+          
+        </div>
+         
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
+<div class="modal fade" id="popup" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header" style="padding: 13px 15px;">
+        <h2 class="modal-title" style="margin: 0; display: flex; justify-content: center;" id="exampleModalLongTitle">Alert. All Customer data associated with this column will be deleted!!</h2>
+        <button type="button" class="btn btn-light btn-sm ms-auto" data-dismiss="modal" aria-label="Close" style="border-radius: 10px;" #closeBox>
+          <i class="bi bi-x-lg"></i>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div style="display: flex; justify-content: center; margin-top: 15px;">
+          
+          <button class="btn btn-light" data-dismiss="modal" aria-label="Close" (click)="closeBox.click()" style="margin: 10px; width: 100px; margin-right: 30px; border: 1px solid #c0c0c0">Cancel</button>
+          <button class="btn btn-primary" data-dismiss="modal" aria-label="Close" (click)="removeExtraField()" (click)="closeBox.click()" style="width: 100px; margin: 10px;">Save</button>
          
         </div>
       </div>
     </div>
   </div>
+</div>
 
 
-  <div class="modal fade" id="popup" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle" aria-hidden="true">
+
+<div class="modal fade" id="addField" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle" aria-hidden="true">
     <div class="modal-dialog" role="document">
       <div class="modal-content">
-        <div class="modal-header">
-          <h2 class="modal-title" id="exampleModalLongTitle">Alert. All Customer data associated with this column will be deleted!!</h2>
-          <button type="button" class="close  ms-auto" data-dismiss="modal" aria-label="Close" #closeBox>
-            <span aria-hidden="true">&times;</span>
-          </button>
-        </div>
-        <div class="d-flex justify-content-center">
-          
-         
-          <button class="btn btn-primary close" data-dismiss="modal" aria-label="Close" (click)="removeExtraField()" (click)="closeBox.click()" style="margin-right: 20px; margin: 10px;">Sure</button>
-          <button class="btn btn-danger close" data-dismiss="modal" aria-label="Close" (click)="closeBox.click()" style="margin: 10px;" >Go Back</button>
-          
-         
-        </div>
-      </div>
-    </div>
-  </div>
-  <div class="modal fade" id="addField" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle" aria-hidden="true">
-    <div class="modal-dialog" role="document">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h1 class="modal-title" style="display: flex; justify-content: center;">Create Field</h1>
-          <button type="button" class="close  ms-auto" data-dismiss="modal" aria-label="Close" #closeBox2>
-            <span aria-hidden="true">&times;</span>
+        <div class="modal-header" style="padding: 13px 15px;">
+          <h2 class="modal-title" style="margin: 0; display: flex; justify-content: center;">Create Field</h2>
+          <button type="button" class="btn btn-light btn-sm ms-auto" data-dismiss="modal" aria-label="Close" style="border-radius: 10px;" #closeBox2>
+            <i class="bi bi-x-lg"></i>
           </button>
         </div>
         <div  class="modal-body">
-          <label>Select Type<span class="text-danger">*</span></label>
-          <select  style="width: 100%; margin-top: 10px; border-radius: 5px; height: 30px;"  (change)="addFieldType(mySelect.value)"  #mySelect>
+          <label>Select Type<span class="text-danger"> *</span></label>
+          <select class="form-select form-control" (change)="addFieldType(mySelect.value)"  #mySelect>
        
-            <option value="number" >Number <i class="bi bi-123" style="color: black;"></i></option>
+            <option value="number">Number <i class="bi bi-123" style="color: black;"></i></option>
             <option value="text">Text<i class="bi bi-type" style="color: black;"></i></option>
             <option value="date">Date <i class="bi bi-calendar2" style="color: black;"></i></option>
-            
-            
+
           </select>
-          <div class="extra-field-input">
+          <!-- <div class="extra-field-input"> -->
             <div style="margin-top: 30px;" *ngIf="(extraFieldOption=='number')||(extraFieldOption==null)">
               
-              <label for="name" style="margin-bottom: 10px;">Field Name<span class="text-danger">*</span></label>
-              <input id="name" type="text" [(ngModel)]="addFieldName" #name>
+              <label for="name">Field Name<span class="text-danger"> *</span></label>
+              <input id="name" class="form-control" type="text" [(ngModel)]="addFieldName" #name>
               <!-- <label for="name">Field Value <input id="value" type="number" [(ngModel)]="addFieldValue" #value></label> -->
               <!-- <i class="bi bi-trash3" (click)="removeFieldOption()">Remove</i> -->
              
             </div>
             <div style="margin-top: 30px;" *ngIf="extraFieldOption=='text'" >
               
-              <label for="name" style="margin-bottom: 10px;">Field Name </label>
-              <input id="name" type="text" [(ngModel)]="addFieldName" #name>
+              <label for="name">Field Name<span class="text-danger"> *</span></label>
+              <input id="name" class="form-control" type="text" [(ngModel)]="addFieldName" #name>
               <!-- <label for="name">Field Value <input id="value" type="text" [(ngModel)]="addFieldValue" #value></label> -->
               <!-- <i class="bi bi-trash3" (click)="removeFieldOption()">Remove</i> -->
              
@@ -187,19 +193,19 @@
             </div> -->
             <div style="margin-top: 30px;" *ngIf="extraFieldOption=='date'" >
               
-              <label for="name" style="margin-bottom: 10px;">Field Name </label>
-              <input id="name" type="text" [(ngModel)]="addFieldName" #name>
+              <label for="name">Field Name<span class="text-danger"> *</span></label>
+              <input id="name" class="form-control" type="text" [(ngModel)]="addFieldName" #name>
               <!-- <label for="name">Date<input id="value" type="date" [(ngModel)]="addFieldValue" #value></label> -->
               <!-- <i class="bi bi-trash3" (click)="removeFieldOption()">Remove</i> -->
              
             </div>
+          <!-- </div> -->
+          <div style="display: flex; justify-content: center; margin-top: 15px;">
+          <button class="btn btn-light" data-dismiss="modal" aria-label="Close" (click)="closeBox2.click()" style="margin: 10px; width: 100px; margin-right: 30px; border: 1px solid #c0c0c0">Cancel</button>
+          <button class="btn btn-primary" (click)="onAddField()" (click)="closeBox2.click()"style="width: 100px; margin: 10px">Save</button>
           </div>
-          <button class="btn btn-primary" (click)="onAddField()" (click)="closeBox2.click()"style="margin-left: 40%;">Add Fields</button>
          
         </div>
       </div>
     </div>
   </div>
- 
-
-  

@@ -31,39 +31,39 @@ export class CustomerModuleComponent {
   isSubscribedToEmailsMessage!:boolean;
   companyId!:any;
   mandatoryFields=[{
-    name:"name",
+    name:"Name",
     type:"String"
   },
   {
-    name:"email",
+    name:"Email",
     type:"String"
   },
   {
-    name:"phone",
+    name:"Phone",
     type:"String"
   },
   {
-    name:"address",
+    name:"Address",
     type:"String"
   },
   {
-    name:"city",
+    name:"City",
     type:"String"
   },
   {
-    name:"state",
+    name:"State",
     type:"String"
   },
   {
-    name:"zipCode",
+    name:"Zip Code",
     type:"String"
   },
   {
-    name:"category",
+    name:"Category",
     type:"String"
   },
   {
-    name:"status",
+    name:"Status",
     type:"String"
   }]
   constructor(private customerModuleService:CustomerModuleService){}

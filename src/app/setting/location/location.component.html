@@ -49,8 +49,8 @@
                     <td>
                       <div style="display: flex; align-items: center; gap: 15px;">
                         <!-- <img src="../../../assets/edit.svg" id="edit-button" [ngClass]="{'editoption':!(editVisibility&&(editButtonId==locationList.indexOf(item)+1))}" style="float: inline-start; height: 25px; width: 25px;"  > -->
-                        <i class="bi bi-pencil edit-icon" [ngClass]="{'editoption':!(editVisibility&&(editButtonId==searchedLocationList.indexOf(item)+1))}" style="float: inline-start; margin: 3px 5px;" id="dropdownMenuButton" data-toggle="modal" data-target="#editLocation" (click)="editLocation(item)"></i>
-                        <i class="bi bi-trash delete-icon"  [ngClass]="{'editoption':!(editVisibility&&(editButtonId==searchedLocationList.indexOf(item)+1))}" style="color: red; float: inline-start; margin: 3px 5px;" (click)="deleteLocation(item.id,item.name)" id="dropdownMenuButton" data-toggle="modal" data-target="#confirmDeleteLocation"></i>
+                        <i class="bi bi-pencil edit-icon" [ngClass]="{'editoption':!(editVisibility&&(editButtonId==searchedLocationList.indexOf(item)+1))}" style="float: inline-start; margin: 0 5px;" id="dropdownMenuButton" data-toggle="modal" data-target="#editLocation" (click)="editLocation(item)"></i>
+                        <i class="bi bi-trash delete-icon"  [ngClass]="{'editoption':!(editVisibility&&(editButtonId==searchedLocationList.indexOf(item)+1))}" style="color: red; float: inline-start; margin: 0 5px;" (click)="deleteLocation(item.id,item.name)" id="dropdownMenuButton" data-toggle="modal" data-target="#confirmDeleteLocation"></i>
                       </div>
                     </td>
                   </tr>
