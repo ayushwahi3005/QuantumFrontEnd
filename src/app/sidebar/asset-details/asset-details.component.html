@@ -429,7 +429,13 @@
     <div class="card mt-2" *ngIf="currOption==6">
       <!-- <h1 style="display: flex; justify-content: center; margin-top: 10px;">Custom Fields</h1> -->
       <div class="card-body">
-        <button class="btn btn-primary" style="float: right; margin: 5px;" data-target="#inspection-popup" data-toggle="modal">+ Inspection</button>
+        <div style=" float: right;">
+        <button class="btn btn-primary" style="float: right; margin: 2px; margin-left: 10px; margin-bottom: 8px;" data-target="#inspection-popup" data-toggle="modal">+ Inspection</button>
+        <button class="export-btn" (click)="exportExcel()">
+          <span class="download-icon">⬇</span>
+          Export Excel
+        </button>
+        </div>
         <table class="table" id="asset-detial table" >
           <thead class="table-dark">
               <tr >
@@ -637,11 +643,16 @@
           </div>
           <div class="qr second " *ngIf="qr?.type=='2'"  id="myqr" style="display: flex;">
               <div class="inside d-flex justify-content-around" >
-                  <qrcode [qrdata]="qrData" [width]="200" [errorCorrectionLevel]="'M'" style="margin: auto 0px;"></qrcode>
+                  <div style="margin-top: auto;">
+                    <qrcode [qrdata]="qrData" [width]="200" [errorCorrectionLevel]="'M'" style="margin: auto 0px;"></qrcode>
+                    <p style="display: flex; justify-content: center; padding-top: 5px;">{{qr.custom}}</p>
+                  </div>
+                  
                   <div style="margin: auto; width: 70px; margin-left: 30px; " >
                       <p style="font-family: Copperplate Gothic Light; font-weight: bolder;text-align: center;margin: auto; margin-bottom: 13px; ">AssetYug</p>
                       <p style="width: 70px; justify-content: center;">Serial Number: <b> {{assetDetails.serialNumber}}</b></p>
                       <p style="width: 70px; justify-content: center;">{{qr.optional}}</p>
+                      
     
                   </div>
               </div>
@@ -676,7 +687,7 @@
 
 <!--Inspection Add PopUp-->
 
-<div class="modal fade" id="inspection-popup" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle" aria-hidden="true">
+<div class="modal fade" id="inspection-popup" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle" aria-hidden="true" data-backdrop="static" data-keyboard="false">
   <div class="modal-dialog" role="document">
     <div class="modal-content">
       <div class="modal-header" style="padding: 13px 15px;">
@@ -684,20 +695,24 @@
         <button type="button" class="close ms-auto" data-dismiss="modal" aria-label="Close" style="border-radius: 10px; border: 1px solid #c0c0c0;--bs-btn-bg: white" #closeBox>
           <i class="bi bi-x-lg"></i>
         </button>
+        
       </div>
  
         <div class="modal-body">
-         
-          <ng-multiselect-dropdown
-  [placeholder]="'Inspection List'"
-  [settings]="dropdownSettings"
-  [data]="dropdownList"
-  [(ngModel)]="selectedItems"
-  (onSelect)="onItemSelect($event)"
-  (onSelectAll)="onSelectAll($event)"
-  (onDeSelect)="onItemDeSelect($event)"
->
-</ng-multiselect-dropdown>
+  
+           <div style="width: 100%; margin-bottom: 15px;">
+            <ng-multiselect-dropdown
+              [placeholder]="'Inspection List'"
+              [settings]="dropdownSettings"
+              [data]="dropdownList"
+              [(ngModel)]="selectedItems"
+              (onSelect)="onItemSelect($event)"
+              (onSelectAll)="onSelectAll($event)"
+              (onDeSelect)="onItemDeSelect($event)"
+              style="width: 100%;">
+            </ng-multiselect-dropdown>
+          </div>
+       
           <div *ngIf="this.selectedItems.length > 0">
             <div *ngFor="let myStep of stepObject">
               <h1>{{ myStep.inspectionName }}</h1>
@@ -767,16 +782,25 @@
   </div>
 </div>
 
-<div class="modal fade" id="inspection-edit-popup" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle" aria-hidden="true">
+<div
+  class="modal fade"
+  id="inspection-edit-popup"
+  tabindex="-1"
+  role="dialog"
+  aria-labelledby="exampleModalLongTitle"
+  aria-hidden="true"
+  data-backdrop="static"
+  data-keyboard="false"
+>
   <div class="modal-dialog" role="document">
     <div class="modal-content">
       <div class="modal-header" style="padding: 13px 15px;">
-        <h2 class="modal-title" style="margin:0; display: flex; justify-content: center;" id="exampleModalLongTitle">{{selectedInspectionInstance?.assetCategoryInspectionName }} Inspection Stepsss</h2>
+        <h2 class="modal-title" style="margin:0; display: flex; justify-content: center;" id="exampleModalLongTitle">{{selectedInspectionInstance?.assetCategoryInspectionName }} Inspection Steps</h2>
         <!-- <button type="button" class="close ms-auto" data-dismiss="modal" aria-label="Close" #closeBox>
           <span aria-hidden="true">&times;</span>
         </button> -->
 
-        <button type="button" class="btn btn-light btn-sm ms-auto" data-dismiss="modal" aria-label="Close" style="border-radius: 10px; border: 1px solid #c0c0c0;--bs-btn-bg: white" #closeBox5>
+        <button type="button" class="btn btn-light btn-sm ms-auto" data-dismiss="modal" aria-label="Close" style="border-radius: 10px; border: 1px solid #c0c0c0;--bs-btn-bg: white" (click)="clearData()" #closeBox5>
           <!-- <span aria-hidden="true">&times;</span> -->
           <i class="bi bi-x-lg"></i>
         </button>
@@ -856,7 +880,7 @@
           </div>
         </div>
         <div class="modal-footer">
-          <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+          <button type="button" class="btn btn-secondary" data-dismiss="modal" (click)="clearData()">Close</button>
           <button type="button" class="btn btn-secondary" (click)="clearSavedData()" (click)="closeBox5.click()">Clear</button>
           <button type="button" class="btn btn-primary" (click)="saveInpectionValue()" (click)="closeBox5.click()">Submit</button>
           <button type="button" class="btn btn-primary" (click)="tempSave()" (click)="closeBox5.click()">Save changes</button>
@@ -991,15 +1015,16 @@
 
 
 
-<div class="modal fade" id="inspection-view-popup" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle" aria-hidden="true">
+<div class="modal fade" id="inspection-view-popup" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle" aria-hidden="true"   data-backdrop="static"
+  data-keyboard="false">
   <div class="modal-dialog" role="document">
     <div class="modal-content">
       <div class="modal-header" style="padding: 13px 15px;">
         <h2 class="modal-title" style="margin:0; display: flex; justify-content: center;" id="exampleModalLongTitle">
-          {{selectedInspectionInstance?.assetCategoryInspectionName }} Inspection Stepsss
+          {{selectedInspectionInstance?.assetCategoryInspectionName }} Inspection Steps
         </h2>
 
-        <button type="button" class="btn btn-light btn-sm ms-auto" data-dismiss="modal" aria-label="Close" style="border-radius: 10px; border: 1px solid #c0c0c0; --bs-btn-bg: white" #closeBox5>
+        <button type="button" class="btn btn-light btn-sm ms-auto" data-dismiss="modal" aria-label="Close" style="border-radius: 10px; border: 1px solid #c0c0c0; --bs-btn-bg: white" (click)="clearData()" #closeBox5 >
           <i class="bi bi-x-lg"></i>
         </button>
       </div>
@@ -1061,7 +1086,7 @@
       </div>
 
       <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+        <button type="button" class="btn btn-secondary" data-dismiss="modal" (click)="clearData()">Close</button>
       </div>
     </div>
   </div>

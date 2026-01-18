@@ -93,6 +93,8 @@ import { TimeAgoPipe } from 'src/utils/pipes/time-ago.pipe';
 import { PageNotFoundComponent } from './page-not-found/page-not-found/page-not-found.component';
 import { CustomersComponent } from './admin/customers/customers.component';
 import { HeaderComponent } from './header/header.component';
+import { AnalyticsHomePageComponent } from './sidebar/Analytics/analytics-home-page/analytics-home-page/analytics-home-page.component';
+import { AssetInspectionComponent } from './sidebar/Analytics/asset-inspection/asset-inspection.component';
 
 @NgModule({
   declarations: [
@@ -145,7 +147,9 @@ import { HeaderComponent } from './header/header.component';
     PageNotFoundComponent,
     CustomersComponent,
     HeaderComponent,
-    AssetInsightsComponent
+    AssetInsightsComponent,
+    AnalyticsHomePageComponent,
+    AssetInspectionComponent
     
    
   ],

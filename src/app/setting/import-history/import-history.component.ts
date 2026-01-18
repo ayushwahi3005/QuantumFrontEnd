@@ -55,7 +55,7 @@ export class ImportHistoryComponent {
     this.pageIndex = e.pageIndex;
     // localStorage.setItem('assetPageInd',this.pageIndex.toString())
     // localStorage.setItem('assetPageSize',this.pageSize.toString())
-   
+    console.log(this.pageIndex,this.pageSize)
     this.loadImportHistory();
    
     

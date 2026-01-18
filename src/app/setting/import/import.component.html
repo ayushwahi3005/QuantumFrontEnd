@@ -43,6 +43,13 @@
         </form>
     </div>
         <div *ngIf="excelColumns.length && assetDatabaseColumns.length" style="float: right;" class="mapping">
+            <div>
+              <div class="d-flex justify-content-around">
+                <mat-slide-toggle color="primary" class="blue-toggle" (change)="savedMappingLocalStorage(saved)" #saved>Use Saved Mapping</mat-slide-toggle>
+              <button class="btn btn-primary"  data-toggle="modal" data-target="#viewSavedMappingModal">View Saved Mapping</button>
+              </div>
+              
+            </div>
             <h2 >Column Mapping</h2>
             <table class="table" >
                 <thead class="table-dark">
@@ -175,6 +182,51 @@
       <div class="modal-footer d-flex justify-content-around">
         
         <button type="submit" class="btn btn-primary mt-3" (click)="closeBox4.click()" (click)="exportTemplateData()"   >Download Template</button>
+        
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
+<div class="modal fade" id="viewSavedMappingModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle" aria-hidden="true" style="z-index :10000;">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2 class="modal-title" id="exampleModalLongTitle">Mapping Details</h2>
+        <button type="button" class="close  ms-auto" data-dismiss="modal" aria-label="Close" #savedMappingClose>
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        
+        <div *ngIf="impType=='add'">
+          <div *ngIf="currImport === 'customer'">
+            <b>Excel Column : Database Column</b><br>
+            <div *ngFor="let item of customerAddMapping | keyvalue">
+              {{ item.key }} : {{ item.value }}
+            </div>
+          </div>
+
+          <div *ngIf="currImport=='asset'">
+            {{this.assetAddMapping | json}}
+          </div>
+        </div>
+        <div *ngIf="impType=='update'">
+           <div *ngIf="currImport=='customer'">
+            {{this.customerUpdateMapping | json}}
+           </div>
+          <div *ngIf="currImport=='asset'">
+            {{this.assetUpdateMapping | json}}
+          </div>
+        </div>
+         
+      
+      </div>
+      <div class="modal-footer d-flex justify-content-around">
+        
+        <button type="submit" class="btn btn-primary mt-3" (click)="savedMappingClose.click()"   >OK</button>
         
       </div>
     </div>

@@ -103,10 +103,17 @@ export class AssetPreviewComponent {
   };
   inspectionMap: Map<string, Object> = new Map<string, Object>();
 
-  selectedItems: any = [];
-  dropdownSettings: IDropdownSettings = {};
-
-  dropdownList: any = [];
+  dropdownList: any[] = [];
+  dropdownSettings = {
+    singleSelection: false,
+    idField: 'id',        // adjust to match your data property
+    textField: 'name',    // adjust to match your data property
+    selectAllText: 'Select All',
+    unSelectAllText: 'UnSelect All',
+    itemsShowLimit: 3,
+    allowSearchFilter: true
+  };
+  selectedItems: any[] = [];
 
   stepObject: any[] = [];
   notedData!: string;
@@ -120,6 +127,11 @@ export class AssetPreviewComponent {
     number: 2,
     name: 'Assets',
     icon: 'bi bi-boxes'
+  },
+   {
+    number:6,
+    name:'Analytics',
+    icon:'bi bi-bar-chart'
   }
     // {
     //   number:3,
@@ -209,9 +221,10 @@ export class AssetPreviewComponent {
       console.log(this.assetDetails)
     this.assetPreviewService.getAllAssetInspection(this.companyId, category).subscribe((data) => {
       this.allInspection = data;
-      console.log(this.allInspection)
+      console.log("Inspectionssss", this.allInspection)
       this.dropdownList = this.allInspection;
-      this.allInspection.forEach((x: any) => {
+       console.log("Inspectionssss", this.dropdownList)
+      this.allInspection?.forEach((x: any) => {
         const obj = {
           "name": x.name,
           "stepsList": x.steps
@@ -964,6 +977,10 @@ export class AssetPreviewComponent {
           this.ngOnInit();
         })
     }
+
+     clearData(){
+    this.selectedItems=[]
+  }
 
 
 }

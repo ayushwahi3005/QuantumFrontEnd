@@ -275,4 +275,24 @@ span:hover{
     box-shadow: 0 0 5px rgba(0, 123, 255, 0.5); /* Subtle blue glow */
     transition: border-color 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
   }
-  
+  .location-hierarchy {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.parent-location {
+  color: #999;
+  font-weight: 400;
+}
+
+.hierarchy-arrow {
+  color: #999;
+  font-size: 18px;
+  font-weight: 300;
+}
+
+.child-location {
+  color: #000;
+  font-weight: 500;
+}

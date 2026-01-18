@@ -1044,6 +1044,7 @@ export class AssetDetailsComponent {
   // }
  
   saveInpectionValue() {
+  
     console.log(this.inspectionInstance)
     console.log(this.stepObject)
     this.inspectionInstance.actionPerformedBy = this.username;
@@ -1075,6 +1076,7 @@ export class AssetDetailsComponent {
         this.clearSavedData();
         this.ngOnInit();
       })
+      this.selectedItems = []
   }
   handleStepChange(event: any, index: number, type: string): void {
     if (!this.inspectionInstance.stepValues[index]) return;
@@ -1339,6 +1341,7 @@ export class AssetDetailsComponent {
         this.ngOnInit();
       })
     console.log(this.inspectionInstance)
+    this.selectedItems=[]
     console.log(this.selectedItems)
     // localStorage.setItem(this.assetId+'tempInspection', JSON.stringify(this.inspectionInstance));
     // localStorage.setItem(this.assetId+'selectedItems', JSON.stringify(this.selectedItems));
@@ -1367,5 +1370,11 @@ export class AssetDetailsComponent {
     this.inspectionInstance.actionPerformedBy = this.username;
     this.notedData = instance.notes;
     this.updateStepListFromLocalStorage();
+  }
+  clearData(){
+    this.selectedItems=[]
+  }
+  exportExcel(){
+    
   }
 }

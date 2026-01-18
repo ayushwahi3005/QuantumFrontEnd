@@ -7,7 +7,7 @@ export class CompanyInformation{
     address2!:string;
     city!:string;
     state!:string;
-    
+    country!:string;
     zipCode!:string;
     phoneNo!:string;
     website!:string

@@ -1,12 +1,13 @@
-import { Component, ElementRef, ViewChild } from '@angular/core';
+import { ChangeDetectorRef, Component, ElementRef, ViewChild } from '@angular/core';
 import { AuthService } from 'src/app/shared/auth.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { SettingMainService } from './setting-main.service';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import Lottie from 'lottie-web';
 import { CompanyInformation } from './companyInformation';
-import { Subject } from 'rxjs';
+import { map, Subject, switchMap } from 'rxjs';
 import { NotificationService } from 'src/app/notification/notification.service';
+import { state } from '@angular/animations';
 
 declare var bootstrap: any; // important
 
@@ -22,6 +23,7 @@ export class SettingMainComponent {
   username: any = '';
   companyInformationForm!: FormGroup;
   companyImage: any;
+  country:any
   companyInformation!: CompanyInformation;
   companyId!: any;
   role: any;
@@ -35,68 +37,38 @@ export class SettingMainComponent {
   trialStatus:any;
   trialDayLeft!:number;
   currentSubscription:any;
-  sideBarOption = [
-    // {
-    //   number:1,
-    //   name:'Company Information',
-    //   icon:'bi bi-bookshelf'
-    // },
-    // {
-    //   number:2,
-    //   name:'Locations and Bins',
-    //   icon:'bi bi-geo-alt-fill'
-    // },
+    stateList:any = [];
+  countryList=[
+  "Canada",
+  "Mexico",
+  "United States of America",
 
-    // {
-    //   number:3,
-    //   name:'Custom Fields',
-    //   icon:'bi bi-boxes'
-    // },
-    // {
-    //   number:4,
-    //   name:'Categories',
-    //   icon:'bi bi-boxes'
-    // },
-    //   {
-    //   number:12,
-    //   name:'Inspection Template',
-    //   icon:'bi bi-boxes'
-    // },
-    // {
-    //   number:5,
-    //   name:'Import',
-    //   icon:'bi bi-journal-text'
-    // },
-    // {
-    //   number:11,
-    //   name:'Import History',
-    //   icon:'bi bi-clock-history'
-    // },
-    // {
-    //   number:6,
-    //   name:'Roles and Permissions',
-    //   icon:'bi bi-person'
-    // },
-    // {
-    //   number:7,
-    //   name:'Users',
-    //   icon:'bi bi-people-fill'
-    // },
-    // {
-    //   number:8,
-    //   name:'Labor Rates',
-    //   icon:'bi bi-currency-dollar'
-    // },
-    // {
-    //   number:9,
-    //   name:'Subscription',
-    //   icon:'bi bi-clipboard-check'
-    // },
-    // {
-    //   number:10,
-    //   name:'Asset QR code',
-    //   icon:'bi bi-qr-code'
-    // }
+  "Antigua and Barbuda",
+  "The Bahamas",
+  "Barbados",
+  "Cuba",
+  "Dominica",
+  "Dominican Republic",
+  "Grenada",
+  "Haiti",
+  "Jamaica",
+  "Saint Kitts and Nevis",
+  "Saint Lucia",
+  "Saint Vincent and the Grenadines",
+  "Trinidad and Tobago",
+
+  "Belize",
+  "Costa Rica",
+  "El Salvador",
+  "Guatemala",
+  "Honduras",
+  "Nicaragua",
+  "Panama"
+]
+currentSelectedCountryCode='US'
+selectedCountryCode='United States of America';
+  sideBarOption = [
+
 
     { number: 1, name: 'Company Information', icon: 'bi bi-bookshelf', tab: 'company' },
     { number: 2, name: 'Locations and Bins', icon: 'bi bi-geo-alt-fill', tab: 'location' },
@@ -111,9 +83,28 @@ export class SettingMainComponent {
     { number: 10, name: 'Asset QR code', icon: 'bi bi-qr-code', tab: 'asset-qr' },
 
   ];
-  constructor(private settingMainService: SettingMainService, private auth: AuthService, private router: Router, private formBuilder: FormBuilder, private route: ActivatedRoute, private notificationService: NotificationService) { }
+  constructor(private settingMainService: SettingMainService, private auth: AuthService, private router: Router, private formBuilder: FormBuilder, private route: ActivatedRoute, private notificationService: NotificationService,private cdr: ChangeDetectorRef) { }
 
   ngOnInit() {
+      this.companyInformationForm = this.formBuilder.group({
+      companyName: ['', Validators.required],
+      address1: ['', Validators.required],
+      address2: [''],
+      city: [''],
+      state: [''],
+      country: [''],  // Keep in form group
+      zipCode: ['', [Validators.required, Validators.pattern('^[0-9A-Za-z]{6,15}$')]],
+      phoneNo: ['', [Validators.required, Validators.pattern('[0-9]{10}')]],
+      website: ['', [Validators.required, Validators.pattern('^.+\\.com$')]],
+      comapanyLogo: ['']
+    });
+    this.email = localStorage.getItem('user');
+    console.log(this.email);
+    this.companyId = localStorage.getItem('companyId');
+        this.role = localStorage.getItem('role')
+    this.loadCompanyInformation();
+
+    
     document.body.style.overflow = 'hidden';
     if (localStorage.getItem('settingHomeOption') != null) {
       console.log("localStorage.getItem('settingHomeOption')->", localStorage.getItem('settingHomeOption'));
@@ -132,10 +123,7 @@ export class SettingMainComponent {
         }
       }
     });
-    this.email = localStorage.getItem('user');
-    console.log(this.email);
-    this.companyId = localStorage.getItem('companyId');
-    this.role = localStorage.getItem('role')
+ 
     this.settingMainService.dashboard(this.email).subscribe((data) => {
       this.username = data.firstName + " " + data.lastName;
     }, (err) => {
@@ -170,11 +158,12 @@ export class SettingMainComponent {
     (err)=>{
       console.log(err);
     });
-    this.fetchCompanyInformation();
+    
     this.companyInformationForm = this.formBuilder.group(({
       companyName: ['', Validators.required],
       comapanyLogo: [''],
       id: [''],
+      country: [''],
       address1: ['', Validators.required],
       address2: ['', Validators.required],
       city: ['', Validators.required],
@@ -184,6 +173,7 @@ export class SettingMainComponent {
       website: ['', Validators.required],
       customerEmail: ['']
     }))
+    // this.fetchCompanyInformation();
 
     this.settingMainService.getNotification(this.email).subscribe((data) => {
       // console.log("Notification Data",data);  
@@ -258,12 +248,59 @@ export class SettingMainComponent {
         //     }
         // >>>>>>> c76357d6ff37298b2abc3a005a33f527121f016e
       })
-
      
+     
+      this.stateList = [];
+      
+console.log("Company Information",this.companyInformationForm.value);
+
+
+      
+     
+  }
+    loadCompanyInformation(): void {
+    this.settingMainService
+      .getCompanyInformation(this.companyId)
+      .pipe(
+        switchMap((company: any) => {
+          this.companyInformation = company;
+          this.selectedCountryCode = company.country || '';
+
+          return this.settingMainService
+            .countryStateList(this.selectedCountryCode)
+            .pipe(
+              map((states: any[]) => {
+                return { company, states };
+              })
+            );
+        })
+      )
+      .subscribe({
+        next: (result: { company: any; states: any[] }) => {
+          this.stateList = result.states;
+
+          this.companyInformationForm.patchValue({
+            companyName: result.company.companyName,
+            address1: result.company.address1,
+            address2: result.company.address2,
+            city: result.company.city,
+            state: result.company.state,
+            country: result.company.country,
+            zipCode: result.company.zipCode,
+            phoneNo: result.company.phoneNo,
+            website: result.company.website
+          });
+        },
+        error: (err) => console.error(err)
+      });
   }
   fetchCompanyInformation() {
     this.settingMainService.getCompanyInformation(this.companyId).subscribe((data) => {
-
+      console.log("Company Information", data)
+       this.companyInformationForm.patchValue({
+        country: this.companyInformation?.country || '',
+        state: this.companyInformation?.state || ''
+      })
       this.companyInformation = data;
       this.companyImage = this.companyInformation?.comapanyLogo;
       console.log(this.companyInformation)
@@ -336,10 +373,17 @@ export class SettingMainComponent {
 
   }
   addCompanyInformation() {
-
+    if (this.companyInformationForm.invalid) {
+      this.triggerAlert('Please fill all required fields correctly', 'danger');
+      return;
+    }
+    // Include country in the payload
+    const formData = this.companyInformationForm.value;
     this.companyInformationForm.controls['customerEmail'].setValue(this.email);
     this.companyInformationForm.controls['comapanyLogo'].setValue(this.companyImage);
     this.companyInformationForm.controls['id'].setValue(this.companyId);
+    console.log(this.country)
+    console.log("Form Data:", this.companyInformationForm.value);
 
 
     const includedFields = ['companyName', 'address1', 'address2', 'city', 'state', 'zipCode', 'phoneNo', 'website'];
@@ -389,6 +433,8 @@ export class SettingMainComponent {
         // this.ngOnInit()
         this.fetchCompanyInformation();
       })
+      this.ngOnInit();
+       this.fetchCompanyInformation();
   }
   triggerAlert(message: string, type: string) {
     this.alertMessage = message;

@@ -13,6 +13,7 @@ export class LocationService {
    
    }
    endpoint=environment.endpoint;
+    countryEndpoint=environment.endpoint+"country/"
   getLocation(companyId:string):Observable<any>{
     const headers = new HttpHeaders().set('Authorization', `Bearer ${this.myToken}`).set('Device-ID', `${localStorage.getItem('deviceId')}`);
     console.log("location-> "+headers.get('Authorization'))
@@ -56,6 +57,11 @@ export class LocationService {
     const headers = new HttpHeaders().set('Authorization', `Bearer ${this.myToken}`).set('Device-ID', `${localStorage.getItem('deviceId')}`);
    
     return this.httpClient.delete(this.endpoint+'customer/deleteBin/'+id,{headers});
+  }
+  countryStateList(country:any):Observable<any>{
+    const headers = new HttpHeaders().set('Authorization', `Bearer ${localStorage.getItem('authToken')}`).set('device-id', `${localStorage.getItem('deviceId')}`);;
+    return this.httpClient.get(this.countryEndpoint+"states/"+country,{headers});
+   
   }
   
 }

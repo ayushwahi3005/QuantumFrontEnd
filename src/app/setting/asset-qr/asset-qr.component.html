@@ -11,11 +11,15 @@
         <input type="radio" style="height: 20px; width: 20px; margin: auto 5px;"  class="qr-radio" name="qr-radio" (click)="update('2')"  [checked]="type=='2'">
         <div class="qr second " (click)="update('2')" [ngClass]="{'selected':(type=='2')}">
             <div class="inside d-flex justify-content-around">
+                <div style="margin-top: auto;">
                 <qrcode [qrdata]="'Your Asset Data'" [width]="128" [errorCorrectionLevel]="'M'" style="margin-top: 36px;"></qrcode>
+                <p style="display: flex; justify-content: center; padding-top: 5px;">Custom Text</p>
+                </div>
                 <div style="margin: auto;" >
                     <p style="font-family: Copperplate Gothic Light; font-weight: bolder;display: flex; justify-content: center; ">AssetYug</p>
                     <p style="display: flex; justify-content: center;">Serial #: <b> 12345667</b></p>
                     <p style="display: flex; justify-content: center;">Optional Text</p>
+                    
 
                 </div>
             </div>

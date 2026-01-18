@@ -474,7 +474,7 @@ advanceFilterFunc() {
   }
   addCompanyCustomer(){
     
-    
+    console.log("Add Company Customer");
 
     let myCompanyCustomer:CompanyCustomer;
    

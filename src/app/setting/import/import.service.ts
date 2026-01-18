@@ -75,7 +75,9 @@ export class ImportService {
     const formData: FormData = new FormData();
 
     formData.append('file', myFile);
-    formData.append('columnMappings', columnMapping); 
+    formData.append('columnMappings', columnMapping.toString()); 
+    console.log("In service file->",columnMapping);
+    console.log(typeof(columnMapping));
     return this.httpClient.post(this.companyCustomerEndpoint+'import/'+companyId+'/'+email, myFile,{headers:myheaders});
   }
   addInventory(myFile: any, companyId: string, email: string): Observable<any> {

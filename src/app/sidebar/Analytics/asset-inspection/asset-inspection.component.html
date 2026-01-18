@@ -1,0 +1,161 @@
+<div class="dashboard-container">
+  <header class="dashboard-header">
+    <div class="header-content">
+      <div class="logo-section">
+        <!-- <div class="logo-icon"></div> -->
+        <svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" viewBox="0 0 16 16">
+            <defs>
+                <linearGradient id="purpleGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                <stop offset="0%" style="stop-color:#667eea;stop-opacity:1" />
+                <stop offset="100%" style="stop-color:#764ba2;stop-opacity:1" />
+                </linearGradient>
+            </defs>
+            <path fill="url(#purpleGradient)" fill-rule="evenodd" d="M5 11.5a.5.5 0 0 1 .5-.5h9a.5.5 0 0 1 0 1h-9a.5.5 0 0 1-.5-.5m0-4a.5.5 0 0 1 .5-.5h9a.5.5 0 0 1 0 1h-9a.5.5 0 0 1-.5-.5m0-4a.5.5 0 0 1 .5-.5h9a.5.5 0 0 1 0 1h-9a.5.5 0 0 1-.5-.5M3.854 2.146a.5.5 0 0 1 0 .708l-1.5 1.5a.5.5 0 0 1-.708 0l-.5-.5a.5.5 0 1 1 .708-.708L2 3.293l1.146-1.147a.5.5 0 0 1 .708 0m0 4a.5.5 0 0 1 0 .708l-1.5 1.5a.5.5 0 0 1-.708 0l-.5-.5a.5.5 0 1 1 .708-.708L2 7.293l1.146-1.147a.5.5 0 0 1 .708 0m0 4a.5.5 0 0 1 0 .708l-1.5 1.5a.5.5 0 0 1-.708 0l-.5-.5a.5.5 0 0 1 .708-.708l.146.147 1.146-1.147a.5.5 0 0 1 .708 0"/>
+            </svg>
+        <h1>Asset Inspections</h1>
+      </div>
+      <p class="subtitle">Track and analyze all equipment inspection records in real-time</p>
+    </div>
+    <button class="export-btn" (click)="exportExcel()">
+      <span class="download-icon">⬇</span>
+      Export Excel
+    </button>
+  </header>
+
+  <div class="stats-grid">
+    <div class="stat-card purple">
+      <div class="stat-content">
+        <p class="stat-label">TOTAL ASSETS WITH INSPECTION</p>
+        <h2 class="stat-value">{{ totalAssets }}</h2>
+        <p class="stat-description">Active in system</p>
+      </div>
+      <div class="stat-icon purple-icon">
+        <span>🛡️</span>
+      </div>
+    </div>
+
+    <div class="stat-card orange">
+      <div class="stat-content">
+        <p class="stat-label">TOTAL INSPECTIONS</p>
+        <h2 class="stat-value">{{ totalInspections }}</h2>
+        <p class="stat-description">Completed</p>
+      </div>
+      <div class="stat-icon orange-icon">
+        <span>📋</span>
+      </div>
+    </div>
+
+    <div class="stat-card green">
+      <div class="stat-content">
+        <p class="stat-label">TOTAL RECORDS</p>
+        <h2 class="stat-value">{{ totalRecords }}</h2>
+        <p class="stat-description">Data points</p>
+      </div>
+      <div class="stat-icon green-icon">
+        <span>📊</span>
+      </div>
+    </div>
+
+    <div class="stat-card gray">
+      <div class="stat-content">
+        <p class="stat-label">LEAD INSPECTOR</p>
+        <h2 class="stat-value">{{ leadInspector }}</h2>
+        <p class="stat-description">{{ inspectorCount }} Inspections</p>
+      </div>
+      <div class="avatar">J</div>
+    </div>
+  </div>
+
+  <div class="charts-grid">
+    <div class="chart-card trend-chart">
+      <div class="chart-header">
+        <h3>📈 Inspection Trend</h3>
+        <p class="chart-subtitle">Records over time</p>
+      </div>
+      <div class="trend-content">
+        <svg viewBox="0 0 500 200" class="trend-svg">
+          <defs>
+            <linearGradient id="gradient" x1="0%" y1="0%" x2="0%" y2="100%">
+              <stop offset="0%" style="stop-color:#e0e0e0;stop-opacity:0.5" />
+              <stop offset="100%" style="stop-color:#f5f5f5;stop-opacity:0.1" />
+            </linearGradient>
+          </defs>
+          <polyline
+            fill="url(#gradient)"
+            stroke="#999"
+            stroke-width="2"
+            points="0,180 100,160 200,140 300,120 400,120 500,120 500,200 0,200"
+          />
+          <circle cx="500" cy="120" r="4" fill="#ff4444" />
+        </svg>
+        <div class="trend-labels">
+          <span class="label-start">11/16</span>
+          <span class="label-end">11/20</span>
+        </div>
+        <div class="trend-y-labels">
+          <span>8</span>
+          <span>6</span>
+          <span>4</span>
+          <span>2</span>
+          <span>0</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="chart-card status-chart">
+      <div class="chart-header">
+        <h3>Status Distribution</h3>
+        <p class="chart-subtitle">By status type</p>
+      </div>
+      <div class="status-content">
+        <svg viewBox="0 0 200 200" class="donut-chart">
+          <circle cx="100" cy="100" r="80" fill="none" stroke="#000" stroke-width="40"
+            [attr.stroke-dasharray]="getStatusPercentage(statusData.normal) * 5.024 + ' 502.4'"
+            transform="rotate(-90 100 100)" />
+          <circle cx="100" cy="100" r="80" fill="none" stroke="#666" stroke-width="40"
+            [attr.stroke-dasharray]="getStatusPercentage(statusData.good) * 5.024 + ' 502.4'"
+            [attr.stroke-dashoffset]="-getStatusOffset('good') * 5.024"
+            transform="rotate(-90 100 100)" />
+          <circle cx="100" cy="100" r="80" fill="none" stroke="#999" stroke-width="40"
+            [attr.stroke-dasharray]="getStatusPercentage(statusData.z20x) * 5.024 + ' 502.4'"
+            [attr.stroke-dashoffset]="-getStatusOffset('z20x') * 5.024"
+            transform="rotate(-90 100 100)" />
+          <circle cx="100" cy="100" r="80" fill="none" stroke="#ccc" stroke-width="40"
+            [attr.stroke-dasharray]="getStatusPercentage(statusData.clean) * 5.024 + ' 502.4'"
+            [attr.stroke-dashoffset]="-getStatusOffset('clean') * 5.024"
+            transform="rotate(-90 100 100)" />
+        </svg>
+        <div class="status-labels">
+          <div class="status-label normal">
+            <span class="label-text">Normal: {{ statusData.normal }}</span>
+          </div>
+          <div class="status-label good">
+            <span class="label-text">Good: {{ statusData.good }}</span>
+          </div>
+          <div class="status-label z20x">
+            <span class="label-text">Z20X: {{ statusData.z20x }}</span>
+          </div>
+          <div class="status-label clean">
+            <span class="label-text">Clean: {{ statusData.clean }}</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="inspection-types-card">
+    <div class="chart-header">
+      <h3>Inspection Types</h3>
+      <p class="chart-subtitle">Frequency of Completed Records by that Inspection</p>
+    </div>
+    <div class="types-content">
+      <div class="type-row" *ngFor="let type of inspectionTypes">
+        <span class="type-name">{{ type.name }}</span>
+        <div class="bar-container">
+          <div class="bar" [style.width.%]="getBarWidth(type.count)"></div>
+        </div>
+        <span class="type-count">{{ type.count }}</span>
+      </div>
+    </div>
+  </div>
+</div>

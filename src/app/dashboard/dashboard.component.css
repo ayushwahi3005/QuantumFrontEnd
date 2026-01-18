@@ -178,7 +178,7 @@ i {
     margin-left: 250px;
 }
 
-app-assets,app-workorder,app-inventory,app-company-customer,app-asset-insights {
+app-assets,app-workorder,app-inventory,app-company-customer,app-asset-insights,app-analytics-home-page {
     background-color: #F4F5F7;
     /* background-color: #FFFDF8; */
     width: calc(100vw - 60px);
@@ -187,6 +187,9 @@ app-assets,app-workorder,app-inventory,app-company-customer,app-asset-insights {
     /* height: calc(100vh - 55px); */
     overflow-x: hidden;
     /* margin-top: 63px; */
+}
+app-analytics-home-page{
+    height: 100vh;
 }
 
 .app-assets-open{

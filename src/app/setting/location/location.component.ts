@@ -29,6 +29,37 @@ export class LocationComponent {
    showAlert: boolean = false; // Flag to toggle alert visibility
   alertMessage: string = ''; // Alert message
   alertType: string = 'success';
+   stateList = [];
+   selectedLocationStateList = [];
+   currentSelectedCountryCode='US'
+selectedCountryCode='United States of America';
+  countryList=[
+  "Canada",
+  "Mexico",
+  "United States of America",
+
+  "Antigua and Barbuda",
+  "The Bahamas",
+  "Barbados",
+  "Cuba",
+  "Dominica",
+  "Dominican Republic",
+  "Grenada",
+  "Haiti",
+  "Jamaica",
+  "Saint Kitts and Nevis",
+  "Saint Lucia",
+  "Saint Vincent and the Grenadines",
+  "Trinidad and Tobago",
+
+  "Belize",
+  "Costa Rica",
+  "El Salvador",
+  "Guatemala",
+  "Honduras",
+  "Nicaragua",
+  "Panama"
+]
   constructor(
     private locationService: LocationService,
     private formBuilder: FormBuilder
@@ -51,6 +82,7 @@ export class LocationComponent {
       apartment: [''],
       city: [''],
       state: [''],
+      country: [''],
       zipCode: [''],
       status: ['active'],
       companyId: [this.companyId],
@@ -115,7 +147,12 @@ export class LocationComponent {
       },
       (err) => {
         console.log(err);
+        if(err.error.errorMessage==null||err.error.errorMessage==undefined||err.error.errorMessage==""){
+          this.triggerAlert(err.error.message,"danger")
+        }
+        else{
         this.triggerAlert(err.error.errorMessage,"danger")
+        }
       },
       () => {
         this.ngOnInit();
@@ -181,6 +218,7 @@ export class LocationComponent {
       },
       (err) => {
         console.log(err);
+        this.triggerAlert(err.error.errorMessage,"danger")
       },
       () => {
         this.ngOnInit();
@@ -203,6 +241,7 @@ export class LocationComponent {
       },
       (err) => {
         console.log(err);
+        this.triggerAlert(err.error.errorMessage,"danger")
       },
       () => {
         this.deleteLocationName=''
@@ -213,22 +252,35 @@ export class LocationComponent {
   }
 
   editLocation(item: any) {
-    console.log(item);
-    this.locationForm.patchValue({
-      id: item.id ?? '',
-      name: item.name ?? '',
-      parentLocation: item.parentLocation ?? '',
-      address: item.address ?? '',
-      apartment: item.apartment ?? '',
-      city: item.city ?? '',
-      state: item.state ?? '',
-      zipCode: item.zipCode ?? '',
-      status: item.status ?? 'active',
-      companyId: item.companyId ?? this.companyId,
-    });
+    this.locationService.countryStateList(item.country).subscribe(
+      (data) => {
+        this.selectedLocationStateList = data;
+        this.locationForm.get('state')?.setValue('');   // reset state
+        console.log(item);
+        this.locationForm.patchValue({
+          id: item.id ?? '',
+          name: item.name ?? '',
+          parentLocation: item.parentLocation ?? '',
+          address: item.address ?? '',
+          apartment: item.apartment ?? '',
+          city: item.city ?? '',
+          state: item.state ?? '',
+          country: item.country ?? '',
+          zipCode: item.zipCode ?? '',
+          status: item.status ?? 'active',
+          companyId: item.companyId ?? this.companyId,
+        });
     this.editVisibility = true;
     this.editButtonId = item.id ?? -1;
     console.log(this.locationForm.value);
+  
+        // this.cdr.detectChanges();               // prevents ExpressionChanged error
+      },
+      (err) => {
+        console.log(err);
+      }
+    );
+    
   }
   clearEditLocation() {
     this.locationForm.patchValue({
@@ -318,5 +370,30 @@ export class LocationComponent {
       }, 5000); // Hide the alert after 5 seconds (adjust as needed)
     }
 
+
+    getStateList(country: any) {
+    console.log("Selected Country:", country);
+    this.currentSelectedCountryCode=this.countryList[country]||'';
+  
+  
+    this.locationService.countryStateList(country).subscribe(
+      (data) => {
+        this.stateList = data;
+        this.selectedLocationStateList = data;
+        this.locationForm.get('state')?.setValue('');   // reset state
+  
+        // this.cdr.detectChanges();               // prevents ExpressionChanged error
+      },
+      (err) => {
+        console.log(err);
+      }
+    );
+  }
+
+    
+
+
+
+  
 
 }

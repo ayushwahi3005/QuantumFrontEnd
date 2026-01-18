@@ -1183,7 +1183,7 @@ private modalInstance: any;
     <div style="display: flex; justify-content: space-between; margin-top: 10px;">
       <div>
         <div style="font-size: 12px; color: #666;">INVOICE ID</div>
-        <div style="font-weight: bold;">${item.id}</div>
+        <div style="font-weight: bold;">${item.paymentId}</div>
       </div>
       <div>
         <div style="font-size: 12px; color: #666;">DATE</div>

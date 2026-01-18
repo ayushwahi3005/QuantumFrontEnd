@@ -17,7 +17,7 @@ export class AssetInsightsService {
     }
     assetEndpoint = environment.endpoint + "assets/";
 
-    getCheckinOutData(companyId: any){
-      return this.httpClient.get(this.assetEndpoint + "checkInOutAssetData/"+companyId,{headers:this.headers});
+    getCheckinOutData(companyId: any,pageNumber?:number,pageSize?:number) {
+      return this.httpClient.get(this.assetEndpoint + "checkInOutAssetData/"+companyId+"?pageNumber="+(pageNumber?pageNumber:"0")+"&pageSize="+(pageSize?pageSize:"10"),{headers:this.headers});
     }
 }

@@ -41,14 +41,29 @@
                 <tbody>
                   <ng-container *ngIf="searchedLocationList && searchedLocationList.length > 0; else noLocations">
                   <tr *ngFor="let item of searchedLocationList" (mouseenter)="editButtonVisibile(searchedLocationList.indexOf(item)+1)" (mouseleave)="editButtonNotVisible()">
-                    <!-- <th scope="row">{{searchedLocationList.indexOf(item)+1}}</th> -->
+                    
                     <td scope="row">{{searchedLocationList.indexOf(item)+1}}</td>
-                    <td>{{item.name}}</td>
+                    <!-- <td>
+                      <div *ngIf="item.parentLocationName">
+                      {{item.parentLocationName}}
+                      <div style="padding-left: 20px;">{{item.name}}</div>
+                      </div>
+                      <div *ngIf="!item.parentLocationName">{{item.name}}</div>
+                    </td> -->
+
+                    <td>
+                      <div *ngIf="item.parentLocationName" class="location-hierarchy">
+                        <span class="parent-location">{{item.parentLocationName}}</span>
+                        <span class="hierarchy-arrow">›</span>
+                        <span class="child-location">{{item.name}}</span>
+                      </div>
+                      <div *ngIf="!item.parentLocationName">{{item.name}}</div>
+                    </td>
                     <td>{{item.address}}</td>
                       <td>{{ item.status === 'active' ? 'Active' : 'In Active' }}</td>
                     <td>
                       <div style="display: flex; align-items: center; gap: 15px;">
-                        <!-- <img src="../../../assets/edit.svg" id="edit-button" [ngClass]="{'editoption':!(editVisibility&&(editButtonId==locationList.indexOf(item)+1))}" style="float: inline-start; height: 25px; width: 25px;"  > -->
+                      
                         <i class="bi bi-pencil edit-icon" [ngClass]="{'editoption':!(editVisibility&&(editButtonId==searchedLocationList.indexOf(item)+1))}" style="float: inline-start; margin: 3px 5px;" id="dropdownMenuButton" data-toggle="modal" data-target="#editLocation" (click)="editLocation(item)"></i>
                         <i class="bi bi-trash delete-icon"  [ngClass]="{'editoption':!(editVisibility&&(editButtonId==searchedLocationList.indexOf(item)+1))}" style="color: red; float: inline-start; margin: 3px 5px;" (click)="deleteLocation(item.id,item.name)" id="dropdownMenuButton" data-toggle="modal" data-target="#confirmDeleteLocation"></i>
                       </div>
@@ -173,16 +188,33 @@
                 <input type="text" placeholder="City" class="form-group" id="city" formControlName="city" style="font-size: 16px; padding-left: 11px; width: 100%; margin-top: 10px; border-radius: 5px; height: 35px; border: 1px solid #c0c0c0; transition: border-color 0.3s, box-shadow 0.3s;">
                 <!-- <i class="bi bi-trash-fill delete" style="display: inline-flex; margin-top: 12px; margin-left: 10px; color: red; margin-right: 5px;" (click)="removeMandatoryFieldFilter('category')"></i> -->
               </div>
+
+               <div style="padding-left: 20px; margin-top: 10px;">
+              <select class="form-control" formControlName="country" (change)="getStateList($event.target.value)">
+                  <option value="">Country</option>
+                  <option *ngFor="let c of countryList" [value]="c">
+                              {{ c }}
+                            </option>
+                  <!-- Add more countries as needed -->
+                </select>
+            </div>
               
-              <div style="padding-left: 20px;">
+              <div style="padding-left: 20px;  margin-top: 10px">
                 <!-- <label for="state">State</label> -->
-                <input type="text" placeholder="State" class="form-group" id="state" formControlName="state" style="font-size: 16px; padding-left: 11px; width: 100%; margin-top: 10px; border-radius: 5px; height: 35px; border: 1px solid #c0c0c0; transition: border-color 0.3s, box-shadow 0.3s;">
+                <!-- <input type="text" placeholder="State" class="form-group" id="state" formControlName="state" style="font-size: 16px; padding-left: 11px; width: 100%; margin-top: 10px; border-radius: 5px; height: 35px; border: 1px solid #c0c0c0; transition: border-color 0.3s, box-shadow 0.3s;"> -->
+
+                <select class="form-control" formControlName="state">
+                  <option value="">State</option>
+                  <option *ngFor="let state of stateList" [value]="state">{{ state }}</option>
+                  <!-- Add more countries as needed -->
+                </select>
                 <!-- <i class="bi bi-trash-fill delete" style="display: inline-flex; margin-top: 12px; margin-left: 10px; color: red; margin-right: 5px;" (click)="removeMandatoryFieldFilter('customer')"></i> -->
               </div>
               
               <div style="padding-left: 20px;">
                 <!-- <label for="zipCode">ZipCode</label> -->
-                <input type="text" placeholder="Zip Code" class="form-group" id="zipCode" formControlName="zipCode" style="font-size: 16px; padding-left: 11px; width: 100%; margin-top: 10px; border-radius: 5px; height: 35px; border: 1px solid #c0c0c0; transition: border-color 0.3s, box-shadow 0.3s;">
+                <input type="text" placeholder="Zip Code" class="form-group" id="zipCode" formControlName="zipCode" maxlength="15"  minlength="6"
+                    pattern="^[0-9A-Za-z]{6,15}$" style="font-size: 16px; padding-left: 11px; width: 100%; margin-top: 10px; border-radius: 5px; height: 35px; border: 1px solid #c0c0c0; transition: border-color 0.3s, box-shadow 0.3s;">
                 <!-- <i class="bi bi-trash-fill delete" style="display: inline-flex; margin-top: 12px; margin-left: 10px; color: red; margin-right: 5px;" (click)="removeMandatoryFieldFilter('location')"></i> -->
                 <br>
               </div>
@@ -247,7 +279,8 @@
   </div>
 
   <!-- Edit Location -->
-     <div class="modal fade" id="editLocation" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle" aria-hidden="true">
+     <div class="modal fade" id="editLocation" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle" aria-hidden="true"  data-backdrop="static"
+     data-keyboard="false">
     <div class="modal-dialog" role="document">
       <div class="modal-content">
         <div class="modal-header" style="padding: 13px 15px">
@@ -296,16 +329,31 @@
                 <input type="text" placeholder="City" class="form-group" id="city" formControlName="city" style="font-size: 16px; padding-left: 11px; width: 100%; margin-top: 10px; border-radius: 5px; height: 35px; border: 1px solid #c0c0c0; transition: border-color 0.3s, box-shadow 0.3s;">
                 <!-- <i class="bi bi-trash-fill delete" style="display: inline-flex; margin-top: 12px; margin-left: 10px; color: red; margin-right: 5px;" (click)="removeMandatoryFieldFilter('category')"></i> -->
               </div>
+
+               <div style="padding-left: 20px;">
+                <select class="form-control" formControlName="country" (change)="getStateList($event.target.value)">
+                    <option value="">Country</option>
+                    <option *ngFor="let c of countryList" [value]="c">
+                                {{ c }}
+                              </option>
+                    <!-- Add more countries as needed -->
+                  </select>
+                </div>
               
               <div style="padding-left: 20px;">
                 <!-- <label for="state">State</label> -->
-                <input type="text" placeholder="State" class="form-group" id="state" formControlName="state" style="font-size: 16px; padding-left: 11px; width: 100%; margin-top: 10px; border-radius: 5px; height: 35px; border: 1px solid #c0c0c0; transition: border-color 0.3s, box-shadow 0.3s;">
+                 <select class="form-control" formControlName="state">
+                <option value="">State</option>
+                <option *ngFor="let state of selectedLocationStateList" [value]="state">{{ state }}</option>
+                </select>
+                <!-- <input type="text" placeholder="State" class="form-group" id="state" formControlName="state" style="font-size: 16px; padding-left: 11px; width: 100%; margin-top: 10px; border-radius: 5px; height: 35px; border: 1px solid #c0c0c0; transition: border-color 0.3s, box-shadow 0.3s;"> -->
                 <!-- <i class="bi bi-trash-fill delete" style="display: inline-flex; margin-top: 12px; margin-left: 10px; color: red; margin-right: 5px;" (click)="removeMandatoryFieldFilter('customer')"></i> -->
               </div>
               
               <div style="padding-left: 20px;">
                 <!-- <label for="zipCode">ZipCode</label> -->
-                <input type="text" placeholder="Zip Code" class="form-group" id="zipCode" formControlName="zipCode" style="font-size: 16px; padding-left: 11px; width: 100%; margin-top: 10px; border-radius: 5px; height: 35px; border: 1px solid #c0c0c0; transition: border-color 0.3s, box-shadow 0.3s;">
+                <input type="text" placeholder="Zip Code" class="form-group" id="zipCode" formControlName="zipCode"  minlength="6"
+                    pattern="^[0-9A-Za-z]{6,15}$" style="font-size: 16px; padding-left: 11px; width: 100%; margin-top: 10px; border-radius: 5px; height: 35px; border: 1px solid #c0c0c0; transition: border-color 0.3s, box-shadow 0.3s;">
                 <!-- <i class="bi bi-trash-fill delete" style="display: inline-flex; margin-top: 12px; margin-left: 10px; color: red; margin-right: 5px;" (click)="removeMandatoryFieldFilter('location')"></i> -->
                 <br>
               </div>

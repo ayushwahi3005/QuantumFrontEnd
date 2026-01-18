@@ -1,0 +1,9 @@
+.analytics-home{
+    height: calc(100vh - 100px);
+    margin: 30px;
+    border: 1px solid #d2d2d7;
+    border-radius: 10px;
+}
+:host ::ng-deep .mat-mdc-tab-body-content {
+    overflow: auto !important;
+}

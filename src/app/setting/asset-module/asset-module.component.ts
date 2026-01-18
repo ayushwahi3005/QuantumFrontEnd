@@ -155,6 +155,7 @@ export class AssetModuleComponent {
     },
     (err)=>{
       console.log(err);
+      this.triggerAlert(err.error.errorMessage,"danger");
     },
     ()=>{
       this.ngOnInit();

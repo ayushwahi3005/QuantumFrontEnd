@@ -199,7 +199,17 @@
                 <div style="margin: 0px 6.5vw;">
                   <label for="zipCode">Zip Code<span *ngIf="mandatoryFieldsMap.get('zipCode')" class="text-danger">*</span></label><br>
                   
-                  <input id="zipCode" type="text" [(ngModel)]=" companyCustomer.zipCode"  >
+                  <input
+                    id="zipCode"
+                    type="text"
+                    [(ngModel)]="companyCustomer.zipCode"
+                    
+                    maxlength="15"
+                    minlength="6"
+                    pattern="^[0-9A-Za-z]{6,15}$"
+                  />
+
+                  
                 </div>
             
              </div>
@@ -225,19 +235,21 @@
   <div class="option d-flex flex-row mb-3">
     <span [ngClass]="{'selected-option':(currOption==1),'subTab':(currOption!=1)}" (click)="onClick(1)">Asset</span>
     <span [ngClass]="{'selected-option':(currOption==2),'subTab':(currOption!=2)}" (click)="onClick(2)">Files</span>
-    <span [ngClass]="{'selected-option':(currOption==3),'subTab':(currOption!=3)}" (click)="onClick(3)">Work Order</span>
+    <!-- <span [ngClass]="{'selected-option':(currOption==3),'subTab':(currOption!=3)}" (click)="onClick(3)">Work Order</span> -->
     <span [ngClass]="{'selected-option':(currOption==4),'subTab':(currOption!=4)}" (click)="onClick(4)">Invoices</span>
     <span [ngClass]="{'selected-option':(currOption==5),'subTab':(currOption!=5)}" (click)="onClick(5)">Custom</span>
     
   </div>
-  <div class="card mt-2" *ngIf="currOption==2">
+  <div  >
     <!-- <h1 style="display: flex; justify-content: center; margin-top: 10px;">Files</h1> -->
    
-    <div class="card-body">
-      <div>
+    <div class="card mt-2 ps-2" *ngIf="currOption==2">
+      <div >
+        <div style="margin-bottom: 70px; margin-right: 10px;">
         <input type="file" style="width: 100%"  (change)="fileUpload($event)"  #imageFile  style="display:none">
-        <button type="button" class="btn btn-primary" (click)="imageFile.click()" style="margin-bottom: 10px;">Upload File</button>
-          
+        
+        <button type="button" class="btn btn-primary" (click)="imageFile.click()" style="margin-bottom: 10px; float: inline-end; " >Upload File</button>
+         </div>
       <div class="progress my-3" *ngIf="currentFile">
         <div
           class="progress-bar progress-bar-info progress-bar-striped"
@@ -251,19 +263,30 @@
         </div>
         
       </div>
-      <div *ngFor="let item of fileInfos">
-      <div class="d-flex justify-content-between" style="margin: 5px;">
-        
-        <span style="font-size: large; background:none; border: none; justify-content:left;">{{item.fileName|titlecase}}</span>
-
-         <span style="font-size: large; background:none; border: none; justify-content:left;">{{item.uploadDateTime|date}}</span>
-        <div>
-         
-          <a (click)="download(item.id,item.fileName)"  style="margin: 0px 5px;"><i class="bi bi-file-earmark-arrow-down"></i></a>
-            <a (click)="itemDeleteDetails(item.id)" data-target="#popupDelete" data-toggle="modal" style="margin: 0px 5px;"><i class="bi bi-trash-fill delete"></i></a>
-            
-        </div>
-      </div>
+      <div class="table-responsive">
+        <table class="table table-striped table-hover mx-2" style="width: -webkit-fill-available;" *ngIf="fileInfos?.length">
+          <thead class="table-dark">
+            <tr>
+              <th>File Name</th>
+              <th>Upload Date</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let item of fileInfos">
+              <td>{{item.fileName|titlecase}}</td>
+              <td>{{item.uploadDateTime|date:'short'}}</td>
+              <td>
+                <button class="btn btn-sm btn-info" (click)="download(item.id,item.fileName)" title="Download">
+                  <i class="bi bi-file-earmark-arrow-down"></i>
+                </button>
+                <button class="btn btn-sm btn-danger ms-2" (click)="itemDeleteDetails(item.id)" data-target="#popupDelete" data-toggle="modal" title="Delete">
+                  <i class="bi bi-trash-fill"></i>
+                </button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
       </div>
     </div>
   </div>

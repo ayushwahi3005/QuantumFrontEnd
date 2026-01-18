@@ -14,6 +14,7 @@ export class SettingMainService {
   // endpoint="http://customer-lb2-1979550990.us-east-1.elb.amazonaws.com:8080/";
   customerEndpoint = environment.endpoint
   subscriptionEndpoint=environment.endpoint+"subscription/"
+  countryEndpoint=environment.endpoint+"country/"
 
   // endpoint="http://localhost:8080/";
   dashboard(email: string): Observable<any> {
@@ -62,4 +63,10 @@ export class SettingMainService {
         
           return this.httpClient.get(this.subscriptionEndpoint+'currentSubscription/'+companyId, { headers });
         }
+
+    countryStateList(country:any):Observable<any>{
+    const headers = new HttpHeaders().set('Authorization', `Bearer ${localStorage.getItem('authToken')}`).set('device-id', `${localStorage.getItem('deviceId')}`);;
+    return this.httpClient.get(this.countryEndpoint+"states/"+country,{headers});
+   
+  }
 }

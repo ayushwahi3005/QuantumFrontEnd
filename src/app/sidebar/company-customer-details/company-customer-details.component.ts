@@ -59,7 +59,7 @@ export class CompanyCustomerDetailsComponent {
   fileInfos!:CompanyCustomerFile[];
   deleteFileId!: string;
   customerAssetList:any=[]
-  customerWorkOrderList!:WorkOrder[]
+  // customerWorkOrderList!:WorkOrder[]
   userRoleDetails: any;
   userRole: any;
   pageSize:number=5;
@@ -209,7 +209,7 @@ export class CompanyCustomerDetailsComponent {
 
     this.companyCustomerDetailsService.getExtraFieldName(this.companyId).subscribe((data)=>{
       this.extraFieldName=data;
-      console.log("extra FieldsssName"+this.extraFieldName[0]);
+      console.log("extra FieldsssName",this.extraFieldName);
       this.extraFieldName.sort((a,b)=>(a.name<b.name)?-1:1)
       console.log(data);
       if(this.extraFieldName!=null){
@@ -625,8 +625,9 @@ export class CompanyCustomerDetailsComponent {
   }
 
   onClick(option:number){
-    console.log(option)
+    
     this.currOption=option;
+    console.log(this.currOption)
   }
   fileUpload(event:any){
     this.currentFile= event.target.files[0];
@@ -803,8 +804,9 @@ export class CompanyCustomerDetailsComponent {
     })
   }
   deleteCustomer(){
-    console.log("length "+this.customerWorkOrderList?.length+" "+this.customerAssetList?.length)
-    if(this.customerWorkOrderList?.length==0||this.customerWorkOrderList?.length==undefined&&this.customerAssetList?.length==0){
+    // console.log("length "+this.customerWorkOrderList?.length+" "+this.customerAssetList?.length)
+    // if(this.customerWorkOrderList?.length==0||this.customerWorkOrderList?.length==undefined&&this.customerAssetList?.length==0){
+    if(this.customerAssetList?.length==0){
       this.companyCustomerDetailsService.deleteCompanyCustomer(this.companyCustomerId).subscribe((data)=>{
         console.log("Deleted Customer");
         // this.triggerAlert("Customer Deleted Successfully","success");
@@ -821,7 +823,7 @@ export class CompanyCustomerDetailsComponent {
     })
   }
   else{
-    this.triggerAlert("Cannot Delete User. Assets and WorkOrders are there related to this customer","danger");
+    this.triggerAlert("Cannot Delete Customer. Please make associated assets as inactive.","danger");
   }
   }
   logout(){

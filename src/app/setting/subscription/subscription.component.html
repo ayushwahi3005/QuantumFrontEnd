@@ -349,7 +349,7 @@
                   </mat-form-field>
                    <mat-form-field appearance="outline" style="flex: 1">
                       <mat-label>ZIP Code</mat-label>
-                      <input matInput formControlName="zipcode" />
+                      <input matInput formControlName="zipcode" maxlength="15" minlength="6" pattern="^[0-9A-Za-z]{6,15}$"  />
                     </mat-form-field>
                   </div>
                   
@@ -902,7 +902,7 @@
               <tr *ngFor="let item of InvoiceList" bi bi-download>
 
                 <td>{{item.transactionDate|date }}</td>
-                <td>{{item.id}}</td>
+                <td>{{item.paymentId}}</td>
                 <td>
                   <div [ngClass]="getPaymentStatusClass(item.paymentStatus)">
                     {{ item.paymentStatus }}

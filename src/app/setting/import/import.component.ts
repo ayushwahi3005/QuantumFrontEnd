@@ -63,6 +63,13 @@ export class ImportComponent {
   currExportModuel:any;
   currExportTemplate:any;
   selectedFileName!: string;
+  useSavedMapping: boolean = false;
+  customerAddMapping!: Map<String, String>;
+
+  // Create a getter to convert Map to object for display
+  assetAddMapping!:Map<String,String>
+  customerUpdateMapping!:Map<String,String>;
+  assetUpdateMapping!:Map<String,String>;
   constructor(private formBuilder:FormBuilder,private importService:ImportService,private assetService:AssetsService,private dialog: MatDialog){
 
   }
@@ -71,11 +78,17 @@ export class ImportComponent {
 
 
   ngOnInit(){
+   
+    this.fetchDataFromLocalStorage();
+    console.log(this.customerAddMapping);
+    console.log(this.assetAddMapping);
+    console.log(this.customerUpdateMapping);
+    console.log(this.assetUpdateMapping);
     this.loading=false;
     this.email=localStorage.getItem('user');
     this.companyId=localStorage.getItem('companyId');
     this.selectedFileName = 'No file chosen';
-   
+    this.useSavedMapping = false;
     
     this.importForm=this.formBuilder.group({
       module:['asset',Validators.required],
@@ -146,6 +159,29 @@ export class ImportComponent {
     this.columnMappings=new Map<String,String>();
     console.log(this.columnMappings)
   }
+  fetchDataFromLocalStorage(){
+      const toMap = (jsonStr: string | null): Map<string, string> => {
+    if (!jsonStr) return new Map<string, string>();
+    try {
+      const parsed = JSON.parse(jsonStr);
+      // If it's an array of pairs (from Array.from(map.entries())), use it directly
+      if (Array.isArray(parsed)) {
+        return new Map<string, string>(parsed);
+      }
+      // If it's a plain object, convert to entries
+      return new Map<string, string>(Object.entries(parsed));
+    } catch (e) {
+      console.error('Error parsing mapping:', e);
+      return new Map<string, string>();
+    }
+  };
+     this.customerAddMapping = toMap(localStorage.getItem("customer_add_mapping"));
+  this.assetAddMapping = toMap(localStorage.getItem("asset_add_mapping"));
+  this.customerUpdateMapping = toMap(localStorage.getItem("customer_update_mapping"));
+  this.assetUpdateMapping = toMap(localStorage.getItem("asset_update_mapping"));
+
+  }
+      //   localStorage.setItem("asset_add_mapping",JSON.stringify(Array.from(this.columnMappings.entries())))
   ngAfterViewInit() {
   this.openModal(); // Now safe, ViewChild is initialized
 }
@@ -244,9 +280,12 @@ export class ImportComponent {
         formData.append('file', file);
 
         this.myFile=formData;
-
+        if(this.useSavedMapping==true){
+          this.columnMappings= this.assetAddMapping;
+        }
 
         this.progress=0;
+        console.log(this.columnMappings);
         this.importService.addAssets(this.myFile,this.companyId,this.email,this.columnMappings).subscribe((event)=>{
           // console.log(event)
           // console.log(event.type)
@@ -392,7 +431,12 @@ export class ImportComponent {
         formData.append('file', file);
 
         this.myFile=formData;
-
+        console.log(this.useSavedMapping);
+        if(this.useSavedMapping){
+          this.columnMappings= this.customerAddMapping;
+        }
+         console.log(this.customerAddMapping);
+        console.log(this.columnMappings);
         this.importService.addCustomer(this.myFile,this.companyId,this.email,this.columnMappings).subscribe((data)=>{
           console.log("Successfully Uploaded");
           this.loading=false;
@@ -464,10 +508,7 @@ export class ImportComponent {
       this.showAlert = false;
     }, 5000); // Hide the alert after 5 seconds (adjust as needed)
   }
-  saveMappings(){
-    this.triggerAlert("Mapping Saved Successfully!!","success")
-    console.log(this.columnMappings)
-  }
+
   update(key:String,value:any){
     this.columnMappings.set(key,value.target.value)
   }
@@ -538,5 +579,19 @@ export class ImportComponent {
     const file: File = event.target.files[0];
     this.selectedFileName = file ? file.name : 'No file chosen';
   }
-
+    saveMappings(){
+    localStorage.setItem(this.currImport+"_"+this.impType+"_mapping",JSON.stringify(Array.from(this.columnMappings.entries())));
+    this.fetchDataFromLocalStorage();
+    console.log(localStorage.getItem(this.currImport+"_"+this.impType+"_mapping"));
+    // if(this.currImport+"_"+this.impType+"_mapping"=="asset_add_mapping"){
+    //   localStorage.setItem("asset_add_mapping",JSON.stringify(Array.from(this.columnMappings.entries())));
+    // }
+    this.triggerAlert("Mapping Saved Successfully!!","success")
+    console.log(this.columnMappings)
+  }
+  savedMappingLocalStorage(event:any){
+    console.log(event.checked)
+    this.useSavedMapping=event.checked;
+  }
+  
 }

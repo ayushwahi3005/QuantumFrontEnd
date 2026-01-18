@@ -199,7 +199,7 @@
             <div class="option d-flex flex-row mb-4">
               <span [ngClass]="{'selected-option':(currOption==1),'subTab':(currOption!=1)}" (click)="onClick(1)" >Asset</span>
               <span [ngClass]="{'selected-option':(currOption==2),'subTab':(currOption!=2)}" (click)="onClick(2)" class="subTab">Files</span>
-              <span [ngClass]="{'selected-option':(currOption==3),'subTab':(currOption!=3)}" (click)="onClick(3)" class="subTab">Work Order</span>
+              <!-- <span [ngClass]="{'selected-option':(currOption==3),'subTab':(currOption!=3)}" (click)="onClick(3)" class="subTab">Work Order</span> -->
               <span [ngClass]="{'selected-option':(currOption==4),'subTab':(currOption!=4)}" (click)="onClick(4)" class="subTab">Invoices</span>
               <span [ngClass]="{'selected-option':(currOption==5),'subTab':(currOption!=5)}" (click)="onClick(5)" class="subTab">Custom</span>
               
@@ -299,7 +299,7 @@
             <div class="card mt-2" *ngIf="currOption==3"  style="overflow-y:scroll; height: 200px;">
               <!-- <h1 style="display: flex; justify-content: center; margin-top: 10px;">Work Order</h1> -->
               <div class="card-body">
-                <table class="table" id="workorder-table" *ngIf="customerWorkOrderList.length">
+                <table class="table" id="workorder-table" *ngIf="customerWorkOrderList?.length">
                   <thead class="table-dark">
                       <tr>
                           <th scope="col">#</th>

@@ -146,9 +146,9 @@
               <label>Email<span  class="text-danger">*</span></label><br>
                 <input type="email" style="width: 97%" class="form-control"  formControlName="email" [ngModel]="selectEditUser?.email"  disabled [disabled]="true">
             </div> -->
-            <div >
+            <div>
               <label>Phone</label><br>
-                <input type="number" style="width: 97%" class="form-control"  formControlName="phoneNumber" [ngModel]="selectEditUser?.mobileNumber">
+              <input type="tel" style="width: 97%" class="form-control" formControlName="phoneNumber" [ngModel]="selectEditUser?.mobileNumber" maxlength="10">
             </div>
             <div >
               <label>Job Title</label><br>
@@ -302,7 +302,7 @@
             </div>
             <div >
               <label>Phone</label><br>
-                <input type="number" class="highlight-input" style="font-size: 16px; padding-left: 11px; width: 100%; margin-top: 10px; border-radius: 5px; height: 35px; border: 1px solid #c0c0c0; transition: border-color 0.3s, box-shadow 0.3s;" formControlName="phoneNumber">
+                <input type="tel" class="highlight-input" style="font-size: 16px; padding-left: 11px; width: 100%; margin-top: 10px; border-radius: 5px; height: 35px; border: 1px solid #c0c0c0; transition: border-color 0.3s, box-shadow 0.3s;" formControlName="phoneNumber" maxlength="10">
             </div>
             <div >
               <label>Job Title</label><br>

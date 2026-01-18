@@ -84,21 +84,40 @@
           <input type="text" class="form-control" formControlName="address2" placeholder="Address 2"
             [ngModel]="companyInformation ? companyInformation.address2 : ''">
         </div>
+         <div class="col-12">
+            <select class="form-control" formControlName="country" (change)="getStateList($event.target.value)">
+            <option value="">Select Country</option>
+             <option *ngFor="let c of countryList" [value]="c">
+                        {{ c }}
+                      </option>
+            <!-- Add more countries as needed -->
+          </select>
+        </div>
+        
+        
+       
+        <div class="col-md-4">
+
+          <!-- <input type="text" class="form-control" formControlName="state" placeholder="State"
+            [ngModel]="companyInformation ? companyInformation.state : ''"> -->
+
+            <select class="form-control" formControlName="state">
+            <option value="">Select State</option>
+            <option *ngFor="let state of stateList" [value]="state">{{ state }}</option>
+            <!-- Add more countries as needed -->
+          </select>
+
+            <!-- <option *ngFor="let state of stateList" [value]="state">{{ state }}</option> -->
+        </div>
         <div class="col-md-4">
 
           <input type="text" class="form-control" formControlName="city" placeholder="City"
             [ngModel]="companyInformation ? companyInformation.city : ''">
         </div>
         <div class="col-md-4">
-
-          <input type="text" class="form-control" formControlName="state" placeholder="State"
-            [ngModel]="companyInformation ? companyInformation.state : ''">
-        </div>
-        <div class="col-md-4">
-
           <input type="text" class="form-control" formControlName="zipCode" placeholder="Enter ZIP Code"
-            [ngModel]="companyInformation ? companyInformation.zipCode : ''" maxlength="6" pattern="^[a-z0-9]*$" />
-
+            [ngModel]="companyInformation ? companyInformation.zipCode : ''" maxlength="15" minlength="6"
+            pattern="^[0-9A-Za-z]{6,15}$" />
           <div *ngIf="companyInformationForm.get('zipCode')?.invalid && companyInformationForm.get('zipCode')?.touched"
             class="text-danger">
             <span *ngIf="this.companyInformationForm.get('zipCode')?.errors?.required">ZIP Code is required.</span>

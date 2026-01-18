@@ -21,7 +21,7 @@ export class DashboardComponent  {
   trialDayLeft!:number;
   currentSubscription:any;
   currentSubcriptionMessage:string='';
-  currentSubscriptionMessageStyle:string='color: wheat; border-radius: 5px ; padding: 5px; margin-left:-4px; font-weight: 500;';
+  currentSubscriptionMessageStyle:string='color: white; border-radius: 5px ; padding: 5px; margin-left:-4px; font-weight: 500;';
   sideBarOption=[{
     number:1,
     name:'Customers',
@@ -188,12 +188,13 @@ export class DashboardComponent  {
       }
       else if((this.currentSubscription==null||this.currentSubscription.status!='ACTIVE')&&this.freeTrialDetails.trialExpired===false &&this.trialDayLeft>0){
         this.currentSubcriptionMessage='Trial Period - '+this.trialDayLeft+ ' Days Left';
-        this.currentSubscriptionMessageStyle+='border:solid #ffab00 1px; background-color: #ff9600;';
+        this.currentSubscriptionMessageStyle+='border:solid #ffab00 1px; background-color: #f5c242;';
       }
       else{
         this.currentSubcriptionMessage='No Plan';
         this.currentSubscriptionMessageStyle+=' border:solid #dd1e10ff 1px; background-color: #F44336';
       }
+       console.log(this.currentSubcriptionMessage)
     },
     (err)=>{
       console.log("Current Subscription Error",err)
@@ -203,6 +204,8 @@ export class DashboardComponent  {
       console.log("Free Trial Details Error",err)
       this.loading=false;
     });
+
+   
     
    
   }

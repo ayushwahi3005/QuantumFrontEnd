@@ -115,10 +115,11 @@
                     </select>
               </div>
               <div class="form-group" >
-                <label for="zipCode">ZipCode</label>
+                <label for="zipCode">ZIP Code</label>
                 <div class="d-flex justify-content-around">
-                <input type="text" class="form-control" id="zipCode" formControlName="zipCode" maxlength="6"
-          pattern="^[a-z0-9]{6}$" >
+                <input type="text" class="form-control" id="zipCode" formControlName="zipCode" maxlength="15"
+           minlength="6"
+                    pattern="^[0-9A-Za-z]{6,15}$" >
               <!-- <span *ngIf="this.companyCustomerForm.get('zipCode')?.errors?.pattern">Enter a valid ZIP Code (e.g., 123456).</span> -->
                 <!-- <i class="bi bi-trash-fill delete" style="display: inline-flex; margin-top: 12px; margin-left: 10px; color: red; margin-right: 5px;" (click)="removeMandatoryFieldFilter('location')"></i> -->
                 </div>
@@ -419,7 +420,8 @@
 
                   <div style="flex: 1;">
                   <label for="zipCode">ZIP Code<span *ngIf="mandatoryFieldsMap.get('zipCode')" class="text-danger">*</span></label>
-                  <input type="number" class="form-control" id="zipCode" formControlName="zipCode">
+                  <input type="text" class="form-control" id="zipCode" formControlName="zipCode"  minlength="6"
+                    pattern="^[0-9A-Za-z]{6,15}$" maxlength="15">
                 </div>
                 </div>
 
@@ -433,7 +435,7 @@
               
               <!-- <button type="submit" class="btn btn-primary mt-3" (click)="closeBox.click()" [disabled]="workorderform.invalid">Submit</button> -->
               <div style="display: flex; justify-content: center; margin-top: 15px;">
-                <button class="btn btn-light"  (click)="closeBox.click()" style="margin: 10px; width: 100px; margin-right: 30px; border: 1px solid #c0c0c0">Cancel</button>
+                <button class="btn btn-light" type="button" (click)="closeBox.click()" style="margin: 10px; width: 100px; margin-right: 30px; border: 1px solid #c0c0c0">Cancel</button>
                 <button class="btn btn-primary"   style="margin: 10px; width: 100px;">Save</button>
               </div>
               
