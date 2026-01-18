@@ -43,7 +43,7 @@
 table .bi-trash3{
   color: red;
   margin-bottom: 2px;
-  font-size: larger;
+  font-size: large;
   margin-left: 20px;
   cursor: pointer;
 }
@@ -51,7 +51,7 @@ table .bi-trash3{
 table .bi-pencil{
   color: rgb(96, 93, 93);
   margin-bottom: 2px;
-  font-size: larger;
+  font-size: large;
   margin-left: 20px;
   cursor: pointer;
 }

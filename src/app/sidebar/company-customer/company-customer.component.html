@@ -6,65 +6,64 @@
  
   <button type="button" class="btn-close" (click)="showAlert = false" aria-label="Close" style="float: right;"></button>
 </div>
+
 <div *ngIf="!loadingScreen" >
+
+  <div class="d-flex justify-content-center" style="margin: 20px 30px 0 30px;">
+    <div class="d-flex justify-content-between" style=" width: 100%;">
   
-  <div class="CustomerMainScreen" style="border: 1px solid lightgray;  background-color: white; border-radius: 10px; padding: 0px; margin: 30px; box-shadow: 0 0 4px 0 rgba(0, 0, 0, .16); height: auto; padding-bottom: 8px;">
+      <div style="height: 40px;">
+        <label style="font-size: 24px; font-weight: bold; padding: 10px 0;">Customers</label>
+      </div>
+
+      <button class="btn btn-dark" (click)="exportexcel()" style=" margin: 0">Export</button>
+  
+    </div>
+  </div>
+  
+  <div class="CustomerMainScreen" style="border: 1px solid lightgray;  background-color: white; border-radius: 10px; padding: 0px; margin: 20px 30px 30px 30px; box-shadow: 0 0 4px 0 rgba(0, 0, 0, .16); height: auto; padding-bottom: 8px;">
+
   <div class="modal fade" id="myExample" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog" role="document">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h2 class="modal-title" id="exampleModalLabel">Advance Filter</h2>
-          <button type="button" class="close  ms-auto" data-dismiss="modal" aria-label="Close" #closeBox3>
-            <span aria-hidden="true">&times;</span>
+      <div class="modal-content" style="max-height: 90vh;">
+        <div class="modal-header" style="padding: 13px 15px; position: sticky; top: 0; z-index: 100; background-color: white;">
+          <h2 class="modal-title" id="exampleModalLabel" style="margin:0; display: flex; justify-content: center;">Advance Filter</h2>
+          <button type="button" class="btn btn-light btn-sm ms-auto" data-dismiss="modal" aria-label="Close" style="border-radius: 10px;" #closeBox3>
+            <i class="bi bi-x-lg"></i>
           </button>
         </div>
-        <div class="modal-body">
+        <div class="modal-body" style="overflow-y: auto;">
           <form [formGroup]="filterForm" >
 
-            <div style="width: 95%;">
-            <div class="form-group" >
+            <div class="mb-3">
               <label for="companyCustomerId">ID</label>
-              <div class="d-flex justify-content-around">
               <input type="text" class="form-control" id="companyCustomerId" formControlName="companyCustomerId"  #name>
               <!-- <i class="bi bi-trash-fill delete" style="display: inline-flex; margin-top: 12px; margin-left: 10px; color: red; margin-right: 5px;" (click)="removeMandatoryFieldFilter('assetId')"></i> -->
-              </div>
-              <br>
             </div>
-            <div class="form-group" >
+
+            <div class="mb-3">
               <label for="name">Name</label>
-              <div class="d-flex justify-content-around">
               <input type="text" class="form-control" id="name" formControlName="name"   #name>
               <!-- <i class="bi bi-trash-fill delete" style="display: inline-flex; margin-top: 12px; margin-left: 10px; color: red; margin-right: 5px;" (click)="removeMandatoryFieldFilter('name')"></i> -->
-              </div>
-              <br>
             </div>
          
-              <div class="form-group">
+              <div class="mb-3">
                 <label for="email">Email</label>
-                <div class="d-flex justify-content-around">
                 <input type="email" class="form-control" id="email" formControlName="email"  >
                 <!-- <i class="bi bi-trash-fill delete" style="display: inline-flex; margin-top: 12px; margin-left: 10px; color: red; margin-right: 5px;" (click)="removeMandatoryFieldFilter('serialNumber')"></i> -->
-                </div>
-                <br>
               </div>
               
             
-              <div class="form-group" >
-                <label for="phone" >Phone</label>
-                <div class="d-flex justify-content-around">
+              <div class="mb-3">
+                <label for="phone">Phone</label>
                 <input type="text" class="form-control" id="phone" formControlName="phone" >
                 <!-- <i class="bi bi-trash-fill delete" style="display: inline-flex; margin-top: 12px; margin-left: 10px; color: red; margin-right: 5px;" (click)="removeMandatoryFieldFilter('category')"></i> -->
-                  </div>
-                  <br>
               </div>
               
-              <div class="form-group" >
+              <div class="mb-3">
                 <label for="address">Address</label>
-                <div class="d-flex justify-content-around">
                 <input type="text" class="form-control" id="address" formControlName="address" >
                 <!-- <i class="bi bi-trash-fill delete" style="display: inline-flex; margin-top: 12px; margin-left: 10px; color: red; margin-right: 5px;" (click)="removeMandatoryFieldFilter('customer')"></i> -->
-                </div>
-                <br>
               </div>
               
               <!-- <div class="form-group" >
@@ -76,68 +75,52 @@
                 <br>
               </div> -->
 
-              <div class="form-group" >
+              <div class="mb-3">
                 <label for="city">City</label>
-                <div class="d-flex justify-content-around">
                 <input type="text" class="form-control" id="city" formControlName="city"  >
                 <!-- <i class="bi bi-trash-fill delete" style="display: inline-flex; margin-top: 12px; margin-left: 10px; color: red; margin-right: 5px;" (click)="removeMandatoryFieldFilter('location')"></i> -->
-                </div>
-                <br>
               </div>
 
-              <div class="form-group" >
+              <div class="mb-3">
                 <label for="state">State</label>
-                <div class="d-flex justify-content-around">
-                <!-- <input type="text" class="form-control" id="state" formControlName="state"  > -->
                 <!-- <i class="bi bi-trash-fill delete" style="display: inline-flex; margin-top: 12px; margin-left: 10px; color: red; margin-right: 5px;" (click)="removeMandatoryFieldFilter('location')"></i> -->
                 <select class="form-select custom-dropdown" class="form-control" id="state" formControlName="state" #status style="height: fit-content;" >
                   <option value="{{state}}" *ngFor="let state of stateList">{{state}}</option>
                   <!-- <option value="{{[customer.name,customer.id]}}" *ngFor="let customer of companyCustomerList">{{customer.name}}</option> -->
                   <!-- <option value="outOfService" selected>Out Of Service</option> -->
-                  
-                  
                 </select>
-                </div>
-                <br>
               </div>
 
-              <div class="form-group" >
+              <div class="mb-3">
                 <label for="zipCode">ZipCode</label>
-                <div class="d-flex justify-content-around">
-                <input type="text" class="form-control" id="zipCode" formControlName="zipCode" maxlength="6"
-          pattern="^[a-z0-9]{6}$" >
+                <input type="text" class="form-control" id="zipCode" formControlName="zipCode" maxlength="6" pattern="^[a-z0-9]{6}$" >
               <!-- <span *ngIf="this.companyCustomerForm.get('zipCode')?.errors?.pattern">Enter a valid ZIP Code (e.g., 123456).</span> -->
                 <!-- <i class="bi bi-trash-fill delete" style="display: inline-flex; margin-top: 12px; margin-left: 10px; color: red; margin-right: 5px;" (click)="removeMandatoryFieldFilter('location')"></i> -->
-                </div>
-                <br>
               </div>
               
-              <div class="form-group" >
-                <label for="status" >Status</label>
-                <div class="d-flex justify-content-around">
+              <div class="mb-3">
+                <label for="status">Status</label>
                 <select class="form-select" id="status" formControlName="status" #status>
                   <option value="active">Active</option>
                   <option value="inactive">Inactive</option>      
                 </select>
                 <!-- <i class="bi bi-trash-fill delete" style="display: inline-flex; margin-top: 12px; margin-left: 10px; color: red; margin-right: 5px;" (click)="removeMandatoryFieldFilter('status')"></i> -->
-                </div>
               </div>
       
-              <h1 *ngIf="this.selectedFilterList?.length>0" style="margin-left: 33%; margin-top: 5px;">Custom Fields</h1>
-              <div *ngFor="let input of selectedFilterList; let i = index" style="margin-top: 5px;">
+              <!-- <h1 *ngIf="this.selectedFilterList?.length>0" style="margin-left: 33%; margin-top: 5px;">Custom Fields</h1> -->
+              <div *ngFor="let input of selectedFilterList; let i = index" class="mb-3">
                 <label for={{input}}>{{input}}</label>
-                <input [formControlName]="input" type={{extraFieldFilterList.get(input)}} class="extraFieldInput"> <!-- Since each form group is wrapped in a form array -->
+                <input [formControlName]="input" type={{extraFieldFilterList.get(input)}} class="form-control"> <!-- Since each form group is wrapped in a form array -->
                 <!-- <i class="bi bi-trash-fill delete" style="display: inline-flex; margin-top: 25px; margin-left: 10px; color: red; margin-right: 5px;" (click)="removeInputField(input)"></i> -->
               </div>
-
-        </div>
        
       </form>
-        </div>
-        <div class="modal-footer d-flex justify-content-around">
-          <button  class="btn btn-light mt-3"  (click)="closeBox3.click()" (click)="reset()" >Clear</button>
-          <button type="submit" class="btn btn-primary mt-3" (click)="closeBox3.click()" (click)="addFilterForm()"   >Filter</button>
+
+        <div style="display: flex; justify-content: center; margin-top: 15px;">
+          <button class="btn btn-light" (click)="closeBox3.click()" (click)="reset()" style="margin: 10px; width: 100px; margin-right: 30px; border: 1px solid #c0c0c0">Clear</button>
+          <button class="btn btn-primary" (click)="closeBox3.click()" (click)="addFilterForm()" style="margin: 10px; width: 100px;">Filter</button>
           
+        </div>
         </div>
       </div>
     </div>
@@ -156,7 +139,7 @@
       <button class="btn btn-primary" (click)="searchClick()" style="margin: 0 5px;">Search</button>
     
        
-       <a class="btn btn-light dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="modal" data-target="#myExample" style="border: 1px solid #c0c0c0; margin: 0 5px;" title="Advance Filter">
+       <a class="btn btn-light" type="button" id="dropdownMenuButton" data-toggle="modal" data-target="#myExample" style="border: 1px solid #c0c0c0; margin: 0 5px; --bs-btn-bg: white" title="Advance Filter">
         <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-funnel-fill" viewBox="0 0 16 16">
           <path d="M1.5 1.5A.5.5 0 0 1 2 1h12a.5.5 0 0 1 .5.5v2a.5.5 0 0 1-.128.334L10 8.692V13.5a.5.5 0 0 1-.342.474l-3 1A.5.5 0 0 1 6 14.5V8.692L1.628 3.834A.5.5 0 0 1 1.5 3.5v-2z"/>
         </svg>
@@ -179,24 +162,25 @@
 
     <div class="d-flex justify-content-between">
 
-      <a class="btn btn-light dropdown-toggle" type="button" id="sortButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="margin: 0px 5px; border: 1px solid #c0c0c0" title="Sort">
+      <a class="btn btn-light dropdown-toggle" type="button" id="sortButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="margin: 0px 5px; border: 1px solid #c0c0c0; --bs-btn-bg: white" title="Sort">
         <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-arrow-down-up" viewBox="0 0 16 16">
           <path fill-rule="evenodd" d="M11.5 15a.5.5 0 0 0 .5-.5V2.707l3.146 3.147a.5.5 0 0 0 .708-.708l-4-4a.5.5 0 0 0-.708 0l-4 4a.5.5 0 1 0 .708.708L11 2.707V14.5a.5.5 0 0 0 .5.5m-7-14a.5.5 0 0 1 .5.5v11.793l3.146-3.147a.5.5 0 0 1 .708.708l-4 4a.5.5 0 0 1-.708 0l-4-4a.5.5 0 0 1 .708-.708L4 13.293V1.5a.5.5 0 0 1 .5-.5"/>
         </svg>
       </a>
      
-      <div class="dropdown-menu" aria-labelledby="sortButton" style="z-index: 10; cursor: pointer; margin-top: 5px;">
+      <div class="dropdown-menu" aria-labelledby="sortButton" style="z-index: 10; cursor: pointer; margin-top: 5px; padding: 8px;">
         <div style="padding: 8px 12px;cursor: default;">Sort by</div>
+        <a class="dropdown-item" (click)="sortBy('companyCustomerId')">ID</a>
         <a class="dropdown-item" (click)="sortBy('name')">Name</a>
         <a class="dropdown-item" (click)="sortBy('category')">Category</a>
         <a class="dropdown-item" (click)="sortBy('status')">Status</a>
         <a class="dropdown-item" (click)="sortBy('phone')">Phone</a>
         <a class="dropdown-item" (click)="sortBy('email')">Email</a>
-        <a class="dropdown-item" (click)="sortBy('address')">Address</a>
+        <!-- <a class="dropdown-item" (click)="sortBy('address')">Address</a>
         <a class="dropdown-item" (click)="sortBy('apartment')">Apartment</a>
         <a class="dropdown-item" (click)="sortBy('city')">City</a>
         <a class="dropdown-item" (click)="sortBy('state')">State</a>
-        <a class="dropdown-item" (click)="sortBy('zipCode')">ZipCode</a>
+        <a class="dropdown-item" (click)="sortBy('zipCode')">ZipCode</a> -->
         <a *ngFor="let item of selectedExtraColums"  class="dropdown-item" (click)="sortBy(item)" >{{item}}</a>
       </div>
 
@@ -226,12 +210,12 @@
      
     <!-- </div> -->
       
-    <button class="btn btn-dark" style=" margin: 0px 5px;">Export</button>  
+    <!-- <button class="btn btn-dark" style=" margin: 0px 5px;">Export</button> -->
     
     <!-- <button class="btn btn-primary" data-toggle="modal" data-target="#add-order" (click)="resetForm()" style="max-width: 120px; width: 100%; margin: 0 5px;" *ngIf="!(userRoleDetails?.customers!='full'&&userRole!='ADMIN')" >+ Customer</button> -->
  <button class="btn btn-primary" data-toggle="modal" data-target="#add-order" (click)="resetForm()" style="max-width: 120px; width: 100%; margin: 0 5px;" >+ Customer</button>
 
-      <a class="btn btn-light dropdown-toggle" type="button" data-target="#customFieldModule" data-toggle="modal" aria-haspopup="true" aria-expanded="false" style="margin: 0 5px; border: 1px solid #c0c0c0;" title="Column Options">
+      <a class="btn btn-light dropdown-toggle" type="button" data-target="#customFieldModule" data-toggle="modal" aria-haspopup="true" aria-expanded="false" style="margin: 0 5px; border: 1px solid #c0c0c0; --bs-btn-bg: white" title="Column Options">
         <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" fill="currentColor" class="bi bi-gear-fill" viewBox="0 0 16 16" style="color: black;">
           <path d="M9.405 1.05c-.413-1.4-2.397-1.4-2.81 0l-.1.34a1.464 1.464 0 0 1-2.105.872l-.31-.17c-1.283-.698-2.686.705-1.987 1.987l.169.311c.446.82.023 1.841-.872 2.105l-.34.1c-1.4.413-1.4 2.397 0 2.81l.34.1a1.464 1.464 0 0 1 .872 2.105l-.17.31c-.698 1.283.705 2.686 1.987 1.987l.311-.169a1.464 1.464 0 0 1 2.105.872l.1.34c.413 1.4 2.397 1.4 2.81 0l.1-.34a1.464 1.464 0 0 1 2.105-.872l.31.17c1.283.698 2.686-.705 1.987-1.987l-.169-.311a1.464 1.464 0 0 1 .872-2.105l.34-.1c1.4-.413 1.4-2.397 0-2.81l-.34-.1a1.464 1.464 0 0 1-.872-2.105l.17-.31c.698-1.283-.705-2.686-1.987-1.987l-.311.169a1.464 1.464 0 0 1-2.105-.872zM8 10.93a2.929 2.929 0 1 1 0-5.86 2.929 2.929 0 0 1 0 5.858z"/>
         </svg>
@@ -242,7 +226,7 @@
     
   </div>
 
-  <div class="row" style="height: calc(100vh - 260px); overflow: auto; width: 100%">
+  <div class="row" style="overflow: auto; width: 100%">
       <div class="col" style="margin: 0; padding: 0; width: 100%;">
         <button *ngIf="searchDataBy" class="sort btn btn-secondary" (click)="removeSearchDataBy()">Search By: {{searchDataBy|titlecase}} &times;</button>
         <button *ngIf="sortedBy" class="sort btn btn-secondary" (click)="removeSort()">Sorted By: {{sortedBy|titlecase}} &times;</button>
@@ -271,7 +255,7 @@
                 </tr>
             </thead>
             <tbody>
-              
+              <ng-container *ngIf="searchedCompanyCustomer && searchedCompanyCustomer.length > 0; else noCustomer">
                   <tr *ngFor="let item of companyCustomerListWithExtraFields" (mouseenter)="editButtonVisibile(companyCustomerListWithExtraFields.indexOf(item)+1)" (mouseleave)="editButtonNotVisible()"  [routerLink]="['/customer/preview',item.id]" >
                     <!-- -->
                     <td scope="row" style="padding-left: 1%;">{{item.companyCustomerId}}</td>
@@ -292,7 +276,7 @@
                     <td *ngIf="showMandatoryBasicFields.get('zipCode')">{{item.zipCode|titlecase}}</td> -->
                     <td *ngIf="showMandatoryBasicFields.get('category')">{{item.category|titlecase}}</td>
                     <td *ngIf="item.status=='active'&&showMandatoryBasicFields.get('status')">Active</td>
-                    <td *ngIf="item.status=='inActive'&&showMandatoryBasicFields.get('status')">In Active</td>
+                    <td *ngIf="item.status=='inActive'&&showMandatoryBasicFields.get('status')">Inactive</td>
                     <td *ngIf="(item.status==''||item.status==null)&&showMandatoryBasicFields.get('status')"></td>
                   
                     
@@ -308,33 +292,42 @@
                   </td>
                     
                   </tr>
-                 
+              </ng-container>
             </tbody>
           </table>
       </div>
     </div>
-    <hr style="border: 0.5px solid gray; margin: 0; width: 100%;">
-    <mat-paginator [length]="totalLength"
+    <!-- <hr style="border: 0.5px solid gray; margin: 0; width: 100%;"> -->
+    <mat-paginator
+    *ngIf="searchedCompanyCustomer && searchedCompanyCustomer.length > 0"
+    [length]="totalLength"
     (page)="handlePageEvent($event)"
     [pageSize]="pageSize"
     [pageIndex]="pageIndex"
     [pageSizeOptions]="[15, 25, 100]"
     aria-label="Select page" style="font-size: 14px;">
 </mat-paginator>
+<ng-template #noCustomer>
+  <tr>
+      <td colspan="5" class="text-center">
+          <p *ngIf="searchedCompanyCustomer || searchedCompanyCustomer.length === 0" class="no-data">No Customers available</p>
+      </td>
+  </tr>
+</ng-template>
 
 <!-- Adding a new Customer record -->
 
-     <div class="modal fade" id="add-order" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle" aria-hidden="true" data-backdrop="static" data-keyboard="false">
-      <div class="modal-dialog modal-lg" role="document">
-        <div class="modal-content" style="max-height: 90vh;">
-          <div class="modal-header" style="padding: 13px 15px;position: sticky; top: 0; z-index: 100; background-color: white;">
-            <h2 class="modal-title" id="exampleModalLongTitle" style="margin:0; display: flex; justify-content: center;">Add Customer</h2>
-            <button type="button" class="btn btn-light btn-sm ms-auto" data-dismiss="modal" aria-label="Close" style="border-radius: 10px;" #closeBox>
-              <i class="bi bi-x-lg"></i>
-            </button>
-          </div>
-          <div class="modal-body" style="overflow-y: auto;">
-            <form [formGroup]="companyCustomerForm" (ngSubmit)="addCompanyCustomer()">
+  <div class="modal fade" id="add-order" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle" aria-hidden="true" data-backdrop="static" data-keyboard="false">
+    <div class="modal-dialog modal-lg" role="document">
+      <div class="modal-content" style="max-height: 90vh;">
+        <div class="modal-header" style="padding: 13px 15px;position: sticky; top: 0; z-index: 100; background-color: white;">
+          <h2 class="modal-title" id="exampleModalLongTitle" style="margin:0; display: flex; justify-content: center;">Add Customer</h2>
+          <button type="button" class="btn btn-light btn-sm ms-auto" data-dismiss="modal" aria-label="Close" style="border-radius: 10px;" #closeBox>
+            <i class="bi bi-x-lg"></i>
+          </button>
+        </div>
+        <div class="modal-body" style="overflow-y: auto;">
+          <form [formGroup]="companyCustomerForm" (ngSubmit)="addCompanyCustomer()">
               
                 <label for="name">Name<span class="text-danger"> *</span></label>
                 <input type="text" class="form-control" id="name"  formControlName="name"  placeholder="Name">
@@ -424,10 +417,10 @@
   <div class="modal fade" id="customFieldModule" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle" aria-hidden="true">
     <div class="modal-dialog" role="document">
       <div class="modal-content">
-        <div class="modal-header">
-          <h2 class="modal-title" id="exampleModalLongTitle">All Fields</h2>
-          <button type="button" class="close  ms-auto" data-dismiss="modal" aria-label="Close" #closeBox4>
-            <span aria-hidden="true">&times;</span>
+        <div class="modal-header" style="padding: 13px 15px;">
+          <h2 class="modal-title" id="exampleModalLongTitle" style="margin:0; display: flex; justify-content: center;">All Fields</h2>
+          <button type="button" class="btn btn-light btn-sm ms-auto" data-dismiss="modal" aria-label="Close" style="border-radius: 10px;" #closeBox4>
+            <i class="bi bi-x-lg"></i>
           </button>
         </div>
         <div class="modal-body">
@@ -442,7 +435,6 @@
               <div>  <mat-checkbox  [color]="checkBoxColor"  [checked]="showMandatoryBasicFields.get('status')==true?true:false"  (change)="mandatoryFieldCheckBox($event.checked,'status')" >Status</mat-checkbox></div>
               <div>  <mat-checkbox  [color]="checkBoxColor"  [checked]="showMandatoryBasicFields.get('category')==true?true:false"  (change)="mandatoryFieldCheckBox($event.checked,'category')"  >Category</mat-checkbox></div>
               
-
               <div  *ngFor="let item of extraFieldNameList">
                 <!-- <label for="assetId">{{item}}</label>
                 <div class="d-flex justify-content-around">
@@ -452,18 +444,9 @@
                 <br>
               </div> -->
               <mat-checkbox  [color]="checkBoxColor" [checked]="selectedExtraColumsMap.get(item)"  (change)="customCheckBox($event.checked,item)">{{item}}</mat-checkbox>
-             
-
-                
-              
-
-
-          
-
 
           </div>
          
-       
         <div class="modal-footer d-flex justify-content-around">
           <button  class="btn btn-light mt-3"  (click)="closeBox4.click()"  >Close</button>
           <!-- <button type="submit" class="btn btn-primary mt-3" (click)="closeBox3.click()" (click)="addFilterForm()"   >Filter</button> -->
@@ -474,8 +457,6 @@
     </div>
   </div>
   </div>
+
 </div>
  <!-- Button trigger modal -->
-
-
-<!-- Modal -->
