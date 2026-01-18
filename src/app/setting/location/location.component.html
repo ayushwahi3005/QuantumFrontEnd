@@ -5,7 +5,7 @@
   <button type="button" class="btn-close" (click)="showAlert = false" aria-label="Close" style="float: right;"></button>
 </div>
 <div class="option d-flex flex-row bd-highlight " style="width: 60%; margin: 30px auto;">
-    <span [ngClass]="{'selected-option':(currOption==1)}" (click)="onClick(1)">Locations</span>
+    <span class="" [ngClass]="{'selected-option':(currOption==1)}" (click)="onClick(1)">Locations</span>
     <span [ngClass]="{'selected-option':(currOption==2)}" (click)="onClick(2)">Bins</span>
    
   </div>
@@ -33,6 +33,7 @@
                   <tr>
                     <th scope="col" style="width: 10%;">ID</th>
                     <th scope="col" style="width: 30%;">Location Name</th>
+                    <th scope="col" style="width: 30%;">Parent Location Name</th>
                     <th scope="col" style="width: 30%;">Address</th>
                     <th scope="col" style="width: 20%;">Status</th>
                     <th style="width: 10%;"></th>
@@ -53,12 +54,13 @@
 
                     <td>
                       <div *ngIf="item.parentLocationName" class="location-hierarchy">
-                        <span class="parent-location">{{item.parentLocationName}}</span>
-                        <span class="hierarchy-arrow">›</span>
-                        <span class="child-location">{{item.name}}</span>
+                        <span class="parent-location" style="border: none; background-color: white;display:contents; font-size: medium;">{{item.parentLocationName}}</span>
+                        <span class="hierarchy-arrow" style="border: none; background-color: white;display:contents; font-size: medium;">›</span>
+                        <span class="child-location" style="border: none; background-color: white;display:contents; font-size: medium;">{{item.name}}</span>
                       </div>
-                      <div *ngIf="!item.parentLocationName">{{item.name}}</div>
+                      <div *ngIf="!item.parentLocationName" class="child-location">{{item.name}}</div>
                     </td>
+                    <td>{{item.parentLocationName}}</td>
                     <td>{{item.address}}</td>
                       <td>{{ item.status === 'active' ? 'Active' : 'In Active' }}</td>
                     <td>
