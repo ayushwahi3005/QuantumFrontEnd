@@ -19,70 +19,91 @@
   padding: 20px;
   border: 1px solid lightgray;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  margin-bottom: 50px;
+  margin-bottom: 35px;
 }
 
 table .bi-trash3{
-    color: red;
-    margin-bottom: 2px;
-    font-size: larger;
-    margin-left: 20px;
-    cursor: default;
-
+  color: red;
+  margin-bottom: 2px;
+  font-size: larger;
+  margin-left: 20px;
+  cursor: pointer;
 }
+
 table .bi-pencil{
-    color: rgb(96, 93, 93);
-    margin-bottom: 2px;
-    font-size: larger;
-    margin-left: 20px;
-    cursor: default;
-
+  color: rgb(96, 93, 93);
+  margin-bottom: 2px;
+  font-size: larger;
+  margin-left: 20px;
+  cursor: pointer;
 }
+
 table{
-    width:100%;
-   margin: 20px auto;
-   border: 1px lightgray solid;
-   border-radius: 10px;
+  width: 100%;
+  margin: 20px auto;
+  /* border: 1px lightgray solid; */
+  border-radius: 10px;
+}
+
+.table tbody {
+  font-size: 16px;
+  border: 1px solid lightgray;
+}
+
+.table thead {
+  font-size: 15.5px;
+}
+
+thead th {
+  position: sticky;
+  top: 0;
+  /* background-color: #343a40; */
+  color: white;
+  z-index: 2;
 }
 
 .card{
-    width: calc(100vw - 400px);
-    margin-right: 10px;
-    margin-left: 60px;
-    margin-bottom: 100px;
-    height: 75vh;
-    overflow-y: scroll;
-    overflow-x: hidden;
-    
+  width: calc(100vw - 400px);
+  margin-right: 10px;
+  margin-left: 60px;
+  margin-bottom: 100px;
+  height: 75vh;
+  overflow-y: scroll;
+  overflow-x: hidden;  
 }
-i{
-    color: red;
-    margin-bottom: 2px;
-    font-size: larger;
-    margin-left: 20px;
-    cursor: default;
 
-}
+/* i{
+  color: red;
+  margin-bottom: 2px;
+  font-size: larger;
+  margin-left: 20px;
+  cursor: default;
+} */
+
 .dropdown-menu i{
-    float: right;
-}
-.dropdown-menu{
-    width: 100px;
+  float: right;
 }
 
-.extra-field-input input{
-    width: 100%;
-    border-radius: 5px;
-    border: 1px solid black;
-    margin-bottom: 10px;
-    height: 30px;
+.dropdown-menu{
+  width: 100px;
 }
+
+/* .extra-field-input input{
+  width: 100%;
+  border-radius: 5px;
+  border: 1px solid black;
+  margin-bottom: 10px;
+  height: 30px;
+} */
+
 button{
-    float: inline-end;
+  float: inline-end;
 }
+
 .card-body{
-    flex: none;
+  flex: none;
 }
+
 .table-container {
   max-height: 70vh;  
   overflow-y: auto;
@@ -93,7 +114,6 @@ button{
   width: 95%;
 }
 
-
 .table-container thead th {
   position: sticky;
   top: 0;
@@ -101,6 +121,7 @@ button{
   color: white;
   z-index: 2;         
 }
+
 .search-bar {
   display: flex;
   align-items: center;
@@ -127,17 +148,40 @@ button{
   /* padding-left: 25px; */
   background-color: transparent;
 }
-  #searchIcon-user{
-     font-size: medium;
-      position: absolute;
-      /* left: -220px; */
-      left: -15px;
-      pointer-events: none;
-      color: #333;
-      /* top: 0.65rem; */
-      /* padding: 10px 12px; */
-      padding-left: 4px;
-    padding-right: 0px;
-    padding-top: 10px;
-    padding-bottom: 10px;
-  }
+
+#searchIcon-user{
+  font-size: medium;
+  position: absolute;
+  /* left: -220px; */
+  left: -15px;
+  pointer-events: none;
+  color: #333;
+  /* top: 0.65rem; */
+  /* padding: 10px 12px; */
+  padding-left: 4px;
+  padding-right: 0px;
+  padding-top: 10px;
+  padding-bottom: 10px;
+}
+
+.form-control{
+  border-radius: 5px;
+  border: 1px solid #c0c0c0;
+  font-size: 16px;
+  padding-left: 11px;
+  width: 100%;
+  margin-top: 5px;
+  height: 35px;
+}
+
+.form-control:focus {
+  border-color: #007bff; /* Change border color */
+  box-shadow: 0 0 5px rgba(0, 123, 255, 0.5); /* Add a glowing effect */
+  outline: none; /* Remove default outline */
+}
+
+.form-select:focus {
+  border-color: #007bff; /* Change border color */
+  box-shadow: 0 0 5px rgba(0, 123, 255, 0.5); /* Add a glowing effect */
+  outline: none; /* Remove default outline */
+}

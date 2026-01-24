@@ -1,3 +1,7 @@
+* {
+    font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+}
+
 table{
     
    
@@ -5,6 +9,7 @@ table{
     margin-left: 10px; */
     /* font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif; */
     border-radius: 10px;
+    margin-bottom: 0;
 
 }
 
@@ -148,11 +153,8 @@ th{
 } */
 
 .searchBar a{
-
     border: none;
-  
-
-    background-color: white;
+    /* background-color: white; */
     color: black;
     padding: 5px 5px;
 }
@@ -211,7 +213,7 @@ border-style: none;
 #companycustomer-table thead{
     position: sticky;
     top: 0;
-    z-index: 1;
+    z-index: 2;
     border: 1px lightgray;
 }
 
@@ -243,7 +245,7 @@ border-style: none;
     --bs-table-color: white;
 }
 
-.extraFieldInput{
+/* .extraFieldInput{
     color: #717275;
     border-radius: 8px;
     
@@ -258,7 +260,8 @@ border-style: none;
  }
  .extraFieldInput:focus{
     border: 2px solid #1a65ab;
- }
+ } */
+
  label {
     display: block;
   }
@@ -290,7 +293,7 @@ border-style: none;
     overflow: hidden;
     width: 100%;
     height: 40px;
-    max-width: 400px;
+    max-width: 275px;
     background-color: #fff;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
     position: relative;
@@ -347,3 +350,72 @@ border-style: none;
   .dropdown-toggle::after {
     display: none;
   }
+
+  .form-control{
+    border-radius: 5px;
+    border: 1px solid #dee2e6;
+    font-size: 16px;
+    padding-left: 11px;
+    width: 100%;
+    margin-top: 5px;
+    height: 35px;
+  }
+  
+  .form-control:focus {
+    border-color: #007bff; /* Change border color */
+    box-shadow: 0 0 5px rgba(0, 123, 255, 0.5); /* Add a glowing effect */
+    outline: none; /* Remove default outline */
+  }
+  
+  .form-select:focus {
+    border-color: #007bff; /* Change border color */
+    box-shadow: 0 0 5px rgba(0, 123, 255, 0.5); /* Add a glowing effect */
+    outline: none; /* Remove default outline */
+  }
+
+  .dropdown {
+    position: relative;
+    width: 100%;
+  }
+
+  .dropdown-menu {
+    position: absolute;
+    width: auto;
+    height: auto;
+    /* max-height: 200px; */
+    overflow-y: auto;
+    /* border: 1px solid #ccc; */
+    border-radius: 5px;
+    background-color: #fff;
+    z-index: 1000;
+    display: none;
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+  }
+  
+  .dropdown-menu.show {
+    display: block;
+  }
+
+  .dropdown-item {
+    padding: 7px 12px;
+    cursor: pointer;
+    padding-left: 34px;
+    padding-right: 34px;
+  }
+  
+  .dropdown-item:hover {
+    background-color: #f1f1f1;
+    border-radius: 5px;
+  }
+
+.no-data {
+    text-align: center;
+    font-style: italic;
+    color: #888;
+    margin-top: 15px;
+    font-size: 16px;
+    /* padding: 10px; */
+}

@@ -118,8 +118,8 @@
                 <label for="zipCode">ZIP Code</label>
                 <div class="d-flex justify-content-around">
                 <input type="text" class="form-control" id="zipCode" formControlName="zipCode" maxlength="15"
-           minlength="6"
-                    pattern="^[0-9A-Za-z]{6,15}$" >
+           minlength="3"
+                    pattern="^[0-9A-Za-z]{3,15}$" >
               <!-- <span *ngIf="this.companyCustomerForm.get('zipCode')?.errors?.pattern">Enter a valid ZIP Code (e.g., 123456).</span> -->
                 <!-- <i class="bi bi-trash-fill delete" style="display: inline-flex; margin-top: 12px; margin-left: 10px; color: red; margin-right: 5px;" (click)="removeMandatoryFieldFilter('location')"></i> -->
                 </div>
@@ -286,14 +286,14 @@
             </thead>
             <tbody>
               
-                  <tr *ngFor="let item of companyCustomerListWithExtraFields" (mouseenter)="editButtonVisibile(companyCustomerListWithExtraFields.indexOf(item)+1)" (mouseleave)="editButtonNotVisible()"  [routerLink]="['/customer/preview',item.id]" >
+                  <tr *ngFor="let item of companyCustomerListWithExtraFields" (mouseenter)="editButtonVisibile(companyCustomerListWithExtraFields.indexOf(item)+1)" (mouseleave)="editButtonNotVisible()"  >
                     <!-- -->
-                    <td scope="row" style="padding-left: 1%;">{{item.companyCustomerId}}</td>
-                    <td style="color: black;">{{item.name|titlecase}}</td>
-                    <td>{{item.email}}</td>
+                    <td scope="row" style="padding-left: 1%;" [routerLink]="['/customer/preview',item.id]">{{item.companyCustomerId}}</td>
+                    <td style="color: black;" [routerLink]="['/customer/preview',item.id]">{{item.name|titlecase}}</td>
+                    <td [routerLink]="['/customer/preview',item.id]">{{item.email}}</td>
                    <!-- <td [ngClass]="{'due-passed':checkDueDate(item.dueDate)}">{{item.dueDate|date:"shortDate"}} <i class="bi bi-exclamation-triangle" *ngIf="checkDueDate(item.dueDate)"></i></td> -->
-                    <td *ngIf="showMandatoryBasicFields.get('phone')">{{item.phone|titlecase}}</td>
-                    <td *ngIf="showMandatoryBasicFields.get('address')">
+                    <td *ngIf="showMandatoryBasicFields.get('phone')" [routerLink]="['/customer/preview',item.id]">{{item.phone|titlecase}}</td>
+                    <td *ngIf="showMandatoryBasicFields.get('address')" [routerLink]="['/customer/preview',item.id]">
                       {{item.address | titlecase}}
                       <span *ngIf="item.apartment">, {{item.apartment | titlecase}}</span>
                       <span *ngIf="item.city">, {{item.city | titlecase}}</span>
@@ -304,19 +304,19 @@
                     <!-- <td *ngIf="showMandatoryBasicFields.get('city')">{{item.city|titlecase}}</td>
                     <td *ngIf="showMandatoryBasicFields.get('state')">{{item.state|titlecase}}</td>
                     <td *ngIf="showMandatoryBasicFields.get('zipCode')">{{item.zipCode|titlecase}}</td> -->
-                    <td *ngIf="showMandatoryBasicFields.get('category')">{{item.category|titlecase}}</td>
-                    <td *ngIf="item.status=='active'&&showMandatoryBasicFields.get('status')">Active</td>
-                    <td *ngIf="item.status=='inActive'&&showMandatoryBasicFields.get('status')">In Active</td>
-                    <td *ngIf="(item.status==''||item.status==null)&&showMandatoryBasicFields.get('status')"></td>
+                    <td *ngIf="showMandatoryBasicFields.get('category')" [routerLink]="['/customer/preview',item.id]">{{item.category|titlecase}}</td>
+                    <td *ngIf="item.status=='active'&&showMandatoryBasicFields.get('status')" [routerLink]="['/customer/preview',item.id]">Active</td>
+                    <td *ngIf="item.status=='inActive'&&showMandatoryBasicFields.get('status')" [routerLink]="['/customer/preview',item.id]">In Active</td>
+                    <td *ngIf="(item.status==''||item.status==null)&&showMandatoryBasicFields.get('status')" [routerLink]="['/customer/preview',item.id]"></td>
                   
                     
-                    <td *ngFor="let col of selectedExtraColums"> {{ item[col] }}</td>
+                    <td *ngFor="let col of selectedExtraColums" [routerLink]="['/customer/preview',item.id]"> {{ item[col] }}</td>
                     <!-- <td>{{item.extraFields.}}</td> -->
                   
                     <td>
                     <!-- <i class="bi bi-pencil" [ngClass]="{'editoption':!(editVisibility&&(editButtonId==companyCustomerListWithExtraFields.indexOf(item)+1))}"  style="float: inline-start; margin: 0px 5px;" (click)="companyCustomerDetail(item.id)" [routerLink]="['/customer',item.id]" *ngIf="!(userRoleDetails?.companyCustomer!='full'&&userRoleDetails?.companyCustomer!='edit' &&userRole!='ADMIN')"></i> -->
                     <!-- <i class="bi bi-trash"  [ngClass]="{'editoption':!(editVisibility&&(editButtonId==companyCustomerListWithExtraFields.indexOf(item)+1))}" style="color: red; float: inline-start; margin: 15px 5px;" (click)="deleteCompanyCustomer(item.id)" ></i> -->
-                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="currentColor" class="bi bi-pencil" viewBox="0 0 16 16" style="margin-top: 4px; margin-bottom: 4px; color:gray " [ngClass]="{'editoption':!(editVisibility&&(editButtonId==companyCustomerListWithExtraFields.indexOf(item)+1))}" (click)="companyCustomerDetail(item.id)" [routerLink]="['/customer',item.id]">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" fill="currentColor" class="bi bi-pencil" viewBox="0 0 16 16" style="margin-top: 4px; margin-bottom: 4px; color:gray " [ngClass]="{'editoption':!(editVisibility&&(editButtonId==companyCustomerListWithExtraFields.indexOf(item)+1))}" (click)="companyCustomerDetail(item.id)" [routerLink]="['/customer',item.id]">
                       <path d="M12.146.146a.5.5 0 0 1 .708 0l3 3a.5.5 0 0 1 0 .708l-10 10a.5.5 0 0 1-.168.11l-5 2a.5.5 0 0 1-.65-.65l2-5a.5.5 0 0 1 .11-.168zM11.207 2.5 13.5 4.793 14.793 3.5 12.5 1.207zm1.586 3L10.5 3.207 4 9.707V10h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.293zm-9.761 5.175-.106.106-1.528 3.821 3.821-1.528.106-.106A.5.5 0 0 1 5 12.5V12h-.5a.5.5 0 0 1-.5-.5V11h-.5a.5.5 0 0 1-.468-.325"/>
                     </svg>
                   </td>
@@ -420,8 +420,8 @@
 
                   <div style="flex: 1;">
                   <label for="zipCode">ZIP Code<span *ngIf="mandatoryFieldsMap.get('zipCode')" class="text-danger">*</span></label>
-                  <input type="text" class="form-control" id="zipCode" formControlName="zipCode"  minlength="6"
-                    pattern="^[0-9A-Za-z]{6,15}$" maxlength="15">
+                  <input type="text" class="form-control" id="zipCode" formControlName="zipCode"  minlength="3"
+                    pattern="^[0-9A-Za-z]{3,15}$" maxlength="15">
                 </div>
                 </div>
 
@@ -446,7 +446,7 @@
       </div>
     </div>
   </div>
-  <div class="loading" *ngIf="loadingScreen"></div>
+ 
 
 <!-- Column options -->
 
@@ -504,6 +504,22 @@
   </div>
   </div>
 </div>
+ <div class="loading" *ngIf="loadingScreen">
+    <div class="spinner center">
+    <div class="spinner-blade"></div>
+    <div class="spinner-blade"></div>
+    <div class="spinner-blade"></div>
+    <div class="spinner-blade"></div>
+    <div class="spinner-blade"></div>
+    <div class="spinner-blade"></div>
+    <div class="spinner-blade"></div>
+    <div class="spinner-blade"></div>
+    <div class="spinner-blade"></div>
+    <div class="spinner-blade"></div>
+    <div class="spinner-blade"></div>
+    <div class="spinner-blade"></div>
+</div>
+  </div>
  <!-- Button trigger modal -->
 
 

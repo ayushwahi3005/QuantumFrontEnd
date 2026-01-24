@@ -183,7 +183,7 @@ app-assets,app-workorder,app-inventory,app-company-customer,app-asset-insights,a
     /* background-color: #FFFDF8; */
     width: calc(100vw - 60px);
     transition: width 150ms linear;
-    /* height: calc(100vh - 80px); */
+    height: calc(100vh - 53px);
     /* height: calc(100vh - 55px); */
     overflow-x: hidden;
     /* margin-top: 63px; */
