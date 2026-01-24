@@ -336,6 +336,7 @@
           
           <span style="font-size: large;">{{item.fileName|titlecase}}</span>
           <span style="font-size: large;">{{item.uploadDateTime|date}}</span>
+          <span style="font-size: large;">{{item.uploadedBy}}</span>
           <div>
            
             <a (click)="download(item.id,item.fileName)"  style="margin: 0px 5px;"><i class="bi bi-file-earmark-arrow-down"></i></a>

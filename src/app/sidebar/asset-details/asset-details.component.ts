@@ -685,14 +685,14 @@ export class AssetDetailsComponent {
 
   fileUpload(event: any) {
     this.currentFile = event.target.files[0];
-    console.log("Cuurent file upload", this.currentFile.size);
+    console.log("Current file upload", this.currentFile.size);
     if (this.currentFile.size > 5 * 1024 * 1024) {
       this.triggerAlert("File size exceeds maximum limit (5MB)", "danger");
       this.currentFile = null;
       this.progress = 0;
       return;
     }
-    this.assetDetailService.addAssetFile(this.currentFile, this.assetId).subscribe({
+    this.assetDetailService.addAssetFile(this.currentFile, this.assetId,this.username).subscribe({
       next: (event: HttpEvent<any>) => {
         if (event.type === HttpEventType.UploadProgress && event.total) {
           this.progress = Math.round((100 * event.loaded) / event.total);
@@ -787,6 +787,7 @@ export class AssetDetailsComponent {
       },
       () => {
         this.ngOnInit();
+        this.triggerAlert("File Deleted Successfully", "success");
         this.deleteFileId = '';
       })
   }

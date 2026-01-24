@@ -148,6 +148,7 @@ export class LoginComponent {
     });
   }
   logoutFromAllDevice(){
+    this.loader=true;
     this.loginService.removeSession(this.email).subscribe((data)=>{
       console.log("Removed from all devices")
           const modalElement = document.getElementById('removeLoggedIn');
@@ -167,13 +168,14 @@ export class LoginComponent {
         
         // this.triggerAlert(this.errorMessage,"danger");
         
-        // this.loader=false;
+        this.loader=false;
         console.log(this.loader)
         this.subscribeToService();
         console.log(this.errorMessage+" in Login");
     },
       (err)=>{
         console.log(err);
+        this.loader=false;
       },
       ()=>{
     

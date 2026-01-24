@@ -342,6 +342,8 @@
               <div class="d-flex justify-content-between" style="margin: 5px;">
 
                 <span style="font-size: large;">{{item.fileName|titlecase}}</span>
+                  <span style="font-size: large;">{{item.uploadDateTime|date}}</span>
+                <span style="font-size: large;">{{item.uploadedBy}}</span>
                 <div>
 
                   <a (click)="download(item.id,item.fileName)" style="margin: 0px 5px;cursor: pointer;"><i

@@ -116,8 +116,8 @@
         </div>
         <div class="col-md-4">
           <input type="text" class="form-control" formControlName="zipCode" placeholder="Enter ZIP Code"
-            [ngModel]="companyInformation ? companyInformation.zipCode : ''" maxlength="15" minlength="6"
-            pattern="^[0-9A-Za-z]{6,15}$" />
+            [ngModel]="companyInformation ? companyInformation.zipCode : ''" maxlength="15" minlength="3"
+            pattern="^[0-9A-Za-z]{3,15}$" />
           <div *ngIf="companyInformationForm.get('zipCode')?.invalid && companyInformationForm.get('zipCode')?.touched"
             class="text-danger">
             <span *ngIf="this.companyInformationForm.get('zipCode')?.errors?.required">ZIP Code is required.</span>

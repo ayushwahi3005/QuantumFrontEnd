@@ -6,7 +6,7 @@
   display: flex;
   flex-direction: column;
   /* justify-content:space-evenly */
-  width: calc(100vw - 270px);
+  width: calc(100vw - 300px);
 }
 
 .asset-category {
@@ -85,25 +85,12 @@ transition:  border-color 0.2s;
   cursor: pointer;
   font-size: large;
 }
-
 .bi-pencil{
   color: #828385ad;
   margin: 0 5px;
   cursor: pointer;
   font-size: large;
 }
-
-table{
-  width: 100%;
-  margin: 20px auto;
-  border-radius: 10px;
-  /* border: 1px solid lightgray; */
-}
-
-.table thead {
-  font-size: 15.5px;
-}
-
 thead th {
   position: sticky;
   top: 0;
@@ -112,10 +99,21 @@ thead th {
   z-index: 2;
 }
 
+table{
+  width: 100%;
+  margin: 20px auto;
+  border-radius: 10px;
+  border: 1px solid lightgray;
+}
+
+.table thead {
+  font-size: 15.5px;
+}
+
 .table tbody {
   font-size: 16px;
   vertical-align: middle;
-  border: 1px solid lightgray;
+   border: 1px solid lightgray;
 }
 
 .table tr:hover{

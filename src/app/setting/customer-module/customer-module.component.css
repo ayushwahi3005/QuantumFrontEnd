@@ -149,20 +149,20 @@ button{
   background-color: transparent;
 }
 
-#searchIcon-user{
-  font-size: medium;
-  position: absolute;
-  /* left: -220px; */
-  left: -15px;
-  pointer-events: none;
-  color: #333;
-  /* top: 0.65rem; */
-  /* padding: 10px 12px; */
-  padding-left: 4px;
-  padding-right: 0px;
-  padding-top: 10px;
-  padding-bottom: 10px;
-}
+ #searchIcon-user{
+     font-size: medium;
+      position: absolute;
+      /* left: -220px; */
+      left: 2px;
+      pointer-events: none;
+      color: #333;
+      /* top: 0.65rem; */
+      /* padding: 10px 12px; */
+      padding-left: 4px;
+    padding-right: 0px;
+    padding-top: 10px;
+    padding-bottom: 10px;
+  }
 
 .form-control{
   border-radius: 5px;

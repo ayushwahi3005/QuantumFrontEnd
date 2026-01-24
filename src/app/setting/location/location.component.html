@@ -65,10 +65,9 @@
                       <td>{{ item.status === 'active' ? 'Active' : 'In Active' }}</td>
                     <td>
                       <div style="display: flex; align-items: center; gap: 15px;">
-
-                        <!-- <img src="../../../assets/edit.svg" id="edit-button" [ngClass]="{'editoption':!(editVisibility&&(editButtonId==locationList.indexOf(item)+1))}" style="float: inline-start; height: 25px; width: 25px;"  > -->
-                        <i class="bi bi-pencil edit-icon" [ngClass]="{'editoption':!(editVisibility&&(editButtonId==searchedLocationList.indexOf(item)+1))}" style="float: inline-start; margin: 0 5px;" id="dropdownMenuButton" data-toggle="modal" data-target="#editLocation" (click)="editLocation(item)"></i>
-                        <i class="bi bi-trash delete-icon"  [ngClass]="{'editoption':!(editVisibility&&(editButtonId==searchedLocationList.indexOf(item)+1))}" style="color: red; float: inline-start; margin: 0 5px;" (click)="deleteLocation(item.id,item.name)" id="dropdownMenuButton" data-toggle="modal" data-target="#confirmDeleteLocation"></i>
+                      
+                        <i class="bi bi-pencil edit-icon" [ngClass]="{'editoption':!(editVisibility&&(editButtonId==searchedLocationList.indexOf(item)+1))}" style="float: inline-start; margin: 3px 5px;" id="dropdownMenuButton" data-toggle="modal" data-target="#editLocation" (click)="editLocation(item)"></i>
+                        <i class="bi bi-trash delete-icon"  [ngClass]="{'editoption':!(editVisibility&&(editButtonId==searchedLocationList.indexOf(item)+1))}" style="color: red; float: inline-start; margin: 3px 5px;" (click)="deleteLocation(item.id,item.name)" id="dropdownMenuButton" data-toggle="modal" data-target="#confirmDeleteLocation"></i>
                       </div>
                     </td>
                   </tr>
@@ -216,8 +215,8 @@
               
               <div style="padding-left: 20px;">
                 <!-- <label for="zipCode">ZipCode</label> -->
-                <input type="text" placeholder="Zip Code" class="form-group" id="zipCode" formControlName="zipCode" maxlength="15"  minlength="6"
-                    pattern="^[0-9A-Za-z]{6,15}$" style="font-size: 16px; padding-left: 11px; width: 100%; margin-top: 10px; border-radius: 5px; height: 35px; border: 1px solid #c0c0c0; transition: border-color 0.3s, box-shadow 0.3s;">
+                <input type="text" placeholder="Zip Code" class="form-group" id="zipCode" formControlName="zipCode" maxlength="15"  minlength="3"
+                    pattern="^[0-9A-Za-z]{3,15}$" style="font-size: 16px; padding-left: 11px; width: 100%; margin-top: 10px; border-radius: 5px; height: 35px; border: 1px solid #c0c0c0; transition: border-color 0.3s, box-shadow 0.3s;">
                 <!-- <i class="bi bi-trash-fill delete" style="display: inline-flex; margin-top: 12px; margin-left: 10px; color: red; margin-right: 5px;" (click)="removeMandatoryFieldFilter('location')"></i> -->
                 <br>
               </div>
@@ -288,7 +287,7 @@
       <div class="modal-content">
         <div class="modal-header" style="padding: 13px 15px">
           <h2 class="modal-title" id="exampleModalLongTitle" style="margin:0; display: flex; justify-content: center;">Edit Location</h2>
-          <button type="button" class="btn btn-light btn-sm ms-auto" data-dismiss="modal" aria-label="Close" style="border-radius: 10px;" #closeBoxEditLocation>
+          <button type="button" class="btn btn-light btn-sm ms-auto" data-dismiss="modal" aria-label="Close" style="border-radius: 10px;"  #closeBoxEditLocation>
             <!-- <span aria-hidden="true" style="height: 20px; width: 10px; background-color: #f0f0f0; border:none; display:block; padding-top: 0px;  ">&times;</span> -->
             <i class="bi bi-x-lg"></i>
           </button>
@@ -307,6 +306,7 @@
               <label for="parentLocation">Parent Location</label><br>
               <!-- <input type="text" class="form-select form-control" id="parentLocation" formControlName="parentLocation" style="font-size: 16px; padding-left: 11px; width: 100%; margin-top: 10px; border-radius: 5px; height: 35px; border: 1px solid #c0c0c0; transition: border-color 0.3s, box-shadow 0.3s;" #name> -->
               <select class="form-select form-control" id="parentLocation" formControlName="parentLocation" style="font-size: 16px; padding-left: 11px; width: 100%; margin-top: 10px; border-radius: 5px; height: 35px; border: 1px solid #c0c0c0; transition: border-color 0.3s, box-shadow 0.3s;" #location >
+                <option value="">None</option>
                 <option value="{{location.id}}" *ngFor="let location of locationList">{{location.name}}</option>
                 <!-- <option value="{{[customer.name,customer.id]}}" *ngFor="let customer of companyCustomerList">{{customer.name}}</option> -->
                 <!-- <option value="outOfService" selected>Out Of Service</option> -->
@@ -355,8 +355,8 @@
               
               <div style="padding-left: 20px;">
                 <!-- <label for="zipCode">ZipCode</label> -->
-                <input type="text" placeholder="Zip Code" class="form-group" id="zipCode" formControlName="zipCode"  minlength="6"
-                    pattern="^[0-9A-Za-z]{6,15}$" style="font-size: 16px; padding-left: 11px; width: 100%; margin-top: 10px; border-radius: 5px; height: 35px; border: 1px solid #c0c0c0; transition: border-color 0.3s, box-shadow 0.3s;">
+                <input type="text" placeholder="Zip Code" class="form-group" id="zipCode" formControlName="zipCode"  minlength="3"
+                    pattern="^[0-9A-Za-z]{3,15}$" style="font-size: 16px; padding-left: 11px; width: 100%; margin-top: 10px; border-radius: 5px; height: 35px; border: 1px solid #c0c0c0; transition: border-color 0.3s, box-shadow 0.3s;">
                 <!-- <i class="bi bi-trash-fill delete" style="display: inline-flex; margin-top: 12px; margin-left: 10px; color: red; margin-right: 5px;" (click)="removeMandatoryFieldFilter('location')"></i> -->
                 <br>
               </div>

@@ -181,9 +181,11 @@ selectedCountryCode='United States of America';
     this.locationService.saveBin(this.binForm.value).subscribe(
       (data) => {
         console.log(data);
+        this.triggerAlert("Successfully Added Bin","success")
       },
       (err) => {
         console.log(err);
+        this.triggerAlert(err.error.errorMessage,"danger")
       },
       () => {
         this.ngOnInit();
@@ -252,11 +254,13 @@ selectedCountryCode='United States of America';
   }
 
   editLocation(item: any) {
+
     this.locationService.countryStateList(item.country).subscribe(
       (data) => {
         this.selectedLocationStateList = data;
         this.locationForm.get('state')?.setValue('');   // reset state
         console.log(item);
+        this.locationService.getLocation
         this.locationForm.patchValue({
           id: item.id ?? '',
           name: item.name ?? '',
@@ -278,6 +282,25 @@ selectedCountryCode='United States of America';
       },
       (err) => {
         console.log(err);
+        this.locationForm.get('state')?.setValue('');   // reset state
+        console.log(item);
+        this.locationService.getLocation
+        this.locationForm.patchValue({
+          id: item.id ?? '',
+          name: item.name ?? '',
+          parentLocation: item.parentLocation ?? '',
+          address: item.address ?? '',
+          apartment: item.apartment ?? '',
+          city: item.city ?? '',
+          state: item.state ?? '',
+          country: item.country ?? '',
+          zipCode: item.zipCode ?? '',
+          status: item.status ?? 'active',
+          companyId: item.companyId ?? this.companyId,
+        });
+    this.editVisibility = true;
+    this.editButtonId = item.id ?? -1;
+    console.log(this.locationForm.value);
       }
     );
     
@@ -392,7 +415,16 @@ selectedCountryCode='United States of America';
 
     
 
-
+// getStateList(country:any){
+//     this.locationService.countryStateList(country).subscribe((data)=>{
+//       this.stateList=data;
+//       console.log("State List",this.stateList);
+//     },
+//     (err)=>{
+//       console.log(err);
+//     });
+//   }
+  
 
   
 

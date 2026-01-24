@@ -40,6 +40,7 @@ export class AssetInsightsComponent {
   paginationResult!: PaginationResult;
   checkInCount!: number;
   checkOutCount!: number
+  distinctAssetsCount!:number;
   // get totalRecords(): number {
   //   return this.records?.length;
   // }
@@ -166,6 +167,9 @@ export class AssetInsightsComponent {
       this.records = this.paginationResult.data  as AssetRecord[];
       this.filteredRecords = this.paginationResult.data as AssetRecord[];
 
+      this.distinctAssetsCount = new Set(
+  this.filteredRecords.map(r => r.assetId)
+).size;
 
       //  this.records = this.paginationResult.data.map((record: string) => JSON.parse(record) as AssetRecord);
       // this.filteredRecords = this.paginationResult.data.map((record: string) => JSON.parse(record) as AssetRecord);

@@ -89,7 +89,7 @@ export class AssetDetailsService {
   //   );
     
   // }
-  addAssetFile(file: File, assetId: string): Observable<HttpEvent<any>> {
+  addAssetFile(file: File, assetId: string,username:string): Observable<HttpEvent<any>> {
   const formData: FormData = new FormData();
   formData.append('file', file);
 
@@ -99,7 +99,7 @@ export class AssetDetailsService {
     // ✅ DO NOT set 'Content-Type' - browser sets it automatically with boundary
   });
 
-  const req = new HttpRequest('POST', `${this.assetEndpoint}addFile/${assetId}`, formData, {
+  const req = new HttpRequest('POST', `${this.assetEndpoint}addFile/${assetId}/${username}`, formData, {
     headers: myHeaders,
     reportProgress: true,
     responseType: 'json'

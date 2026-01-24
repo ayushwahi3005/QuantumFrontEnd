@@ -12,10 +12,24 @@
 
 
   <div class="loading" *ngIf="loading">
+    <div class="spinner center">
+    <div class="spinner-blade"></div>
+    <div class="spinner-blade"></div>
+    <div class="spinner-blade"></div>
+    <div class="spinner-blade"></div>
+    <div class="spinner-blade"></div>
+    <div class="spinner-blade"></div>
+    <div class="spinner-blade"></div>
+    <div class="spinner-blade"></div>
+    <div class="spinner-blade"></div>
+    <div class="spinner-blade"></div>
+    <div class="spinner-blade"></div>
+    <div class="spinner-blade"></div>
+</div>
   </div>
 
 
-  <div *ngIf="!detailedAsset"
+  <div *ngIf="!detailedAsset&&!loading"
     style="border: 1px solid lightgray; border: 1px black lightgray; background-color: white; border-radius: 10px; padding: 0px; margin: 30px 30px 30px 30px; box-shadow: 0 0 4px 0 rgba(0, 0, 0, .16); height: auto; padding-bottom: 8px;">
     <div *ngIf="mainAsset && !loading" class="main-asset">
       <div class="row">
@@ -346,7 +360,7 @@
           <div class="form-group" *ngFor="let item of showFieldsList">
             <div *ngIf="item.show">
               <label for={{item.name}}>{{item.name}}<span *ngIf="mandatoryFieldsMap?.get(item.name)"
-                  class="text-danger">*</span></label><br>
+                  class="text-danger" style="display: inline-block;">*</span></label><br>
               <input type={{item.type}} class="form-control" id="{{item.name}}" formControlName={{item.name}}
                 placeholder={{item.name}}>
             </div>
@@ -368,7 +382,7 @@
           <button class="btn btn-light" (click)="closeBox2.click()"
             style="margin: 10px; margin-right: 30px; width: 100px; border: 1px solid #c0c0c0">Cancel</button>
 
-          <button class="btn btn-primary" (click)="addAsset()" (click)="closeBox2.click()" (click)="image.value=''"
+          <button type="button" class="btn btn-primary" (click)="addAsset()"  (click)="image.value=''"
             style="margin: 10px; width: 100px;">Save</button>
         </div>
       </div>

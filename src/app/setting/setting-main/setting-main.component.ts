@@ -431,10 +431,10 @@ console.log("Company Information",this.companyInformationForm.value);
       , () => {
         console.log("Update")
         // this.ngOnInit()
-        this.fetchCompanyInformation();
+        // this.fetchCompanyInformation();
       })
-      this.ngOnInit();
-       this.fetchCompanyInformation();
+      // this.ngOnInit();
+      //  this.fetchCompanyInformation();
   }
   triggerAlert(message: string, type: string) {
     this.alertMessage = message;
@@ -471,5 +471,14 @@ console.log("Company Information",this.companyInformationForm.value);
   }
 
   this.router.navigate(['/reset-password']);
+  }
+  getStateList(country:any){
+    this.settingMainService.countryStateList(country).subscribe((data)=>{
+      this.stateList=data;
+      console.log("State List",this.stateList);
+    },
+    (err)=>{
+      console.log(err);
+    });
   }
 }

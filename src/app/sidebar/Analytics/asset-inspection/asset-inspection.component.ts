@@ -1,6 +1,13 @@
-import { Component } from '@angular/core';
+import { Component, ElementRef, HostListener, ViewChild } from '@angular/core';
+import { Chart } from 'chart.js';
+import { AssetInspectionService } from './asset-inspection.service';
+
 interface InspectionData {
   date: string;
+  count: number;
+}
+interface StatusDistributionData {
+  name: string;
   count: number;
 }
 
@@ -8,27 +15,125 @@ interface InspectionType {
   name: string;
   count: number;
 }
+
+interface userInspectionAnalytics {
+  userId: string;
+  userName: string;
+  totalCompletedInspections: number;
+}
+
 @Component({
   selector: 'app-asset-inspection',
-
   templateUrl: './asset-inspection.component.html',
   styleUrl: './asset-inspection.component.css'
 })
-
-
 export class AssetInspectionComponent {
- totalAssets = 1;
-  totalInspections = 2;
-  totalRecords = 8;
-  leadInspector = 'John';
-  inspectorCount = 5;
+  @ViewChild('chartCanvas') chartCanvas!: ElementRef;
+    @ViewChild('badgeRef') badgeRef!: ElementRef;
+  chart: Chart | null = null;
 
-  statusData = {
-    normal: 6,
-    good: 2,
-    z20x: 2,
-    clean: 1
-  };
+  userInspectionAnalyticsData: userInspectionAnalytics[] = [];
+  userInspectionAnalyticsDataNames: string[] = [];
+  userInspectionAnalyticsDataValues: number[] = [];
+  statusDistributionData: { [key: string]: number } = {};
+  inspectionTypeCompletionData: any[][2] = [];
+  leadInspector: any = '';
+  startDate: string = '';
+  endDate: string = '';
+  extraInspectorNames: string[] = [];
+  extraInspectorNamesVisible: boolean = false;
+  inspectionDetails: any;
+  totalAssets = 0;
+  totalInspections = 0;
+  totalRecords = 0;
+
+  constructor(private assetInspectionService: AssetInspectionService) {}
+
+  ngOnInit() {
+    this.assetInspectionService.getUserInspection(localStorage.getItem('companyId')).subscribe((data: any) => {
+      // console.log("Inspection Data", data);
+      this.userInspectionAnalyticsData = data;
+      this.userInspectionAnalyticsDataNames = this.userInspectionAnalyticsData.map(user => user.userName);
+      this.userInspectionAnalyticsDataValues = this.userInspectionAnalyticsData.map(user => user.totalCompletedInspections);
+      // console.log("Names:", this.userInspectionAnalyticsDataNames);
+      // console.log("Values:", this.userInspectionAnalyticsDataValues);
+      
+      // Create chart after data is loaded
+      if (this.chartCanvas) {
+        this.createChart();
+      }
+    }, error => {
+      console.log("Error in Inspection Data", error);
+    });
+
+     this.assetInspectionService.getStatusDistribution(localStorage.getItem('companyId')).subscribe((data: any) => {
+      
+      this.statusDistributionData = data;
+      // console.log("Status Data", this.statusDistributionData);
+      
+      // Create chart after data is loaded
+      if (this.chartCanvas) {
+        this.createChart();
+      }
+    }, error => {
+      console.log("Error in Inspection Data", error);
+    });
+
+    this.assetInspectionService.getInspectionTypeCompletion(localStorage.getItem('companyId')).subscribe((data: any) => {
+      
+      
+      console.log("getInspectionTypeCompletion Data", data,typeof(data));
+    Object.entries(data).forEach(([inspectionType, completionCount]) => {
+      this.inspectionTypeCompletionData.push([inspectionType, completionCount]);
+    });
+
+      // console.log("inspectionTypeCompletionData", this.inspectionTypeCompletionData);
+      
+     
+    }, error => {
+      console.log("Error in getInspectionTypeCompletion Data", error);
+    });
+    this.assetInspectionService.getLeadInspector(localStorage.getItem('companyId')).subscribe((data: any) => {
+      this.leadInspector = data;
+      if (this.leadInspector) {
+        Object.keys(this.leadInspector).forEach(name => {
+          if (name !== this.inspectorName) {
+            this.extraInspectorNames.push(name);
+          }
+        });
+      }
+      // this.extraInspectorNames=['Test User','Demo User','Sample User','Admin User','Inspector Gadget','QA Tester','Test User','Demo User','Sample User','Admin User','Inspector Gadget','QA Tester','Test User','Demo User','Sample User','Admin User','Inspector Gadget','QA Tester'];
+      console.log("Lead Inspector Data", this.leadInspector);
+     }, error => {
+      console.log("Error in Lead Inspector", error);
+    });
+    this.assetInspectionService.getInspectionDetails(localStorage.getItem('companyId')).subscribe((data: any) => {
+      this.inspectionDetails = data;
+      this.totalAssets = this.inspectionDetails.totalAssetsInspected;
+      this.totalInspections = this.inspectionDetails. completedInspections;
+      this.totalRecords = this.inspectionDetails.totalInspections;
+
+      console.log("Inspection Details Data", this.inspectionDetails);
+    }, error => {
+      console.log("Error in Inspection Details", error);
+    });
+      // console.log("inspectionTypeCompletionData", this.inspectionTypeCompletionData);
+      
+     
+   
+    this.generateTrendData();
+  }
+
+  ngAfterViewInit(): void {
+    // Only create chart if data is already loaded
+    if (this.userInspectionAnalyticsDataNames.length > 0) {
+      this.createChart();
+    }
+  }
+
+
+
+
 
   inspectionTrend: InspectionData[] = [];
   inspectionTypes: InspectionType[] = [
@@ -38,10 +143,6 @@ export class AssetInspectionComponent {
     { name: 'Check Battery', count: 1 },
     { name: 'Check Oil Level', count: 1 }
   ];
-
-  ngOnInit() {
-    this.generateTrendData();
-  }
 
   generateTrendData() {
     const data = [
@@ -55,7 +156,7 @@ export class AssetInspectionComponent {
   }
 
   getMaxCount(): number {
-    return Math.max(...this.inspectionTypes.map(t => t.count));
+    return Math.max(...this.inspectionTypeCompletionData.map((t: number[]) => t[1] as number));
   }
 
   getBarWidth(count: number): number {
@@ -66,23 +167,173 @@ export class AssetInspectionComponent {
     console.log('Exporting to Excel...');
   }
 
-  getTotalStatus(): number {
-    return this.statusData.normal + this.statusData.good + 
-           this.statusData.z20x + this.statusData.clean;
+  // getTotalStatus(): number {
+  //   return this.statusData.normal + this.statusData.good + 
+  //          this.statusData.z20x + this.statusData.clean;
+  // }
+
+  // getStatusPercentage(value: number): number {
+  //   return (value / this.getTotalStatus()) * 100;
+  // }
+
+  // getStatusOffset(status: string): number {
+  //   const total = this.getTotalStatus();
+  //   let offset = 0;
+    
+  //   if (status === 'good') offset = this.statusData.normal;
+  //   else if (status === 'z20x') offset = this.statusData.normal + this.statusData.good;
+  //   else if (status === 'clean') offset = this.statusData.normal + this.statusData.good + this.statusData.z20x;
+    
+  //   return (offset / total) * 100;
+  // }
+
+  createChart(): void {
+    if (this.chart) {
+  this.chart.destroy();
+  this.chart = null;
+}
+
+
+    const BAR_WIDTH = 50;
+    const MIN_WIDTH = 400;
+
+    const canvas = this.chartCanvas.nativeElement;
+    const calculatedWidth = Math.max(this.userInspectionAnalyticsDataNames.length * BAR_WIDTH, MIN_WIDTH);
+
+    canvas.width = calculatedWidth;
+    canvas.style.width = `${calculatedWidth}px`;
+    canvas.style.height = `300px`
+    canvas.height = 300;
+
+    const ctx = canvas.getContext('2d')!;
+
+    this.chart = new Chart(ctx, {
+      type: 'bar',
+      data: {
+        labels:this.userInspectionAnalyticsDataNames,
+       datasets: [{
+  label: 'Inspections Completed',
+  data: this.userInspectionAnalyticsDataValues,
+  backgroundColor: this.generateColors(this.userInspectionAnalyticsDataValues.length),
+  borderColor: this.generateColors(this.userInspectionAnalyticsDataValues.length),
+  borderWidth: 1,
+  barThickness: 40,
+  maxBarThickness: 50
+}]
+
+      },
+      options: {
+        responsive: false,            // 🔑 REQUIRED
+        maintainAspectRatio: false,
+        plugins: {
+           legend: {
+    display: false   // ✅ hides "Inspections Completed"
+  },
+          title: {
+            display: true,
+            text: 'User Inspection Analytics'
+          }
+        },
+        scales: {
+          x: {
+                      title: {
+              display: true,
+              text: 'Inspectors',
+              font: {
+                size: 14,
+                weight: 'bold'
+              }
+            },
+            ticks: {
+              autoSkip: false
+            }
+          },
+          y: {
+            beginAtZero: true,
+            title: {
+    display: true,
+    text: 'Number of Inspections',
+    font: {
+      size: 14,
+      weight: 'bold'
+    }
+  },
+            ticks: {
+              stepSize: 1
+            }
+          }
+        }
+      }
+    });
   }
 
-  getStatusPercentage(value: number): number {
-    return (value / this.getTotalStatus()) * 100;
-  }
+  
+  
+  getCompletedCount(): number {
+  return this.statusDistributionData['COMPLETED'] ?? 0;
+}
 
-  getStatusOffset(status: string): number {
-    const total = this.getTotalStatus();
-    let offset = 0;
-    
-    if (status === 'good') offset = this.statusData.normal;
-    else if (status === 'z20x') offset = this.statusData.normal + this.statusData.good;
-    else if (status === 'clean') offset = this.statusData.normal + this.statusData.good + this.statusData.z20x;
-    
-    return (offset / total) * 100;
+getPendingCount(): number {
+  return this.statusDistributionData['PENDING'] ?? 0;
+}
+getTotalCount(): number {
+  return this.getPendingCount() + this.getCompletedCount();
+}
+
+getPendingPercentage(): number {
+  return (this.getPendingCount() / this.getTotalCount()) * 100;
+}
+
+getCompletedPercentage(): number {
+  return (this.getCompletedCount() / this.getTotalCount()) * 100;
+}
+get inspectorName(): string {
+  return Object.keys(this.leadInspector)[0];
+}
+get extraInspectorCount(): number {
+ return this.leadInspector
+    ? Object.keys(this.leadInspector).length
+    : 0;
+
+}
+
+get inspectorCount(): number {
+  return Object.values(this.leadInspector)[0] as number;
+}
+get inspectorInitials(): string {
+  if (!this.inspectorName) return '';
+  return this.inspectorName
+    .split(' ')
+    .filter(w => w.length > 0)
+    .map(w => w.charAt(0))
+    .join('')
+    .toUpperCase();
+}
+applyFilter(){}
+
+private generateColors(count: number): string[] {
+  const colors: string[] = [];
+  for (let i = 0; i < count; i++) {
+    colors.push(`hsl(${(i * 360) / count}, 70%, 55%)`);
   }
+  return colors;
+}
+ @HostListener('document:click', ['$event'])
+  onDocumentClick(event: MouseEvent) {
+    const clickedInside = this.badgeRef?.nativeElement.contains(event.target);
+    if (!clickedInside) {
+      this.extraInspectorNamesVisible = false;
+    }
+  }
+clickExtraInspectorNames() {
+  // console.log("Clicked Extra Inspector Names");
+  this.extraInspectorNamesVisible = !this.extraInspectorNamesVisible;
+}
+
+  // ngOnDestroy(): void {
+  //   if (this.chart) {
+  //     this.chart.destroy();
+  //     this.chart = null;
+  //   }
+  // }
 }

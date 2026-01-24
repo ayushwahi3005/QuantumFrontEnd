@@ -1,4 +1,4 @@
-import { ChangeDetectorRef, Component, ElementRef, OnDestroy, ViewChild } from '@angular/core';
+import { AfterViewInit, ChangeDetectorRef, Component, ElementRef, OnDestroy, ViewChild } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { CompanyCustomerService } from './company-customer.service';
 import { CompanyCustomer } from './company-cutomer';
@@ -13,14 +13,16 @@ import { CategoryName } from './categoryName';
 import { Subscription } from 'rxjs';
 import { NavigationStart, Router } from '@angular/router';
 import { countryList } from 'src/app/setting/subscription/country';
+import { set } from 'date-fns';
 
 @Component({
   selector: 'app-company-customer',
   templateUrl: './company-customer.component.html',
   styleUrls: ['./company-customer.component.css']
 })
-export class CompanyCustomerComponent implements OnDestroy{
+export class CompanyCustomerComponent implements OnDestroy, AfterViewInit{
   @ViewChild('closeBox') closeBox: ElementRef | undefined ;
+  
   companyCustomerForm!:FormGroup;
   filterForm!:FormGroup;
   companyCustomerlist!:CompanyCustomer[];
@@ -353,6 +355,23 @@ this.routerSubscription = this.router.events.subscribe(event => {
     })
 
   }
+
+
+ngAfterViewInit() {
+  const modalElement = document.getElementById('add-order');
+  if (modalElement) {
+    modalElement.addEventListener('hidden.bs.modal', () => {
+      // Remove any lingering backdrops
+      const backdrops = document.querySelectorAll('.modal-backdrop');
+      backdrops.forEach(backdrop => backdrop.remove());
+      
+      // Remove modal-open class from body
+      document.body.classList.remove('modal-open');
+      document.body.style.paddingRight = '';
+      document.body.style.overflow = '';
+    });
+  }
+}
 //  ngOnDestory(){
 //     console.log("destory")
 //     localStorage.removeItem("selectedExtraColumsCustomer")
@@ -472,129 +491,195 @@ advanceFilterFunc() {
   get appliedFilterListSize(): number {
     return this.appliedFilterList.size;
   }
-  addCompanyCustomer(){
-    
+addCompanyCustomer(){
     console.log("Add Company Customer");
 
     let myCompanyCustomer:CompanyCustomer;
    
-
     this.companyCustomerForm.controls['companyId'].setValue(this.companyId);
     console.log(this.companyCustomerForm.value);
     let extraFieldValueMap=new Map<String,string>();
-      let extraFieldTypeMap=new Map<String,string>();
+    let extraFieldTypeMap=new Map<String,string>();
+    
     this.showFieldsList?.forEach((x)=>{
       if(x.show==true){
         console.log("----------------------------------------------showList----------+"+this.companyCustomerForm.get(x.name)?.value)
-      extraFieldValueMap.set(x.name,this.companyCustomerForm.get(x.name)?.value);
-      extraFieldTypeMap.set(x.name,x.type);
+        extraFieldValueMap.set(x.name,this.companyCustomerForm.get(x.name)?.value);
+        extraFieldTypeMap.set(x.name,x.type);
       }
     })
     
     console.log(this.companyCustomerForm.value);
     let valid=1;
     console.log(this.mandatoryFieldsList)
+    
     //Name Mandatory Field So Checking it
     if(this.companyCustomerForm.get("name")?.value==null||this.companyCustomerForm.get("name")?.value==''){
       this.triggerAlert("Fill Mandatory Field 'Name'","warning");
+      this.loadingScreen = false; // Stop loading on validation error
       return;
     }
+    
     this.mandatoryFieldsList?.forEach((val)=>{
       console.log(val.name,"-============>",val.mandatory+" "+this.companyCustomerForm.get(val.name)?.value);
       if(this.showFieldsMap.get(val.name)==false){
         valid=1;
       }
-      // if(this.showFieldsMap.get(val.name)==true){
-      //   valid=1;
-      // }
       else if((val.mandatory==true)&&( this.companyCustomerForm.get(val.name)?.value==null||this.companyCustomerForm.get(val.name)?.value=='')){
-        
-        // console.log("Fill Mandatory Field '"+this.toCamelCase(val.name)+"'")
         this.triggerAlert("Fill Mandatory Field '"+this.toCamelCase(val.name)+"'","warning");
         valid=0;
-       
       }
       else if((val.mandatory==true)&&(this.showFieldsMap.get(val.name)==true) &&( this.companyCustomerForm.get(val.name)?.value==null||this.companyCustomerForm.get(val.name)?.value=='')){
-        
-        // console.log("Fill Mandatory Field '"+this.toCamelCase(val.name)+"'")
         this.triggerAlert("Fill Mandatory Field '"+this.toCamelCase(val.name)+"'","warning");
         valid=0;
-       
       }
-      
-      
     })
+    
     if(valid==0){
+      this.loadingScreen = false; // Stop loading on validation error
       return;
     }
-  //  ==================================================
-  console.log(this.companyCustomerForm.get("companyId")?.value)
-
-  this.myList.forEach((col)=>{
-    if(this.companyCustomerForm.get(col)?.value==null){
-      console.log("field value---> is null for "+col);
-      this.companyCustomerForm.controls[col]?.setValue("");
-    }
-  })
-  console.log(this.companyCustomerForm.value);
-    this.companyCustomerService.addCompanyCustomer(this.companyCustomerForm.value).subscribe((data)=>{
-      console.log(data+" CompanyCustomerInserted");
-      myCompanyCustomer=data
-      console.log("CompanyCustomer id"+myCompanyCustomer.id)
     
-    },
-    (err)=>{
-      console.log(err);
-      this.loadingScreen=false;
-       if(err.error.error==="TRIAL_EXPIRED"){
-        this.triggerAlert(err.error.message,"danger");
+    console.log(this.companyCustomerForm.get("companyId")?.value)
+
+    this.myList.forEach((col)=>{
+      if(this.companyCustomerForm.get(col)?.value==null){
+        console.log("field value---> is null for "+col);
+        this.companyCustomerForm.controls[col]?.setValue("");
       }
-      else{
-      this.triggerAlert(err.error.errorMessage,"danger");
-      }
-    },
-    ()=>{
-    // this.ngOnInit();
-    // this.getAllCompanyCustomerList(this.companyId);
-    if (this.closeBox) {
-      this.closeBox.nativeElement.click();
-    }
-    this.advanceFilterFunc();
-    this.loadingScreen=true;
-    this.showFieldsList?.forEach((x)=>{
-      const obj={
-          "email":this.email,
-          "companyId":this.companyId,
-          "name":x.name,
-          "value":(extraFieldValueMap.get(x.name)==null)?"": extraFieldValueMap.get(x.name),
-          "companyCustomerId":myCompanyCustomer.id,
-          "type":extraFieldTypeMap.get(x.name)
-      }
-      console.log("extra field object"+obj.companyCustomerId+"--"+obj.companyId+"--"+obj.name+"--"+obj.value)
-      this.companyCustomerService.addExtraFields(obj).subscribe((data)=>{
-        console.log("added extra fields");
-        // this.ngOnInit();
-        // this.workorderform.reset();
+    })
+    
+    console.log(this.companyCustomerForm.value);
+    
+    // START loading screen BEFORE API call
+    this.loadingScreen = true;
+
+  //  //timeout to check loading screen
+  //  setTimeout(() => {
+  //   console.log('Loading screen should be visible now.');
+  // }, 1500);
+
+    
+    this.companyCustomerService.addCompanyCustomer(this.companyCustomerForm.value).subscribe(
+      (data)=>{
+        console.log(data+" CompanyCustomerInserted");
+        myCompanyCustomer=data;
+        console.log("CompanyCustomer id"+myCompanyCustomer.id);
+        
+        // Check if there are extra fields to save
+        const extraFieldsToSave = this.showFieldsList?.filter(x => x.show) || [];
+        
+        if(extraFieldsToSave.length === 0) {
+          // No extra fields, close modal immediately
+          this.loadingScreen = false; // Stop loading
+          this.closeModalAndRefresh();
+          return;
+        }
+        
+        // Track completion of extra field saves
+        let completedRequests = 0;
+        const totalRequests = extraFieldsToSave.length;
+        let hasError = false;
+        
+        extraFieldsToSave.forEach((x)=>{
+          const obj={
+            "email":this.email,
+            "companyId":this.companyId,
+            "name":x.name,
+            "value":(extraFieldValueMap.get(x.name)==null)?"": extraFieldValueMap.get(x.name),
+            "companyCustomerId":myCompanyCustomer.id,
+            "type":extraFieldTypeMap.get(x.name)
+          }
+          console.log("extra field object"+obj.companyCustomerId+"--"+obj.companyId+"--"+obj.name+"--"+obj.value)
+          
+          this.companyCustomerService.addExtraFields(obj).subscribe(
+            (data)=>{
+              console.log("added extra fields");
+              completedRequests++;
+              
+              // Only close modal when ALL extra fields are saved
+              if(completedRequests === totalRequests && !hasError) {
+                this.loadingScreen = false; // Stop loading
+                this.closeModalAndRefresh();
+              }
+            },
+            (err)=>{
+              console.log(err);
+              hasError = true;
+              this.loadingScreen = false; // Stop loading on error
+              if(err.error.error==="TRIAL_EXPIRED"){
+                this.triggerAlert(err.error.message,"danger");
+              }
+              else{
+                this.triggerAlert(err.error.errorMessage,"danger");
+              }
+            }
+          )
+        })
       },
       (err)=>{
         console.log(err);
-        this.loadingScreen=false;
-         if(err.error.error==="TRIAL_EXPIRED"){
-        this.triggerAlert(err.error.message,"danger");
+        this.loadingScreen = false; // Stop loading on error
+        if(err.error.error==="TRIAL_EXPIRED"){
+          this.triggerAlert(err.error.message,"danger");
+        }
+        else{
+          this.triggerAlert(err.error.errorMessage,"danger");
+        }
       }
-      else{
-      this.triggerAlert(err.error.errorMessage,"danger");
-      }
-      },
-    ()=>{
-      this.loadingScreen=false;
-    })
-    })
-   
-    }
     )
-  }
+}
 
+closeModalAndRefresh() {
+  const modalElement = document.getElementById('add-order');
+  
+  if (modalElement) {
+    // Use Bootstrap's modal API to properly close
+    const modal = (window as any).bootstrap?.Modal?.getInstance(modalElement);
+    if (modal) {
+      modal.hide();
+    } else if (this.closeBox) {
+      this.closeBox.nativeElement.click();
+    }
+  }
+  
+  // Small delay to ensure modal closes before refresh
+  setTimeout(() => {
+    // Clean up any remaining backdrop
+    const backdrops = document.querySelectorAll('.modal-backdrop');
+    backdrops.forEach(backdrop => backdrop.remove());
+    document.body.classList.remove('modal-open');
+    document.body.style.paddingRight = '';
+    document.body.style.overflow = '';
+    
+    // Refresh data
+    this.advanceFilterFunc();
+    
+    // Clear form safely
+    this.clearForm();
+  }, 100);
+}
+
+clearForm() {
+  if (this.companyCustomerForm) {
+    Object.keys(this.companyCustomerForm.controls).forEach(key => {
+      const control = this.companyCustomerForm.get(key);
+      if (control) {
+        if (key === 'companyId') {
+          control.setValue(this.companyId);
+        } else if (key === 'status') {
+          control.setValue('active');
+        } else if (key === 'country') {
+          control.setValue('United States of America');
+        } else {
+          control.setValue('');
+        }
+        control.markAsUntouched();
+        control.markAsPristine();
+      }
+    });
+  }
+}
 
   getAllCompanyCustomerList(companyId:string){
     // this.workOrderService.getWorkOrder(companyId).subscribe((data)=>{
@@ -650,6 +735,7 @@ advanceFilterFunc() {
     this.editButtonId=-1;
   }
   companyCustomerDetail(id:string){
+    console.log("Detail Id:"+id);
     this.detailedWorkOrder=true;
     this.detailModule=true;
     this.detailId=id;
@@ -671,45 +757,88 @@ advanceFilterFunc() {
     },3000);
     
   }
-  
   deleteCompanyCustomer(id:string){
-    this.loadingScreen=true;
+  this.loadingScreen = true;
   
-    this.companyCustomerService.deleteCompanyCustomer(id).subscribe((data)=>{
+  this.companyCustomerService.deleteCompanyCustomer(id).subscribe(
+    (data)=>{
       console.log('Workorder Deleted');
       this.companyCustomerForm.reset();
-     
+      
+      // Delete extra fields after main delete
+      this.companyCustomerService.deleteWorkorderExtraField(id).subscribe(
+        (data)=>{
+          console.log("ExtraFields Deleted");
+        },
+        (err)=>{
+          console.log(err);
+          this.loadingScreen = false; // Stop loading on error
+          if(err.error.error==="TRIAL_EXPIRED"){
+            this.triggerAlert(err.error.message,"danger");
+          }
+          else{
+            this.triggerAlert(err.error.errorMessage,"danger");
+          }
+        },
+        ()=>{
+          // Both deletes complete
+          this.ngOnInit();
+          this.loadingScreen = false; // Stop loading after everything
+        }
+      );
     },
     (err)=>{
       console.log(err);
       this.companyCustomerForm.reset();
-       if(err.error.error==="TRIAL_EXPIRED"){
+      this.loadingScreen = false; // Stop loading on error
+      if(err.error.error==="TRIAL_EXPIRED"){
         this.triggerAlert(err.error.message,"danger");
       }
       else{
-      this.triggerAlert(err.error.errorMessage,"danger");
+        this.triggerAlert(err.error.errorMessage,"danger");
       }
-    },()=>{
-      this.companyCustomerService.deleteWorkorderExtraField(id).subscribe((data)=>{
-        console.log("ExtraFields Deleted");
-      },
-      (err)=>{
-        console.log(err);
-         if(err.error.error==="TRIAL_EXPIRED"){
-        this.triggerAlert(err.error.message,"danger");
-      }
-      else{
-      this.triggerAlert(err.error.errorMessage,"danger");
-      }
-      })
-      this.ngOnInit();
-      this.loadingScreen=false;
-    })
+    }
+  )
+}
+  
+  // deleteCompanyCustomer(id:string){
+  //   this.loadingScreen=true;
+  
+  //   this.companyCustomerService.deleteCompanyCustomer(id).subscribe((data)=>{
+  //     console.log('Workorder Deleted');
+  //     this.companyCustomerForm.reset();
+     
+  //   },
+  //   (err)=>{
+  //     console.log(err);
+  //     this.companyCustomerForm.reset();
+  //      if(err.error.error==="TRIAL_EXPIRED"){
+  //       this.triggerAlert(err.error.message,"danger");
+  //     }
+  //     else{
+  //     this.triggerAlert(err.error.errorMessage,"danger");
+  //     }
+  //   },()=>{
+  //     this.companyCustomerService.deleteWorkorderExtraField(id).subscribe((data)=>{
+  //       console.log("ExtraFields Deleted");
+  //     },
+  //     (err)=>{
+  //       console.log(err);
+  //        if(err.error.error==="TRIAL_EXPIRED"){
+  //       this.triggerAlert(err.error.message,"danger");
+  //     }
+  //     else{
+  //     this.triggerAlert(err.error.errorMessage,"danger");
+  //     }
+  //     })
+  //     this.ngOnInit();
+  //     this.loadingScreen=false;
+  //   })
    
 
 
     
-  }
+  // }
   
   assetSelected(data:any){
     console.log(data)
@@ -787,46 +916,69 @@ advanceFilterFunc() {
     this.advanceFilterFunc();
 
   }
-  reset(){
-    this.loadingScreen=true;
-    this.filterForm.reset();
-    this.sortedBy="";
-    // this.searchData=null;
-    this.appliedFilterList=new Set<string>();
-    this.appliedFilterListMap=new Map<string,string>;
+  // reset(){
+  //   this.loadingScreen=true;
+  //   this.filterForm.reset();
+  //   this.sortedBy="";
+  //   // this.searchData=null;
+  //   this.appliedFilterList=new Set<string>();
+  //   this.appliedFilterListMap=new Map<string,string>;
     
-    this.filterForm.controls['companyId'].setValue(this.companyId);
-    this.myList.forEach((field)=>{
-      this.mandatoryFieldFilterList.set(field,true);
-      this.filterForm.addControl(field,this.formBuilder.control('',Validators.required));
-    });
-    this.selectedFilterList=[];
-    this.showFieldsList.forEach((x)=>{
+  //   this.filterForm.controls['companyId'].setValue(this.companyId);
+  //   this.myList.forEach((field)=>{
+  //     this.mandatoryFieldFilterList.set(field,true);
+  //     this.filterForm.addControl(field,this.formBuilder.control('',Validators.required));
+  //   });
+  //   this.selectedFilterList=[];
+  //   this.showFieldsList.forEach((x)=>{
      
-      this.selectedFilterList.push(x.name);
-      this.filterForm.addControl(x.name,this.formBuilder.control('',Validators.required));
-      this.showFieldsMap.set(x.name,x.show);
+  //     this.selectedFilterList.push(x.name);
+  //     this.filterForm.addControl(x.name,this.formBuilder.control('',Validators.required));
+  //     this.showFieldsMap.set(x.name,x.show);
      
-    })
-    // this.assetService.advanceFilter(this.filterForm.value,this.pageIndex,this.pageSize,this.sortedBy).subscribe((data)=>{
-    //   console.log(data);
-    //   this.assetListWithExtraFields=[]
-    // this.paginationResult=data;
-    // this.totalLength=this.paginationResult.totalRecords;
-    // this.assets=this.paginationResult.data;
-    // const jsonList:string[]=this.paginationResult.data;
-    // jsonList.forEach((workorder)=>{
-    //   const jsonObject:any = JSON.parse(workorder);
-    //   console.log(typeof(jsonObject))
-    //   this.assetListWithExtraFields.push(jsonObject)
-    // })
-    // console.log(this.assetListWithExtraFields);
-    // this.loading=false;
-    // })
-    this.loadingScreen=false;
-    this.advanceFilterFunc();
+  //   })
+  //   // this.assetService.advanceFilter(this.filterForm.value,this.pageIndex,this.pageSize,this.sortedBy).subscribe((data)=>{
+  //   //   console.log(data);
+  //   //   this.assetListWithExtraFields=[]
+  //   // this.paginationResult=data;
+  //   // this.totalLength=this.paginationResult.totalRecords;
+  //   // this.assets=this.paginationResult.data;
+  //   // const jsonList:string[]=this.paginationResult.data;
+  //   // jsonList.forEach((workorder)=>{
+  //   //   const jsonObject:any = JSON.parse(workorder);
+  //   //   console.log(typeof(jsonObject))
+  //   //   this.assetListWithExtraFields.push(jsonObject)
+  //   // })
+  //   // console.log(this.assetListWithExtraFields);
+  //   // this.loading=false;
+  //   // })
+  //   this.loadingScreen=false;
+  //   this.advanceFilterFunc();
 
-  }
+  // }
+
+  reset(){
+  this.filterForm.reset();
+  this.sortedBy="";
+  this.appliedFilterList = new Set<string>();
+  this.appliedFilterListMap = new Map<string,string>;
+  
+  this.filterForm.controls['companyId'].setValue(this.companyId);
+  this.myList.forEach((field)=>{
+    this.mandatoryFieldFilterList.set(field,true);
+    this.filterForm.addControl(field,this.formBuilder.control('',Validators.required));
+  });
+  
+  this.selectedFilterList=[];
+  this.showFieldsList.forEach((x)=>{
+    this.selectedFilterList.push(x.name);
+    this.filterForm.addControl(x.name,this.formBuilder.control('',Validators.required));
+    this.showFieldsMap.set(x.name,x.show);
+  });
+  
+  // Don't manually set loadingScreen here - let advanceFilterFunc handle it
+  this.advanceFilterFunc(); // This will set loadingScreen = true/false
+}
   
   removeSingleFilter(name:string){
     console.log("single: "+name)

@@ -56,23 +56,86 @@
       </div>
     </div>
 
-    <div class="stat-card gray">
-      <div class="stat-content">
-        <p class="stat-label">LEAD INSPECTOR</p>
-        <h2 class="stat-value">{{ leadInspector }}</h2>
-        <p class="stat-description">{{ inspectorCount }} Inspections</p>
+   
+  </div>
+  <div>
+    <div class="date-filter-container">
+  <div class="date-filter-card">
+    <div class="date-inputs-group">
+      
+      <div class="date-input-wrapper">
+        <label for="startDate" class="date-label">Start Date</label>
+        <input
+          type="date"
+          id="startDate"
+          [(ngModel)]="startDate"
+          class="date-input"
+        />
       </div>
-      <div class="avatar">J</div>
+
+      <div class="date-input-wrapper">
+        <label for="endDate" class="date-label">End Date</label>
+        <input
+          type="date"
+          id="endDate"
+          [(ngModel)]="endDate"
+          class="date-input"
+        />
+      </div>
+
+      <button class="filter-btn" (click)="applyFilter()">
+        🔍 Filter
+      </button>
+
     </div>
   </div>
+   <div style="min-width: 350px; margin: 20px;">
+      <div class="stat-card gray" style="overflow:visible;">
+        <div class="stat-content">
+          <p class="stat-label">LEAD INSPECTOR</p>
+          <h2 class="stat-value">
+          {{ inspectorName }}
+          <span #badgeRef class="count-badge" (click)="clickExtraInspectorNames()" >
+            +{{ extraInspectorCount - 1 }}
+            <div class="tooltip-content" [ngStyle]="{'display':extraInspectorNamesVisible ? 'block' : 'none'}" >
+              <ul>
+                <li *ngFor="let name of extraInspectorNames">{{ name }}</li>
+              </ul>
+            </div>
+          </span>
+        </h2>
 
-  <div class="charts-grid">
+
+          <p class="stat-description">{{ inspectorCount }} Inspections</p>
+        </div>
+        <div class="avatar">{{inspectorInitials}}</div>
+      </div>
+    </div>
+</div>
+
+   
+   
+  
+  </div>
+  <div class="charts-grid d-flex justify-content-around">
+    <div class="chart-card trend-chart">
+  <div class="chart-header">
+    <h3>📈 Inspection By Inspectors</h3>
+    <p class="chart-subtitle">Records over time</p>
+  </div>
+
+  <div class="chart-container">
+    <canvas #chartCanvas class="chart-canvas"></canvas>
+  </div>
+</div>
+
+
     <div class="chart-card trend-chart">
       <div class="chart-header">
-        <h3>📈 Inspection Trend</h3>
+        <h3>📈 Inspection By Inspectors</h3>
         <p class="chart-subtitle">Records over time</p>
       </div>
-      <div class="trend-content">
+      <!-- <div class="trend-content">
         <svg viewBox="0 0 500 200" class="trend-svg">
           <defs>
             <linearGradient id="gradient" x1="0%" y1="0%" x2="0%" y2="100%">
@@ -99,6 +162,13 @@
           <span>2</span>
           <span>0</span>
         </div>
+      </div> -->
+      <div class="chart-container" style="overflow-x: auto; width: 100%;">
+<canvas #chartCanvas style="display:block;"></canvas>
+  <!-- <div class="button-group">
+    <button (click)="updateChart()">Update Chart</button>
+    <button (click)="destroyChart()">Destroy Chart</button>
+  </div> -->
       </div>
     </div>
 
@@ -109,35 +179,37 @@
       </div>
       <div class="status-content">
         <svg viewBox="0 0 200 200" class="donut-chart">
-          <circle cx="100" cy="100" r="80" fill="none" stroke="#000" stroke-width="40"
-            [attr.stroke-dasharray]="getStatusPercentage(statusData.normal) * 5.024 + ' 502.4'"
-            transform="rotate(-90 100 100)" />
-          <circle cx="100" cy="100" r="80" fill="none" stroke="#666" stroke-width="40"
-            [attr.stroke-dasharray]="getStatusPercentage(statusData.good) * 5.024 + ' 502.4'"
-            [attr.stroke-dashoffset]="-getStatusOffset('good') * 5.024"
-            transform="rotate(-90 100 100)" />
-          <circle cx="100" cy="100" r="80" fill="none" stroke="#999" stroke-width="40"
-            [attr.stroke-dasharray]="getStatusPercentage(statusData.z20x) * 5.024 + ' 502.4'"
-            [attr.stroke-dashoffset]="-getStatusOffset('z20x') * 5.024"
-            transform="rotate(-90 100 100)" />
-          <circle cx="100" cy="100" r="80" fill="none" stroke="#ccc" stroke-width="40"
-            [attr.stroke-dasharray]="getStatusPercentage(statusData.clean) * 5.024 + ' 502.4'"
-            [attr.stroke-dashoffset]="-getStatusOffset('clean') * 5.024"
-            transform="rotate(-90 100 100)" />
-        </svg>
+  <!-- Pending Count (First segment) -->
+  <circle 
+    cx="100" 
+    cy="100" 
+    r="80" 
+    fill="none" 
+    stroke="#dcfce7" 
+    stroke-width="40"
+    [attr.stroke-dasharray]="getPendingPercentage() * 5.024 + ' 502.4'"
+    transform="rotate(-90 100 100)" />
+  
+  <!-- Completed Count (Second segment) -->
+  <circle 
+    cx="100" 
+    cy="100" 
+    r="80" 
+    fill="none" 
+    stroke="#37c427" 
+    stroke-width="40"
+    [attr.stroke-dasharray]="getCompletedPercentage() * 5.024 + ' 502.4'"
+    [attr.stroke-dashoffset]="-getPendingPercentage() * 5.024"
+    transform="rotate(-90 100 100)" />
+</svg>
         <div class="status-labels">
           <div class="status-label normal">
-            <span class="label-text">Normal: {{ statusData.normal }}</span>
+            <span class="label-text">Pending: {{ getPendingCount()}}</span>
           </div>
           <div class="status-label good">
-            <span class="label-text">Good: {{ statusData.good }}</span>
+            <span class="label-text">Completed: {{getCompletedCount() }}</span>
           </div>
-          <div class="status-label z20x">
-            <span class="label-text">Z20X: {{ statusData.z20x }}</span>
-          </div>
-          <div class="status-label clean">
-            <span class="label-text">Clean: {{ statusData.clean }}</span>
-          </div>
+          
         </div>
       </div>
     </div>
@@ -149,12 +221,12 @@
       <p class="chart-subtitle">Frequency of Completed Records by that Inspection</p>
     </div>
     <div class="types-content">
-      <div class="type-row" *ngFor="let type of inspectionTypes">
-        <span class="type-name">{{ type.name }}</span>
+      <div class="type-row" *ngFor="let type of this.inspectionTypeCompletionData">
+        <span class="type-name">{{ type[0] }}</span>
         <div class="bar-container">
-          <div class="bar" [style.width.%]="getBarWidth(type.count)"></div>
+          <div class="bar" [style.width.%]="getBarWidth(type[1])"></div>
         </div>
-        <span class="type-count">{{ type.count }}</span>
+        <span class="type-count">{{ type[1] }}</span>
       </div>
     </div>
   </div>

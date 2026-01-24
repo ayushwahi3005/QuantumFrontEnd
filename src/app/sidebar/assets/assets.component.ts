@@ -25,7 +25,8 @@ import { Subscription } from 'rxjs';
 })
 export class AssetsComponent implements OnDestroy{
   private _snackBar = inject(MatSnackBar);
-  @ViewChild('closeBox2') closeBox2: ElementRef | undefined;
+  @ViewChild('closeBox2') closeBox2!: ElementRef;
+  
   loading: boolean = true;
   tempId: any;
   paginationResult!: PaginationResult;
@@ -735,6 +736,7 @@ export class AssetsComponent implements OnDestroy{
 
       myAsset = data;
       console.log("Asset Uploaded" + data);
+      this.closeAddAssetModal()
     },
       (err) => {
         console.log(err);
@@ -1154,6 +1156,9 @@ export class AssetsComponent implements OnDestroy{
     return this.binLocationIdNameMap?.get(value) || value;
   }
   return value;
+}
+closeAddAssetModal(): void {
+  this.closeBox2.nativeElement.click();
 }
 
 }
