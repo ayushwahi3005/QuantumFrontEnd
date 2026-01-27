@@ -188,84 +188,84 @@ export class AssetInspectionComponent {
   // }
 
   createChart(): void {
-    if (this.chart) {
-  this.chart.destroy();
-  this.chart = null;
-}
+  if (this.chart) {
+    this.chart.destroy();
+    this.chart = null;
+  }
 
+  const BAR_MIN_WIDTH = 30;  // minimum width per bar
+  const MIN_CANVAS_WIDTH = 400;
 
-    const BAR_WIDTH = 50;
-    const MIN_WIDTH = 400;
+  const canvas = this.chartCanvas.nativeElement;
+  const numBars = this.userInspectionAnalyticsDataNames.length;
 
-    const canvas = this.chartCanvas.nativeElement;
-    const calculatedWidth = Math.max(this.userInspectionAnalyticsDataNames.length * BAR_WIDTH, MIN_WIDTH);
+  // Calculate canvas width based on number of bars
+  const calculatedWidth = Math.max(numBars * BAR_MIN_WIDTH, MIN_CANVAS_WIDTH);
+  canvas.width = calculatedWidth;
+  canvas.style.width = `${calculatedWidth}px`;
+  canvas.height = 300;
+  canvas.style.height = `300px`;
 
-    canvas.width = calculatedWidth;
-    canvas.style.width = `${calculatedWidth}px`;
-    canvas.style.height = `300px`
-    canvas.height = 300;
+  const ctx = canvas.getContext('2d')!;
 
-    const ctx = canvas.getContext('2d')!;
-
-    this.chart = new Chart(ctx, {
-      type: 'bar',
-      data: {
-        labels:this.userInspectionAnalyticsDataNames,
-       datasets: [{
-  label: 'Inspections Completed',
-  data: this.userInspectionAnalyticsDataValues,
-  backgroundColor: this.generateColors(this.userInspectionAnalyticsDataValues.length),
-  borderColor: this.generateColors(this.userInspectionAnalyticsDataValues.length),
-  borderWidth: 1,
-  barThickness: 40,
-  maxBarThickness: 50
-}]
-
+  this.chart = new Chart(ctx, {
+    type: 'bar',
+    data: {
+      // labels:this.userInspectionAnalyticsDataNames,
+      labels: [
+        'Alice Johnson', 'Bob Smith', 'Charlie Davis', 'Diana Evans', 
+        'Ethan Brown', 'Fiona Clark', 'George Harris', 'Hannah Lee', 
+        'Ian Martinez', 'Julia Nelson', 'Kevin Owens', 'Laura Perez', 
+        'Michael Quinn', 'Nina Roberts', 'Oliver Scott', 'Paula Turner', 
+        'Quentin Underwood', 'Rachel Vasquez', 'Steven White', 'Tina Xu'
+      ],
+      
+      datasets: [{
+        label: 'Inspections Completed',
+        data: [20,19,18,17,16,15,14,13,12,11,10,9,8,7,6,5,4,3,2,1],
+        // data: this.userInspectionAnalyticsDataValues,
+        backgroundColor: this.generateColors(numBars),
+        borderColor: this.generateColors(numBars),
+        borderWidth: 1,
+        // Let Chart.js automatically handle bar thickness
+        // barThickness: 'flex', // optional
+      }]
+    },
+    options: {
+      responsive: false,
+      maintainAspectRatio: false,
+      plugins: {
+        legend: { display: false },
+        title: {
+          display: true,
+          text: 'User Inspection Analytics'
+        }
       },
-      options: {
-        responsive: false,            // 🔑 REQUIRED
-        maintainAspectRatio: false,
-        plugins: {
-           legend: {
-    display: false   // ✅ hides "Inspections Completed"
-  },
+      scales: {
+        x: {
           title: {
             display: true,
-            text: 'User Inspection Analytics'
-          }
-        },
-        scales: {
-          x: {
-                      title: {
-              display: true,
-              text: 'Inspectors',
-              font: {
-                size: 14,
-                weight: 'bold'
-              }
-            },
-            ticks: {
-              autoSkip: false
-            }
+            text: 'Inspectors',
+            font: { size: 14, weight: 'bold' }
           },
-          y: {
-            beginAtZero: true,
-            title: {
-    display: true,
-    text: 'Number of Inspections',
-    font: {
-      size: 14,
-      weight: 'bold'
-    }
-  },
-            ticks: {
-              stepSize: 1
-            }
-          }
+          ticks: { autoSkip: false }
+          // categoryPercentage: 0.8, // reduces bar width per category
+          // barPercentage: 0.9
+        },
+        y: {
+          beginAtZero: true,
+          title: {
+            display: true,
+            text: 'Number of Inspections',
+            font: { size: 14, weight: 'bold' }
+          },
+          ticks: { stepSize: 1 }
         }
       }
-    });
-  }
+    }
+  });
+}
+
 
   
   

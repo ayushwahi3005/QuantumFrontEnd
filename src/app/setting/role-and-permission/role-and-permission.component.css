@@ -253,3 +253,8 @@ z-index: 2;
   color:  rgb(175, 173, 173);
 
 }
+.disabled-link {
+  pointer-events: none;
+  cursor: not-allowed;
+  opacity: 0.5;
+}

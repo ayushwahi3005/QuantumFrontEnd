@@ -1,7 +1,7 @@
 import { inject, Injectable } from '@angular/core';
 import { AngularFireAuth } from '@angular/fire/compat/auth';
 import { Router } from '@angular/router';
-import { BehaviorSubject, Observable } from 'rxjs';
+import { BehaviorSubject, Observable, Subject } from 'rxjs';
 import { AuthenticationService } from './authentication.service';
 import { AuthDetail } from './AuthDetail';
 import { TokenAuthenticationService } from './token-authentication.service';
@@ -41,6 +41,7 @@ export class AuthService {
   private tokenCheckInterval: any;
   private hasAlerted = false; 
   sessionExpired$ = new BehaviorSubject<boolean>(false);
+  navigationToDashboard$ = new Subject<void>();
   constructor(private fireAuth: AngularFireAuth,private router:Router,private tokenAuthenticationService:TokenAuthenticationService,private loginService:LoginService,private http: HttpClient, private registerService:RegisterService,private invitationService:InvitationService) { }
  
   readonly dialog = inject(MatDialog);
@@ -132,6 +133,7 @@ export class AuthService {
                         console.log("Logged Data added");
                         localStorage.setItem('deviceId',loggedData.deviceId)
                         this.router.navigate(['dashboard']);
+                        this.navigationToDashboard$.next();
                       },
                       (err)=>{
                         console.log(err)

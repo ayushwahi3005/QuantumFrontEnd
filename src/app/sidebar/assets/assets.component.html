@@ -72,7 +72,7 @@
             *ngIf="!(userRoleDetails?.assets!='full' &&userRole!='ADMIN')">+ Asset</button> -->
            <button class="btn btn-primary" data-toggle="modal" data-target="#addAssetPopup"
             style=" margin: 0px 5px; width: 100%; max-width: 100px; min-width: 100px;">+ Asset</button>
-          <button class="btn btn-dark" (click)="exportexcel()" style=" margin: 0px 5px;">Export</button>
+          <button class="btn btn-dark" style=" margin: 0px 5px;" data-toggle="modal" data-target="#exportModal">Export</button>
 
           <a class="btn btn-light dropdown-toggle" type="button" id="sortButtonAsset" data-toggle="dropdown"
             aria-haspopup="true" aria-expanded="false"
@@ -654,3 +654,47 @@
     </div>
   </div>
 </div>
+
+
+<div class="modal fade" id="exportModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h2 class="modal-title" id="exampleModalLongTitle">Select Export Type?</h2>
+          <button type="button" class="close  ms-auto" data-dismiss="modal" aria-label="Close" #exportCloseBox>
+            <i class="bi bi-x-lg"></i>
+          </button>
+        </div>
+        <div class="modal-body">
+          
+            <!-- <h3>Select Export Type</h3> -->
+
+            <!-- <div style="display: flex; align-items: center; gap: 20px;"> -->
+               <div style="display: flex; align-items: center; gap: 8px; margin: 10px 0px;">
+                <input type="radio" id="export-current-page" name="exportType" value="export-current-page" checked (change)="exportType='export-current-page'">
+                <label for="excel">Export Current Page</label>
+              </div>
+
+              <div style="display: flex; align-items: center; gap: 8px;margin: 10px 0px;">
+                <input type="radio" id="export-all" name="exportType" value="export-all"  (change)="exportType='export-all'">
+                <label for="excel">Export All Data</label>
+              </div>
+
+             
+            <!-- </div> -->
+
+            
+         
+       
+        <div class="modal-footer d-flex justify-content-around">
+          
+          
+          <button  class="btn btn-light mt-3"  (click)="exportCloseBox.click()"  >Close</button>
+          <button type="submit" class="btn btn-primary mt-3" (click)="exportData()" >Export</button>
+          <!-- <button type="submit" class="btn btn-primary mt-3" (click)="closeBox3.click()" (click)="addFilterForm()"   >Filter</button> -->
+          
+        </div>
+        </div>
+      </div>
+    </div>
+  </div>

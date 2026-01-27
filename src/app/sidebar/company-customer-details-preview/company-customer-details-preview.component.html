@@ -122,7 +122,7 @@
                   
                   <div >
                   
-                     <div style="display: flex; flex-direction: row;"  class="d-flex justify-content-center"> 
+                     <div style="display: flex; flex-direction: row;"  class="d-flex justify-content-around"> 
                           <div style="margin: 0px 2vw;">
                             <label for="address"  style="color: black; font-weight: bold;">Address<span *ngIf="mandatoryFieldsMap.get('address')" class="text-danger">*</span></label>
                             <!-- <input type="text"  id="address"   [(ngModel)]=" companyCustomer.address" disabled> -->
@@ -162,6 +162,16 @@
                             <div style="margin: 10px;">
                               <p *ngIf="companyCustomer.state">{{companyCustomer.state}}</p>
                               <p *ngIf="!companyCustomer.state"> &nbsp;</p>
+                              <hr style="width: 20vw;">
+                            </div>
+                          </div>
+                          <div style="margin-right: 40px;" >
+                            <label for="country"  style="color: black; font-weight: bold;">Country<span *ngIf="mandatoryFieldsMap.get('country')" class="text-danger">*</span></label>
+                            
+                            <!-- <input id="state" type="text" [(ngModel)]=" companyCustomer.c"  disabled> -->
+                            <div style="margin: 10px;">
+                              <p *ngIf="companyCustomer.country">{{companyCustomer.country}}</p>
+                              <p *ngIf="!companyCustomer.country"> &nbsp;</p>
                               <hr style="width: 20vw;">
                             </div>
                           </div>

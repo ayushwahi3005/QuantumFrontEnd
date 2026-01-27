@@ -25,6 +25,23 @@ import { CategoryName } from 'src/app/setting/asset-category/categoryName';
 import { InspectionInstance } from './inspectionInstance';
 
 import { IDropdownSettings } from 'ng-multiselect-dropdown';
+export interface Coordinates {
+  latitude: number;
+  longitude: number;
+}
+
+export interface IpInfo {
+  city: string;
+  country: string;
+  hostname: string;
+  ip: string;
+  loc: string;
+  org: string;
+  postal: string;
+  readme: string;
+  region: string;
+  timezone: string;
+}
 
 @Component({
   selector: 'app-asset-details',
@@ -849,13 +866,20 @@ export class AssetDetailsComponent {
     this.selectedEmpName = data.target.value;
   }
   handleSubmit(employee: any, notes: string, location: string) {
-    console.log("emp=> " + this.selectedEmpName)
+    this.assetDetailService.getIpFromIpInfo().subscribe((data: any) => {
+      console.log('IP Info', data);
+      let userLoc=data as IpInfo;
+      // console.log('GeoLocation', mylocation);
+      console.log("emp=> " + this.selectedEmpName)
     console.log("emp=> " + employee)
+    let lat=userLoc.loc.split(',')[0];
+    let lon=userLoc.loc.split(',')[1];
+
     if (this.selectedEmpName == null || this.selectedEmpName == '') {
-      this.CheckInOutSubmit(employee, notes, location);
+      this.CheckInOutSubmit(employee, notes, location,lat,lon,userLoc.ip,userLoc.city + ", " + userLoc.region + ", " + userLoc.country+" - "+userLoc.postal);
     }
     else {
-      this.CheckInOutSubmit(this.selectedEmpName, notes, location);
+      this.CheckInOutSubmit(this.selectedEmpName, notes, location,lat,lon,userLoc.ip,userLoc.city + ", " + userLoc.region + ", " + userLoc.country+" - "+userLoc.postal);
     }
 
 
@@ -865,9 +889,18 @@ export class AssetDetailsComponent {
     if (location) location = '';
     this.notesRef.nativeElement.value = '';
     this.locationRef.nativeElement.value = '';
+    },
+      (err) => {
+        console.log('Error fetching IP info', err);
+      });
+  //  this.getGeolocation().then(mylocation => {
+      
+  //   });
+    
+    
   }
 
-  CheckInOutSubmit(employee: any, notes: string, location: string) {
+  CheckInOutSubmit(employee: any, notes: string, location: string,latitude:string,longitude:string,ip:string,userAddress:string) {
     console.log(employee + " " + notes)
     if (employee == null && this.userRole.toLowerCase() != 'admin') {
 
@@ -894,7 +927,12 @@ export class AssetDetailsComponent {
           "employee": employee,
           "notes": notes,
           "location": location,
-          "companyId": this.companyId
+          "companyId": this.companyId,
+          "userLatitude":latitude,
+          "userLongitude":longitude,
+          "ipAddress":ip,
+          "userLocation":userAddress
+
         }
       }
       else if (this.checkInOut[0].status == 'Checked In') {
@@ -905,7 +943,11 @@ export class AssetDetailsComponent {
           "employee": employee,
           "notes": notes,
           "location": location,
-          "companyId": this.companyId
+          "companyId": this.companyId,
+          "userLatitude":latitude,
+          "userLongitude":longitude,
+           "ipAddress":ip,
+          "userLocation":userAddress
         }
       }
       else {
@@ -916,7 +958,11 @@ export class AssetDetailsComponent {
           "employee": employee,
           "notes": notes,
           "location": location,
-          "companyId": this.companyId
+          "companyId": this.companyId,
+          "userLatitude":latitude,
+          "userLongitude":longitude,
+           "ipAddress":ip,
+          "userLocation":userAddress
         }
       }
       console.log(obj)
@@ -1374,8 +1420,82 @@ export class AssetDetailsComponent {
   }
   clearData(){
     this.selectedItems=[]
+    this.inspectionInstance=new InspectionInstance();
   }
   exportExcel(){
     
   }
+  downloadCheckInOut(){
+    this.assetDetailService.downloadCheckInOut(this.companyId,this.assetId).subscribe((data: Blob) => {
+      console.log(data);
+       const blob = new Blob([data], {
+      type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+    });
+
+    const url = window.URL.createObjectURL(blob);
+
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'CheckInOut_Report_' + this.assetId + '_' +'xlsx';
+    a.click();
+
+    window.URL.revokeObjectURL(url);
+      
+    },
+      (err:any) => {
+        console.log(err);
+      })
+  }
+
+  getGeolocation(): Promise<{ latitude: number; longitude: number }> {
+  return new Promise((resolve, reject) => {
+    if (!navigator.geolocation) {
+      reject('Geolocation not supported');
+      return;
+    }
+
+    navigator.geolocation.getCurrentPosition(
+      (position) => {
+        resolve({
+          latitude: position.coords.latitude,
+          longitude: position.coords.longitude
+        });
+      },
+      (error) => {
+        this.handleLocationError(error);
+        reject(error);
+      }
+    );
+  });
+}
+
+
+// submitWithLocation(latitude: number, longitude: number) {
+//   const employee = this.selectedEmpName || '';
+//   const notes = this.notesRef?.nativeElement.value || '';
+//   const location = `${latitude}, ${longitude}`; // or format as you need
+  
+//   console.log("Submitting with location:", location);
+  
+//   this.CheckInOutSubmit(employee, notes, location);
+  
+//   // Clear form
+//   this.selectedEmpName = this.username;
+//   if (this.notesRef) this.notesRef.nativeElement.value = '';
+//   if (this.locationRef) this.locationRef.nativeElement.value = '';
+// }
+
+handleLocationError(error: GeolocationPositionError) {
+  switch (error.code) {
+    case error.PERMISSION_DENIED:
+      console.error("User denied geolocation permission");
+      break;
+    case error.POSITION_UNAVAILABLE:
+      console.error("Geolocation position unavailable");
+      break;
+    case error.TIMEOUT:
+      console.error("Geolocation request timed out");
+      break;
+  }
+}
 }

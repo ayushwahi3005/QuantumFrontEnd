@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, ElementRef, ViewChild } from '@angular/core';
 import { LocationService } from './location.service';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 
@@ -8,6 +8,8 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
   styleUrls: ['./location.component.css'],
 })
 export class LocationComponent {
+  @ViewChild('addLocationcloseBox') addLocationcloseBox!: ElementRef;
+  @ViewChild('addBinCloseBox') addBinCloseBox!: ElementRef;
   currOption = 1;
   editVisibility: boolean = false;
   editButtonId: number = -1;
@@ -141,6 +143,11 @@ selectedCountryCode='United States of America';
 
   saveLocation() {
     console.log(this.locationForm.value);
+    if(this.locationForm.value.name==''||this.locationForm.value.name==null){
+      this.triggerAlert("Location Name is required","danger")
+      return;
+    }
+
     this.locationService.saveLocation(this.locationForm.value).subscribe(
       (data) => {
         console.log(data);
@@ -157,6 +164,7 @@ selectedCountryCode='United States of America';
       () => {
         this.ngOnInit();
          this.triggerAlert("Successfully Added Location","success")
+         this.addLocationcloseBox.nativeElement.click();
       }
     );
   }
@@ -178,10 +186,18 @@ selectedCountryCode='United States of America';
   }
   saveBin() {
     console.log(this.binForm.value);
+    if(this.binForm.value.binNumber==''||this.binForm.value.binNumber==null){
+      this.triggerAlert("Bin Number is required","danger")
+      return;
+    }
+    if(this.binForm.value.locationId==''||this.binForm.value.locationId==null){
+      this.triggerAlert("Location is required","danger")
+      return;
+    }
     this.locationService.saveBin(this.binForm.value).subscribe(
       (data) => {
         console.log(data);
-        this.triggerAlert("Successfully Added Bin","success")
+       
       },
       (err) => {
         console.log(err);
@@ -189,6 +205,8 @@ selectedCountryCode='United States of America';
       },
       () => {
         this.ngOnInit();
+        this.addBinCloseBox.nativeElement.click();
+         this.triggerAlert("Successfully Added Bin","success")
       }
     );
   }

@@ -67,7 +67,7 @@
               </mat-menu> -->
               <a  (click)="edit(item)" data-toggle="modal" data-target="#edit-role" *ngIf="item.type!='STANDARD'"><i class="bi bi-pencil"></i></a>
               <a  (click)="selectIdDeleteRole(item.id)" data-toggle="modal" data-target="#delete-role" style="  margin-left: 5px;" *ngIf="item.type!='STANDARD'"><i class="bi bi-trash-fill delete"></i></a>
-
+              <a (click)="getUsersByRole(item.userList)"  [class.disabled-link]="item.userList?.length == 0" style="  margin-left: 5px; "><i class="eye bi bi-eye-fill" style="color:  rgb(175, 173, 173);" data-toggle="modal" data-target="#userRoleInfo" ></i></a>
                
               <!-- <button mat-icon-button [matMenuTriggerFor]="appMenu" [disabled]="item.name=='ADMIN'">
                 <mat-icon>more_vert</mat-icon>
@@ -496,189 +496,54 @@
     </div>
   </div>
 
-  <!-- <div class="modal fade" id="edit-role" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle" aria-hidden="true">
+  <div class="modal fade" id="userRoleInfo" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle"
+    aria-hidden="true">
     <div class="modal-dialog  modal-lg" role="document">
       <div class="modal-content">
         <div class="modal-header" style="padding: 13px 15px">
-          <h2 class="modal-title" id="exampleModalLongTitle" style="margin:0; display: flex; justify-content: center;">Edit Role</h2>
-          <button type="button" class="close ms-auto" data-dismiss="modal" aria-label="Close"  #closeBox2>
-            <span aria-hidden="true">&times;</span>
+          <h2 class="modal-title" id="exampleModalLongTitle" style="margin:0; display: flex; justify-content: center;">
+            User List</h2>
+          <button type="button" class="btn btn-light btn-sm ms-auto" data-dismiss="modal" aria-label="Close"
+            style="border-radius: 10px;">
+            <!-- <span aria-hidden="true">&times;</span> -->
+            <i class="bi bi-x-lg"></i>
           </button>
         </div>
         <div class="modal-body">
-          <form [formGroup]="roleAndPermissionFormEdit" (ngSubmit)="updateRoleAndPermission()">
-            <div class="form-group">
-              <label for="name">Name<span  class="text-danger"> *</span></label>
-              <input type="text" class="highlight-input" id="name" style="font-size: 16px; padding-left: 11px; width: 100%; margin-top: 10px; border-radius: 5px; height: 35px; border: 1px solid #c0c0c0; transition: border-color 0.3s, box-shadow 0.3s;" formControlName="name"  placeholder="Name" [ngModel]="this.currItem.name">
-             
-            </div>
-
-            <div class="form-group" style="margin-top: 10px;">
-              <label for="status">Status<span  class="text-danger"> *</span></label>
-              <select class="form-select form-control" id="status" style="font-size: 16px; padding-left: 11px; width: 100%; margin-top: 10px; border-radius: 5px; height: 35px; border: 1px solid #c0c0c0; transition: border-color 0.3s, box-shadow 0.3s;" formControlName="status" #Asset [ngModel]="this.currItem.status" >
-               
-                <option value="active">Active</option>
-                <option value="inactive" >Inactive</option>
-               
-              </select>
-            </div>
-
-           
-            <h2 class="mt-2">Permissions</h2>
-            <table class="addTable table " style="margin: 10px auto; border-radius: 10px;">
-              <thead class="table-dark">
-                <tr>
-                  <th style="width: 50%; padding-left: 20%;">Name</th>
-                  <th style="width: 50%; padding-left: 20%;">Level</th>
-                </tr>
-              </thead>
-              <tr class="form-group">
-          
-              
-              <td>
-              <label for="assets">Assets</label>
-              </td>
-              
-              <td>
-              <select class="form-select form-control" id="assets" formControlName="assets" #Asset [ngModel]="this.currItem.assets" >
-                <option value="none" selected>None</option>
-                <option value="view">View</option>
-                <option value="create" >Create</option>
-                <option value="edit" >Edit</option>
-                <option value="full" >Full</option>
-                
-              </select>
-            </td>
-          
-            
-          </tr>
-     
-            
-              <tr class="form-group">
-                <td>
-                <label for="customers">Customers</label>
-              </td>
-              <td>
-                <select class="form-select form-control" id="customers" formControlName="customers" #customers [ngModel]="this.currItem.customers">
-                  <option value="none" selected>None</option>
-                  <option value="view" selected>View</option>
-                  <option value="create" selected>Create</option>
-                  <option value="edit" selected>Edit</option>
-                  <option value="full" selected>Full</option>
-                  
-                </select>
-              </td>
-              </tr>
-            
-          
-              <tr class="form-group">
-                <td>
-                <label for="workOrders">Work Orders</label>
-              </td>
-              <td>
-                <select class="form-select form-control" id="workOrders" formControlName="workOrders" #workOrders [ngModel]="this.currItem.workOrders">
-                  <option value="none" selected>None</option>
-                  <option value="view" selected>View</option>
-                  <option value="create" selected>Create</option>
-                  <option value="edit" selected>Edit</option>
-                  <option value="full" selected>Full</option>
-                  
-                </select>
-              </td>
-              </tr>
-       
-              <tr class="form-group">
-                <td>
-                <label for="users">Users</label>
-              </td>
-              <td>
-                  <select class="form-select form-control" id="users" formControlName="users" #users  [ngModel]="this.currItem.users">
-                    <option value="none" selected>None</option>
-                  <option value="view" selected>View</option>
-                  <option value="create" selected>Create</option>
-                  <option value="edit" selected>Edit</option>
-                  <option value="full" selected>Full</option>
-                  
-                </select>
-              </td>
-              </tr>
-    
-              <tr class="form-group">
-                <td>
-                <label for="roleAndPermissions">Roles And Permissions</label>
-              </td>
-              <td>
-                  <select class="form-select form-control" id="roleAndPermissions" formControlName="roleAndPermissions" #roleAndPermissions [ngModel]="this.currItem.roleAndPermissions">
-                    <option value="none" selected>None</option>
-                  <option value="view" selected>View</option>
-                  <option value="create" selected>Create</option>
-                  <option value="edit" selected>Edit</option>
-                  <option value="full" selected>Full</option>
-                  
-                </select>
-              </td>
-              </tr>
   
-              <tr class="form-group">
-                <td>
-                <label for="imports">Import</label>
-              </td>
-                <td>
-                <select class="form-select form-control" id="imports" formControlName="imports" #imports [ngModel]="this.currItem.imports">
-                  <option value="none" selected>None</option>
-                  <option value="view" selected>View</option>
-                  <option value="create" selected>Create</option>
-                  <option value="edit" selected>Edit</option>
-                  <option value="full" selected>Full</option>
-                  
-                </select>
-              </td>
-              </tr>
   
-              <tr class="form-group">
-              <td>
-                <label for="category">Category</label>
-              </td>
-            <td>
-                 <select class="form-select form-control" id="category" formControlName="category" #category  [ngModel]="this.currItem.category">
-                  <option value="none" selected>None</option>
-                  <option value="view" selected>View</option>
-                  <option value="create" selected>Create</option>
-                  <option value="edit" selected>Edit</option>
-                  <option value="full" selected>Full</option>
-                  
-                </select>
-              </td>
+  
+          <!-- <h2 class="mt-2"  *ngIf="userDetailsByRole.length>0">User List</h2> -->
+          <table class="addTable table" style="margin: 10px auto; border-radius: 10px;"
+            *ngIf="userDetailsByRole?.length > 0; else noData">
+            <thead class="table-dark">
+              <tr>
+                <th style="width: 50%; padding-left: 20%;">Name</th>
+                <th style="width: 50%; padding-left: 20%;">Email</th>
               </tr>
-     
-              <tr class="form-group">
-              <td>
-                <label for="inventory">Inventory</label>
-              </td>
-            <td>
-                     <select class="form-select form-control" id="inventory" formControlName="inventory" #inventory  [ngModel]="this.currItem.inventory">
-                      <option value="none" selected>None</option>
-                  <option value="view" selected>View</option>
-                  <option value="create" selected>Create</option>
-                  <option value="edit" selected>Edit</option>
-                  <option value="full" selected>Full</option>
-                  
-                </select>
-              </td>
-            </tr>
-           
-            </table>
-            
-            
-            <div style="display: flex; justify-content: center; margin-top: 15px;">
-            <button class="btn btn-light" data-dismiss="modal" aria-label="Close" (click)="closeBox.click()" style="margin: 10px; width: 100px; margin-right: 30px; border: 1px solid #c0c0c0" >Cancel</button>
-            <button type="submit" class="btn btn-primary mt-2" (click)="closeBox2.click()" [disabled]="roleAndPermissionFormEdit.invalid" style="margin: 10px; width: 100px;">Save</button>
+            </thead>
+  
+            <tbody>
+              <tr *ngFor="let user of userDetailsByRole">
+                <td style="text-align: center;">{{ user.name }}</td>
+                <td style="text-align: center;">{{ user.email }}</td>
+              </tr>
+            </tbody>
+          </table>
+  
+          <ng-template #noData>
+            <div class="text-center mt-3">
+              No Data
             </div>
-          </form>
-         
+          </ng-template>
+  
+  
+  
+  
+  
         </div>
       </div>
     </div>
-  </div>-->
+  </div>
 
 </div>

@@ -95,7 +95,7 @@
           <p class="stat-label">LEAD INSPECTOR</p>
           <h2 class="stat-value">
           {{ inspectorName }}
-          <span #badgeRef class="count-badge" (click)="clickExtraInspectorNames()" >
+          <span #badgeRef class="count-badge" (click)="clickExtraInspectorNames()" *ngIf="extraInspectorCount>1">
             +{{ extraInspectorCount - 1 }}
             <div class="tooltip-content" [ngStyle]="{'display':extraInspectorNamesVisible ? 'block' : 'none'}" >
               <ul>
@@ -106,7 +106,7 @@
         </h2>
 
 
-          <p class="stat-description">{{ inspectorCount }} Inspections</p>
+          <p class="stat-description" >{{ inspectorCount }} Inspections</p>
         </div>
         <div class="avatar">{{inspectorInitials}}</div>
       </div>

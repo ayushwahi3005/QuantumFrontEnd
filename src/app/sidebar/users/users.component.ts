@@ -391,6 +391,7 @@ export class UsersComponent {
     (err)=>{
       console.log(err);
       if(err.error.errorMessage==="No active subscription. Please subscribe to a Plan"){
+        console.log("No active subscription. Please subscribe to a Plan")
         this.triggerAlert("Want to add more users? Subscribe to a plan to unlock this feature.","danger");
       }
        else if(err.error.error==="TRIAL_EXPIRED"){

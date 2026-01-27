@@ -980,6 +980,9 @@ export class AssetPreviewComponent {
 
      clearData(){
     this.selectedItems=[]
+    this.inspectionInstance=new InspectionInstance();
+    // this.inspectionInstance.notes='';
+    // this.notedData="";
   }
 
 

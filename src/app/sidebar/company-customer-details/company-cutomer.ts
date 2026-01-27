@@ -12,6 +12,7 @@ export class CompanyCustomer{
     apartment!:string;
     city!:string;
     state!:string;
+    country!:string;
     zipCode!:number;
     extraFields!:Map<String,ExtraField>;
  

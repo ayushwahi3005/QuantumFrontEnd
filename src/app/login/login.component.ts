@@ -39,6 +39,11 @@ export class LoginComponent {
     this.showPasswordIconClass='bi bi-eye-fill';
     this.currentyear=new Date().getFullYear();
 
+    // Subscribe to navigation to dashboard completion
+    this.auth.navigationToDashboard$.subscribe(() => {
+      this.loader = false;
+    });
+
       console.log("Login KeyValue")
       const localStorageData: { [key: string]: string } = {};
 
@@ -141,7 +146,8 @@ export class LoginComponent {
   subscribeToService() {
     this.loginService.getTriggerFunctionSubject().subscribe((mydata:any) => {
       console.log("trigger---->"+mydata.data+" "+mydata.type)
-      this.loader=false;
+      // Keep loader visible until navigation completes
+      // The loader will be hidden when navigation to dashboard is successful
       this.triggerAlert(mydata.data,mydata.type); // Call your component function here
       this.errorMessage=mydata.data;
      
@@ -168,7 +174,7 @@ export class LoginComponent {
         
         // this.triggerAlert(this.errorMessage,"danger");
         
-        this.loader=false;
+        // this.loader=false;
         console.log(this.loader)
         this.subscribeToService();
         console.log(this.errorMessage+" in Login");

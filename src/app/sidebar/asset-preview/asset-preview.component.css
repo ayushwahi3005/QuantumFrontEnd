@@ -651,4 +651,45 @@ a{
   border-radius: 5px;
   font-size: 0.85rem;
 }
-  
+  .file-list-container {
+    width: 100%;
+  }
+
+  .file-row {
+    display: flex;
+    padding: 12px;
+    border-bottom: 1px solid #e0e0e0;
+    font-size: large;
+    align-items: center;
+  }
+
+  .file-header {
+    background-color: #f8f9fa;
+    font-weight: bold;
+    position: sticky;
+    top: 0;
+  }
+
+  .col {
+    flex: 1;
+    word-break: break-word;
+  }
+
+  .col-1 {
+    flex: 2;
+  }
+
+  .col-2 {
+    flex: 1;
+    text-align: center;
+  }
+
+  .col-3 {
+    flex: 1;
+    text-align: center;
+  }
+
+  .col-4 {
+    flex: 0.5;
+    text-align: center;
+  }

@@ -240,7 +240,7 @@
      
     <!-- </div> -->
       
-    <button class="btn btn-dark" style=" margin: 0px 5px;">Export</button>  
+    <button class="btn btn-dark" style=" margin: 0px 5px;" data-toggle="modal" data-target="#exportModal">Export</button>  
     
     <!-- <button class="btn btn-primary" data-toggle="modal" data-target="#add-order" (click)="resetForm()" style="max-width: 120px; width: 100%; margin: 0 5px;" *ngIf="!(userRoleDetails?.customers!='full'&&userRole!='ADMIN')" >+ Customer</button> -->
  <button class="btn btn-primary" data-toggle="modal" data-target="#add-order" (click)="resetForm()" style="max-width: 120px; width: 100%; margin: 0 5px;" >+ Customer</button>
@@ -294,11 +294,8 @@
                    <!-- <td [ngClass]="{'due-passed':checkDueDate(item.dueDate)}">{{item.dueDate|date:"shortDate"}} <i class="bi bi-exclamation-triangle" *ngIf="checkDueDate(item.dueDate)"></i></td> -->
                     <td *ngIf="showMandatoryBasicFields.get('phone')" [routerLink]="['/customer/preview',item.id]">{{item.phone|titlecase}}</td>
                     <td *ngIf="showMandatoryBasicFields.get('address')" [routerLink]="['/customer/preview',item.id]">
-                      {{item.address | titlecase}}
-                      <span *ngIf="item.apartment">, {{item.apartment | titlecase}}</span>
-                      <span *ngIf="item.city">, {{item.city | titlecase}}</span>
-                      <span *ngIf="item.state">, {{item.state | titlecase}}</span>
-                      <span *ngIf="item.zipCode">, {{item.zipCode | titlecase}}</span>
+                      <!-- {{item.address | titlecase}} -->
+                     {{item.address}}<span *ngIf="item.address" style="border: none; background-color: white;display:contents; font-size: medium;">, </span >{{item.apartment}}<span *ngIf="item.apartment" style="border: none; background-color: white;display:contents; font-size: medium;">, </span>{{item.city}}<span *ngIf="item.city" style="border: none; background-color: white;display:contents; font-size: medium;">, </span>{{item.state}}<span *ngIf="item.state" style="border: none; background-color: white;display:contents; font-size: medium;">, </span>{{item.country}}<span *ngIf="item.country" style="border: none; background-color: white;display:contents; font-size: medium;"> </span> {{item.zipCode}}
                     </td>
                     <!-- <td *ngIf="showMandatoryBasicFields.get('apartment')">{{item.apartment|titlecase}}</td> -->
                     <!-- <td *ngIf="showMandatoryBasicFields.get('city')">{{item.city|titlecase}}</td>
@@ -495,6 +492,49 @@
        
         <div class="modal-footer d-flex justify-content-around">
           <button  class="btn btn-light mt-3"  (click)="closeBox4.click()"  >Close</button>
+          <!-- <button type="submit" class="btn btn-primary mt-3" (click)="closeBox3.click()" (click)="addFilterForm()"   >Filter</button> -->
+          
+        </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  </div>
+
+  <div class="modal fade" id="exportModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h2 class="modal-title" id="exampleModalLongTitle">Select Export Type?</h2>
+          <button type="button" class="close  ms-auto" data-dismiss="modal" aria-label="Close" #exportCloseBox>
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          
+            <!-- <h3>Select Export Type</h3> -->
+
+            <!-- <div style="display: flex; align-items: center; gap: 20px;"> -->
+               <div style="display: flex; align-items: center; gap: 8px; margin: 10px 0px;">
+                <input type="radio" id="export-current-page" name="exportType" value="export-current-page" checked (change)="exportType='export-current-page'">
+                <label for="excel">Export Current Page</label>
+              </div>
+
+              <div style="display: flex; align-items: center; gap: 8px;margin: 10px 0px;">
+                <input type="radio" id="export-all" name="exportType" value="export-all"  (change)="exportType='export-all'">
+                <label for="excel">Export All Data</label>
+              </div>
+
+             
+            <!-- </div> -->
+
+            
+         
+       
+        <div class="modal-footer d-flex justify-content-around">
+          
+          <button type="submit" class="btn btn-primary mt-3" (click)="exportData()" >Export</button>
+          <button  class="btn btn-light mt-3"  (click)="exportCloseBox.click()"  >Close</button>
           <!-- <button type="submit" class="btn btn-primary mt-3" (click)="closeBox3.click()" (click)="addFilterForm()"   >Filter</button> -->
           
         </div>

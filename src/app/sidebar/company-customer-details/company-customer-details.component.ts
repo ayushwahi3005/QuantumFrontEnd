@@ -72,6 +72,35 @@ export class CompanyCustomerDetailsComponent {
   username:any;
   sideBarCurr=1
   current=1
+currentSelectedCountryCode='US'
+   
+     countryList=[
+     "Canada",
+     "Mexico",
+     "United States of America",
+   
+     "Antigua and Barbuda",
+     "The Bahamas",
+     "Barbados",
+     "Cuba",
+     "Dominica",
+     "Dominican Republic",
+     "Grenada",
+     "Haiti",
+     "Jamaica",
+     "Saint Kitts and Nevis",
+     "Saint Lucia",
+     "Saint Vincent and the Grenadines",
+     "Trinidad and Tobago",
+   
+     "Belize",
+     "Costa Rica",
+     "El Salvador",
+     "Guatemala",
+     "Honduras",
+     "Nicaragua",
+     "Panama"
+   ]
   sideBarOption=[{
     number:1,
     name:'Customers',
@@ -141,6 +170,8 @@ export class CompanyCustomerDetailsComponent {
     });
     this.companyCustomerDetailsService.getCompanyCustomer(this.companyCustomerId).subscribe((data)=>{
       this.companyCustomer=data as CompanyCustomer;
+      this.getStateList(this.companyCustomer.country);
+      console.log(this.companyCustomer);
       this.companyCustomerDetailsService.getAssetByCustomerId(this.companyCustomerId,this.pageIndex).subscribe((data)=>{
         this.paginationResult=data;
         this.totalLength=this.paginationResult.totalRecords;
@@ -305,7 +336,7 @@ export class CompanyCustomerDetailsComponent {
     // this.mandatoryFieldsMap.forEach((val,key)=>{
     //   if(this.assetDetails.get(key))
     // }) 
-    
+    console.log(this.companyCustomer)
     
     if(this.mandatoryFieldsMap.get("name")==true){
       if(this.companyCustomer.name==''||this.companyCustomer.name==null){
@@ -521,7 +552,7 @@ export class CompanyCustomerDetailsComponent {
       this.companyCustomerDetailsService.updateCompanyCustomer(this.companyCustomer).subscribe((data)=>{
         console.log("Data Updated");
         this.loadingScreen=false;
-        this.router.navigate(['/dashboard'])
+        this.router.navigate(['/customer/preview',this.companyCustomerId])
         // this.loading();
       },
       (err)=>{
@@ -884,6 +915,28 @@ export class CompanyCustomerDetailsComponent {
     (event.target as HTMLInputElement).value = input;
     this.companyCustomer.phone = input;  // ✅ ngModel stays in sync
   }
+  getStateList(country: any) {
+  this.currentSelectedCountryCode = this.countryList[country] || '';
+
+  this.companyCustomerDetailsService.countryStateList(country).subscribe(
+    (data) => {
+      this.stateList = data;
+      
+      // Only clear state if the current state is not in the new stateList
+      if (this.stateList && this.stateList.length > 0) {
+        const isStateValid = this.stateList.some(state => state === this.companyCustomer.state);
+        if (!isStateValid) {
+          this.companyCustomer.state = ''; // Reset only if invalid
+        }
+      } else {
+        this.companyCustomer.state = ''; // Reset if no states available
+      }
+    },
+    (err) => {
+      console.log(err);
+    }
+  );
+}
 
 
 }

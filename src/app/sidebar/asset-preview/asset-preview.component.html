@@ -338,22 +338,26 @@
                   </div>
                   
                 </div> -->
-            <div *ngFor="let item of fileInfos">
-              <div class="d-flex justify-content-between" style="margin: 5px;">
+             <div class="file-list-container">
+  <!-- Header -->
+  <div class="file-row file-header">
+    <span class="col col-1">File</span>
+    <span class="col col-2">Upload Date</span>
+    <span class="col col-3">Uploaded By</span>
+    <span class="col col-4">Actions</span>
+  </div>
 
-                <span style="font-size: large;">{{item.fileName|titlecase}}</span>
-                  <span style="font-size: large;">{{item.uploadDateTime|date}}</span>
-                <span style="font-size: large;">{{item.uploadedBy}}</span>
-                <div>
-
-                  <a (click)="download(item.id,item.fileName)" style="margin: 0px 5px;cursor: pointer;"><i
-                      class="bi bi-file-earmark-arrow-down"></i></a>
-                  <a (click)="itemDeleteDetails(item.id)" data-target="#popupDelete" data-toggle="modal"
-                    style="margin: 0px 5px;cursor: pointer;"><i class="bi bi-trash-fill delete"></i></a>
-
-                </div>
-              </div>
-            </div>
+  <!-- File Items -->
+  <div *ngFor="let item of fileInfos" class="file-row">
+    <span class="col col-1">{{item.fileName|titlecase}}</span>
+    <span class="col col-2">{{item.uploadDateTime|date}}</span>
+    <span class="col col-3">{{item.uploadedBy}}</span>
+    <div class="col col-4">
+      <a (click)="download(item.id,item.fileName)" style="margin-right: 10px; cursor: pointer;"><i class="bi bi-file-earmark-arrow-down"></i></a>
+      <a (click)="itemDeleteDetails(item.id)" data-target="#popupDelete" data-toggle="modal" style="cursor: pointer;"><i class="bi bi-trash-fill delete"></i></a>
+    </div>
+  </div>
+</div>
           </div>
         </div>
 

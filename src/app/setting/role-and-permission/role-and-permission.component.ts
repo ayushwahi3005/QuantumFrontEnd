@@ -26,10 +26,12 @@ export class RoleAndPermissionComponent {
   alertType: string = 'success';
   currItem!:RoleAndPermissionEdit;
   deleteRoleId!:string;
+  userDetailsByRole:any[]=[];
     @ViewChild('closeBox2') closeBox2!: ElementRef<HTMLButtonElement>;
   constructor(private roleAndPermissionService:RoleAndPermissionService,private formBuilder:FormBuilder,private auth:AuthService,private router:Router){}
 
   ngOnInit(){
+    this.userDetailsByRole=[];
     this.companyId=localStorage.getItem('companyId');
     this.roleAndCountMapping=new Map<String,Number>();
     this.searchedRole=[];
@@ -42,8 +44,9 @@ export class RoleAndPermissionComponent {
       
         this.roleAndPermissionService.countByRoleAndCompanyId(x.name,this.companyId).subscribe((data)=>{
           let count;
-          count=data as Number;
+          count=data.totalCount;
           x.ofUser=count;
+          x.userList=data.users;
           // console.log(x.name+" "+x.ofUser);
           this.roleAndCountMapping.set(x.name,count);
         })
@@ -253,5 +256,9 @@ export class RoleAndPermissionComponent {
       setTimeout(() => {
         this.showAlert = false;
       }, 5000); // Hide the alert after 5 seconds (adjust as needed)
+    }
+    getUsersByRole(detail:any[]){
+      console.log(detail);
+      this.userDetailsByRole= detail;
     }
 }

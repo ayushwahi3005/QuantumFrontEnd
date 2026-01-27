@@ -243,4 +243,20 @@ export class CompanyCustomerService {
     });
     return this.httpClient.get(this.companyCustomerEndpoint+"getCategoryActiveList/"+companyId,{headers});
   }
+  exportCompanyCustomer(companyId: any): Observable<Blob> {
+  const headers = new HttpHeaders({
+    'Authorization': `Bearer ${localStorage.getItem('authToken')}`,
+    'device-id': `${localStorage.getItem('deviceId')}`,
+    'companyId': `${localStorage.getItem('companyId')}`,
+  });
+
+  return this.httpClient.get(
+    this.companyCustomerEndpoint + 'export-company-customer/' + companyId,
+    {
+      headers,
+      responseType: 'blob'   // ✅ CRITICAL FIX
+    }
+  );
+}
+
 }

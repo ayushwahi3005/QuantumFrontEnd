@@ -26,6 +26,7 @@ import { Subscription } from 'rxjs';
 export class AssetsComponent implements OnDestroy{
   private _snackBar = inject(MatSnackBar);
   @ViewChild('closeBox2') closeBox2!: ElementRef;
+  @ViewChild('exportCloseBox') exportCloseBox!: ElementRef;
   
   loading: boolean = true;
   tempId: any;
@@ -122,6 +123,10 @@ export class AssetsComponent implements OnDestroy{
   selectedLocationOrBin: string | null = null;
   filteredLocationOrBinList: any = [];
   binLocationIdNameMap: Map<String, String> = new Map<String, String>();
+
+   exportType:string='export-current-page';
+
+
    private routerSubscription!: Subscription;
   constructor(private assetService: AssetsService, private authService: AuthService, private formBuilder: FormBuilder,private router: Router) {
       this.routerSubscription = this.router.events.subscribe(event => {
@@ -145,7 +150,7 @@ export class AssetsComponent implements OnDestroy{
   }
   @ViewChild('dropdownContainerAsset', { static: false }) dropdownContainerAsset!: ElementRef;
   ngOnInit() {
-
+    this.exportType='export-current-page';
     if (localStorage.getItem("assetIdDetail") != null) {
       this.tempId = localStorage.getItem("assetIdDetail")
       this.assetService.getAssetDetails(this.tempId).subscribe((data: Assets) => {
@@ -622,16 +627,52 @@ export class AssetsComponent implements OnDestroy{
     this.ngOnInit();
   }
   exportexcel(): void {
-    /* table id is passed over here */
-    let element = document.getElementById('asset-table');
-    const ws: XLSX.WorkSheet = XLSX.utils.table_to_sheet(element);
+  const element = document.getElementById('asset-table');
+  const ws: XLSX.WorkSheet = XLSX.utils.table_to_sheet(element);
 
-    /* generate workbook and add the worksheet */
-    const wb: XLSX.WorkBook = XLSX.utils.book_new();
-    XLSX.utils.book_append_sheet(wb, ws, 'Sheet1');
+  // Force all cells to TEXT
+  Object.keys(ws).forEach(cell => {
+    if (cell[0] === '!') return; // skip metadata
+    ws[cell].t = 's';
+    ws[cell].v = String(ws[cell].v ?? '');
+  });
 
-    /* save to file */
-    XLSX.writeFile(wb, this.fileName);
+  const wb: XLSX.WorkBook = XLSX.utils.book_new();
+  XLSX.utils.book_append_sheet(wb, ws, 'Sheet1');
+
+  XLSX.writeFile(wb, this.fileName);
+}
+
+  exportData(): void {
+
+     if(this.exportType==='export-current-page'){
+    this.exportexcel();
+    this.triggerAlert("Exported Current Page Successfully","success");
+    this.exportCloseBox?.nativeElement.click();
+  }
+  else{
+    this.assetService.exportAsset(this.companyId).subscribe((data:Blob)=>{
+       const blob = new Blob([data], {
+      type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+    });
+
+    const url = window.URL.createObjectURL(blob);
+
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'Assets_'+this.companyId+'.xlsx';
+    a.click();
+
+    window.URL.revokeObjectURL(url);
+    },
+    (err)=>{
+      console.log(err);
+    },
+    ()=>{
+      this.triggerAlert("Exported All Assets Successfully","success");
+      this.exportCloseBox?.nativeElement.click();
+    })
+  }
 
   }
 

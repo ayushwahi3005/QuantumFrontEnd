@@ -14,6 +14,7 @@ import { Subscription } from 'rxjs';
 import { NavigationStart, Router } from '@angular/router';
 import { countryList } from 'src/app/setting/subscription/country';
 import { set } from 'date-fns';
+import * as XLSX from 'xlsx';
 
 @Component({
   selector: 'app-company-customer',
@@ -22,6 +23,7 @@ import { set } from 'date-fns';
 })
 export class CompanyCustomerComponent implements OnDestroy, AfterViewInit{
   @ViewChild('closeBox') closeBox: ElementRef | undefined ;
+  @ViewChild('exportCloseBox') exportCloseBox!: ElementRef;
   
   companyCustomerForm!:FormGroup;
   filterForm!:FormGroup;
@@ -87,6 +89,8 @@ export class CompanyCustomerComponent implements OnDestroy, AfterViewInit{
   myArray=[]
   stateList=[]
   asc:Boolean=true;
+  exportType:string='export-current-page';
+  fileName = 'CustomerSheet.xlsx';
    private routerSubscription!: Subscription;
    selectedCountryCode='United States of America';
      countryCodeList=countryList;
@@ -142,6 +146,7 @@ this.routerSubscription = this.router.events.subscribe(event => {
 
   ngOnInit():void{
     this.companyId=localStorage.getItem('companyId');
+    this.exportType='export-current-page';
     this.companyCustomerForm = this.formBuilder.group({
       name: ['', Validators.required],
       companyId: [this.companyId],
@@ -207,6 +212,7 @@ this.routerSubscription = this.router.events.subscribe(event => {
       email:[''],
       city:[''],
       state:[''],
+      country:[''],
       zipCode:[''],
       companyId:[this.companyId]
       // extraFields: this.formBuilder.array([])
@@ -995,22 +1001,87 @@ clearForm() {
       this.searchClick();
     }
   }
+  // getStateList(country: any) {
+  //   this.currentSelectedCountryCode=countryList[country]||'';
+  
+  
+  //   this.companyCustomerService.countryStateList(country).subscribe(
+  //     (data) => {
+  //       this.stateList = data;
+  //       this.companyCustomerForm.get('state')?.setValue('');
+  //          // reset state
+  
+  //       this.cdr.detectChanges();               // prevents ExpressionChanged error
+  //     },
+  //     (err) => {
+  //       console.log(err);
+  //     }
+  //   );
+  // }
   getStateList(country: any) {
-    this.currentSelectedCountryCode=countryList[country]||'';
-  
-  
-    this.companyCustomerService.countryStateList(country).subscribe(
-      (data) => {
-        this.stateList = data;
-        this.companyCustomerForm.get('state')?.setValue('');
-           // reset state
-  
-        this.cdr.detectChanges();               // prevents ExpressionChanged error
-      },
-      (err) => {
-        console.log(err);
-      }
-    );
+  this.currentSelectedCountryCode = countryList[country] || '';
+
+  this.companyCustomerService.countryStateList(country).subscribe(
+    (data) => {
+      this.stateList = data;
+      
+      // Reset state in filter form
+      this.filterForm.get('state')?.setValue('');
+      
+      // Reset state in add customer form
+      this.companyCustomerForm.get('state')?.setValue('');
+      
+      this.cdr.detectChanges();
+    },
+    (err) => {
+      console.log(err);
+    }
+  );
+}
+ exportData(){
+  console.log(this.exportType)
+  if(this.exportType==='export-current-page'){
+    this.exportexcel();
+    this.triggerAlert("Exported Current Page Successfully","success");
+    this.exportCloseBox?.nativeElement.click();
+  }else{
+    console.log('export-all-pages')
+    this.companyCustomerService.exportCompanyCustomer(this.companyId).subscribe((data:Blob)=>{
+      // console.log(data);
+         const blob = new Blob([data], {
+      type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+    });
+
+    const url = window.URL.createObjectURL(blob);
+
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'Customers_'+this.companyId+'.xlsx';
+    a.click();
+
+    window.URL.revokeObjectURL(url);
+
+
+    },(err)=>{
+      console.log(err);
+    },()=>{
+      this.triggerAlert("Exported All Data Successfully","success"); 
+      this.exportCloseBox?.nativeElement.click();
+    });
+    
   }
+ }
+   exportexcel(): void {
+     /* table id is passed over here */
+     let element = document.getElementById('companycustomer-table');
+     const ws: XLSX.WorkSheet = XLSX.utils.table_to_sheet(element);
  
+     /* generate workbook and add the worksheet */
+     const wb: XLSX.WorkBook = XLSX.utils.book_new();
+     XLSX.utils.book_append_sheet(wb, ws, 'Sheet1');
+ 
+     /* save to file */
+     XLSX.writeFile(wb, this.fileName);
+ 
+   }
 }

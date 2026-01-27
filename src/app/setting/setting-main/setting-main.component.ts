@@ -98,6 +98,8 @@ selectedCountryCode='United States of America';
       website: ['', [Validators.required, Validators.pattern('^.+\\.com$')]],
       comapanyLogo: ['']
     });
+    let trialInfo=localStorage.getItem('trialAlertDismissedInfo');
+    
     this.email = localStorage.getItem('user');
     console.log(this.email);
     this.companyId = localStorage.getItem('companyId');
@@ -145,7 +147,17 @@ selectedCountryCode='United States of America';
         this.currentSubscription=data;
        
       if((this.currentSubscription==null||this.currentSubscription.status!='ACTIVE')&&this.trialStatus.trialExpired===false &&this.trialDayLeft>0){
-         this.showTrialAlert=true;
+        const trialDate = trialInfo ? new Date(trialInfo) : new Date(0); 
+        const now = new Date();
+
+        const ONE_DAY_MS = 24 * 60 * 60 * 1000;
+        const isWithinOneDay = (now.getTime() - trialDate.getTime()) <= ONE_DAY_MS;
+
+        if(trialInfo!==null&&trialInfo!==undefined&&isWithinOneDay){
+         this.showTrialAlert=false;
+        }else{
+          this.showTrialAlert=true;
+        }
       }
       else{
         this.showTrialAlert=false;
@@ -480,5 +492,13 @@ console.log("Company Information",this.companyInformationForm.value);
     (err)=>{
       console.log(err);
     });
+  }
+  makeTrialAlertFalse(){
+    this.showTrialAlert=false;
+    // let obj={
+    //   trialAlertDismissed:true,
+    //   dimissTime:new Date().toISOString()
+    // }
+    localStorage.setItem('trialAlertDismissedInfo',new Date().toISOString());
   }
 }
