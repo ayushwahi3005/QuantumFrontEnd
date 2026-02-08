@@ -15,6 +15,7 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { CategoryName } from './categoryName';
 import { NavigationStart, Router } from '@angular/router';
 import { Subscription } from 'rxjs';
+import { AssetAdvanceFilterRequest } from './advanceFilter';
 
 
 @Component({
@@ -67,6 +68,7 @@ export class AssetsComponent implements OnDestroy{
   dropdownSettings: any;
   assetForm!: FormGroup;
   filterForm!: FormGroup;
+  tempFilterForm!: FormGroup;
   myImage: any;
   showAlert: boolean = false; // Flag to toggle alert visibility
   alertMessage: string = ''; // Alert message
@@ -210,7 +212,7 @@ export class AssetsComponent implements OnDestroy{
     this.myArray = JSON.parse(this.savedExtraColumn)
     console.log("MYARRAY" + this.myArray)
 
-    this.myList = ['image', 'assetId', 'name', 'serialNumber', 'category', 'customer', 'location', 'status'];
+    this.myList = ['image', 'assetId', 'name', 'serialNumber', 'category', 'customer', 'location', 'status','checkInOut'];
     this.showMandatoryBasicFields.set('image', true);
     this.showMandatoryBasicFields.set('assetId', true);
     this.showMandatoryBasicFields.set('name', true);
@@ -273,7 +275,19 @@ export class AssetsComponent implements OnDestroy{
 
 
     });
-    this.advanceFilterFunc();
+    this.tempFilterForm = this.formBuilder.group({
+      assetId: ['', Validators.required],
+      name: ['', Validators.required],
+      customer: ['', Validators.required],
+      serialNumber: ['', Validators.required],
+      category: ['', Validators.required],
+      location: ['', Validators.required],
+      status: ['', Validators.required],
+      email: [],
+      companyId: [this.companyId]
+    });
+    // this.advanceFilterFunc();
+    this.optimizedAdvanceFilterFunc()
     this.assetService.getRoleAndPermission(this.companyId, this.userRole).subscribe((data) => {
       this.userRoleDetails = data;
       console.log(this.userRoleDetails);
@@ -358,6 +372,7 @@ export class AssetsComponent implements OnDestroy{
 
     this.assetService.getAllShowFields(this.companyId).subscribe((data) => {
       this.showFieldsList = data;
+      this.optimizedAdvanceFilterFunc();
       console.log("show----------------------->", this.showFieldsList)
       this.selectedFilterList = []
       if (this.showFieldsList.length > 0) {
@@ -435,7 +450,7 @@ export class AssetsComponent implements OnDestroy{
     };
 
 
-
+    // this.optimizedAdvanceFilterFunc();
 
 
     // this.loading=false;
@@ -534,7 +549,8 @@ export class AssetsComponent implements OnDestroy{
   clearSearchData() {
     console.log("clear search data")
     this.searchData = null;
-    this.advanceFilterFunc();
+    // this.advanceFilterFunc();
+    this.optimizedAdvanceFilterFunc()
   }
 
   advanceFilterFunc() {
@@ -587,7 +603,8 @@ export class AssetsComponent implements OnDestroy{
     localStorage.setItem('assetPageInd', this.pageIndex.toString())
     localStorage.setItem('assetPageSize', this.pageSize.toString())
 
-    this.advanceFilterFunc();
+    // this.advanceFilterFunc();
+    this.optimizedAdvanceFilterFunc()
 
 
   }
@@ -626,20 +643,32 @@ export class AssetsComponent implements OnDestroy{
     alert("Successfully Uploaded File");
     this.ngOnInit();
   }
-  exportexcel(): void {
+exportexcel(): void {
   const element = document.getElementById('asset-table');
-  const ws: XLSX.WorkSheet = XLSX.utils.table_to_sheet(element);
-
-  // Force all cells to TEXT
-  Object.keys(ws).forEach(cell => {
-    if (cell[0] === '!') return; // skip metadata
-    ws[cell].t = 's';
-    ws[cell].v = String(ws[cell].v ?? '');
+  
+  if (!element) {
+    console.error('Table element not found');
+    return;
+  }
+  
+  const rows = element.querySelectorAll('tr');
+  const data: any[] = [];
+  
+  rows.forEach(row => {
+    const rowData: any[] = [];
+    row.querySelectorAll('td, th').forEach(cell => {
+      rowData.push({
+        v: cell.textContent?.trim(),
+        t: 's', // force text type
+        z: '@'  // text format
+      });
+    });
+    data.push(rowData);
   });
-
+  
+  const ws: XLSX.WorkSheet = XLSX.utils.aoa_to_sheet(data);
   const wb: XLSX.WorkBook = XLSX.utils.book_new();
   XLSX.utils.book_append_sheet(wb, ws, 'Sheet1');
-
   XLSX.writeFile(wb, this.fileName);
 }
 
@@ -898,7 +927,8 @@ export class AssetsComponent implements OnDestroy{
     }
     // this.searchData = data.toLowerCase();
     // this.filterAssets();
-    this.advanceFilterFunc();
+    // this.advanceFilterFunc();
+    this.optimizedAdvanceFilterFunc()
   }
 
   // filterAssets() {
@@ -1019,7 +1049,8 @@ export class AssetsComponent implements OnDestroy{
     //   console.log(err);
     //   this.loading=false;
     // })
-    this.advanceFilterFunc();
+    // this.advanceFilterFunc();
+    this.optimizedAdvanceFilterFunc()
   }
   removeSort() {
     this.sortedBy = '';
@@ -1044,7 +1075,8 @@ export class AssetsComponent implements OnDestroy{
     //   this.loading=false;
     // })
 
-    this.advanceFilterFunc();
+    // this.advanceFilterFunc();
+    this.optimizedAdvanceFilterFunc()
 
   }
 
@@ -1106,7 +1138,8 @@ export class AssetsComponent implements OnDestroy{
       }
     })
     console.log("applied filter" + this.appliedFilterList);
-    this.advanceFilterFunc();
+    // this.advanceFilterFunc();
+    this.optimizedAdvanceFilterFunc()
 
   }
 
@@ -1117,7 +1150,8 @@ export class AssetsComponent implements OnDestroy{
     this.filterForm.get(name)?.setValue(null);
 
 
-    this.advanceFilterFunc();
+    // this.advanceFilterFunc();
+    this.optimizedAdvanceFilterFunc()
 
   }
   reset() {
@@ -1145,7 +1179,8 @@ export class AssetsComponent implements OnDestroy{
       this.showFieldsMap.set(x.name, x.show);
 
     })
-    this.advanceFilterFunc();
+    // this.advanceFilterFunc();
+    this.optimizedAdvanceFilterFunc()
   }
   mandatoryFieldCheckBox(isChecked: any, item: string) {
 
@@ -1200,6 +1235,98 @@ export class AssetsComponent implements OnDestroy{
 }
 closeAddAssetModal(): void {
   this.closeBox2.nativeElement.click();
+}
+optimizedAdvanceFilterFunc() {
+  
+  this.loading = true;
+
+  console.log(this.filterForm.value);
+  
+  // Build the filter data object
+  let defaultFields = [  
+    'assetId',
+    'name',
+    'customer',
+    'serialNumber',
+    'category',
+    'location',
+    'status',
+    'email',
+    'companyId'
+  ];
+
+  let data: any = {};
+
+  // Add default fields from filterForm
+  defaultFields.forEach((field) => {
+    data[field] = this.filterForm.get(field)?.value;
+  });
+
+  // Build custom fields object
+  let customFieldObject: any = {};
+  
+  Object.keys(this.tempFilterForm.controls).forEach((key) => {
+    if (!defaultFields.includes(key) && this.tempFilterForm.get(key)) {
+      customFieldObject[key] = this.filterForm.get(key)?.value;
+    }
+  });
+
+  // Add sorting if available
+  if (this.sortedBy != '') {
+    data['sortDirection'] = 'ASC';
+    data['sortField'] = this.sortedBy;
+  }
+
+  // Add pagination
+  data['pageNumber'] = this.pageIndex;
+  data['pageSize'] = this.pageSize;
+
+  // Add custom fields from showFieldsList
+  console.log(this.showFieldsList);
+  this.showFieldsList?.forEach((x) => {
+    customFieldObject[x.name] = this.filterForm.get(x.name)?.value;
+  });
+
+  data['customFields'] = customFieldObject;
+  console.log("Custom Field Object:", data);
+
+  this.assetService.advanceFilteroptimized(data).subscribe(
+    (response) => {
+      console.log("Loading->" + this.loading);
+      console.log(response);
+      
+      this.assetListWithExtraFields = [];
+      this.paginationResult = response;
+      
+      // Handle empty results on non-first page
+      if (response.assets.length == 0 && this.pageIndex != 0) {
+        this.pageIndex = 0;
+        localStorage.setItem('assetPageInd', this.pageIndex.toString());
+        this.optimizedAdvanceFilterFunc();
+        return;
+      }
+      
+      // Map response fields
+      this.totalLength = response.totalElements;
+      this.assets = response.assets;
+      console.log("Assets Data:", this.assets);
+      
+      // Assets are already DTOs, no need to JSON.parse
+      this.assetListWithExtraFields =this.assets;
+      this.assetListWithExtraFieldsWithoutFilter = this.assetListWithExtraFields;
+      
+      console.log(this.assetListWithExtraFields);
+    },
+    (err) => {
+      console.log(err);
+      this.loading = false;
+    },
+    () => {
+      this.searchedAssets = this.assets;
+      this.loading = false;
+      console.log("Loading->" + this.loading);
+    }
+  );
 }
 
 }

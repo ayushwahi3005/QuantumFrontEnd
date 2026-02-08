@@ -1,0 +1,85 @@
+<div class="chart-card trend-chart">
+  <div class="chart-header">
+    <div class="header-top">
+      <h3>📈 Inspection Trend</h3>
+      <p class="chart-subtitle">Records over time</p>
+    </div>
+
+    <!-- Aggregation Controls -->
+    <div class="aggregation-controls" *ngIf="!loading && !error">
+      <button 
+        [class.active]="aggregationStrategy === 'daily'"
+        (click)="setAggregation('daily')"
+        class="agg-btn"
+        title="Show daily data">
+        Daily
+      </button>
+      <button 
+        [class.active]="aggregationStrategy === 'weekly'"
+        (click)="setAggregation('weekly')"
+        class="agg-btn"
+        title="Show weekly aggregated data">
+        Weekly
+      </button>
+      <button 
+        [class.active]="aggregationStrategy === 'monthly'"
+        (click)="setAggregation('monthly')"
+        class="agg-btn"
+        title="Show monthly aggregated data">
+        Monthly
+      </button>
+    </div>
+  </div>
+
+  <!-- Loading State -->
+  <div *ngIf="loading" class="loading-state">
+    <div class="spinner"></div>
+    <p>Loading inspection data...</p>
+  </div>
+
+  <!-- Error State -->
+  <div *ngIf="error && !loading" class="error-state">
+    <p>{{ error }}</p>
+    <button (click)="loadChartData()" class="retry-btn">Retry</button>
+  </div>
+
+  <!-- Chart Content -->
+  <div *ngIf="!error && !loading" class="trend-content">
+    <!-- Canvas Chart (using Chart.js) -->
+    <div class="chart-container">
+      <canvas #chartCanvas></canvas>
+    </div>
+
+    <!-- Data Info -->
+    <div class="data-info">
+      <div class="date-range-info">
+        <span class="label-start">{{ dateRange.start }}</span>
+        <span class="info-separator">to</span>
+        <span class="label-end">{{ dateRange.end }}</span>
+      </div>
+      <div class="aggregation-info">
+        <span class="data-points">({{ dataPointCount }} {{ aggregationStrategy }} data points)</span>
+      </div>
+    </div>
+
+    <!-- Stats Summary -->
+    <div class="stats-summary">
+      <div class="stat-item">
+        <span class="stat-label">Total {{ aggregationStrategy | titlecase }}</span>
+        <span class="stat-value">{{ (trendData | reduce: '+': 0) | number }}</span>
+      </div>
+      <div class="stat-item">
+        <span class="stat-label">Average</span>
+        <span class="stat-value">{{ (trendData | reduce: '+': 0) / trendData.length | number: '1.0-0' }}</span>
+      </div>
+      <div class="stat-item">
+        <span class="stat-label">Peak Value</span>
+        <span class="stat-value">{{ maxValue }}</span>
+      </div>
+      <div class="stat-item">
+        <span class="stat-label">Data Points</span>
+        <span class="stat-value">{{ dataPointCount }}</span>
+      </div>
+    </div>
+  </div>
+</div>

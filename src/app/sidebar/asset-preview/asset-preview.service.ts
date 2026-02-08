@@ -19,6 +19,7 @@ export class AssetPreviewService {
   companyCustomerEndpoint = environment.endpoint + "companycustomer/";
   userEndpoint = environment.endpoint + "users/";
   customerEndpoint = environment.endpoint + "customer/";
+  assetInspectionEndpoint=environment.endpoint+"inspection/";
   getAsset(id: string): Observable<any> {
 
     return this.httpClient.get(this.assetEndpoint + "getAsset/" + id, { headers: this.headers });
@@ -133,5 +134,17 @@ export class AssetPreviewService {
       'device-id': `${localStorage.getItem('deviceId')}`,
     });
     return this.httpClient.get(this.customerEndpoint + "locations-with-bins/" + companyId, { headers });
+  }
+   getInspectionDetailedExport(companyId: string, assetId: any): Observable<any> {
+    return this.httpClient.get(this.assetInspectionEndpoint + 'inspection-detailed-export/' + companyId + '/' + assetId, {
+        headers: this.headers,
+        responseType: 'blob', // ✅ CRITICAL FIX
+      },);
+  }
+  getInspectionOverviewExport(companyId: string, assetId: any): Observable<any> {
+    return this.httpClient.get(this.assetInspectionEndpoint + 'inspection-overview-export/' + companyId + '/' + assetId, {
+        headers: this.headers,
+        responseType: 'blob', // ✅ CRITICAL FIX
+      },);
   }
 }

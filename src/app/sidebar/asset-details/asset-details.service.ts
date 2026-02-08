@@ -26,6 +26,7 @@ export class AssetDetailsService {
   // assetEndpoint="http://localhost:8080/assets/"
   // companyCustomerEndpoint="http://localhost:8080/companycustomer/"
   companyCustomerEndpoint = environment.endpoint + 'companycustomer/';
+  assetInspectionEndpoint=environment.endpoint+"inspection/";
   //  assetEndpoint="http://localhost:8080/assets/"
   updateAsset(data: any): Observable<any> {
     return this.httpClient.put(this.assetEndpoint + 'addassets', data, {
@@ -301,5 +302,17 @@ export class AssetDetailsService {
   // Method 4: Your own backend endpoint (Recommended)
   getIpFromBackend(): Observable<any> {
     return this.httpClient.get('/api/get-ip');
+  }
+   getInspectionDetailedExport(companyId: string, assetId: any): Observable<any> {
+    return this.httpClient.get(this.assetInspectionEndpoint + 'inspection-detailed-export/' + companyId + '/' + assetId, {
+        headers: this.headers,
+        responseType: 'blob', // ✅ CRITICAL FIX
+      },);
+  }
+  getInspectionOverviewExport(companyId: string, assetId: any): Observable<any> {
+    return this.httpClient.get(this.assetInspectionEndpoint + 'inspection-overview-export/' + companyId + '/' + assetId, {
+        headers: this.headers,
+        responseType: 'blob', // ✅ CRITICAL FIX
+      },);
   }
 }

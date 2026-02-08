@@ -33,6 +33,7 @@ import { IDropdownSettings } from 'ng-multiselect-dropdown';
 export class AssetPreviewComponent {
   @ViewChild('notes') notesRef!: ElementRef;
   @ViewChild('location') locationRef!: ElementRef;
+  @ViewChild('exportCloseBox') exportCloseBox!: ElementRef;
   qr!: QR;
   qrData!: string;
   hoverOverSidebar = true;
@@ -94,14 +95,15 @@ export class AssetPreviewComponent {
     assetCategoryInspectionName: '',
     actionPerformedBy: '',
     notes: '',
-    createdAt: '',
-    updatedAt: '',
+    createdAt: null,
+    updatedAt: null,
     status: 'PENDING',
     stepValues: [],
     inspectionTemplates: [],
     selectedItemList: []
   };
   inspectionMap: Map<string, Object> = new Map<string, Object>();
+  inspectionExportType:string='inspection-overview';
 
   dropdownList: any[] = [];
   dropdownSettings = {
@@ -159,6 +161,8 @@ export class AssetPreviewComponent {
   constructor(private activatedRoute: ActivatedRoute, private assetPreviewService: AssetPreviewService, private datePipe: DatePipe, private auth: AuthService, private router: Router, private assetService: AssetsService, private notificationService: NotificationService) {
   }
   ngOnInit() {
+    this.inspectionExportType='inspection-overview';
+
     this.loading = true;
     this.username = localStorage.getItem('name')
     this.selectedEmpName = this.username;
@@ -769,10 +773,10 @@ export class AssetPreviewComponent {
     this.inspectionInstance.actionPerformedBy = this.username;
     const currDateTime = new Date();
 
-    if (this.inspectionInstance.createdAt == null || this.inspectionInstance.createdAt == '') {
-      this.inspectionInstance.createdAt = currDateTime.toLocaleString();
+    if (this.inspectionInstance.createdAt == null ) {
+      this.inspectionInstance.createdAt = currDateTime;
     }
-    this.inspectionInstance.updatedAt = currDateTime.toLocaleString();
+    this.inspectionInstance.updatedAt = currDateTime;
     this.inspectionInstance.status = 'PENDING';
     this.inspectionInstance.selectedItemList = this.selectedItems;
     console.log(this.inspectionInstance)
@@ -879,10 +883,10 @@ export class AssetPreviewComponent {
       console.log(this.stepObject)
       this.inspectionInstance.actionPerformedBy = this.username;
       const currDateTime = new Date();
-      if (this.inspectionInstance.createdAt == null || this.inspectionInstance.createdAt == '') {
-        this.inspectionInstance.createdAt = currDateTime.toLocaleString();
+      if (this.inspectionInstance.createdAt == null ) {
+        this.inspectionInstance.createdAt = currDateTime;
       }
-      this.inspectionInstance.updatedAt = currDateTime.toLocaleString();
+      this.inspectionInstance.updatedAt = currDateTime;
       this.inspectionInstance.status = 'COMPLETED';
       this.inspectionInstance.selectedItemList = this.selectedItems;
       console.log(this.inspectionInstance)
@@ -984,7 +988,68 @@ export class AssetPreviewComponent {
     // this.inspectionInstance.notes='';
     // this.notedData="";
   }
+  
+  exportInspectionData(){
+    if(this.inspectionExportType=='inspection-overview'){
+      console.log("Export inspection-overview")
+      this.assetPreviewService.getInspectionOverviewExport(this.companyId,this.assetId).subscribe((data:Blob)=>{
+      
+         const blob = new Blob([data], {
+      type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+    });
 
+    const url = window.URL.createObjectURL(blob);
 
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'AssetInspectionOverview_'+this.assetId+'.xlsx';
+    a.click();
+
+    window.URL.revokeObjectURL(url);
+        // this.triggerAlert("Inspections exported sucessfully", "success");
+      },(err)=>{
+        console.log(err);
+        if (err.error.error === "TRIAL_EXPIRED") {
+          this.triggerAlert(err.error.message, "danger");
+        } else {
+          this.triggerAlert(err.error.errorMessage, "danger");
+        }
+      },
+    ()=>{
+      this.triggerAlert("Exported Assets Inspections Overview Successfully","success");
+      this.exportCloseBox?.nativeElement.click();
+    })
+  }else{
+      console.log("Export inspection-details")
+      this.assetPreviewService.getInspectionDetailedExport(this.companyId,this.assetId).subscribe((data:Blob)=>{
+        console.log('export Inspection data',data)
+         const blob = new Blob([data], {
+      type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+    });
+
+    const url = window.URL.createObjectURL(blob);
+
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'AssetInspectionDetailed_'+this.assetId+'.xlsx';
+    a.click();
+
+    window.URL.revokeObjectURL(url);
+        // this.triggerAlert("Inspections exported sucessfully", "success");
+      },(err)=>{
+        console.log(err);
+        if (err.error.error === "TRIAL_EXPIRED") {
+          this.triggerAlert(err.error.message, "danger");
+        } else {
+          this.triggerAlert(err.error.errorMessage, "danger");
+        }
+      },
+    ()=>{
+      this.triggerAlert("Exported Assets Inspections Details Successfully","success");
+      this.exportCloseBox?.nativeElement.click();
+    })
+  }
+
+}
 }
 

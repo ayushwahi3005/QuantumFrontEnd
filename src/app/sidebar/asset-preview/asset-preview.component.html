@@ -259,8 +259,16 @@
         <div class="card mt-2" *ngIf="currOption==6">
 
           <div class="card-body">
+           <div style=" float: right;">
        <button class="btn btn-primary" style="float: right; margin: 5px;" data-toggle="modal"
                   data-target="#inspection-preview-popup">+ Inspection</button>
+ <button class="export-btn"  data-toggle="modal"
+                  data-target="#exportModal">
+          <span class="download-icon">⬇</span>
+          Export Excel
+        </button>
+            </div>       
+                  
         <table class="table" id="asset-detial table" >
           <thead class="table-dark">
               <tr >
@@ -339,24 +347,39 @@
                   
                 </div> -->
              <div class="file-list-container">
-  <!-- Header -->
-  <div class="file-row file-header">
-    <span class="col col-1">File</span>
-    <span class="col col-2">Upload Date</span>
-    <span class="col col-3">Uploaded By</span>
-    <span class="col col-4">Actions</span>
-  </div>
+  <table class="table" id="asset-detial table" *ngIf="(fileInfos!=null)">
+          <thead class="table-dark">
+              <tr >
+                 
+                  <th scope="col">File</th>
+                  <th scope="col">Upload Date</th>
+                 
+                  <th scope="col">Uploaded By</th>
+                  <th scope="col">Actions</th>
 
-  <!-- File Items -->
-  <div *ngFor="let item of fileInfos" class="file-row">
-    <span class="col col-1">{{item.fileName|titlecase}}</span>
-    <span class="col col-2">{{item.uploadDateTime|date}}</span>
-    <span class="col col-3">{{item.uploadedBy}}</span>
-    <div class="col col-4">
-      <a (click)="download(item.id,item.fileName)" style="margin-right: 10px; cursor: pointer;"><i class="bi bi-file-earmark-arrow-down"></i></a>
-      <a (click)="itemDeleteDetails(item.id)" data-target="#popupDelete" data-toggle="modal" style="cursor: pointer;"><i class="bi bi-trash-fill delete"></i></a>
-    </div>
-  </div>
+   
+                </tr>
+          </thead>
+          <tbody>
+              <tr *ngFor="let item of fileInfos">
+                 
+                  <td>{{item.fileName|titlecase}}</td>
+                 
+                  <td>{{ item.uploadDateTime | date: 'yyyy-MM-dd HH:mm:ss' }}
+                  </td>
+                  <td>{{item.uploadedBy}}</td>
+                  <td>
+                 
+                    <a (click)="download(item.id,item.fileName)" style="margin-right: 10px; cursor: pointer;"><i class="bi bi-file-earmark-arrow-down"></i></a>
+                    <!-- <a (click)="itemDeleteDetails(item.id)" data-target="#popupDelete" data-toggle="modal" style="cursor: pointer;"><i class="bi bi-trash-fill delete"></i></a>-->
+                  
+                  </td>
+                  
+                  
+                </tr>
+               
+          </tbody>
+        </table>
 </div>
           </div>
         </div>
@@ -1111,3 +1134,46 @@
     </div>
   </div>
 </div>
+
+<div class="modal fade" id="exportModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h2 class="modal-title" id="exampleModalLongTitle">Select Export Type?</h2>
+          <button type="button" class="close  ms-auto" data-dismiss="modal" aria-label="Close" style="border-radius: 10px; border: 1px solid #c0c0c0;--bs-btn-bg: white" #exportCloseBox>
+            <i class="bi bi-x-lg" ></i>
+          </button>
+        </div>
+        <div class="modal-body">
+          
+    
+           
+    
+              <div style="display: flex; align-items: center; gap: 8px;margin: 10px 0px;">
+                <input type="radio" id="inspection-overview" style="width: auto;" name="exportType" value="inspection-overview" checked  (change)="inspectionExportType='inspection-overview'">
+                <label for="inspection-overview">Export Inspection Overview</label>
+              </div>
+               <div style="display: flex; align-items: center; gap: 8px; margin: 10px 0px;">
+                <input type="radio" id="inspection-details" style="width: auto;" name="exportType" value="inspection-details"  (change)="inspectionExportType='inspection-details'">
+                <label for="inspection-details">Export Inspection Details</label>
+              </div>
+
+              
+
+             
+    
+
+            
+         
+       
+        <div class="modal-footer d-flex justify-content-around">
+          
+          
+          <button  class="btn btn-light mt-3"  (click)="exportCloseBox.click()"  >Close</button>
+          <button type="submit" class="btn btn-primary mt-3" (click)="exportInspectionData()" >Export</button>
+          
+        </div>
+        </div>
+      </div>
+    </div>
+  </div>

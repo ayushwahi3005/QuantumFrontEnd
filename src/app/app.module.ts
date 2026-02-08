@@ -95,6 +95,8 @@ import { CustomersComponent } from './admin/customers/customers.component';
 import { HeaderComponent } from './header/header.component';
 import { AnalyticsHomePageComponent } from './sidebar/Analytics/analytics-home-page/analytics-home-page/analytics-home-page.component';
 import { AssetInspectionComponent } from './sidebar/Analytics/asset-inspection/asset-inspection.component';
+import { AssetInspectionCompletionTrendComponent } from './sidebar/Analytics/asset-inspection-completion-trend/asset-inspection-completion-trend.component';
+import { ReducePipe } from './sidebar/Analytics/asset-inspection-completion-trend/reduce.pipe';
 
 @NgModule({
   declarations: [
@@ -149,7 +151,12 @@ import { AssetInspectionComponent } from './sidebar/Analytics/asset-inspection/a
     HeaderComponent,
     AssetInsightsComponent,
     AnalyticsHomePageComponent,
-    AssetInspectionComponent
+    AssetInspectionComponent,
+    AssetInspectionCompletionTrendComponent,
+    ReducePipe
+    
+    
+    
     
    
   ],

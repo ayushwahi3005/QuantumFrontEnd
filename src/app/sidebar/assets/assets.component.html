@@ -146,6 +146,7 @@
                 <th scope="col" *ngIf="showMandatoryBasicFields?.get('customer')">Customer</th>
                 <th scope="col" *ngIf="showMandatoryBasicFields?.get('location')">Location</th>
                 <th scope="col" *ngIf="showMandatoryBasicFields?.get('status')">Status</th>
+                <th scope="col" *ngIf="showMandatoryBasicFields?.get('checkInOut')">Checked In/Out</th>
                 <th scope="col" *ngFor="let col of selectedExtraColums">{{col}}</th>
                 <th></th>
               </tr>
@@ -163,13 +164,15 @@
                   <td *ngIf="showMandatoryBasicFields?.get('category')">{{(item.category||'')|titlecase}}</td>
                   <td *ngIf="showMandatoryBasicFields?.get('customer')">
                     {{customerIdNameMap?.get(item.customerId)|titlecase}}</td>
-                  <td *ngIf="showMandatoryBasicFields?.get('location')">{{(item.location||'')|titlecase}}</td>
+                  <td *ngIf="showMandatoryBasicFields?.get('location')">{{(item.locationName||'')|titlecase}}</td>
                   <td *ngIf="item.status=='active'&&showMandatoryBasicFields?.get('status')">Active</td>
                   <td *ngIf="item.status=='inActive'&&showMandatoryBasicFields?.get('status')">In Active</td>
                   <td *ngIf="item.status=='outofservice'&&showMandatoryBasicFields?.get('status')">Out Of Service</td>
                   <td *ngIf="item.status==null||item.status==''&&showMandatoryBasicFields?.get('status')">{{''}}</td>
+                  <td *ngIf="showMandatoryBasicFields?.get('checkInOut')">{{(item.checkedInOutStatus
+||'')}}</td>
 
-                  <td *ngFor="let col of selectedExtraColums">{{item[col]||''}}</td>
+                  <td *ngFor="let col of selectedExtraColums">{{item.customFields[col]||''}}</td>
                   <td>
 
                     <!-- <img src="../../../assets/edit.svg" id="edit-button" [ngClass]="{'editoption':!(editVisibility&&(editButtonId==assetListWithExtraFields.indexOf(item)+1))}" style="float: inline-start; height: 25px; width: 25px;" (click)="changeAssetDetails(item)" *ngIf="!(userRoleDetails?.assets!='full'&&userRoleDetails?.assets!='edit' &&userRole!='ADMIN')"> -->
@@ -635,6 +638,10 @@
           <div> <mat-checkbox [color]="checkBoxColor"
               [checked]="showMandatoryBasicFields?.get('status')==true?true:false"
               (change)="mandatoryFieldCheckBox($event.checked,'status')">Status</mat-checkbox></div>
+
+          <div> <mat-checkbox [color]="checkBoxColor"
+              [checked]="showMandatoryBasicFields?.get('checkInOut')==true?true:false"
+              (change)="mandatoryFieldCheckBox($event.checked,'checkInOut')">CheckedIn/Out</mat-checkbox></div>
 
           <div *ngFor="let item of extraFieldNameList">
 

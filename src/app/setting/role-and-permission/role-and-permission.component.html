@@ -45,6 +45,7 @@
             <th scope="col"># of Users</th>
             <th scope="col">Status</th>
             <th></th>
+            <th></th>
           </tr>
         </thead>
         <tbody>
@@ -56,6 +57,8 @@
             <td>{{item.type|titlecase}}</td>
             <td>{{item.ofUser}}</td>
             <td>{{item.status|titlecase}}</td>
+            <td> <a (click)="getUsersByRole(item.userList)"  [class.disabled-link]="item.userList?.length == 0" style="  margin-left: 5px; "><i class="eye bi bi-eye-fill" style="color:  rgb(175, 173, 173);" data-toggle="modal" data-target="#userRoleInfo" ></i></a>
+               </td>
             <td >
               <!-- <button mat-icon-button [matMenuTriggerFor]="appMenu" [disabled]="item.name=='ADMIN'">
                 <mat-icon>more_vert</mat-icon>
@@ -67,13 +70,13 @@
               </mat-menu> -->
               <a  (click)="edit(item)" data-toggle="modal" data-target="#edit-role" *ngIf="item.type!='STANDARD'"><i class="bi bi-pencil"></i></a>
               <a  (click)="selectIdDeleteRole(item.id)" data-toggle="modal" data-target="#delete-role" style="  margin-left: 5px;" *ngIf="item.type!='STANDARD'"><i class="bi bi-trash-fill delete"></i></a>
-              <a (click)="getUsersByRole(item.userList)"  [class.disabled-link]="item.userList?.length == 0" style="  margin-left: 5px; "><i class="eye bi bi-eye-fill" style="color:  rgb(175, 173, 173);" data-toggle="modal" data-target="#userRoleInfo" ></i></a>
-               
+             
               <!-- <button mat-icon-button [matMenuTriggerFor]="appMenu" [disabled]="item.name=='ADMIN'">
                 <mat-icon>more_vert</mat-icon>
               </button> -->
               </div>
             </td>
+            
           </tr>
         </ng-container>
         </tbody>

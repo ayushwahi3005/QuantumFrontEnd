@@ -211,19 +211,19 @@ export class AssetInspectionComponent {
   this.chart = new Chart(ctx, {
     type: 'bar',
     data: {
-      // labels:this.userInspectionAnalyticsDataNames,
-      labels: [
-        'Alice Johnson', 'Bob Smith', 'Charlie Davis', 'Diana Evans', 
-        'Ethan Brown', 'Fiona Clark', 'George Harris', 'Hannah Lee', 
-        'Ian Martinez', 'Julia Nelson', 'Kevin Owens', 'Laura Perez', 
-        'Michael Quinn', 'Nina Roberts', 'Oliver Scott', 'Paula Turner', 
-        'Quentin Underwood', 'Rachel Vasquez', 'Steven White', 'Tina Xu'
-      ],
+      labels:this.userInspectionAnalyticsDataNames,
+      // labels: [
+      //   'Alice Johnson', 'Bob Smith', 'Charlie Davis', 'Diana Evans', 
+      //   'Ethan Brown', 'Fiona Clark', 'George Harris', 'Hannah Lee', 
+      //   'Ian Martinez', 'Julia Nelson', 'Kevin Owens', 'Laura Perez', 
+      //   'Michael Quinn', 'Nina Roberts', 'Oliver Scott', 'Paula Turner', 
+      //   'Quentin Underwood', 'Rachel Vasquez', 'Steven White', 'Tina Xu'
+      // ],
       
       datasets: [{
         label: 'Inspections Completed',
-        data: [20,19,18,17,16,15,14,13,12,11,10,9,8,7,6,5,4,3,2,1],
-        // data: this.userInspectionAnalyticsDataValues,
+        // data: [20,19,18,17,16,15,14,13,12,11,10,9,8,7,6,5,4,3,2,1],
+        data: this.userInspectionAnalyticsDataValues,
         backgroundColor: this.generateColors(numBars),
         borderColor: this.generateColors(numBars),
         borderWidth: 1,

@@ -894,6 +894,7 @@
 
                 <th scope="col">Payment Status</th>
                 <th scope="col">Amount</th>
+                <th scope="col">Payment Method</th>
                 <th></th>
 
               </tr>
@@ -910,7 +911,8 @@
 
                 </td>
                 <td>$ {{item.amount| number:'1.2-2'}}</td>
-
+               <!-- <td>{{ paymentMethodMap[item?.paymentType] || item?.paymentType }}</td> -->
+               <td>{{getPaymentTypeLabel(item?.paymentType)}}</td>
                 <td>
 
                   <!-- <img src="../../../assets/edit.svg" id="edit-button" [ngClass]="{'editoption':!(editVisibility&&(editButtonId==assetListWithExtraFields.indexOf(item)+1))}" style="float: inline-start; height: 25px; width: 25px;" (click)="changeAssetDetails(item)"> -->

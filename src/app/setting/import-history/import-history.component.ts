@@ -21,6 +21,7 @@ interface ImportRecord {
 })
 export class ImportHistoryComponent {
   importHistory: MatTableDataSource<ImportRecord>;
+  importHistoryWithoutFilter: MatTableDataSource<ImportRecord>;
   displayedColumns: string[] = ['fileName','date','recordType', 'status', 'complete','message','executedBy'];
   selectedRecord: ImportRecord | null = null;
   selectedRecordTitle: string = '';
@@ -31,16 +32,21 @@ export class ImportHistoryComponent {
   totalLength:number=0;
   pageEvent!: PageEvent;
   pageIndex:number=0;
+  dateFilterStartDate!:Date|null;
+  dateFilterEndDate!:Date|null;
 
   loading:boolean=true;
   @ViewChild(MatSort) sort!: MatSort;
 
   constructor(private importHistoryService:ImportHistoryService) {
     this.importHistory = new MatTableDataSource<ImportRecord>([]);
+    this.importHistoryWithoutFilter = new MatTableDataSource<ImportRecord>([]);
     this.companyId=localStorage.getItem('companyId');
   }
 
   ngOnInit(): void {
+    this.dateFilterEndDate=null;
+    this.dateFilterStartDate=null;
     this.loadImportHistory();
   }
 
@@ -63,9 +69,10 @@ export class ImportHistoryComponent {
 
   loadImportHistory(): void {
     this.loading=true;
-    this.importHistoryService.getAllImportHistory(this.companyId,this.pageIndex,this.pageSize).subscribe(data=>{
+    this.importHistoryService.getAllImportHistory(this.companyId,this.pageIndex,this.pageSize,this.dateFilterStartDate,this.dateFilterEndDate).subscribe(data=>{
       console.log(data)
       this.importHistory.data = data.content;
+      this.importHistoryWithoutFilter.data = data.content;
       this.totalLength=data.totalElements;
       this.loading=false;
       console.log(this.loading)
@@ -118,7 +125,37 @@ export class ImportHistoryComponent {
   refresh(){
     this.ngOnInit()
   }
-  find(data:any){
+  find(data: any): void {
+  const searchTerm = data.target.value.toLowerCase().trim();
+  
+  if (searchTerm === '') {
+    // If search is cleared, reload all data
+    // this.pageIndex = 0;
+    this.loadImportHistory();
+  } else {
+    // Filter the current data source by fileName
+    this.importHistory.data = this.importHistoryWithoutFilter.data.filter(record =>
+      record.fileName.toLowerCase().includes(searchTerm)||record.recordType.toLowerCase().includes(searchTerm)||record.status.toLowerCase().includes(searchTerm)||record.date.toString().toLowerCase().includes(searchTerm)||(record.complete==searchTerm)||record.message.toLowerCase().includes(searchTerm)||record.executedBy.toLowerCase().includes(searchTerm)
+    );
+  }
+}
+  setStartDate(event:any){
+    console.log(event.target.value)
+    this.dateFilterStartDate=event.target.value;
+  }
+  setEndDate(event:any){
+     console.log(event.target.value)
+    this.dateFilterEndDate=event.target.value;
+  }
+  applyDateFilter(){
+    console.log(this.dateFilterStartDate,this.dateFilterEndDate)
+    this.loadImportHistory();
+
+  }
+  clearDateFilter(){
+    this.dateFilterStartDate=null;
+    this.dateFilterEndDate=null;
+    this.loadImportHistory();
 
   }
 }

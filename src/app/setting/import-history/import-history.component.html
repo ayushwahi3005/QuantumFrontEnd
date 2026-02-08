@@ -1,84 +1,134 @@
-<!-- <div  id="history-loader" *ngIf="loading"></div> -->
+<!-- import-history.component.html -->
 <div class="import-history-container">
   <div id="history-background">
     <h2 class="mb-4 text-center">Import History</h2>
-    <div class="d-flex justify-content-between" style="width: 100%; margin: 20px 0px;">
-      <div style="margin-left: 30px;">
-        <input type="text" id="role-input" placeholder="Search By Name" style="margin: 0px 0px 10px 0px; height: 40px; " (keyup)="find($event)" #data>
+    
+    <!-- Filter Section -->
+    <div class="filter-section">
+      <!-- Search Bar -->
+      <div class="search-wrapper">
+        <input 
+          type="text" 
+          id="role-input" 
+          placeholder="Search" 
+          (keyup)="find($event)" 
+          #data
+          class="search-input">
         <i class="bi bi-search searchIcon"></i>
       </div>
-      <button class="btn btn-primary" (click)="refresh()" style="margin-right: 30px;" >Refresh</button>
-    </div>
-  
 
-    <div class="table-container history-table" >
-        <!-- Component HTML -->
-<table mat-table [dataSource]="importHistory" matSort class="table table-bordered table-hover">
-  <!-- Date Column -->
-  <ng-container matColumnDef="fileName">
-    <th mat-header-cell *matHeaderCellDef mat-sort-header>Filename</th>
-    <td mat-cell *matCellDef="let record">{{ record.fileName }}</td>
-  </ng-container>
-  <ng-container matColumnDef="date">
-    <th mat-header-cell *matHeaderCellDef mat-sort-header>Date</th>
-    <td mat-cell *matCellDef="let record">{{ record.date | date: 'short' }}</td>
-  </ng-container>
+      <!-- Date Filter -->
+      <div class="date-filter-wrapper">
+        <div class="date-group">
+          <label for="start" class="date-label">Start Date</label>
+          <input 
+            type="date" 
+            id="start" 
+            name="start" 
+            (change)="setStartDate($event)"
+            class="date-input">
+        </div>
 
-  <!-- Record Type Column -->
-  <ng-container matColumnDef="recordType">
-    <th mat-header-cell *matHeaderCellDef mat-sort-header>Record Type</th>
-    <td mat-cell *matCellDef="let record">{{ record.recordType }}</td>
-  </ng-container>
+        <div class="date-group">
+          <label for="end" class="date-label">End Date</label>
+          <input 
+            type="date" 
+            id="end" 
+            name="end" 
+            (change)="setEndDate($event)"
+            class="date-input">
+        </div>
 
-  <!-- Status Column -->
-  <ng-container matColumnDef="status">
-    <th mat-header-cell *matHeaderCellDef mat-sort-header>Status</th>
-    <td mat-cell *matCellDef="let record" [ngClass]="getStatusClass(record.status)">
-      {{ record.status }}
-    </td>
-  </ng-container>
-
-  <!-- % Complete Column -->
-  <ng-container matColumnDef="complete">
-    <th mat-header-cell *matHeaderCellDef mat-sort-header>% Complete</th>
-    <td mat-cell *matCellDef="let record">{{ record.complete }}%</td>
-  </ng-container>
-
-  <!-- Message Column -->
-  <ng-container matColumnDef="message">
-    <th mat-header-cell *matHeaderCellDef mat-sort-header>Message</th>
-    <td mat-cell *matCellDef="let record">{{ record.message }}</td>
-  </ng-container>
-
-  <!-- Executed By Column -->
-  <ng-container matColumnDef="executedBy">
-    <th mat-header-cell *matHeaderCellDef mat-sort-header>Executed By</th>
-    <td mat-cell *matCellDef="let record">{{ record.executedBy }}</td>
-  </ng-container>
-
-  <!-- Header and Row Definitions -->
-  <tr mat-header-row *matHeaderRowDef="displayedColumns; sticky: true"></tr>
-  <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
-</table>
-
-<!-- Component CSS -->
-<style>
-.table-bordered th, .table-bordered td {
-  border: 1px solid lightgray;
-}
-</style>
-
+        <div class="filter-buttons">
+          <button 
+            class="btn btn-secondary btn-sm" 
+            (click)="applyDateFilter()"
+            title="Apply the selected date range filter">
+            Apply Date Filter
+          </button>
+          <button 
+            class="btn btn-light btn-sm" 
+            (click)="clearDateFilter()"
+            title="Clear the date filter and show all records">
+            Clear Filter
+            <i class="bi bi-arrow-counterclockwise"></i>
+          </button>
+        </div>
       </div>
 
-      <mat-paginator [length]="totalLength"
-              (page)="handlePageEvent($event)"
-              [pageSize]="pageSize"
-              [pageIndex]="pageIndex"
-              [pageSizeOptions]="[5, 10, 25, 100]"
-              aria-label="Select page" style="z-index: 0; margin-top: 10px;">
-      </mat-paginator>
+      <!-- Refresh Button -->
+      <button 
+        class="btn btn-primary refresh-btn" 
+        (click)="refresh()"
+        title="Refresh the import history">
+        <i class="bi bi-arrow-clockwise"></i> Refresh
+      </button>
+    </div>
+
+    <!-- Table Section -->
+    <div class="table-container history-table">
+      <table mat-table [dataSource]="importHistory" matSort class="table table-bordered table-hover">
+        
+        <!-- Filename Column -->
+        <ng-container matColumnDef="fileName">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header>Filename</th>
+          <td mat-cell *matCellDef="let record">{{ record.fileName }}</td>
+        </ng-container>
+
+        <!-- Date Column -->
+        <ng-container matColumnDef="date">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header>Date</th>
+          <td mat-cell *matCellDef="let record">{{ record.date | date: 'short' }}</td>
+        </ng-container>
+
+        <!-- Record Type Column -->
+        <ng-container matColumnDef="recordType">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header>Record Type</th>
+          <td mat-cell *matCellDef="let record">{{ record.recordType }}</td>
+        </ng-container>
+
+        <!-- Status Column -->
+        <ng-container matColumnDef="status">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header>Status</th>
+          <td mat-cell *matCellDef="let record" [ngClass]="getStatusClass(record.status)">
+            {{ record.status }}
+          </td>
+        </ng-container>
+
+        <!-- % Complete Column -->
+        <ng-container matColumnDef="complete">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header>% Complete</th>
+          <td mat-cell *matCellDef="let record">{{ record.complete }}%</td>
+        </ng-container>
+
+        <!-- Message Column -->
+        <ng-container matColumnDef="message">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header>Message</th>
+          <td mat-cell *matCellDef="let record">{{ record.message }}</td>
+        </ng-container>
+
+        <!-- Executed By Column -->
+        <ng-container matColumnDef="executedBy">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header>Executed By</th>
+          <td mat-cell *matCellDef="let record">{{ record.executedBy }}</td>
+        </ng-container>
+
+        <!-- Header and Row Definitions -->
+        <tr mat-header-row *matHeaderRowDef="displayedColumns; sticky: true"></tr>
+        <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+      </table>
+    </div>
+
+    <!-- Paginator -->
+    <mat-paginator 
+      [length]="totalLength"
+      (page)="handlePageEvent($event)"
+      [pageSize]="pageSize"
+      [pageIndex]="pageIndex"
+      [pageSizeOptions]="[5, 10, 25, 100]"
+      aria-label="Select page"
+      class="paginator-wrapper">
+    </mat-paginator>
 
   </div>
-      
-  </div>
-  
+</div>

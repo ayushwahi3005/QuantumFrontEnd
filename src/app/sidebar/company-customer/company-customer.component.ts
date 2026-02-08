@@ -1072,16 +1072,35 @@ clearForm() {
   }
  }
    exportexcel(): void {
-     /* table id is passed over here */
-     let element = document.getElementById('companycustomer-table');
-     const ws: XLSX.WorkSheet = XLSX.utils.table_to_sheet(element);
- 
-     /* generate workbook and add the worksheet */
-     const wb: XLSX.WorkBook = XLSX.utils.book_new();
-     XLSX.utils.book_append_sheet(wb, ws, 'Sheet1');
- 
-     /* save to file */
-     XLSX.writeFile(wb, this.fileName);
- 
-   }
+  const element = document.getElementById('companycustomer-table');
+  
+  if (!element) {
+    console.error('Table element not found');
+    return;
+  }
+  
+  const rows = element.querySelectorAll('tr');
+  const data: any[] = [];
+  
+  rows.forEach(row => {
+    const rowData: any[] = [];
+    row.querySelectorAll('td, th').forEach(cell => {
+      rowData.push({
+        v: cell.textContent?.trim(),
+        t: 's', // force text type
+        z: '@'  // text format
+      });
+    });
+    data.push(rowData);
+  });
+  
+  const ws: XLSX.WorkSheet = XLSX.utils.aoa_to_sheet(data);
+  
+  /* generate workbook and add the worksheet */
+  const wb: XLSX.WorkBook = XLSX.utils.book_new();
+  XLSX.utils.book_append_sheet(wb, ws, 'Sheet1');
+  
+  /* save to file */
+  XLSX.writeFile(wb, this.fileName);
+}
 }

@@ -34,14 +34,12 @@ import { countryList } from './country';
   templateUrl: './subscription.component.html',
   styleUrls: ['./subscription.component.css'],
 })
-
 export class SubscriptionComponent {
   @ViewChild(StripePaymentElementComponent)
-  
   paymentElement!: StripePaymentElementComponent;
   // private readonly fb = inject(UntypedFormBuilder);
   private readonly fb = inject(FormBuilder);
- @ViewChild('manageSection') manageSection!: ElementRef;
+  @ViewChild('manageSection') manageSection!: ElementRef;
   expiryDate!: any;
   curr_amount: any;
   curr_phase = 1;
@@ -88,47 +86,47 @@ export class SubscriptionComponent {
   displayEditCard: boolean = false;
   showSavedCard: boolean = true;
   editCardId: any;
-  currPlanName='Growth';
+  currPlanName = 'Growth';
 
-  selectedCountryCode='United States of America';
-  countryCodeList=countryList;
-  currentSelectedCountryCode='US'
 
-  countryList=[
-  "Canada",
-  "Mexico",
-  "United States of America",
+  selectedCountryCode = 'United States of America';
+  countryCodeList = countryList;
+  currentSelectedCountryCode = 'US';
 
-  "Antigua and Barbuda",
-  "The Bahamas",
-  "Barbados",
-  "Cuba",
-  "Dominica",
-  "Dominican Republic",
-  "Grenada",
-  "Haiti",
-  "Jamaica",
-  "Saint Kitts and Nevis",
-  "Saint Lucia",
-  "Saint Vincent and the Grenadines",
-  "Trinidad and Tobago",
+  countryList = [
+    'Canada',
+    'Mexico',
+    'United States of America',
 
-  "Belize",
-  "Costa Rica",
-  "El Salvador",
-  "Guatemala",
-  "Honduras",
-  "Nicaragua",
-  "Panama"
-]
+    'Antigua and Barbuda',
+    'The Bahamas',
+    'Barbados',
+    'Cuba',
+    'Dominica',
+    'Dominican Republic',
+    'Grenada',
+    'Haiti',
+    'Jamaica',
+    'Saint Kitts and Nevis',
+    'Saint Lucia',
+    'Saint Vincent and the Grenadines',
+    'Trinidad and Tobago',
 
-  
-private modalInstance: any;
-  
+    'Belize',
+    'Costa Rica',
+    'El Salvador',
+    'Guatemala',
+    'Honduras',
+    'Nicaragua',
+    'Panama',
+  ];
+
+  private modalInstance: any;
+
   readonly stripe = injectStripe(
-    'pk_test_51QJEvHDbrtjFAyfvm2UQu2ohdlUl814jAftZVEW9IHnfd4YrVOfh5ZBJyfYahnJcOMxwjgK3WjA8tU8XPg5nGpbM00J9CxIx3A'
+    'pk_test_51QJEvHDbrtjFAyfvm2UQu2ohdlUl814jAftZVEW9IHnfd4YrVOfh5ZBJyfYahnJcOMxwjgK3WjA8tU8XPg5nGpbM00J9CxIx3A',
   );
-  
+
   cardOptions: StripeCardElementOptions = {
     style: {
       base: {
@@ -168,8 +166,8 @@ private modalInstance: any;
     private http: HttpClient,
     private route: ActivatedRoute,
     private dialog: MatDialog,
-    private cdr: ChangeDetectorRef
-  ) { }
+    private cdr: ChangeDetectorRef,
+  ) {}
   refresh() {
     this.subcriptionSerive.getCurrSubscription(this.companyId).subscribe(
       (data) => {
@@ -181,7 +179,7 @@ private modalInstance: any;
 
           this.currSubscription.expiryDate = new Date(data.expiryDate);
           this.currSubscription.subscriptionDate = new Date(
-            data.subscriptionDate
+            data.subscriptionDate,
           );
           this.renewDate = new Date(data.expiryDate);
           this.renewDate.setDate(this.renewDate.getDate() + 1);
@@ -194,7 +192,7 @@ private modalInstance: any;
           },
           (err) => {
             console.log(err);
-          }
+          },
         );
 
         // console.log(this.currSubscription.expiryDate[0])
@@ -211,16 +209,16 @@ private modalInstance: any;
       },
       (err) => {
         console.log(err);
-      }
+      },
     );
     this.subcriptionSerive.getCardDetailsFromStripe(this.companyId).subscribe(
       (data) => {
         this.myCard = data;
-        console.log("MYCARD-----",this.myCard)
+        console.log('MYCARD-----', this.myCard);
       },
       (err) => {
         console.log(err);
-      }
+      },
     );
     this.subcriptionSerive
       .getAllSubscription(this.companyId)
@@ -238,16 +236,16 @@ private modalInstance: any;
     this.curr_phase = 1;
   }
   ngOnInit() {
-    this.currPlanName='Growth';
-    this.route.queryParams.subscribe(params => {
+    this.currPlanName = 'Growth';
+    this.route.queryParams.subscribe((params) => {
       console.log('Query Params:', params);
       if (params['alertDialog'] === 'true') {
         // this.openPaymentDialog();
         console.log('Show payment dialog as per query param');
-         setTimeout(() => this.openPaymentDialog(), 300);
+        setTimeout(() => this.openPaymentDialog(), 300);
       }
     });
-    
+
     this.companyId = localStorage.getItem('companyId');
     this.displayEditCard = false;
     this.showSavedCard = true;
@@ -300,7 +298,7 @@ private modalInstance: any;
       zipcode: ['', [Validators.required]],
       city: ['', [Validators.required]],
       state: ['', [Validators.required]],
-      country:['United States of America',[Validators.required]],
+      country: ['United States of America', [Validators.required]],
       amount: [''],
     });
     const amount = this.checkoutForm.get('amount')?.value;
@@ -329,7 +327,7 @@ private modalInstance: any;
 
           this.currSubscription.expiryDate = new Date(data.expiryDate);
           this.currSubscription.subscriptionDate = new Date(
-            data.subscriptionDate
+            data.subscriptionDate,
           );
           this.renewDate = new Date(data.expiryDate);
           this.renewDate.setDate(this.renewDate.getDate() + 1);
@@ -342,7 +340,7 @@ private modalInstance: any;
           },
           (err) => {
             console.log(err);
-          }
+          },
         );
 
         // console.log(this.currSubscription.expiryDate[0])
@@ -359,17 +357,17 @@ private modalInstance: any;
       },
       (err) => {
         console.log(err);
-      }
+      },
     );
     this.subcriptionSerive.getCardDetailsFromStripe(this.companyId).subscribe(
       (data) => {
         this.myCard = data;
         // console.log(this.myCard);
-        console.log("MYCARD-----",this.myCard)
+        console.log('MYCARD-----', this.myCard);
       },
       (err) => {
         console.log(err);
-      }
+      },
     );
     this.curr_phase = 1;
     this.basicMonthlyCharge = 10;
@@ -432,7 +430,7 @@ private modalInstance: any;
       address: '',
       zipcode: '',
       city: '',
-      country:'',
+      country: '',
       state: '',
     });
   }
@@ -448,11 +446,13 @@ private modalInstance: any;
       },
       (err) => {
         if (err.status == '403') {
-          console.log('Session expired - Subscription Component: Session has expired. Logging out.');
+          console.log(
+            'Session expired - Subscription Component: Session has expired. Logging out.',
+          );
           alert('Session expired');
           this.logout();
         }
-      }
+      },
     );
     if (this.paying() || this.checkoutForm.invalid) return;
     this.paying.set(true);
@@ -530,14 +530,14 @@ private modalInstance: any;
                       this.paying.set(false);
                       console.log('Payment Successful');
                       this.curr_phase = this.curr_phase + 1;
-                    }
+                    },
                   );
               },
               (err) => {
                 this.paying.set(false);
                 console.log(err);
                 this.loading = false;
-              }
+              },
             );
           }
         },
@@ -590,7 +590,10 @@ private modalInstance: any;
             postal_code: this.checkoutForm.controls['zipcode'].value,
             state: this.checkoutForm.controls['state'].value,
             city: this.checkoutForm.controls['city'].value,
-            country: this.countryCodeList[this.checkoutForm.controls['country'].value]||'',
+            country:
+              this.countryCodeList[
+                this.checkoutForm.controls['country'].value
+              ] || '',
           },
         },
       })
@@ -608,7 +611,7 @@ private modalInstance: any;
               plan,
               this.res_amount,
               this.checkoutForm.controls['name'].value,
-              this.currPlanName
+              this.currPlanName,
             )
             .subscribe(
               (data) => {
@@ -624,7 +627,7 @@ private modalInstance: any;
                 console.log(err);
                 this.paying.set(false);
                 this.triggerAlert(err.error.errorMessage, 'danger');
-              }
+              },
             );
         } else {
           console.error('❌ Error Creating Payment Method:', result.error);
@@ -772,7 +775,6 @@ private modalInstance: any;
     this.currOption = data;
   }
   addCard() {
-
     this.displayAddCard = true;
   }
   closeAddCard() {
@@ -935,39 +937,41 @@ private modalInstance: any;
               result,
               companyEmail,
               cardholderName,
-              this.companyId
+              this.companyId,
             )
             .subscribe(
               (data) => {
                 console.log(data);
                 if (this.editCardId != null) {
-                  this.subcriptionSerive.deleteCardDetails(this.editCardId).subscribe(
-                    (data) => {
-                      console.log(data);
-                      this.triggerAlert('Updated Card Successfully', 'success');
-                      this.ngOnInit();
-                      this.editCard = false;
-                      this.savingCard.set(false);
-                      this.cardholderName = null;
-                    },
-                    (err) => {
-                      console.log(err);
-                      this.triggerAlert(err.errorMessage, 'danger');
-                      this.editCard = false;
-                      this.savingCard.set(false);
-                      this.cardholderName = null;
-                    }
-                  );
-                }
-                else {
+                  this.subcriptionSerive
+                    .deleteCardDetails(this.editCardId)
+                    .subscribe(
+                      (data) => {
+                        console.log(data);
+                        this.triggerAlert(
+                          'Updated Card Successfully',
+                          'success',
+                        );
+                        this.ngOnInit();
+                        this.editCard = false;
+                        this.savingCard.set(false);
+                        this.cardholderName = null;
+                      },
+                      (err) => {
+                        console.log(err);
+                        this.triggerAlert(err.errorMessage, 'danger');
+                        this.editCard = false;
+                        this.savingCard.set(false);
+                        this.cardholderName = null;
+                      },
+                    );
+                } else {
                   console.log('Card Saved Successfully');
                   this.triggerAlert('Card Saved Successfully', 'success');
                   this.savingCard.set(false);
                   this.ngOnInit();
                   this.cardholderName = null;
                 }
-
-
               },
               (err) => {
                 console.log(err);
@@ -975,7 +979,7 @@ private modalInstance: any;
                 this.savingCard.set(false);
                 this.cardholderName = null;
                 this.ngOnInit();
-              }
+              },
             );
         } else {
           console.error(result.error);
@@ -1032,7 +1036,7 @@ private modalInstance: any;
       console.log('Cancel Upcoming Plan');
       this.triggerAlert(
         'You have an upcoming plan. Please cancel it to proceed',
-        'warning'
+        'warning',
       );
       return;
     }
@@ -1050,7 +1054,7 @@ private modalInstance: any;
     this.subcriptionSerive
       .deleteUpcomingSubscription(
         this.companyId,
-        localStorage.getItem('companyEmail')
+        localStorage.getItem('companyEmail'),
       )
       .subscribe(
         (data) => {
@@ -1076,7 +1080,7 @@ private modalInstance: any;
           console.log(err);
           this.loading = false;
           this.triggerAlert(err.errorMessage, 'danger');
-        }
+        },
       );
   }
   startUpcomingPlan() {
@@ -1084,13 +1088,13 @@ private modalInstance: any;
     this.subcriptionSerive
       .startUpcomingSubscription(
         this.companyId,
-        localStorage.getItem('companyEmail')
+        localStorage.getItem('companyEmail'),
       )
       .subscribe(
         (data) => {
           console.log(data);
           this.loading = false;
-          
+
           this.refresh();
           // this.ngOnInit();
           this.triggerAlert('Upcoming Plan Started Successfully', 'success');
@@ -1098,16 +1102,16 @@ private modalInstance: any;
         (err) => {
           console.log(err);
           this.loading = false;
-           this.ngOnInit();
+          this.ngOnInit();
           this.triggerAlert(err.error.errorMessage, 'danger');
-        }
+        },
       );
-       this.ngOnInit();
+    this.ngOnInit();
   }
   payWithSavedCard() {
     if (this.paying()) {
-    return; // already processing, ignore
-  }
+      return; // already processing, ignore
+    }
     let cardId = this.myCard[0].id;
     console.log(cardId);
     this.paying.set(true);
@@ -1122,13 +1126,13 @@ private modalInstance: any;
         plan,
         this.res_amount,
         this.checkoutForm.controls['name'].value,
-        this.currPlanName
+        this.currPlanName,
       )
       .subscribe(
         (data) => {
           console.log(data);
           console.log('Payment Done');
-          this.triggerAlert("Subscription Updated Sucessfully", "success");
+          this.triggerAlert('Subscription Updated Sucessfully', 'success');
           this.ngOnInit();
           this.refresh();
           this.currOption = 1;
@@ -1139,7 +1143,7 @@ private modalInstance: any;
           console.log(err);
           this.paying.set(false);
           this.triggerAlert(err.error.errorMessage, 'danger');
-        }
+        },
       );
   }
   goToManageTab() {
@@ -1236,7 +1240,6 @@ private modalInstance: any;
   </div>
 `;
 
-
     // Create a hidden container in the DOM
     const hiddenDiv = document.createElement('div');
     hiddenDiv.innerHTML = receiptHtml;
@@ -1244,7 +1247,7 @@ private modalInstance: any;
     hiddenDiv.style.left = '-10000px';
     document.body.appendChild(hiddenDiv);
 
-    html2canvas(hiddenDiv, { scale: 3 }).then(canvas => {
+    html2canvas(hiddenDiv, { scale: 3 }).then((canvas) => {
       const imgData = canvas.toDataURL('image/png');
       const pdf = new jsPDF();
       const imgProps = pdf.getImageProperties(imgData);
@@ -1259,59 +1262,64 @@ private modalInstance: any;
   }
   getPaymentTypeLabel(type: string): string {
     switch (type) {
-      case 'CREDIT_CARD': return 'Credit Card';
-      case 'DEBIT_CARD': return 'Debit Card';
-      default: return type;
+      case 'CREDIT_CARD':
+        return 'Credit Card';
+      case 'DEBIT_CARD':
+        return 'Debit Card';
+      default:
+        return type;
     }
   }
   getOneDayBefore(dateString: string | Date | null): Date | null {
-  if (!dateString) return null;
-  const date = new Date(dateString);
-  date.setDate(date.getDate() - 1);
-  return date;
+    if (!dateString) return null;
+    const date = new Date(dateString);
+    date.setDate(date.getDate() - 1);
+    return date;
   }
   scrollToManage() {
-    this.manageSection.nativeElement.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    this.manageSection.nativeElement.scrollIntoView({
+      behavior: 'smooth',
+      block: 'start',
+    });
   }
 
   openPaymentDialog() {
-  // const modalElement = document.getElementById('alertSubscription');
-  // this.modalInstance = new window.bootstrap.Modal(modalElement);
-  // this.modalInstance.show();
-   this.dialog.open(AlertDialogComponent, {
-    width: '600px',
-    data: {
-      title: 'Subscription Updation Required',
-      message: 'Your subscription has expired or is invalid. Please upgrade your subscription or reduce Active Users.'
-    }
-  });
+    // const modalElement = document.getElementById('alertSubscription');
+    // this.modalInstance = new window.bootstrap.Modal(modalElement);
+    // this.modalInstance.show();
+    this.dialog.open(AlertDialogComponent, {
+      width: '600px',
+      data: {
+        title: 'Subscription Updation Required',
+        message:
+          'Your subscription has expired or is invalid. Please upgrade your subscription or reduce Active Users.',
+      },
+    });
   }
 
   closePaymentDialog() {
     if (this.modalInstance) {
       this.modalInstance.hide();
       const backdrops = document.getElementsByClassName('modal-backdrop');
-    while (backdrops[0]) {
-      backdrops[0].parentNode?.removeChild(backdrops[0]);
-    }
+      while (backdrops[0]) {
+        backdrops[0].parentNode?.removeChild(backdrops[0]);
+      }
     }
   }
 
- getStateList(country: any) {
-  this.currentSelectedCountryCode=countryList[country]||'';
+  getStateList(country: any) {
+    this.currentSelectedCountryCode = countryList[country] || '';
 
+    this.subcriptionSerive.countryStateList(country).subscribe(
+      (data) => {
+        this.stateList = data;
+        this.checkoutForm.get('state')?.setValue(''); // reset state
 
-  this.subcriptionSerive.countryStateList(country).subscribe(
-    (data) => {
-      this.stateList = data;
-      this.checkoutForm.get('state')?.setValue('');   // reset state
-
-      this.cdr.detectChanges();               // prevents ExpressionChanged error
-    },
-    (err) => {
-      console.log(err);
-    }
-  );
-}
-
+        this.cdr.detectChanges(); // prevents ExpressionChanged error
+      },
+      (err) => {
+        console.log(err);
+      },
+    );
+  }
 }

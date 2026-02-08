@@ -693,3 +693,23 @@ a{
     flex: 0.5;
     text-align: center;
   }
+
+  .export-btn {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  transition: transform 0.2s;
+  margin-top: 4px;
+}
+
+.export-btn:hover {
+  transform: translateY(-2px);
+}

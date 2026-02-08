@@ -301,4 +301,21 @@ export class AssetsService {
       },
     );
   }
+
+  advanceFilteroptimized(
+  data: any
+): Observable<any> {
+  const headers = new HttpHeaders({
+    Authorization: `Bearer ${localStorage.getItem('authToken')}`,
+    'Content-Type': 'application/json',
+    'device-id': `${localStorage.getItem('deviceId')}`,
+  });
+
+
+  return this.httpClient.post<any>(
+    `${this.assetEndpoint}advancedFilter/optimized`,
+    data,
+    { headers }
+  );
+}
 }

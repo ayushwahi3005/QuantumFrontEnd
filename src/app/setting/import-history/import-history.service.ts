@@ -15,7 +15,19 @@ export class ImportHistoryService {
   });
   constructor(private httpClient:HttpClient) { }
   
-  getAllImportHistory(companyId:any,pageNumber:any,pageSize:any):Observable<any>{
-    return this.httpClient.get(this.customerEndpoint+"getAllImportHistory/"+companyId+"?pageNumber="+pageNumber+"&pageSize="+pageSize,{headers:this.headers});
+  getAllImportHistory(companyId:any,pageNumber:any,pageSize:any,startDate:any,endDate:any):Observable<any>{
+    // let startDateParam = startDate ? `&startDate=${startDate.toISOString()}` : '';
+    // let endDateParam = endDate ? `&endDate=${endDate.toISOString()}` : '';
+   let obj = {};
+    if(startDate != null && endDate != null) {
+      obj = {
+        startDate: startDate,
+        endDate: endDate
+      };
+    }
+    console.log(obj);
+    
+      
+    return this.httpClient.post(this.customerEndpoint+"getAllImportHistory/"+companyId+"?pageNumber="+pageNumber+"&pageSize="+pageSize,obj,{headers:this.headers});
   }
 }
