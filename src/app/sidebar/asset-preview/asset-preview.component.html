@@ -273,7 +273,7 @@
           <thead class="table-dark">
               <tr >
                  
-                  
+                  <th scope="col">ID</th>
                   <th scope="col">Created Date</th>
                   <th scope="col">Modified Date</th>
                   <th scope="col">Inspection Template</th>
@@ -288,6 +288,7 @@
           <tbody>
               <tr *ngFor="let instance of allInspectionInstance">
                  
+                <td >{{instance.assetCategoryInspectionInstanceId}}</td>
                   <td>{{instance.createdAt| date: 'MM-dd-YYYY HH:mm:ss'}}</td>
                    <td>{{instance.updatedAt| date: 'MM-dd-YYYY HH:mm:ss'}}</td>
                  

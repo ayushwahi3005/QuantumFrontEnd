@@ -177,7 +177,7 @@ selectedCountryCode='United States of America';
       id: [''],
       country: [''],
       address1: ['', Validators.required],
-      address2: ['', Validators.required],
+      address2: [''],
       city: ['', Validators.required],
       state: ['', Validators.required],
       zipCode: ['', Validators.required],
@@ -386,6 +386,7 @@ console.log("Company Information",this.companyInformationForm.value);
   }
   addCompanyInformation() {
     if (this.companyInformationForm.invalid) {
+      console.log(this.companyInformationForm.invalid)
       this.triggerAlert('Please fill all required fields correctly', 'danger');
       return;
     }
@@ -398,7 +399,7 @@ console.log("Company Information",this.companyInformationForm.value);
     console.log("Form Data:", this.companyInformationForm.value);
 
 
-    const includedFields = ['companyName', 'address1', 'address2', 'city', 'state', 'zipCode', 'phoneNo', 'website'];
+    const includedFields = ['companyName', 'address1', 'city', 'state', 'zipCode', 'phoneNo', 'website'];
     let allFieldsValid = true;
     includedFields.forEach(field => {
       const value = this.companyInformationForm.get(field)?.value;

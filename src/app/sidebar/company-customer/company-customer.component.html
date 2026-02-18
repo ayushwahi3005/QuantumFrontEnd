@@ -7,147 +7,132 @@
   <button type="button" class="btn-close" (click)="showAlert = false" aria-label="Close" style="float: right;"></button>
 </div>
 <div *ngIf="!loadingScreen" >
+
+   <div class="d-flex justify-content-center" style="margin: 20px 30px 0 30px;">
+    <div class="d-flex justify-content-between" style=" width: 100%;">
   
-  <div class="CustomerMainScreen" style="border: 1px solid lightgray;  background-color: white; border-radius: 10px; padding: 0px; margin: 30px; box-shadow: 0 0 4px 0 rgba(0, 0, 0, .16); height: auto; padding-bottom: 8px;">
+     <div style="height: 40px;">
+        <label style="font-size: 24px; font-weight: bold; padding: 10px 0;">Customers</label>
+       </div>
+     <button class="btn btn-dark" style=" margin: 0px" data-toggle="modal" data-target="#exportModal">Export</button> 
+ 
+     </div>
+   </div>
+  
+   <div class="CustomerMainScreen" style="border: 1px solid lightgray;  background-color: white; border-radius: 10px; padding: 0px; margin: 20px 30px 30px 30px; box-shadow: 0 0 4px 0 rgba(0, 0, 0, .16); height: auto; padding-bottom: 8px;">
   <div class="modal fade" id="myExample" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog" role="document">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h2 class="modal-title" id="exampleModalLabel">Advance Filter</h2>
-          <button type="button" class="close  ms-auto" data-dismiss="modal" aria-label="Close" #closeBox3>
-            <span aria-hidden="true">&times;</span>
-          </button>
-        </div>
-        <div class="modal-body">
-          <form [formGroup]="filterForm" >
-
-            <div style="width: 95%;">
-            <div class="form-group" >
-              <label for="companyCustomerId">ID</label>
-              <div class="d-flex justify-content-around">
-              <input type="text" class="form-control" id="companyCustomerId" formControlName="companyCustomerId"  #name>
-              <!-- <i class="bi bi-trash-fill delete" style="display: inline-flex; margin-top: 12px; margin-left: 10px; color: red; margin-right: 5px;" (click)="removeMandatoryFieldFilter('assetId')"></i> -->
-              </div>
-              <br>
-            </div>
-            <div class="form-group" >
-              <label for="name">Name</label>
-              <div class="d-flex justify-content-around">
-              <input type="text" class="form-control" id="name" formControlName="name"   #name>
-              <!-- <i class="bi bi-trash-fill delete" style="display: inline-flex; margin-top: 12px; margin-left: 10px; color: red; margin-right: 5px;" (click)="removeMandatoryFieldFilter('name')"></i> -->
-              </div>
-              <br>
-            </div>
-         
-              <div class="form-group">
-                <label for="email">Email</label>
-                <div class="d-flex justify-content-around">
-                <input type="email" class="form-control" id="email" formControlName="email"  >
-                <!-- <i class="bi bi-trash-fill delete" style="display: inline-flex; margin-top: 12px; margin-left: 10px; color: red; margin-right: 5px;" (click)="removeMandatoryFieldFilter('serialNumber')"></i> -->
-                </div>
-                <br>
-              </div>
-              
-            
-              <div class="form-group" >
-                <label for="phone" >Phone</label>
-                <div class="d-flex justify-content-around">
-                <input type="text" class="form-control" id="phone" formControlName="phone" >
-                <!-- <i class="bi bi-trash-fill delete" style="display: inline-flex; margin-top: 12px; margin-left: 10px; color: red; margin-right: 5px;" (click)="removeMandatoryFieldFilter('category')"></i> -->
-                  </div>
-                  <br>
-              </div>
-              
-              <div class="form-group" >
-                <label for="address">Address</label>
-                <div class="d-flex justify-content-around">
-                <input type="text" class="form-control" id="address" formControlName="address" >
-                <!-- <i class="bi bi-trash-fill delete" style="display: inline-flex; margin-top: 12px; margin-left: 10px; color: red; margin-right: 5px;" (click)="removeMandatoryFieldFilter('customer')"></i> -->
-                </div>
-                <br>
-              </div>
-              
-              <!-- <div class="form-group" >
-                <label for="location">apartment</label>
-                <div class="d-flex justify-content-around">
-                <input type="text" class="form-control" id="apartment" formControlName="apartment"  >
-               
-                </div>
-                <br>
-              </div> -->
-
-              <div class="form-group" >
-                <label for="city">City</label>
-                <div class="d-flex justify-content-around">
-                <input type="text" class="form-control" id="city" formControlName="city"  >
-                <!-- <i class="bi bi-trash-fill delete" style="display: inline-flex; margin-top: 12px; margin-left: 10px; color: red; margin-right: 5px;" (click)="removeMandatoryFieldFilter('location')"></i> -->
-                </div>
-                <br>
-              </div>
-
-              <div class="form-group" >
-                <label for="state">State</label>
-                <div class="d-flex justify-content-around">
-                <!-- <input type="text" class="form-control" id="state" formControlName="state"  > -->
-                <!-- <i class="bi bi-trash-fill delete" style="display: inline-flex; margin-top: 12px; margin-left: 10px; color: red; margin-right: 5px;" (click)="removeMandatoryFieldFilter('location')"></i> -->
-                <select class="form-select custom-dropdown" class="form-control" id="state" formControlName="state" #status style="height: fit-content;" >
-                  <option value="{{state}}" *ngFor="let state of stateList">{{state}}</option>
-                  <!-- <option value="{{[customer.name,customer.id]}}" *ngFor="let customer of companyCustomerList">{{customer.name}}</option> -->
-                  <!-- <option value="outOfService" selected>Out Of Service</option> -->
-                  
-                  
-                </select>
-                </div>
-                <br>
-              </div>
-              <div  class="form-group">
-                <label for="country">Country</label>
-                <select
-                      matNativeControl
-                      formControlName="country"
-                      class="form-select custom-dropdown"
-                      (change)="getStateList($event.target.value)"
-                      id="country"
-                    >
-                      <option *ngFor="let c of countryList" [value]="c">
-                        {{ c }}
-                      </option>
-                    </select>
-              </div>
-              <div class="form-group" >
-                <label for="zipCode">ZIP Code</label>
-                <div class="d-flex justify-content-around">
-                <input type="text" class="form-control" id="zipCode" formControlName="zipCode" maxlength="15"
-           minlength="3"
-                    pattern="^[0-9A-Za-z]{3,15}$" >
-              <!-- <span *ngIf="this.companyCustomerForm.get('zipCode')?.errors?.pattern">Enter a valid ZIP Code (e.g., 123456).</span> -->
-                <!-- <i class="bi bi-trash-fill delete" style="display: inline-flex; margin-top: 12px; margin-left: 10px; color: red; margin-right: 5px;" (click)="removeMandatoryFieldFilter('location')"></i> -->
-                </div>
-                <br>
-              </div>
-              
-              <div class="form-group" >
-                <label for="status" >Status</label>
-                <div class="d-flex justify-content-around">
-                <select class="form-select" id="status" formControlName="status" #status>
-                  <option value="active">Active</option>
-                  <option value="inactive">Inactive</option>      
-                </select>
-                <!-- <i class="bi bi-trash-fill delete" style="display: inline-flex; margin-top: 12px; margin-left: 10px; color: red; margin-right: 5px;" (click)="removeMandatoryFieldFilter('status')"></i> -->
-                </div>
-              </div>
-      
-              <h1 *ngIf="this.selectedFilterList?.length>0" style="margin-left: 33%; margin-top: 5px;">Custom Fields</h1>
-              <div *ngFor="let input of selectedFilterList; let i = index" style="margin-top: 5px;">
-                <label for={{input}}>{{input}}</label>
-                <input [formControlName]="input" type={{extraFieldFilterList.get(input)}} class="extraFieldInput"> <!-- Since each form group is wrapped in a form array -->
-                <!-- <i class="bi bi-trash-fill delete" style="display: inline-flex; margin-top: 25px; margin-left: 10px; color: red; margin-right: 5px;" (click)="removeInputField(input)"></i> -->
-              </div>
+      <div class="modal-content" style="max-height: 90vh;">
+        <div class="modal-header" style="padding: 13px 15px; position: sticky; top: 0; z-index: 100; background-color: white;" >
+          <h2 class="modal-title" id="exampleModalLabel" style="margin:0; display: flex; justify-content: center;">Advance Filter</h2>
+           <button type="button" class="btn btn-light btn-sm ms-auto" data-dismiss="modal" aria-label="Close" style="border-radius: 10px;" #closeBox3>
+          <i class="bi bi-x-lg"></i>
+        </button>
 
         </div>
+        <div class="modal-body" style="overflow-y: auto;">
+        <form [formGroup]="filterForm" >
+
+          <!-- <div style="width: 95%;"> -->
+          <div class="mb-3">
+            <label for="companyCustomerId">ID</label>
+            <input type="text" class="form-control" id="companyCustomerId" formControlName="companyCustomerId" #name>
+            <!-- <i class="bi bi-trash-fill delete" style="display: inline-flex; margin-top: 12px; margin-left: 10px; color: red; margin-right: 5px;" (click)="removeMandatoryFieldFilter('assetId')"></i> -->
+          </div>
+
+          <div class="mb-3">
+            <label for="name">Name</label>
+            <input type="text" class="form-control" id="name" formControlName="name" #name>
+            <!-- <i class="bi bi-trash-fill delete" style="display: inline-flex; margin-top: 12px; margin-left: 10px; color: red; margin-right: 5px;" (click)="removeMandatoryFieldFilter('name')"></i> -->
+          </div>
        
-      </form>
-        </div>
+            <div class="mb-3">
+              <label for="email">Email</label>
+              <input type="email" class="form-control" id="email" formControlName="email">
+              <!-- <i class="bi bi-trash-fill delete" style="display: inline-flex; margin-top: 12px; margin-left: 10px; color: red; margin-right: 5px;" (click)="removeMandatoryFieldFilter('serialNumber')"></i> -->
+            </div>
+          
+            <div class="mb-3">
+              <label for="phone">Phone</label>
+              <input type="text" class="form-control" id="phone" formControlName="phone">
+              <!-- <i class="bi bi-trash-fill delete" style="display: inline-flex; margin-top: 12px; margin-left: 10px; color: red; margin-right: 5px;" (click)="removeMandatoryFieldFilter('category')"></i> -->
+            </div>
+            
+            <div class="mb-3">
+              <label for="address">Address</label>
+              <input type="text" class="form-control" id="address" formControlName="address">
+              <!-- <i class="bi bi-trash-fill delete" style="display: inline-flex; margin-top: 12px; margin-left: 10px; color: red; margin-right: 5px;" (click)="removeMandatoryFieldFilter('customer')"></i> -->
+            </div>
+            
+            <!-- <div class="form-group" >
+              <label for="location">apartment</label>
+              <div class="d-flex justify-content-around">
+              <input type="text" class="form-control" id="apartment" formControlName="apartment"  >
+             
+              </div>
+              <br>
+            </div> -->
+
+            <div class="mb-3">
+              <label for="city">City</label>
+              <input type="text" class="form-control" id="city" formControlName="city">
+              <!-- <i class="bi bi-trash-fill delete" style="display: inline-flex; margin-top: 12px; margin-left: 10px; color: red; margin-right: 5px;" (click)="removeMandatoryFieldFilter('location')"></i> -->
+            </div>
+
+            <div class="mb-3">
+              <label for="state">State</label>
+              <!-- <input type="text" class="form-control" id="state" formControlName="state"  > -->
+              <!-- <i class="bi bi-trash-fill delete" style="display: inline-flex; margin-top: 12px; margin-left: 10px; color: red; margin-right: 5px;" (click)="removeMandatoryFieldFilter('location')"></i> -->
+              <select class="form-select form-control" id="state" formControlName="state" #status style="height: fit-content;" >
+                <option value="{{state}}" *ngFor="let state of stateList">{{state}}</option>
+                <!-- <option value="{{[customer.name,customer.id]}}" *ngFor="let customer of companyCustomerList">{{customer.name}}</option> -->
+                <!-- <option value="outOfService" selected>Out Of Service</option> -->    
+              </select>
+            </div>
+
+            <div class="mb-3">
+              <label for="country">Country</label>
+              <select
+                    matNativeControl
+                    formControlName="country"
+                    class="form-select form-control"
+                    (change)="getStateList($event.target.value)"
+                    id="country"
+                  >
+                    <option *ngFor="let c of countryList" [value]="c">
+                      {{ c }}
+                    </option>
+                  </select>
+            </div>
+
+            <div class="mb-3">
+              <label for="zipCode">ZIP Code</label>
+              <input type="text" class="form-control" id="zipCode" formControlName="zipCode" maxlength="15" minlength="3" pattern="^[0-9A-Za-z]{3,15}$" >
+            <!-- <span *ngIf="this.companyCustomerForm.get('zipCode')?.errors?.pattern">Enter a valid ZIP Code (e.g., 123456).</span> -->
+              <!-- <i class="bi bi-trash-fill delete" style="display: inline-flex; margin-top: 12px; margin-left: 10px; color: red; margin-right: 5px;" (click)="removeMandatoryFieldFilter('location')"></i> -->
+            </div>
+            
+            <div class="mb-3">
+              <label for="status">Status</label>
+              <select class="form-select form-control" id="status" formControlName="status" #status>
+                <option value="active">Active</option>
+                <option value="inactive">Inactive</option>      
+              </select>
+              <!-- <i class="bi bi-trash-fill delete" style="display: inline-flex; margin-top: 12px; margin-left: 10px; color: red; margin-right: 5px;" (click)="removeMandatoryFieldFilter('status')"></i> -->
+            </div>
+    
+            <!-- <h1 *ngIf="this.selectedFilterList?.length>0" style="margin-left: 33%; margin-top: 5px;">Custom Fields</h1> -->
+            <div *ngFor="let input of selectedFilterList; let i = index">
+              <label for={{input}}>{{input}}</label>
+              <input [formControlName]="input" type={{extraFieldFilterList.get(input)}} class="extraFieldInput"> <!-- Since each form group is wrapped in a form array -->
+              <!-- <i class="bi bi-trash-fill delete" style="display: inline-flex; margin-top: 25px; margin-left: 10px; color: red; margin-right: 5px;" (click)="removeInputField(input)"></i> -->
+            </div>
+
+      <!-- </div> -->
+     
+    </form>
+      </div>
+
         <div class="modal-footer d-flex justify-content-around">
           <button  class="btn btn-light mt-3"  (click)="closeBox3.click()" (click)="reset()" >Clear</button>
           <button type="submit" class="btn btn-primary mt-3" (click)="closeBox3.click()" (click)="addFilterForm()"   >Filter</button>
@@ -170,7 +155,8 @@
       <button class="btn btn-primary" (click)="searchClick()" style="margin: 0 5px;">Search</button>
     
        
-       <a class="btn btn-light dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="modal" data-target="#myExample" style="border: 1px solid #c0c0c0; margin: 0 5px;" title="Advance Filter">
+       <a class="btn btn-light" type="button" id="dropdownMenuButton" data-toggle="modal" data-target="#myExample" style="border: 1px solid #c0c0c0; margin: 0 5px;--bs-btn-bg: white;" title="Advance Filter">
+
         <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-funnel-fill" viewBox="0 0 16 16">
           <path d="M1.5 1.5A.5.5 0 0 1 2 1h12a.5.5 0 0 1 .5.5v2a.5.5 0 0 1-.128.334L10 8.692V13.5a.5.5 0 0 1-.342.474l-3 1A.5.5 0 0 1 6 14.5V8.692L1.628 3.834A.5.5 0 0 1 1.5 3.5v-2z"/>
         </svg>
@@ -193,24 +179,24 @@
 
     <div class="d-flex justify-content-between">
 
-      <a class="btn btn-light dropdown-toggle" type="button" id="sortButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="margin: 0px 5px; border: 1px solid #c0c0c0" title="Sort">
+     <a class="btn btn-light dropdown-toggle" type="button" id="sortButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="margin: 0px 5px; border: 1px solid #c0c0c0; --bs-btn-bg: white;" title="Sort">
         <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-arrow-down-up" viewBox="0 0 16 16">
           <path fill-rule="evenodd" d="M11.5 15a.5.5 0 0 0 .5-.5V2.707l3.146 3.147a.5.5 0 0 0 .708-.708l-4-4a.5.5 0 0 0-.708 0l-4 4a.5.5 0 1 0 .708.708L11 2.707V14.5a.5.5 0 0 0 .5.5m-7-14a.5.5 0 0 1 .5.5v11.793l3.146-3.147a.5.5 0 0 1 .708.708l-4 4a.5.5 0 0 1-.708 0l-4-4a.5.5 0 0 1 .708-.708L4 13.293V1.5a.5.5 0 0 1 .5-.5"/>
         </svg>
       </a>
      
-      <div class="dropdown-menu" aria-labelledby="sortButton" style="z-index: 10; cursor: pointer; margin-top: 5px;">
+      <div class="dropdown-menu" aria-labelledby="sortButton" style="z-index: 10; cursor: pointer; margin-top: 5px;  padding: 8px;">
         <div style="padding: 8px 12px;cursor: default;">Sort by</div>
         <a class="dropdown-item" (click)="sortBy('name')">Name</a>
         <a class="dropdown-item" (click)="sortBy('category')">Category</a>
         <a class="dropdown-item" (click)="sortBy('status')">Status</a>
         <a class="dropdown-item" (click)="sortBy('phone')">Phone</a>
         <a class="dropdown-item" (click)="sortBy('email')">Email</a>
-        <a class="dropdown-item" (click)="sortBy('address')">Address</a>
+        <!-- <a class="dropdown-item" (click)="sortBy('address')">Address</a>
         <a class="dropdown-item" (click)="sortBy('apartment')">Apartment</a>
         <a class="dropdown-item" (click)="sortBy('city')">City</a>
         <a class="dropdown-item" (click)="sortBy('state')">State</a>
-        <a class="dropdown-item" (click)="sortBy('zipCode')">ZipCode</a>
+        <a class="dropdown-item" (click)="sortBy('zipCode')">ZipCode</a> -->
         <a *ngFor="let item of selectedExtraColums"  class="dropdown-item" (click)="sortBy(item)" >{{item}}</a>
       </div>
 
@@ -240,12 +226,13 @@
      
     <!-- </div> -->
       
-    <button class="btn btn-dark" style=" margin: 0px 5px;" data-toggle="modal" data-target="#exportModal">Export</button>  
+     
     
     <!-- <button class="btn btn-primary" data-toggle="modal" data-target="#add-order" (click)="resetForm()" style="max-width: 120px; width: 100%; margin: 0 5px;" *ngIf="!(userRoleDetails?.customers!='full'&&userRole!='ADMIN')" >+ Customer</button> -->
  <button class="btn btn-primary" data-toggle="modal" data-target="#add-order" (click)="resetForm()" style="max-width: 120px; width: 100%; margin: 0 5px;" >+ Customer</button>
 
-      <a class="btn btn-light dropdown-toggle" type="button" data-target="#customFieldModule" data-toggle="modal" aria-haspopup="true" aria-expanded="false" style="margin: 0 5px; border: 1px solid #c0c0c0;" title="Column Options">
+      <a class="btn btn-light dropdown-toggle" type="button" data-target="#customFieldModule" data-toggle="modal" aria-haspopup="true" aria-expanded="false" style="margin: 0 5px; border: 1px solid #c0c0c0; --bs-btn-bg: white;" title="Column Options">
+
         <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" fill="currentColor" class="bi bi-gear-fill" viewBox="0 0 16 16" style="color: black;">
           <path d="M9.405 1.05c-.413-1.4-2.397-1.4-2.81 0l-.1.34a1.464 1.464 0 0 1-2.105.872l-.31-.17c-1.283-.698-2.686.705-1.987 1.987l.169.311c.446.82.023 1.841-.872 2.105l-.34.1c-1.4.413-1.4 2.397 0 2.81l.34.1a1.464 1.464 0 0 1 .872 2.105l-.17.31c-.698 1.283.705 2.686 1.987 1.987l.311-.169a1.464 1.464 0 0 1 2.105.872l.1.34c.413 1.4 2.397 1.4 2.81 0l.1-.34a1.464 1.464 0 0 1 2.105-.872l.31.17c1.283.698 2.686-.705 1.987-1.987l-.169-.311a1.464 1.464 0 0 1 .872-2.105l.34-.1c1.4-.413 1.4-2.397 0-2.81l-.34-.1a1.464 1.464 0 0 1-.872-2.105l.17-.31c.698-1.283-.705-2.686-1.987-1.987l-.311.169a1.464 1.464 0 0 1-2.105-.872zM8 10.93a2.929 2.929 0 1 1 0-5.86 2.929 2.929 0 0 1 0 5.858z"/>
         </svg>
@@ -256,7 +243,7 @@
     
   </div>
 
-  <div class="row" style="height: calc(100vh - 260px); overflow: auto; width: 100%">
+  <div class="row" style="overflow: auto; width: 100%">
       <div class="col" style="margin: 0; padding: 0; width: 100%;">
         <button *ngIf="searchDataBy" class="sort btn btn-secondary" (click)="removeSearchDataBy()">Search By: {{searchDataBy|titlecase}} &times;</button>
         <button *ngIf="sortedBy" class="sort btn btn-secondary" (click)="removeSort()">Sorted By: {{sortedBy|titlecase}} &times;</button>
@@ -313,7 +300,7 @@
                     <td>
                     <!-- <i class="bi bi-pencil" [ngClass]="{'editoption':!(editVisibility&&(editButtonId==companyCustomerListWithExtraFields.indexOf(item)+1))}"  style="float: inline-start; margin: 0px 5px;" (click)="companyCustomerDetail(item.id)" [routerLink]="['/customer',item.id]" *ngIf="!(userRoleDetails?.companyCustomer!='full'&&userRoleDetails?.companyCustomer!='edit' &&userRole!='ADMIN')"></i> -->
                     <!-- <i class="bi bi-trash"  [ngClass]="{'editoption':!(editVisibility&&(editButtonId==companyCustomerListWithExtraFields.indexOf(item)+1))}" style="color: red; float: inline-start; margin: 15px 5px;" (click)="deleteCompanyCustomer(item.id)" ></i> -->
-                    <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" fill="currentColor" class="bi bi-pencil" viewBox="0 0 16 16" style="margin-top: 4px; margin-bottom: 4px; color:gray " [ngClass]="{'editoption':!(editVisibility&&(editButtonId==companyCustomerListWithExtraFields.indexOf(item)+1))}" (click)="companyCustomerDetail(item.id)" [routerLink]="['/customer',item.id]">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" fill="currentColor" class="bi bi-pencil" viewBox="0 0 16 16" style="margin-top: 3px; margin-bottom: 3px; color:gray " [ngClass]="{'editoption':!(editVisibility&&(editButtonId==companyCustomerListWithExtraFields.indexOf(item)+1))}" (click)="companyCustomerDetail(item.id)" [routerLink]="['/customer',item.id]">
                       <path d="M12.146.146a.5.5 0 0 1 .708 0l3 3a.5.5 0 0 1 0 .708l-10 10a.5.5 0 0 1-.168.11l-5 2a.5.5 0 0 1-.65-.65l2-5a.5.5 0 0 1 .11-.168zM11.207 2.5 13.5 4.793 14.793 3.5 12.5 1.207zm1.586 3L10.5 3.207 4 9.707V10h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.293zm-9.761 5.175-.106.106-1.528 3.821 3.821-1.528.106-.106A.5.5 0 0 1 5 12.5V12h-.5a.5.5 0 0 1-.5-.5V11h-.5a.5.5 0 0 1-.468-.325"/>
                     </svg>
                   </td>
@@ -344,56 +331,60 @@
               <i class="bi bi-x-lg"></i>
             </button>
           </div>
-          <div class="modal-body" style="overflow-y: auto;">
+         <div class="modal-body" style="overflow-y: auto;">
             <form [formGroup]="companyCustomerForm" (ngSubmit)="addCompanyCustomer()">
               
-                <label for="name">Name<span class="text-danger"> *</span></label>
+              <div class="mb-3">  
+              <label for="name">Name<span class="text-danger"> *</span></label>
                 <input type="text" class="form-control" id="name"  formControlName="name"  placeholder="Name">
-               <br>
+              </div>
 
-                <div class="form-group">
+                
+              <div class="mb-3">
                 <label for="category">Category<span *ngIf="mandatoryFieldsMap.get('category')" class="text-danger">*</span></label>
                
-                <!-- <input type="text" class="form-control" id="category" formControlName="category"  placeholder="Category"> -->
-                <select class="form-select custom-dropdown" class="form-control" id="category" formControlName="category" #category style="height: fit-content;"  [disabled]="!companyCustomerCategoryList || companyCustomerCategoryList.length === 0">
+                <select class="form-select form-control" id="category" formControlName="category" #category style="height: fit-content;"  [disabled]="!companyCustomerCategoryList || companyCustomerCategoryList.length === 0">
                   <option value="{{category.name}}" *ngFor="let category of companyCustomerCategoryList">{{category.name|titlecase}}</option>
                   <!-- <option value="{{[customer.name,customer.id]}}" *ngFor="let customer of companyCustomerList">{{customer.name}}</option> -->
-                  <!-- <option value="outOfService" selected>Out Of Service</option> -->
-                  
+                  <!-- <option value="outOfService" selected>Out Of Service</option> -->   
                   
                 </select>
               </div>
-                <br>
               
-                <label for="status">Status<span *ngIf="mandatoryFieldsMap.get('status')" class="text-danger">*</span></label>
+              <div class="mb-3">  
+              <label for="status">Status<span *ngIf="mandatoryFieldsMap.get('status')" class="text-danger">*</span></label>
                 <select class="form-select form-control" id="status" formControlName="status">
                   <option value="active" active>Active</option>
                   <option value="inactive" >Inactive</option>     
                 </select>
-                <br>
+              </div>
               
-                  <label for="phone">Phone<span *ngIf="mandatoryFieldsMap.get('phone')" class="text-danger">*</span></label>
+              <div class="mb-3">    
+              <label for="phone">Phone<span *ngIf="mandatoryFieldsMap.get('phone')" class="text-danger">*</span></label>
                   <input type="tel" class="form-control" id="phone" formControlName="phone" (input)="formatPhoneNumber($event)" >
                   <span *ngIf="this.companyCustomerForm?.get('phone').invalid" class="text-danger">Invalid</span>
                   <span *ngIf="(!this.companyCustomerForm?.get('phone').invalid)&&(this.companyCustomerForm?.get('phone').value?.length>0)" class="text-success">Valid</span>
-                  <br>
+              </div>
              
-                  <label for="email">Email<span *ngIf="mandatoryFieldsMap.get('email')" class="text-danger">*</span></label>
+              <div class="mb-3">    
+              <label for="email">Email<span *ngIf="mandatoryFieldsMap.get('email')" class="text-danger">*</span></label>
                   <input type="email" class="form-control" id="email" formControlName="email">
-                  <br>
+              </div>
 
-                  <label for="address">Address<span *ngIf="mandatoryFieldsMap.get('address')" class="text-danger">*</span></label>
+              <div class="mb-3">    
+              <label for="address">Address<span *ngIf="mandatoryFieldsMap.get('address')" class="text-danger">*</span></label>
                   <input type="text" class="form-control" id="address" formControlName="address"  placeholder="Address">
-                  <br>
+              </div>
 
-                  <label for="city">City<span *ngIf="mandatoryFieldsMap.get('city')" class="text-danger">*</span></label>
+              <div class="mb-3">    
+              <label for="city">City<span *ngIf="mandatoryFieldsMap.get('city')" class="text-danger">*</span></label>
                   <input type="text" class="form-control" id="city" formControlName="city"  placeholder="City">
-                  <br>
+              </div>
 
-                  <div class="d-flex" style="gap: 20px;">
+                  <div class="d-flex mb-3" style="gap: 20px;">
                   
                   <div style="flex: 1;">
-                    <label for="state">State<span *ngIf="mandatoryFieldsMap.get('state')" class="text-danger">*</span></label>
+                    <label for="state">State<span *ngIf="mandatoryFieldsMap.get('state')" class="text-danger"> *</span></label>
                   <select class="form-select form-control" id="state" formControlName="state" placeholder="Select a state" #status style="height: fit-content;" >
                     <option value="{{state}}" *ngFor="let state of stateList">{{state}}</option>
                     <!-- <option value="{{[customer.name,customer.id]}}" *ngFor="let customer of companyCustomerList">{{customer.name}}</option> -->
@@ -401,11 +392,11 @@
                   </select>
                 </div>
                  <div style="flex: 1;">
-                <label for="country">Country<span *ngIf="mandatoryFieldsMap.get('country')" class="text-danger">*</span></label>
+                <label for="country">Country<span *ngIf="mandatoryFieldsMap.get('country')" class="text-danger"> *</span></label>
                 <select
                       matNativeControl
                       formControlName="country"
-                      class="form-select custom-dropdown"
+                      class="form-select form-control"
                       (change)="getStateList($event.target.value)"
                       id="country"
                     >
@@ -416,7 +407,7 @@
               </div>
 
                   <div style="flex: 1;">
-                  <label for="zipCode">ZIP Code<span *ngIf="mandatoryFieldsMap.get('zipCode')" class="text-danger">*</span></label>
+                  <label for="zipCode">ZIP Code<span *ngIf="mandatoryFieldsMap.get('zipCode')" class="text-danger"> *</span></label>
                   <input type="text" class="form-control" id="zipCode" formControlName="zipCode"  minlength="3"
                     pattern="^[0-9A-Za-z]{3,15}$" maxlength="15">
                 </div>
@@ -424,9 +415,10 @@
 
                 <div *ngFor="let item of showFieldsList">
                   <div *ngIf="item.show">
-                    <br>
+                  <div class="mb-3">
                   <label for={{item.name}}>{{item.name|titlecase}}<span *ngIf="mandatoryFieldsMap.get(item.name)" class="text-danger"> *</span></label>
                   <input type={{item.type}} class="form-control" id="{{item.name}}" formControlName={{item.name}}>
+                  </div>
                   </div>
                 </div>
               
@@ -439,6 +431,7 @@
             </form>
            
           </div>
+
         </div>
       </div>
     </div>
@@ -450,11 +443,12 @@
   <div class="modal fade" id="customFieldModule" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle" aria-hidden="true">
     <div class="modal-dialog" role="document">
       <div class="modal-content">
-        <div class="modal-header">
-          <h2 class="modal-title" id="exampleModalLongTitle">All Fields</h2>
-          <button type="button" class="close  ms-auto" data-dismiss="modal" aria-label="Close" #closeBox4>
-            <span aria-hidden="true">&times;</span>
-          </button>
+         <div class="modal-header" style="padding: 13px 15px;position: sticky; top: 0; z-index: 100; background-color: white;">
+            <h2 class="modal-title" id="exampleModalLongTitle" style="margin:0; display: flex; justify-content: center;">Add Fields</h2>
+            <button type="button" class="btn btn-light btn-sm ms-auto" data-dismiss="modal" aria-label="Close" style="border-radius: 10px;" #closeBox>
+              <i class="bi bi-x-lg"></i>
+            </button>
+
         </div>
         <div class="modal-body">
           
@@ -490,8 +484,8 @@
           </div>
          
        
-        <div class="modal-footer d-flex justify-content-around">
-          <button  class="btn btn-light mt-3"  (click)="closeBox4.click()"  >Close</button>
+         <div class="modal-footer d-flex justify-content-center">
+              <button class="btn btn-light" (click)="closeBox4.click()" style="margin: 10px; width: 100px; border: 1px solid #c0c0c0">Close</button>
           <!-- <button type="submit" class="btn btn-primary mt-3" (click)="closeBox3.click()" (click)="addFilterForm()"   >Filter</button> -->
           
         </div>
@@ -564,3 +558,17 @@
 
 
 <!-- Modal -->
+
+
+
+
+
+
+
+
+
+
+
+
+
+

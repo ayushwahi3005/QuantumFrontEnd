@@ -63,7 +63,7 @@
       <ng-container *ngIf="searchedUser && searchedUser.length > 0; else noUser">
       <tr *ngFor="let item of searchedUser">
         <!-- <th scope="row">{{userList.indexOf(item)+1}}</th> -->
-        <td scope="row">{{userList.indexOf(item)+1}}</td>
+        <td scope="row">{{item.userId}}</td>
         <td>{{item.firstName}} {{item.lastName}}</td>
         <!-- <td>{{item.title}}</td> -->
         <td>{{item.email}}</td>
@@ -73,7 +73,7 @@
         <ng-template #invitedBlock>
         <td *ngIf="registredUsersMap.get(item.email)==true&&item.status=='active'">Active</td>
         <td *ngIf="registredUsersMap.get(item.email)==true&&item.status=='inActive'">Inactive</td>
-        <td *ngIf="registredUsersMap.get(item.email)==undefined">Invited</td >  
+        <td *ngIf="registredUsersMap.get(item.email)==undefined&&item.status=='invited'">Invited</td >  
         </ng-template>
         <td>
           <button mat-button id="matbutton" [matMenuTriggerFor]="menu">
@@ -312,12 +312,8 @@
             <div >
               <label>Role<span  class="text-danger"> *</span></label><br>
                
-                <select class="form-select form-control"  formControlName="role" style="width: 100%; margin-top: 10px; border-radius: 5px; height: 35px; border: 1px solid #c0c0c0" #role>
-                 
-                  <!-- <option value="ADMIN" selected>Administrator</option> -->
-                  
-                  <option value="{{role.id}}" *ngFor="let role of roleAndPermissionList">{{role.name}}</option>
-                 
+                <select class="form-select form-control" formControlName="role" style="width: 100%; margin-top: 10px; border-radius: 5px; height: 35px; border: 1px solid #c0c0c0" #role (change)="triggerRoleChange(role)">
+                  <option [value]="role.id" *ngFor="let role of roleAndPermissionList">{{role.name}}</option>
                 </select>
             </div>
              <div *ngFor="let input of selectedFilterList; let i = index" style="margin-top: 5px;">

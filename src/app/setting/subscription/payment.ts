@@ -4,6 +4,7 @@ import { PaymentType } from "./PaymentType";
 
 export class Payment{
     id!: string;
+    paymentId!:string;
   amount!: number;  // Assuming BigDecimal maps to number in TypeScript
   currency!: string;
   paymentStatus!: PaymentStatus;
@@ -12,6 +13,8 @@ export class Payment{
   paymentType!: PaymentType;
   description?: string; // Optional field
   companyId!: string;
+  cardLast4!: any; // Assuming BigDecimal maps to number in TypeScript
+
  
 
 

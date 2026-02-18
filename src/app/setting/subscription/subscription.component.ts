@@ -1170,75 +1170,75 @@ export class SubscriptionComponent {
     }
   }
 
-  downloadInvoice(item: any) {
-    // const item = this.InvoiceList.find(inv => inv.id === id);
-    // if (!item) return;
+  async downloadInvoice(item: any) {
+  try {
+    // Await the card details
+    const cardLast4 = await this.getLast4Digit(item.paymentId);
+    console.log('Card Last4:', cardLast4);
 
     // Create a hidden receipt container
     const receiptHtml = `
-  <div id="receipt-template" style="width: 600px; padding: 20px; font-family: 'Arial'; font-size: 14px; color: #000; background-color: #fff;">
-    <div style="margin-bottom: 20px;">
-
-      <h1>AssetYug</h1>
-    </div>
-
-    <h2>Receipt</h2>
-
-    <div style="display: flex; justify-content: space-between; margin-top: 10px;">
-      <div>
-        <div style="font-size: 12px; color: #666;">INVOICE ID</div>
-        <div style="font-weight: bold;">${item.paymentId}</div>
-      </div>
-      <div>
-        <div style="font-size: 12px; color: #666;">DATE</div>
-        <div style="font-weight: bold;">${new Date(item.startDate).toDateString()} - ${new Date(item.endDate).toDateString()}</div>
-      </div>
-    </div>
-
-    <div style="margin-top: 30px; background-color: #f3f3f3; border-radius: 12px; padding: 20px;">
-      <div style="display: flex; justify-content: space-between; margin-bottom: 10px;">
-        <div>
-          <div style="font-weight: bold;">Item</div>
-          <div style="font-size: 12px; color: #555;">GROWTH ${item.planSelected} PLAN</div>
+      <div id="receipt-template" style="width: 600px; padding: 20px; font-family: 'Arial'; font-size: 14px; color: #000; background-color: #fff;">
+        <div style="margin-bottom: 20px;">
+          <h1>AssetYug</h1>
         </div>
-        <div>
-           <div style="font-weight: bold;">$${item.amount.toFixed(2)}</div>
-           <div style="font-size: 12px; color: #555;">${item.person} User(s)</div>
+
+        <h2>Receipt</h2>
+
+        <div style="display: flex; justify-content: space-between; margin-top: 10px;">
+          <div>
+            <div style="font-size: 12px; color: #666;">INVOICE ID</div>
+            <div style="font-weight: bold;">${item.paymentId}</div>
+          </div>
+          <div>
+            <div style="font-size: 12px; color: #666;">DATE</div>
+            <div style="font-weight: bold;">${new Date(item.startDate).toDateString()} - ${new Date(item.endDate).toDateString()}</div>
+          </div>
+        </div>
+
+        <div style="margin-top: 30px; background-color: #f3f3f3; border-radius: 12px; padding: 20px;">
+          <div style="display: flex; justify-content: space-between; margin-bottom: 10px;">
+            <div>
+              <div style="font-weight: bold;">Item</div>
+              <div style="font-size: 12px; color: #555;">GROWTH ${item.planSelected} PLAN</div>
+            </div>
+            <div>
+              <div style="font-weight: bold;">$${item.amount.toFixed(2)}</div>
+              <div style="font-size: 12px; color: #555;">${item.person} User(s)</div>
+            </div>
+          </div>
+
+          <div style="display: flex; justify-content: space-between; margin-bottom: 10px;">
+            <div>
+              <div style="font-weight: bold;">Total tax</div>
+              <div style="font-size: 12px; color: #555;">Sales Tax (0% x $${item.amount.toFixed(2)})</div>
+            </div>
+            <div style="font-weight: bold;">$0.00</div>
+          </div>
+
+          <hr style="border: none; border-top: 1px solid #ccc;" />
+
+          <div style="display: flex; justify-content: space-between; margin-top: 10px;">
+            <div style="font-weight: bold;">Total</div>
+            <div style="font-weight: bold;">$${item.amount.toFixed(2)}</div>
+          </div>
+
+          <div style="margin-top: 20px;">
+            <div style="font-size: 12px; color: #666;">Payment method</div>
+            <div style="font-weight: bold;">${this.getPaymentTypeLabel(item.paymentType)}</div>
+            ${cardLast4 ? `<div style="font-size: 12px; color: #666; margin-top: 5px;">Card ending in ${cardLast4}</div>` : ''}
+          </div>
+        </div>
+
+        <p style="margin-top: 30px; font-size: 12px;">
+          <a href="https://yourcompany.com/terms" target="_blank" style="color: #007bff; text-decoration: underline;">Terms & Conditions apply</a>.
+        </p>
+
+        <div style="font-size: 10px; color: #999; margin-top: 40px; text-align: center;">
+          Issued by AssetYug Inc.
         </div>
       </div>
-
-     
-
-      <div style="display: flex; justify-content: space-between; margin-bottom: 10px;">
-        <div>
-          <div style="font-weight: bold;">Total tax</div>
-          <div style="font-size: 12px; color: #555;">Sales Tax (0% x $${item.amount.toFixed(2)})</div>
-        </div>
-        <div style="font-weight: bold;">$0.00</div>
-      </div>
-
-      <hr style="border: none; border-top: 1px solid #ccc;" />
-
-      <div style="display: flex; justify-content: space-between; margin-top: 10px;">
-        <div style="font-weight: bold;">Total</div>
-        <div style="font-weight: bold;">$${item.amount.toFixed(2)}</div>
-      </div>
-
-      <div style="margin-top: 20px;">
-        <div style="font-size: 12px; color: #666;">Payment method</div>
-        <div style="font-weight: bold;">${this.getPaymentTypeLabel(item.paymentType)}</div>
-      </div>
-    </div>
-
-    <p style="margin-top: 30px; font-size: 12px;">
-      <a href="https://yourcompany.com/terms" target="_blank" style="color: #007bff; text-decoration: underline;">Terms & Conditions apply</a>.
-    </p>
-
-    <div style="font-size: 10px; color: #999; margin-top: 40px; text-align: center;">
-      Issued by AssetYug Inc.
-    </div>
-  </div>
-`;
+    `;
 
     // Create a hidden container in the DOM
     const hiddenDiv = document.createElement('div');
@@ -1257,9 +1257,12 @@ export class SubscriptionComponent {
       pdf.addImage(imgData, 'PNG', 0, 0, pdfWidth, pdfHeight);
       pdf.save(`Invoice-${item.id}.pdf`);
 
-      document.body.removeChild(hiddenDiv); // clean up
+      document.body.removeChild(hiddenDiv);
     });
+  } catch (error) {
+    console.error('Error generating invoice:', error);
   }
+}
   getPaymentTypeLabel(type: string): string {
     switch (type) {
       case 'CREDIT_CARD':
@@ -1322,4 +1325,22 @@ export class SubscriptionComponent {
       },
     );
   }
+ getLast4Digit(paymentIntent: string): Promise<string | null> {
+  return new Promise((resolve, reject) => {
+    this.subcriptionSerive.getCardLast4Digit(paymentIntent).subscribe(
+      (data) => {
+        console.log('API Response:', data);
+        if (data?.payment_method?.card?.last4) {
+          resolve(data.payment_method.card.last4);
+        } else {
+          resolve(null);
+        }
+      },
+      (err) => {
+        console.error('Error fetching card:', err);
+        reject(err);
+      }
+    );
+  });
+}
 }

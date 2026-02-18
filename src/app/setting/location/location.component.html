@@ -43,7 +43,7 @@
                   <ng-container *ngIf="searchedLocationList && searchedLocationList.length > 0; else noLocations">
                   <tr *ngFor="let item of searchedLocationList" (mouseenter)="editButtonVisibile(searchedLocationList.indexOf(item)+1)" (mouseleave)="editButtonNotVisible()">
                     
-                    <td scope="row">{{searchedLocationList.indexOf(item)+1}}</td>
+                    <td scope="row">{{item.locationId}}</td>
                     <!-- <td>
                       <div *ngIf="item.parentLocationName">
                       {{item.parentLocationName}}
@@ -116,7 +116,7 @@
               <tbody>
                 <ng-container *ngIf="searchedBinList && searchedBinList.length > 0; else noBins">
                 <tr *ngFor="let item of searchedBinList" (mouseenter)="editButtonVisibile(searchedBinList.indexOf(item)+1)" (mouseleave)="editButtonNotVisible()">
-                  <th scope="row">{{searchedBinList.indexOf(item)+1}}</th>
+                  <th scope="row">{{item.binId}}</th>
                   <td>{{item.binNumber}}</td>
                   <td>{{item.locationName}}</td>
                   <td>{{ item.status === 'active' ? 'Active' : 'In Active' }}</td>

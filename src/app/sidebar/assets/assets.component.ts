@@ -82,6 +82,7 @@ export class AssetsComponent implements OnDestroy{
 
   assetListWithExtraFields: any = [];
   searchData!: any;
+  mySearchData!:any;
   searchDataBy!: string;
   sortedBy!: string;
 
@@ -212,7 +213,7 @@ export class AssetsComponent implements OnDestroy{
     this.myArray = JSON.parse(this.savedExtraColumn)
     console.log("MYARRAY" + this.myArray)
 
-    this.myList = ['image', 'assetId', 'name', 'serialNumber', 'category', 'customer', 'location', 'status','checkInOut'];
+    this.myList = ['image', 'assetId', 'name', 'serialNumber', 'category', 'customer', 'location', 'status','checkInOut','lastHandler','lastHandlerLocation'];
     this.showMandatoryBasicFields.set('image', true);
     this.showMandatoryBasicFields.set('assetId', true);
     this.showMandatoryBasicFields.set('name', true);
@@ -549,6 +550,7 @@ export class AssetsComponent implements OnDestroy{
   clearSearchData() {
     console.log("clear search data")
     this.searchData = null;
+    this.mySearchData=null;
     // this.advanceFilterFunc();
     this.optimizedAdvanceFilterFunc()
   }
@@ -917,18 +919,31 @@ exportexcel(): void {
   }
 
   onSearch() {
-    this.loading = true;
-    console.log(this.searchData);
-    let mySearch = this.searchData;
+    // this.loading = true;
+    let mySearch = this.mySearchData;
     mySearch = mySearch?.trim();
-
+    console.log(mySearch);
     if (mySearch == "") {
       this.searchData = null;
     }
+    this.searchedAssets = this.assetListWithExtraFields.filter((mydata: any) => {
+
+          const search = mySearch?.toString().toLowerCase().trim();
+          if (!search) return true;
+
+          const dataString = JSON.stringify(mydata).toLowerCase();
+          // console.log(dataString.includes(search))
+
+          return dataString.includes(search);
+        });
+
+        console.log(this.searchedAssets)
+
+
     // this.searchData = data.toLowerCase();
     // this.filterAssets();
     // this.advanceFilterFunc();
-    this.optimizedAdvanceFilterFunc()
+    // this.optimizedAdvanceFilterFunc()
   }
 
   // filterAssets() {
@@ -941,29 +956,29 @@ exportexcel(): void {
   //   }
   //   this.assetListWithExtraFields=this.assetListWithExtraFields.filter((mydata: any)=>{
   //     //  console.log(mydata)
-  //         let filterData:any;
-  //         if(mydata.name.toLowerCase().includes(this.searchData.toLowerCase())||mydata.assetId==this.searchData||mydata.serialNumber.toLowerCase().includes(this.searchData.toLowerCase())||mydata.category.toLowerCase().includes(this.searchData.toLowerCase())||mydata.customer.toLowerCase().includes(this.searchData.toLowerCase())||mydata.location.toLowerCase().includes(this.searchData.toLowerCase())||mydata.status.toLowerCase().includes(this.searchData.toLowerCase())){
-  //           filterData=mydata;
-  //         }
-  //         else{
-  //           let flag=0;
-  //           this.selectedExtraColums.forEach((x)=>{
+          // let filterData:any;
+          // if(mydata.name.toLowerCase().includes(this.searchData.toLowerCase())||mydata.assetId==this.searchData||mydata.serialNumber.toLowerCase().includes(this.searchData.toLowerCase())||mydata.category.toLowerCase().includes(this.searchData.toLowerCase())||mydata.customer.toLowerCase().includes(this.searchData.toLowerCase())||mydata.location.toLowerCase().includes(this.searchData.toLowerCase())||mydata.status.toLowerCase().includes(this.searchData.toLowerCase())){
+          //   filterData=mydata;
+          // }
+          // else{
+          //   let flag=0;
+          //   this.selectedExtraColums.forEach((x)=>{
 
-  //            if(isNaN(mydata[x])&&mydata[x].toLowerCase().includes(this.searchData.toLowerCase())){
-  //               filterData=mydata;
-  //               flag=1;
-  //             }
-  //             else if((mydata[x]==this.searchData)){
-  //               filterData=mydata;
-  //               flag=1;
-  //             }
+          //    if(isNaN(mydata[x])&&mydata[x].toLowerCase().includes(this.searchData.toLowerCase())){
+          //       filterData=mydata;
+          //       flag=1;
+          //     }
+          //     else if((mydata[x]==this.searchData)){
+          //       filterData=mydata;
+          //       flag=1;
+          //     }
 
-  //           })
-  //           if(flag==0){
-  //           filterData=false;
-  //           }
-  //         }
-  //         return filterData;
+          //   })
+          //   if(flag==0){
+          //   filterData=false;
+          //   }
+          // }
+          // return filterData;
 
   //         // keys.forEach((key)=>{
   //         //   const myString:String =data[key];
@@ -1327,6 +1342,12 @@ optimizedAdvanceFilterFunc() {
       console.log("Loading->" + this.loading);
     }
   );
+}
+ getLastCheckInOutBy(data: any): string {
+  return data?.assetCheckInOut?.detailsList?.at(-1)?.employee || '';
+}
+ getLastLocation(data: any): string {
+  return data?.assetCheckInOut?.detailsList?.at(-1)?.userLocation || '';
 }
 
 }

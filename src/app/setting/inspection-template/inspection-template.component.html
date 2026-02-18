@@ -50,7 +50,7 @@
                     <ng-container *ngIf="searchedInspection && searchedInspection.length > 0; else noInspection">
                         <tr *ngFor="let item of searchedInspection" (mouseenter)="editButtonVisibile(searchedInspection.indexOf(item)+1)" (mouseleave)="editButtonNotVisible()">
                             <!-- <th scope="row">{{searchedRole.indexOf(item)+1}}</th> -->
-                            <td scope="row">{{searchedInspection.indexOf(item)+1}}</td>
+                            <td scope="row">{{item.assetCategoryInspectionId}}</td>
                             <td>{{item.name}}</td>
                             <td>{{item.categoryName}}</td>
                             <td>{{item.status|titlecase}}</td>

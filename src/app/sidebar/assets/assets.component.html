@@ -37,9 +37,9 @@
         <div class="d-flex justify-content-between searchBar" style="float: left; width: 450px; align-items: center;">
           <div class="search-bar" style="margin: 0 5px;">
             <input type="text" style="margin: 0px 0px; border-radius: 5px; height: 40px;" class="asset-search"
-              (keydown)="onKeyDown($event)" [(ngModel)]="searchData" placeholder="Search">
+              (keydown)="onKeyDown($event)" [(ngModel)]="mySearchData" placeholder="Search">
             <i class="bi bi-search searchIcon"></i>
-            <i *ngIf="searchData" class="bi bi-x-circle clearIcon" (click)="clearSearchData()"></i>
+            <i *ngIf="mySearchData" class="bi bi-x-circle clearIcon" (click)="clearSearchData()"></i>
           </div>
 
           <button class="btn btn-primary" (click)="onSearch()" style="margin: 0px 5px; ">Search</button>
@@ -147,14 +147,16 @@
                 <th scope="col" *ngIf="showMandatoryBasicFields?.get('location')">Location</th>
                 <th scope="col" *ngIf="showMandatoryBasicFields?.get('status')">Status</th>
                 <th scope="col" *ngIf="showMandatoryBasicFields?.get('checkInOut')">Checked In/Out</th>
+                 <th scope="col" *ngIf="showMandatoryBasicFields?.get('lastHandler')">Last Handled By</th>
+                    <th scope="col" *ngIf="showMandatoryBasicFields?.get('lastHandlerLocation')">Last Known Location</th>
                 <th scope="col" *ngFor="let col of selectedExtraColums">{{col}}</th>
                 <th></th>
               </tr>
             </thead>
             <tbody>
               <ng-container *ngIf="searchedAssets && searchedAssets.length > 0; else noAssets">
-                <tr *ngFor="let item of assetListWithExtraFields"
-                  (mouseenter)="editButtonVisibile(assetListWithExtraFields.indexOf(item)+1)"
+                <tr *ngFor="let item of searchedAssets"
+                  (mouseenter)="editButtonVisibile(searchedAssets.indexOf(item)+1)"
                   (mouseleave)="editButtonNotVisible()" [routerLink]="['/assets',item.id]">
 
                   <!-- <td *ngIf="showMandatoryBasicFields?.get('image')" class="d-flex justify-content-between upload"><img src="../../../assets/asset_image.jpg" class="image" *ngIf="!item.image" ><img src={{item.image}} class="image"  *ngIf="item.image"  ></td> -->
@@ -170,7 +172,9 @@
                   <td *ngIf="item.status=='outofservice'&&showMandatoryBasicFields?.get('status')">Out Of Service</td>
                   <td *ngIf="item.status==null||item.status==''&&showMandatoryBasicFields?.get('status')">{{''}}</td>
                   <td *ngIf="showMandatoryBasicFields?.get('checkInOut')">{{(item.checkedInOutStatus
-||'')}}</td>
+                    ||'')}}</td>
+                  <td *ngIf="showMandatoryBasicFields?.get('lastHandler')">{{getLastCheckInOutBy(item)}}</td>
+                   <td *ngIf="showMandatoryBasicFields?.get('lastHandlerLocation')">{{getLastLocation(item)}}</td>
 
                   <td *ngFor="let col of selectedExtraColums">{{item.customFields[col]||''}}</td>
                   <td>
@@ -180,7 +184,7 @@
 
                     <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="currentColor"
                       class="bi bi-pencil" viewBox="0 0 16 16" style="margin-top: 4px; margin-bottom: 4px; color:gray "
-                      [ngClass]="{'editoption':!(editVisibility&&(editButtonId==assetListWithExtraFields.indexOf(item)+1))}"
+                      [ngClass]="{'editoption':!(editVisibility&&(editButtonId==searchedAssets.indexOf(item)+1))}"
                       (click)="changeAssetDetails(item)"
                       *ngIf="!(userRoleDetails?.assets!='full'&&userRoleDetails?.assets!='edit' &&userRole!='ADMIN')">
                       <path
@@ -642,6 +646,14 @@
           <div> <mat-checkbox [color]="checkBoxColor"
               [checked]="showMandatoryBasicFields?.get('checkInOut')==true?true:false"
               (change)="mandatoryFieldCheckBox($event.checked,'checkInOut')">CheckedIn/Out</mat-checkbox></div>
+          
+          <div> <mat-checkbox [color]="checkBoxColor"
+              [checked]="showMandatoryBasicFields?.get('lastHandler')==true?true:false"
+              (change)="mandatoryFieldCheckBox($event.checked,'lastHandler')">Last Handled By</mat-checkbox></div>
+          
+          <div> <mat-checkbox [color]="checkBoxColor"
+              [checked]="showMandatoryBasicFields?.get('lastHandlerLocation')==true?true:false"
+              (change)="mandatoryFieldCheckBox($event.checked,'lastHandlerLocation')">Last Known Location</mat-checkbox></div>
 
           <div *ngFor="let item of extraFieldNameList">
 

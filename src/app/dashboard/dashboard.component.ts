@@ -59,7 +59,16 @@ export class DashboardComponent  {
   // }
   
 ];
-
+  showTrialAlert: boolean = false
+    alertStyle = {
+      'margin': '10px 5px',
+      'height': '60px',
+      'position': 'fixed',
+      'width': 'calc(100vw - 100px)',
+      'z-index': '101',
+      'left': '70px',
+      'transition': 'width 150ms linear'
+    };
   constructor(private auth:AuthService,private router:Router,private dashService:DashboardService,private notificationService:NotificationService) {
     // this.notificationService.getNotificationObservable().subscribe((message) => {
     //   this.notification = message;
@@ -72,6 +81,15 @@ export class DashboardComponent  {
   }
 
   ngOnInit(){
+      this.alertStyle = {
+      'margin': '10px 5px',
+      'height': '60px',
+      'position': 'fixed',
+      'width': 'calc(100vw - 100px)',
+      'z-index': '101',
+      'left': '70px',
+      'transition': 'width 150ms linear'
+    };
     // this.dashService.componentMethodCalled$.subscribe((data) => {
     //   if (data) { // Ensure there's data to handle
     //     // alert('Method called with data: ' + JSON.stringify(data));
@@ -90,6 +108,7 @@ export class DashboardComponent  {
     if(storedCurr!=null){
     this.current=parseInt(storedCurr,10);
     }
+    let trialInfo=localStorage.getItem('trialAlertDismissedInfo');
     // this.dashService.getNotification(this.email).subscribe((data)=>{
     //   // console.log("Notification Data",data);  
     //   this.unReadCount=0;
@@ -189,10 +208,25 @@ export class DashboardComponent  {
       else if((this.currentSubscription==null||this.currentSubscription.status!='ACTIVE')&&this.freeTrialDetails.trialExpired===false &&this.trialDayLeft>0){
         this.currentSubcriptionMessage='Trial Period - '+this.trialDayLeft+ ' Days Left';
         this.currentSubscriptionMessageStyle+='border:solid #ffab00 1px; background-color: #f5c242;';
+
+         const trialDate = trialInfo ? new Date(trialInfo) : new Date(0); 
+         const now = new Date();
+         const ONE_DAY_MS = 24 * 60 * 60 * 1000;
+        const isWithinOneDay = (now.getTime() - trialDate.getTime()) <= ONE_DAY_MS;
+        
+
+        if(trialInfo!==null&&trialInfo!==undefined&&isWithinOneDay){
+         this.showTrialAlert=false;
+        }else{
+          this.showTrialAlert=true;
+        }
+
       }
       else{
         this.currentSubcriptionMessage='No Plan';
         this.currentSubscriptionMessageStyle+=' border:solid #dd1e10ff 1px; background-color: #F44336';
+        this.showTrialAlert=false;
+
       }
        console.log(this.currentSubcriptionMessage)
     },
@@ -246,11 +280,30 @@ console.log(localStorage.getItem('user'));
   // }
   onHover(){
     this.hoverOverSidebar=false;
+      this.alertStyle = {
+      'margin': '10px 5px',
+      'height': '60px',
+      'position': 'fixed',
+      'width': 'calc(100vw - 285px)',
+      'z-index': '101',
+      'left': '250px',
+      'transition': 'width 150ms linear'
+    };
+    
     
     // console.log(this.hoverOverSidebar);
   }
   offHover(){
     this.hoverOverSidebar=true;
+     this.alertStyle = {
+      'margin': '10px 5px',
+      'height': '60px',
+      'position': 'fixed',
+      'width': 'calc(100vw - 100px)',
+      'z-index': '101',
+      'left': '70px',
+      'transition': 'width 150ms linear'
+    };
 
     // console.log(this.hoverOverSidebar);
   }
@@ -282,7 +335,14 @@ openSettings() {
   this.router.navigate(['/setting-home'], { queryParams: { tab: tabNumber } });
 }
 
-  
+   makeTrialAlertFalse(){
+    this.showTrialAlert=false;
+    // let obj={
+    //   trialAlertDismissed:true,
+    //   dimissTime:new Date().toISOString()
+    // }
+    localStorage.setItem('trialAlertDismissedInfo',new Date().toISOString());
+  }
 
   
   

@@ -126,10 +126,17 @@ export class UsersComponent {
     // })
     this.userService.getRoleAndPermission(this.companyId).subscribe((data)=>{
       this.roleAndPermissionList=data;
+      console.log(this.roleAndPermissionList)
       this.roleAndPermissionList = this.roleAndPermissionList.map((item: any) => ({
         ...item,
         _id: item.id
       }));
+      const adminRole = this.roleAndPermissionList.find(role => role.name === 'ADMIN');
+  if (adminRole) {
+    this.userForm.patchValue({
+      role: adminRole.id
+    });
+  }
       console.log(this.roleAndPermissionList)
     },
   err=>{
@@ -151,7 +158,7 @@ export class UsersComponent {
       jobTitle:[''],
       email:['',Validators.required],
       phoneNumber:[''],
-      role:['',Validators.required]
+      role:['ADMIN',Validators.required]
     });
 
     this.editUserForm=this.formBuilder.group({
@@ -308,11 +315,18 @@ export class UsersComponent {
   }
 
 
-
+  triggerRoleChange(data:any){
+    console.log(data.target.value)
+    
+  }
   addUser(){
     console.log(this.userForm.value);
     console.log(this.companyId)
     console.log(this.userForm.value)
+     if (!this.userForm.controls['role'].value) {
+    this.triggerAlert("Please select a role", "danger");
+    return;
+  }
     //   this.showFieldsList?.forEach((x) => {
     //   if (x.show == true) {
     //     extraFieldValueMap.set(x.name, this.assetForm.get(x.name)?.value);
@@ -358,6 +372,7 @@ export class UsersComponent {
       "email":this.userForm.controls['email'].value,
       "companyId":this.companyId,
       "mobileNumber":this.userForm.controls['phoneNumber'].value,
+      "status":"invited",
       "role":role,
       "title":this.userForm.controls['jobTitle'].value
     }
@@ -552,6 +567,10 @@ export class UsersComponent {
      
     }
     updateRoleChange(selectedMongoId:any){
+       if (!this.userForm.controls['role'].value) {
+    this.triggerAlert("Please select a role", "danger");
+    return;
+  }
       const selectedRole = this.roleAndPermissionList.find(role => role._id === selectedMongoId);
     if (selectedRole) {
       console.log('role.id:', selectedRole.id);
@@ -563,6 +582,7 @@ export class UsersComponent {
     }
     updateUser(){
       console.log(this.editUserForm.controls['role'].value)
+      console.log(this.editUserForm.value)
       let role=this.roleAndPermissionList.filter((x)=> x.id==this.editUserForm.controls['role'].value).at(0);
       console.log(role)
       let obj={
@@ -574,13 +594,14 @@ export class UsersComponent {
         "mobileNumber":this.editUserForm.controls['phoneNumber'].value,
         "role":role,
         "title":this.editUserForm.controls['jobTitle'].value,
-        "status":this.editUserForm.controls['status'].value
+        "status":(this.editUserForm.controls['status'].value==='')?this.selectEditUser.status:this.editUserForm.controls['status'].value
       }
       this.userService.updaterUser(obj).subscribe((data)=>{
        console.log("User Updated")
       },
       (err)=>{
         console.log(err);
+        this.triggerAlert(err.error.errorMessage,"danger");
         this.selectEditUser=null;
       },
       ()=>{

@@ -1,11 +1,12 @@
-table{
-    
-   
-    /* margin-top: 10px;
-    margin-left: 10px; */
-    /* font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif; */
-    border-radius: 10px;
+* {
+  font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+}
 
+table{
+  /* margin-top: 10px;
+  margin-left: 10px; */
+  /* font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif; */
+  border-radius: 10px;
 }
 
 /* thead {
@@ -147,18 +148,15 @@ th{
 } */
 
 .searchBar a{
-
-    border: none;
-  
-
-    background-color: white;
-    color: black;
-    padding: 5px 5px;
+  border: none;
+  /* background-color: white; */
+  color: black;
+  padding: 5px 5px;
 }
-.sort{
-    
-    padding: 5px;
-    margin-left: 5px;
+
+.sort{   
+  padding: 5px;
+  margin-left: 5px;
 }
 
 /* .multiselect-dropdown{
@@ -196,7 +194,7 @@ border-style: none;
 
 
 .row{
-    margin: 20px 0 0 0;
+  margin: 20px 0 0 0;
 }
 
 #companycustomer-table{
@@ -215,9 +213,9 @@ border-style: none;
 }
 
 #companycustomer-table tr:hover{
-    /* box-shadow: 20px 10px 10px 5px lightgray; */
-    background-color: #f5f5f5;
-    cursor: pointer;
+  /* box-shadow: 20px 10px 10px 5px lightgray; */
+  background-color: #f5f5f5;
+  cursor: pointer;
 }
 
 #companycustomer-table tr:hover td{
@@ -234,7 +232,7 @@ border-style: none;
 }
 
 #companycustomer-table tbody tr {
-    cursor: pointer; /* Ensures the cursor is always a pointer over the row */
+  cursor: pointer; /* Ensures the cursor is always a pointer over the row */
 }
 
 .table-dark {
@@ -245,19 +243,18 @@ border-style: none;
 .extraFieldInput{
     color: #717275;
     border-radius: 8px;
-    
-   
-
     border: 2px solid #aab1b8;
     -webkit-transition: 0.5s;
     transition: 0.5s;
     outline:none;
     width: 93%;
     height: 40px;
- }
- .extraFieldInput:focus{
-    border: 2px solid #1a65ab;
- }
+}
+
+.extraFieldInput:focus{
+  border: 2px solid #1a65ab;
+}
+
  label {
     display: block;
   }
@@ -484,4 +481,59 @@ border-style: none;
   100% {
     background-color: transparent;
   }
+}
+
+.form-control{
+  border-radius: 5px;
+  border: 0.5px solid #c0c0c0;
+  font-size: 16px;
+  padding-left: 11px;
+  width: 100%;
+  margin-top: 5px;
+  height: 35px;
+}
+
+.form-control:focus {
+  border-color: #007bff; /* Change border color */
+  box-shadow: 0 0 5px rgba(0, 123, 255, 0.5); /* Add a glowing effect */
+  outline: none; /* Remove default outline */
+}
+
+.form-select:focus {
+  border-color: #007bff; /* Change border color */
+  box-shadow: 0 0 5px rgba(0, 123, 255, 0.5); /* Add a glowing effect */
+  outline: none; /* Remove default outline */
+}
+
+.dropdown-menu {
+  position: absolute;
+  width: auto;
+  height: auto;
+  /* max-height: 200px; */
+  overflow-y: auto;
+  /* border: 1px solid #ccc; */
+  border-radius: 5px;
+  background-color: #fff;
+  z-index: 1000;
+  display: none;
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+}
+
+.dropdown-menu.show {
+  display: block;
+}
+
+.dropdown-item {
+  padding: 7px 12px;
+  cursor: pointer;
+  padding-left: 34px;
+  padding-right: 34px;
+}
+
+.dropdown-item:hover {
+  background-color: #f1f1f1;
+  border-radius: 5px;
 }

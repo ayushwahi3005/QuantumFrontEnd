@@ -78,6 +78,7 @@ selectedCountryCode='United States of America';
     this.searchedLocationList = [];
     this.locationForm = this.formBuilder.group({
       id: [null],
+      locationId:[''],
       name: [''],
       parentLocation: [''],
       address: [''],

@@ -117,6 +117,9 @@ export class SubscriptionService {
     // this.headers.append( merchant: this.clientId )
     return this.httpClient.get(this.paymentEndpoint+'checkCred', { headers: myheaders});
   }
+  getCardLast4Digit(paymentIntentId: string):Observable<any>{
+    return this.httpClient.get(this.paymentEndpoint+'payment-intent/'+paymentIntentId, { headers:this.headers });
+  }
 
 
 
