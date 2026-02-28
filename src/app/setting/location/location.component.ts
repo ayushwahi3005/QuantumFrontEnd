@@ -19,6 +19,7 @@ export class LocationComponent {
   email: any;
   companyId: any;
   locationList: any = [];
+  locationActiveList: any = [];
   searchedLocationList: any = [];
 
   binList: any = [];
@@ -104,6 +105,15 @@ selectedCountryCode='United States of America';
         this.locationList = data;
         this.searchedLocationList = this.locationList;
         console.log(this.locationList);
+      },
+      (err) => {
+        console.log(err);
+      }
+    );
+    this.locationService.getActiveLocation(this.companyId).subscribe(
+      (data) => {
+        this.locationActiveList = data;
+
       },
       (err) => {
         console.log(err);

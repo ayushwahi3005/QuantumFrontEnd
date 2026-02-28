@@ -140,6 +140,11 @@ export class LoginComponent {
       this.triggerAlert(mydata.data, mydata.type);
       this.errorMessage = mydata.data;
     });
+
+    this.loginService.getLoginLoaderSubject().subscribe((loaderValue: boolean) => {
+      this.loader = loaderValue;
+      console.log("Login loader set to: " + this.loader);
+    });
   }
 
   /**

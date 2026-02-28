@@ -140,32 +140,58 @@
 }
 
 .charts-grid {
-  /* display: grid;
-  justify-content: space-around;
-  grid-template-columns: repeat(auto-fit, minmax(400px, 1fr)); */
-  gap: 20px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 24px;
   margin-bottom: 24px;
+  justify-content: space-between;
+}
+
+/* New column layout for charts */
+.charts-wrapper {
+  display: flex;
+  gap: 24px;
+  margin-bottom: 24px;
+}
+
+.charts-left-column {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  flex: 1;
+}
+
+.charts-right-column {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  flex: 1;
 }
 
 .chart-card {
   background: white;
   border-radius: 16px;
   padding: 24px;
+  flex: 1 1 calc(33.333% - 16px);
+  min-width: 300px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
 }
 .chart-canvas {
-  min-width: 400px;           /* 🔑 scrollbar appears below this */
   width: 100%;
+  height: 300px;
 }
-.status-chart{
-  width: 300px;
+.status-chart {
+  flex: 1 1 calc(33.333% - 16px);
+  min-width: 300px;
+}
+
+.trend-chart {
+  flex: 1 1 calc(33.333% - 16px);
+  min-width: 300px;
 }
 
 .chart-header {
   margin-bottom: 20px;
-}
-.trend-chart {
-  width: 100%;
-  min-width: 350px;
 }
 
 .chart-header h3 {
@@ -214,20 +240,23 @@
 .status-content {
   display: flex;
   align-items: center;
-  justify-content: space-around;
+  justify-content: center;
   flex-wrap: wrap;
-  gap: 20px;
+  gap: 30px;
+  padding: 20px 0;
 }
 
 .donut-chart {
-  width: 200px;
-  height: 200px;
+  width: 180px;
+  height: 180px;
+  flex-shrink: 0;
 }
 
 .status-labels {
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: 14px;
+  padding-left: 20px;
 }
 
 .status-label {
@@ -302,7 +331,13 @@
   }
   
   .charts-grid {
-    grid-template-columns: 1fr;
+    flex-direction: column;
+  }
+
+  .chart-card,
+  .status-chart,
+  .trend-chart {
+    flex: 1 1 100%;
   }
   
   .type-row {
@@ -318,8 +353,9 @@
 
 .chart-container {
   width: 100%;
-  overflow-x: auto;           /* enable horizontal scroll */
-  overflow-y: auto;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 canvas {

@@ -125,12 +125,13 @@
                             <label for="categoryName">
                               Asset Category<span class="text-danger"> *</span>
                             </label>
-                            <select class="form-select" name="categoryName" id="categoryName" [(ngModel)]="inspectionForm.categoryName" #categoryName >
+                          <select class="form-select" name="categoryName" id="categoryName" [(ngModel)]="inspectionForm.categoryName" #categoryName >
                               <option value="none" selected>None</option>
                               <option *ngFor="let category of assetCategoryList" [value]="category.name">
                                 {{ category.name }}
                               </option>
                             </select>
+                           
                           </div>
                           
                         <div class="d-flex justify-content-between">

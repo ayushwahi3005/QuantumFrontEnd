@@ -256,9 +256,9 @@ export class AssetDetailsService {
       { headers: this.headers },
     );
   }
-  getAllAssetInspectionInstanceByAssetId(id: string): Observable<any> {
+  getAllAssetInspectionInstanceByAssetId(id: string, pageNumber: number = 0, pageSize: number = 10): Observable<any> {
     return this.httpClient.get(
-      this.assetEndpoint + 'getAllAssetInspectionInstanceByAssetId/' + id,
+      this.assetEndpoint + 'getAllAssetInspectionInstanceByAssetId/' + id + '/' + pageNumber + '/' + pageSize,
       { headers: this.headers },
     );
   }
@@ -311,6 +311,12 @@ export class AssetDetailsService {
   }
   getInspectionOverviewExport(companyId: string, assetId: any): Observable<any> {
     return this.httpClient.get(this.assetInspectionEndpoint + 'inspection-overview-export/' + companyId + '/' + assetId, {
+        headers: this.headers,
+        responseType: 'blob', // ✅ CRITICAL FIX
+      },);
+  }
+  getInspectionExport(companyId: string, assetId: any): Observable<any> {
+    return this.httpClient.get(this.assetInspectionEndpoint + 'inspection-export/' + companyId + '/' + assetId, {
         headers: this.headers,
         responseType: 'blob', // ✅ CRITICAL FIX
       },);

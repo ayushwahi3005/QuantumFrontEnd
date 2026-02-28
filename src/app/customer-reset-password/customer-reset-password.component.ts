@@ -169,7 +169,7 @@ export class CustomerResetPasswordComponent {
     }
 
 
-    this.customerResetPasswordService.updatePassword(obj).subscribe((data)=>{
+    this.customerResetPasswordService.updatePassword(obj,this.email).subscribe((data)=>{
       console.log("Password Updated Successfully");
       this.triggerAlert("Password Updated Successfully","success",true)
     },

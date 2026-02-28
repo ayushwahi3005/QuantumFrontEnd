@@ -22,6 +22,7 @@ export class SubscriptionService {
   paymentEndpoint=environment.endpoint+"payment/"
   customerEndpoint=environment.endpoint+"customer/";
   countryEndpoint=environment.endpoint+"country/"
+  
   stateList():Observable<any>{
 
     return this.httpClient.get(this.companyCustomerEndpoint+"statelist",{headers:this.headers});
@@ -120,6 +121,10 @@ export class SubscriptionService {
   getCardLast4Digit(paymentIntentId: string):Observable<any>{
     return this.httpClient.get(this.paymentEndpoint+'payment-intent/'+paymentIntentId, { headers:this.headers });
   }
+
+ 
+
+ 
 
 
 

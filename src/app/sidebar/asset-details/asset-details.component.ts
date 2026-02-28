@@ -153,6 +153,17 @@ export class AssetDetailsComponent {
 
   stepObject: any[] = [];
   notedData!: string;
+
+  // Pagination properties for inspection instances
+  currentPage: number = 0;
+  pageSize: number = 10;
+  totalElements: number = 0;
+  totalPages: number = 0;
+  isFirstPage: boolean = true;
+  isLastPage: boolean = true;
+  
+  // Math utility for template
+  Math = Math;
   constructor(
     private activatedRoute: ActivatedRoute,
     private assetDetailService: AssetDetailsService,
@@ -221,10 +232,25 @@ export class AssetDetailsComponent {
         },
       );
     this.assetDetailService
-      .getAllAssetInspectionInstanceByAssetId(this.assetId)
+      .getAllAssetInspectionInstanceByAssetId(this.assetId, this.currentPage, this.pageSize)
       .subscribe(
         (data) => {
-          this.allInspectionInstance = data;
+          console.log('inspection instance data', data);
+          // Handle the actual backend response format: {data: Array, totalRecords: number}
+          if (data && data.data && Array.isArray(data.data)) {
+            this.allInspectionInstance = data.data;
+            this.totalElements = data.totalRecords || 0;
+            this.totalPages = Math.ceil(this.totalElements / this.pageSize);
+            this.isFirstPage = this.currentPage === 0;
+            this.isLastPage = this.currentPage >= this.totalPages - 1;
+          } else {
+            // Fallback for different response format
+            this.allInspectionInstance = Array.isArray(data) ? data : [];
+            this.totalElements = this.allInspectionInstance.length;
+            this.totalPages = 1;
+            this.isFirstPage = true;
+            this.isLastPage = true;
+          }
 
           console.log(this.allInspectionInstance);
         },
@@ -387,6 +413,7 @@ export class AssetDetailsComponent {
       (data) => {
         console.log('Userss=====>');
         this.technicalUserList = data;
+        
 
         // this.loggedUser.firstName=this.username.split(' ')[0];
         // this.loggedUser.lastName=this.username.split(' ')[1];
@@ -1009,7 +1036,7 @@ export class AssetDetailsComponent {
         obj = {
           assetId: this.assetId,
           status: 'Checked Out',
-          date: this.datePipe.transform(today, 'yyyy-MM-dd'),
+          date: this.datePipe.transform(new Date(), 'yyyy-MM-ddTHH:mm:ss'),
           employee: employee,
           notes: notes,
           location: location,
@@ -1023,7 +1050,7 @@ export class AssetDetailsComponent {
         obj = {
           assetId: this.assetId,
           status: 'Checked Out',
-          date: this.datePipe.transform(today, 'yyyy-MM-dd'),
+          date: this.datePipe.transform(new Date(), 'yyyy-MM-ddTHH:mm:ss'),
           employee: employee,
           notes: notes,
           location: location,
@@ -1037,7 +1064,7 @@ export class AssetDetailsComponent {
         obj = {
           assetId: this.assetId,
           status: 'Checked In',
-          date: this.datePipe.transform(today, 'yyyy-MM-dd'),
+          date: this.datePipe.transform(new Date(), 'yyyy-MM-ddTHH:mm:ss'),
           employee: employee,
           notes: notes,
           location: location,
@@ -1104,26 +1131,68 @@ export class AssetDetailsComponent {
     this.deleteFileId = id;
   }
 
-  generatePdf(elementId: string, fileName: string) {
-    const element: any = document.getElementById(elementId);
+ generatePdf(elementId: string, fileName: string) {
+  const element: any = document.getElementById(elementId);
 
-    html2canvas(element, {
-      scale: 2, // Increase scale to improve quality
-      backgroundColor: null, // Ensures no background color is added
-      logging: false,
-    }).then((canvas) => {
-      const imgData = canvas.toDataURL('image/png');
-      const pdfWidth = this.qrSize * 100;
-      const pdfHeight = this.qrSize * 100;
-      const pdf = new jspdf.jsPDF({
-        orientation: 'p',
-        unit: 'pt',
-        format: [pdfWidth, pdfHeight],
-      });
-      pdf.addImage(imgData, 'PNG', 0, 0, pdfWidth, pdfHeight);
-      pdf.save(fileName + '.pdf');
+  // ✅ Get actual rendered dimensions
+  const rect = element.getBoundingClientRect();
+  const actualWidth = rect.width;
+  const actualHeight = rect.height;
+
+  console.log('actual width:', actualWidth, 'actual height:', actualHeight);
+
+  // ✅ Make it square by adding whitespace on shorter axis
+  const maxDimension = Math.max(actualWidth, actualHeight);
+  const horizontalPadding = (maxDimension - actualWidth) / 2;  // add to left & right
+  const verticalPadding = (maxDimension - actualHeight) / 2;   // add to top & bottom
+
+  html2canvas(element, {
+    scale: 3,
+    backgroundColor: '#ffffff',
+    logging: true,
+    x: -horizontalPadding,     // ✅ extend capture left
+    y: -verticalPadding,       // ✅ extend capture top
+    width: maxDimension,       // ✅ square capture
+    height: maxDimension,      // ✅ square capture
+    useCORS: true,
+    scrollX: 0,
+    scrollY: 0,
+  }).then((canvas) => {
+    const capturedWidth = canvas.width;
+    const capturedHeight = canvas.height;
+
+    console.log('canvas width:', capturedWidth, 'canvas height:', capturedHeight);
+
+    // ✅ Create a NEW perfectly square canvas
+    const squareCanvas = document.createElement('canvas');
+    const squareSize = Math.max(capturedWidth, capturedHeight);
+    squareCanvas.width = squareSize;
+    squareCanvas.height = squareSize;
+
+    const ctx = squareCanvas.getContext('2d')!;
+
+    // White background
+    ctx.fillStyle = '#ffffff';
+    ctx.fillRect(0, 0, squareSize, squareSize);
+
+    // ✅ Center the captured image inside the square canvas
+    const offsetX = (squareSize - capturedWidth) / 2;
+    const offsetY = (squareSize - capturedHeight) / 2;
+    ctx.drawImage(canvas, offsetX, offsetY);
+
+    // ✅ Export square canvas to PDF
+    const imgData = squareCanvas.toDataURL('image/png');
+    const sizePx = this.qrSize * 100;
+
+    const pdf = new jspdf.jsPDF({
+      orientation: 'p',
+      unit: 'pt',
+      format: [sizePx, sizePx],
     });
-  }
+    pdf.addImage(imgData, 'PNG', 0, 0, sizePx, sizePx);
+    pdf.save(fileName + '.pdf');
+  });
+}
   downloadQR() {
     this.generatePdf(
       'myqr',
@@ -1200,7 +1269,7 @@ export class AssetDetailsComponent {
         () => {
           this.selectedItems = [];
           this.clearSavedData();
-          this.ngOnInit();
+          this.loadInspectionInstances();
         },
       );
     this.selectedItems = [];
@@ -1268,7 +1337,7 @@ export class AssetDetailsComponent {
         () => {
           this.inspectionInstance.stepValues = [];
           this.inspectionInstance.notes = '';
-          this.ngOnInit();
+          this.loadInspectionInstances();
         },
       );
   }
@@ -1458,7 +1527,7 @@ export class AssetDetailsComponent {
         () => {
           this.selectedItems = [];
           this.clearSavedData();
-          this.ngOnInit();
+          this.loadInspectionInstances();
         },
       );
     console.log(this.inspectionInstance);
@@ -1572,39 +1641,71 @@ export class AssetDetailsComponent {
         break;
     }
   }
-   exportInspectionData(){
-    if(this.inspectionExportType=='inspection-overview'){
-      console.log("Export inspection-overview")
-      this.assetDetailService.getInspectionOverviewExport(this.companyId,this.assetId).subscribe((data:Blob)=>{
+//    exportInspectionData(){
+//     if(this.inspectionExportType=='inspection-overview'){
+//       console.log("Export inspection-overview")
+//       this.assetDetailService.getInspectionOverviewExport(this.companyId,this.assetId).subscribe((data:Blob)=>{
       
-         const blob = new Blob([data], {
-      type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
-    });
+//          const blob = new Blob([data], {
+//       type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+//     });
 
-    const url = window.URL.createObjectURL(blob);
+//     const url = window.URL.createObjectURL(blob);
 
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = 'AssetInspectionOverview_'+this.assetId+'.xlsx';
-    a.click();
+//     const a = document.createElement('a');
+//     a.href = url;
+//     a.download = 'AssetInspectionOverview_'+this.assetId+'.xlsx';
+//     a.click();
 
-    window.URL.revokeObjectURL(url);
-        // this.triggerAlert("Inspections exported sucessfully", "success");
-      },(err)=>{
-        console.log(err);
-        if (err.error.error === "TRIAL_EXPIRED") {
-          this.triggerAlert(err.error.message, "danger");
-        } else {
-          this.triggerAlert(err.error.errorMessage, "danger");
-        }
-      },
-    ()=>{
-      this.triggerAlert("Exported Assets Inspections Overview Successfully","success");
-      this.exportCloseBox?.nativeElement.click();
-    })
-  }else{
-      console.log("Export inspection-details")
-      this.assetDetailService.getInspectionDetailedExport(this.companyId,this.assetId).subscribe((data:Blob)=>{
+//     window.URL.revokeObjectURL(url);
+//         // this.triggerAlert("Inspections exported sucessfully", "success");
+//       },(err)=>{
+//         console.log(err);
+//         if (err.error.error === "TRIAL_EXPIRED") {
+//           this.triggerAlert(err.error.message, "danger");
+//         } else {
+//           this.triggerAlert(err.error.errorMessage, "danger");
+//         }
+//       },
+//     ()=>{
+//       this.triggerAlert("Exported Assets Inspections Overview Successfully","success");
+//       this.exportCloseBox?.nativeElement.click();
+//     })
+//   }else{
+//       console.log("Export inspection-details")
+//       this.assetDetailService.getInspectionDetailedExport(this.companyId,this.assetId).subscribe((data:Blob)=>{
+//         console.log('export Inspection data',data)
+//          const blob = new Blob([data], {
+//       type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+//     });
+
+//     const url = window.URL.createObjectURL(blob);
+
+//     const a = document.createElement('a');
+//     a.href = url;
+//     a.download = 'AssetInspectionDetailed_'+this.assetId+'.xlsx';
+//     a.click();
+
+//     window.URL.revokeObjectURL(url);
+//         // this.triggerAlert("Inspections exported sucessfully", "success");
+//       },(err)=>{
+//         console.log(err);
+//         if (err.error.error === "TRIAL_EXPIRED") {
+//           this.triggerAlert(err.error.message, "danger");
+//         } else {
+//           this.triggerAlert(err.error.errorMessage, "danger");
+//         }
+//       },
+//     ()=>{
+//       this.triggerAlert("Exported Assets Inspections Details Successfully","success");
+//       this.exportCloseBox?.nativeElement.click();
+//     })
+//   }
+  
+
+// }
+downloadAllInspection(){
+  this.assetDetailService.getInspectionExport(this.companyId,this.assetId).subscribe((data:Blob)=>{
         console.log('export Inspection data',data)
          const blob = new Blob([data], {
       type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
@@ -1631,7 +1732,237 @@ export class AssetDetailsComponent {
       this.triggerAlert("Exported Assets Inspections Details Successfully","success");
       this.exportCloseBox?.nativeElement.click();
     })
+  
+}
+
+downloadInspectionPDF(instance: any) {
+  const doc = new jspdf.jsPDF();
+  const pageWidth = doc.internal.pageSize.getWidth();
+  const pageHeight = doc.internal.pageSize.getHeight();
+  let yPosition = 10;
+  const lineHeight = 7;
+  const margin = 10;
+  const contentWidth = pageWidth - 2 * margin;
+
+  // Header with company name
+  doc.setFillColor(25, 40, 82); // Dark blue
+  doc.rect(0, 0, pageWidth, 25, 'F');
+  doc.setTextColor(255, 255, 255);
+  doc.setFontSize(10);
+  doc.setFont('helvetica', 'bold');
+  // doc.text('ACME MANUFACTURING LTD.', margin, 8);
+  doc.setFontSize(16);
+  doc.setFont('helvetica', 'bold');
+  doc.text('Asset Inspection Report', margin, 18);
+  yPosition = 30;
+
+  // Asset Details Section
+  doc.setTextColor(0, 0, 0);
+  doc.setFontSize(10);
+  doc.setFont('helvetica', 'bold');
+  doc.text('Asset Name:', margin, yPosition);
+  doc.setFont('helvetica', 'normal');
+  doc.text(this.assetDetails.name || 'N/A', margin + 35, yPosition);
+  yPosition += lineHeight;
+
+  doc.setFont('helvetica', 'bold');
+  doc.text('Asset ID:', margin, yPosition);
+  doc.setFont('helvetica', 'normal');
+  doc.text(this.assetDetails.assetId.toString() || 'N/A', margin + 35, yPosition);
+  yPosition += lineHeight;
+
+  doc.setFont('helvetica', 'bold');
+  doc.text('Inspection Date:', margin, yPosition);
+  doc.setFont('helvetica', 'normal');
+  const inspectionDate = new Date(instance.createdAt).toLocaleDateString('en-US', {
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric'
+  });
+  doc.text(inspectionDate, margin + 35, yPosition);
+  yPosition += lineHeight + 5;
+
+  // Inspection Details Section
+  doc.setFillColor(25, 40, 82);
+  doc.rect(margin, yPosition - 3, contentWidth, 7, 'F');
+  doc.setTextColor(255, 255, 255);
+  doc.setFont('helvetica', 'bold');
+  doc.setFontSize(12);
+  doc.text('Inspection Template: ' + (instance.assetCategoryInspectionName || 'N/A'), margin + 5, yPosition + 2);
+  yPosition += 10;
+
+  // Inspection Steps Table
+  doc.setTextColor(0, 0, 0);
+  doc.setFontSize(10);
+  doc.setFont('helvetica', 'bold');
+  doc.text('#Step', margin + 5, yPosition);
+  doc.text('Name', margin + 20, yPosition);
+  doc.text('Value', margin + 100, yPosition);
+  yPosition += lineHeight + 2;
+
+  // Draw table lines
+  doc.setDrawColor(200, 200, 200);
+  doc.line(margin, yPosition - 2, margin + contentWidth, yPosition - 2);
+
+  doc.setFont('helvetica', 'normal');
+  doc.setFontSize(9);
+
+  // Collect all steps from inspectionTemplates
+  let allSteps: any[] = [];
+  if (instance.inspectionTemplates && instance.inspectionTemplates.length > 0) {
+    instance.inspectionTemplates.forEach((template: any) => {
+      if (template.stepValues && template.stepValues.length > 0) {
+        allSteps = allSteps.concat(template.stepValues);
+      }
+    });
   }
 
+  // Add inspection steps if available
+  if (allSteps.length > 0) {
+    allSteps.forEach((step: any, index: number) => {
+      // Check if we need a new page
+      if (yPosition > pageHeight - 20) {
+        doc.addPage();
+        yPosition = 10;
+      }
+
+      doc.text((index + 1).toString(), margin + 5, yPosition);
+      doc.text(step.name || 'N/A', margin + 20, yPosition);
+      
+      let valueText = 'N/A';
+      if (step.type === 'CHECKBOX') {
+        valueText = step.value ? 'Yes' : 'No';
+      } else if (step.type === 'NUMBER' || step.type === 'TEXT') {
+        valueText = step.value || 'N/A';
+      }
+      doc.text(valueText, margin + 100, yPosition);
+      yPosition += lineHeight;
+    });
+  } else {
+    doc.text('No inspection steps recorded', margin + 20, yPosition);
+    yPosition += lineHeight;
+  }
+
+  yPosition += 5;
+  doc.line(margin, yPosition, margin + contentWidth, yPosition);
+  yPosition += 5;
+
+  // Notes Section
+  if (instance.notes) {
+    doc.setFont('helvetica', 'bold');
+    doc.text('Notes:', margin, yPosition);
+    yPosition += lineHeight;
+    doc.setFont('helvetica', 'normal');
+    const noteText = doc.splitTextToSize(instance.notes, contentWidth - 10);
+    doc.text(noteText, margin + 5, yPosition);
+    yPosition += noteText.length * lineHeight + 5;
+  }
+
+  // Inspector and Date Info
+  yPosition += 5;
+  doc.setFont('helvetica', 'bold');
+  doc.setFontSize(9);
+  doc.text('Performed By: ' + (instance.actionPerformedBy || 'N/A'), margin, yPosition);
+  yPosition += lineHeight;
+  doc.text('Status: ' + (instance.status || 'N/A'), margin, yPosition);
+
+  // Footer
+  doc.setFontSize(8);
+  doc.setTextColor(150, 150, 150);
+  doc.text('Powered by Asset Yug', pageWidth / 2, pageHeight - 5, { align: 'center' });
+
+  // Generate filename
+  const fileName = `Inspection_${this.assetDetails.name}_${instance.assetCategoryInspectionInstanceId}.pdf`;
+  doc.save(fileName);
+}
+
+// Pagination methods for inspection instances
+loadInspectionInstances(page?: number, size?: number) {
+  if (page !== undefined) this.currentPage = page;
+  if (size !== undefined) this.pageSize = size;
+
+  this.assetDetailService
+    .getAllAssetInspectionInstanceByAssetId(this.assetId, this.currentPage, this.pageSize)
+    .subscribe(
+      (data) => {
+        console.log('inspection instance data', data);
+        // Handle the actual backend response format: {data: Array, totalRecords: number}
+        if (data && data.data && Array.isArray(data.data)) {
+          this.allInspectionInstance = data.data;
+          this.totalElements = data.totalRecords || 0;
+          this.totalPages = Math.ceil(this.totalElements / this.pageSize);
+          this.isFirstPage = this.currentPage === 0;
+          this.isLastPage = this.currentPage >= this.totalPages - 1;
+        } else {
+          // Fallback for different response format
+          this.allInspectionInstance = Array.isArray(data) ? data : [];
+          this.totalElements = this.allInspectionInstance.length;
+          this.totalPages = 1;
+          this.isFirstPage = true;
+          this.isLastPage = true;
+        }
+
+        console.log(this.allInspectionInstance);
+      },
+      (err) => {
+        console.log(err);
+      },
+    );
+}
+
+goToNextPage() {
+  if (!this.isLastPage && this.currentPage < this.totalPages - 1) {
+    this.loadInspectionInstances(this.currentPage + 1);
+  }
+}
+
+goToPreviousPage() {
+  if (!this.isFirstPage && this.currentPage > 0) {
+    this.loadInspectionInstances(this.currentPage - 1);
+  }
+}
+
+goToFirstPage() {
+  if (!this.isFirstPage) {
+    this.loadInspectionInstances(0);
+  }
+}
+
+goToLastPage() {
+  if (!this.isLastPage && this.totalPages > 0) {
+    this.loadInspectionInstances(this.totalPages - 1);
+  }
+}
+
+goToPage(page: number) {
+  if (page >= 0 && page < this.totalPages && page !== this.currentPage) {
+    this.loadInspectionInstances(page);
+  }
+}
+
+onPageSizeChange(event: any) {
+  const newPageSize = parseInt(event.target.value, 10);
+  if (newPageSize !== this.pageSize) {
+    this.currentPage = 0; // Reset to first page when changing page size
+    this.loadInspectionInstances(0, newPageSize);
+  }
+}
+
+getPageNumbers(): number[] {
+  const pages: number[] = [];
+  const maxPagesToShow = 5;
+  let startPage = Math.max(0, this.currentPage - Math.floor(maxPagesToShow / 2));
+  let endPage = Math.min(this.totalPages - 1, startPage + maxPagesToShow - 1);
+
+  // Adjust start page if end page reaches the limit
+  if (endPage - startPage + 1 < maxPagesToShow) {
+    startPage = Math.max(0, endPage - maxPagesToShow + 1);
+  }
+
+  for (let i = startPage; i <= endPage; i++) {
+    pages.push(i);
+  }
+
+  return pages;
 }
 }

@@ -187,6 +187,7 @@ app-assets,app-workorder,app-inventory,app-company-customer,app-asset-insights,a
     /* height: calc(100vh - 55px); */
     overflow-x: hidden;
     /* margin-top: 63px; */
+    height: calc(100vh - 53px);;
 }
 app-analytics-home-page{
     height: 100vh;

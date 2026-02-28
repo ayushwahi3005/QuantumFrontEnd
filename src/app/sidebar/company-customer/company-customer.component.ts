@@ -1,4 +1,4 @@
-import { AfterViewInit, ChangeDetectorRef, Component, ElementRef, OnDestroy, ViewChild } from '@angular/core';
+import { AfterViewInit, ChangeDetectorRef, Component, ElementRef, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { CompanyCustomerService } from './company-customer.service';
 import { CompanyCustomer } from './company-cutomer';
@@ -13,140 +13,172 @@ import { CategoryName } from './categoryName';
 import { Subscription } from 'rxjs';
 import { NavigationStart, Router } from '@angular/router';
 import { countryList } from 'src/app/setting/subscription/country';
-import { set } from 'date-fns';
 import * as XLSX from 'xlsx';
+import { CountryService } from 'src/app/shared/country/country.service';
 
 @Component({
   selector: 'app-company-customer',
   templateUrl: './company-customer.component.html',
   styleUrls: ['./company-customer.component.css']
 })
-export class CompanyCustomerComponent implements OnDestroy, AfterViewInit{
-  @ViewChild('closeBox') closeBox: ElementRef | undefined ;
+export class CompanyCustomerComponent implements OnInit, OnDestroy, AfterViewInit {
+  @ViewChild('closeBox') closeBox: ElementRef | undefined;
   @ViewChild('exportCloseBox') exportCloseBox!: ElementRef;
-  
-  companyCustomerForm!:FormGroup;
-  filterForm!:FormGroup;
-  companyCustomerlist!:CompanyCustomer[];
-  companyCustomerCategoryList!:CategoryName[]
-  detailModule!:Boolean;
-  detailId!:String;
-  email:any;
-  companyId:any;
-  priority!:string;
-  todayDate!:Date;
-  editVisibility:boolean=false;
-  editButtonId:number=-1;
-  detailedWorkOrder=false;
-  selectedWorkOrder!:string;
-  loadingScreen=false;
-  searchData!:string;
-  searchDataBy!:string;
-  sortedBy!:string;
-  showFieldsList!:ShowFieldsData[];
-  mandatoryFieldsList!:MandatoryFields[];
-  mandatoryFieldsMap!:Map<string,boolean>;
-  showFieldsMap!:Map<string,boolean>;
-  extraFieldName!:ExtraFieldName[];
-  extraFieldNameMap!:Map<String,ExtraFieldName>;
-  extraFieldNameList!:string[];
-  selectedFilterList:any=[];
 
-  selectedExtraColums :string[]=[];
-  selectedExtraColumsNameValue:any[]=[];
-  fieldNameValueMap!:object;
-  searchedCompanyCustomer!:any[];
-  loading:boolean=true;
- 
+  companyCustomerForm!: FormGroup;
+  filterForm!: FormGroup;
+  formReady: boolean = false; // ✅ guard flag
+
+  companyCustomerlist!: CompanyCustomer[];
+  companyCustomerCategoryList!: CategoryName[];
+  detailModule!: Boolean;
+  detailId!: String;
+  email: any;
+  companyId: any;
+  priority!: string;
+  todayDate!: Date;
+  editVisibility: boolean = false;
+  editButtonId: number = -1;
+  detailedWorkOrder = false;
+  selectedWorkOrder!: string;
+  loadingScreen = false;
+  searchData!: string;
+  searchDataBy!: string;
+  sortedBy!: string;
+  showFieldsList!: ShowFieldsData[];
+  mandatoryFieldsList!: MandatoryFields[];
+  mandatoryFieldsMap!: Map<string, boolean>;
+  showFieldsMap!: Map<string, boolean>;
+  extraFieldName!: ExtraFieldName[];
+  extraFieldNameMap!: Map<String, ExtraFieldName>;
+  extraFieldNameList!: string[];
+  selectedFilterList: any = [];
+  selectedExtraColums: string[] = [];
+  selectedExtraColumsNameValue: any[] = [];
+  fieldNameValueMap!: object;
+  searchedCompanyCustomer!: any[];
+  loading: boolean = true;
   selectedItems = [];
-
-  showAlert: boolean = false; // Flag to toggle alert visibility
-  alertMessage: string = ''; // Alert message
-  alertType: string = 'success'; // Alert type: success, warning, error, etc.
-
-
-  userRole:any;
-  checkBoxColor="primary"
-  showMandatoryBasicFields!:Map<string,Boolean>;
-
-  companyCustomerListWithExtraFields:any = [];
-
+  showAlert: boolean = false;
+  alertMessage: string = '';
+  alertType: string = 'success';
+  userRole: any;
+  checkBoxColor = "primary";
+  showMandatoryBasicFields!: Map<string, Boolean>;
+  companyCustomerListWithExtraFields: any = [];
   userRoleDetails!: RoleAndPermission;
-  myList:string[]=[];
-  pageSize:number=15;
-  totalLength!:number;
+  myList: string[] = [];
+  pageSize: number = 15;
+  totalLength!: number;
   pageEvent!: PageEvent;
-  pageIndex:number=0;
-  paginationResult!:PaginationResult;
-  companyCustomer!:any[];
-  companyCustomerListWithExtraFieldsWithoutFilter=[]
-  mandatoryFieldFilterList!:Map<string,Boolean>;
-  appliedFilterListMap!:Map<string,string>;
-  appliedFilterList!:Set<string>;
-  extraFieldFilterList!:Map<String,String>;
-  savedExtraColumn!:any
-  selectedExtraColumsMap!:Map<string,Boolean>;
-  myArray=[]
-  stateList=[]
-  asc:Boolean=true;
-  exportType:string='export-current-page';
+  pageIndex: number = 0;
+  paginationResult!: PaginationResult;
+  companyCustomer!: any[];
+  companyCustomerListWithExtraFieldsWithoutFilter = [];
+  mandatoryFieldFilterList!: Map<string, Boolean>;
+  appliedFilterListMap!: Map<string, string>;
+  appliedFilterList!: Set<string>;
+  extraFieldFilterList!: Map<String, String>;
+  savedExtraColumn!: any;
+  selectedExtraColumsMap!: Map<string, Boolean>;
+  myArray = [];
+  stateList = [];
+  asc: Boolean = true;
+  exportType: string = 'export-current-page';
   fileName = 'CustomerSheet.xlsx';
-   private routerSubscription!: Subscription;
-   selectedCountryCode='United States of America';
-     countryCodeList=countryList;
-     currentSelectedCountryCode='US'
-   
-     countryList=[
-     "Canada",
-     "Mexico",
-     "United States of America",
-   
-     "Antigua and Barbuda",
-     "The Bahamas",
-     "Barbados",
-     "Cuba",
-     "Dominica",
-     "Dominican Republic",
-     "Grenada",
-     "Haiti",
-     "Jamaica",
-     "Saint Kitts and Nevis",
-     "Saint Lucia",
-     "Saint Vincent and the Grenadines",
-     "Trinidad and Tobago",
-   
-     "Belize",
-     "Costa Rica",
-     "El Salvador",
-     "Guatemala",
-     "Honduras",
-     "Nicaragua",
-     "Panama"
-   ]
-  constructor(private formBuilder:FormBuilder,private companyCustomerService:CompanyCustomerService,private dashboard:DashboardComponent,private router: Router, private cdr: ChangeDetectorRef){
-this.routerSubscription = this.router.events.subscribe(event => {
+  private routerSubscription!: Subscription;
+  private countrySubscription!: Subscription; // ✅ track subscription for cleanup
+
+  selectedCountryCode: string = 'United States of America';
+  countryCodeList = countryList;
+  currentSelectedCountryCode = 'US';
+
+  countryList = [
+    "Canada",
+    "Mexico",
+    "United States of America",
+    "Antigua and Barbuda",
+    "The Bahamas",
+    "Barbados",
+    "Cuba",
+    "Dominica",
+    "Dominican Republic",
+    "Grenada",
+    "Haiti",
+    "Jamaica",
+    "Saint Kitts and Nevis",
+    "Saint Lucia",
+    "Saint Vincent and the Grenadines",
+    "Trinidad and Tobago",
+    "Belize",
+    "Costa Rica",
+    "El Salvador",
+    "Guatemala",
+    "Honduras",
+    "Nicaragua",
+    "Panama"
+  ];
+
+  constructor(
+    private formBuilder: FormBuilder,
+    private companyCustomerService: CompanyCustomerService,
+    private dashboard: DashboardComponent,
+    private router: Router,
+    private cdr: ChangeDetectorRef,
+    private countryService: CountryService
+  ) {
+    this.routerSubscription = this.router.events.subscribe(event => {
       if (event instanceof NavigationStart) {
-        // Run only when navigating to /setting-home
         if (event.url === '/setting-home') {
-          console.log('destroy');
           localStorage.removeItem('selectedExtraColumsCustomer');
-           localStorage.removeItem('selectedExtraColumsAssets');
+          localStorage.removeItem('selectedExtraColumsAssets');
           this.savedExtraColumn = null;
         }
       }
     });
   }
+
   ngOnDestroy(): void {
-     console.log("destory")
-     if (this.routerSubscription) {
+    if (this.routerSubscription) {
       this.routerSubscription.unsubscribe();
     }
-    this.savedExtraColumn=null;
+    if (this.countrySubscription) {
+      this.countrySubscription.unsubscribe();
+    }
+    this.savedExtraColumn = null;
   }
 
-  ngOnInit():void{
-    this.companyId=localStorage.getItem('companyId');
-    this.exportType='export-current-page';
+  ngOnInit(): void {
+    this.companyId = localStorage.getItem('companyId');
+    this.exportType = 'export-current-page';
+
+    // ─────────────────────────────────────────
+    // STEP 1: Init all state variables
+    // ─────────────────────────────────────────
+    this.loading = true;
+    this.sortedBy = '';
+    this.searchData = '';
+    this.detailModule = false;
+    this.appliedFilterList = new Set<string>();
+    this.appliedFilterListMap = new Map<string, string>();
+    this.extraFieldFilterList = new Map<String, String>();
+    this.selectedExtraColumsMap = new Map<string, Boolean>();
+    this.showMandatoryBasicFields = new Map<string, Boolean>();
+    this.mandatoryFieldsMap = new Map<string, boolean>();
+    this.showFieldsMap = new Map<string, boolean>();
+    this.email = localStorage.getItem('user');
+    this.userRole = localStorage.getItem('role');
+
+    // ─────────────────────────────────────────
+    // STEP 2: Get default country synchronously
+    // ─────────────────────────────────────────
+    this.selectedCountryCode = this.countryService.getCountryCode() || 'United States of America';
+
+    
+
+    // ─────────────────────────────────────────
+    // STEP 3: Initialize BOTH forms with default country
+    // ─────────────────────────────────────────
     this.companyCustomerForm = this.formBuilder.group({
       name: ['', Validators.required],
       companyId: [this.companyId],
@@ -158,251 +190,219 @@ this.routerSubscription = this.router.events.subscribe(event => {
       apartment: [''],
       city: [''],
       state: [''],
-      country: ['United States of America'],
+      country: [this.selectedCountryCode], // ✅ set synchronously
       zipCode: ['', Validators.pattern('^[a-z0-9]{6}$')]
     });
-  
-    // Explicitly set the default value for status
-    // this.companyCustomerForm.controls['status'].setValue('active');
-  
-    console.log(this.companyCustomerForm.value); // Check the form values
-  
-    
-      this.pageIndex=parseInt(localStorage.getItem('customerPageInd')||'0')
-      this.pageSize=parseInt(localStorage.getItem('customerPageSize')||'15')
 
-
-    
-   
-
-    console.log(this.companyCustomerForm.value)
-    this.loading=true;
-    this.sortedBy="";
-    this.searchData="";
-    this.detailModule=false;
-    this.appliedFilterList=new Set<string>();
-    this.appliedFilterListMap=new Map<string,string>;
-    this.extraFieldFilterList=new Map<String,String>();
-    this.selectedExtraColumsMap=new Map<string,Boolean>;
-    this.showMandatoryBasicFields=new Map<string,Boolean>();
-    this.email=localStorage.getItem('user');
-    this.userRole=localStorage.getItem('role');
-    this.getStateList(this.selectedCountryCode);
-    
-    this.mandatoryFieldsMap = new Map<string, boolean>();
-    this.showFieldsMap = new Map<string, boolean>();
-
-    console.log(this.companyId);
-  
-    this.companyCustomerService.stateList().subscribe((data)=>{
-      this.stateList=data;
-      // console.log("stateList-------->"+this.stateList)
-    })
-
-
-
-    this.filterForm=this.formBuilder.group({
-      companyCustomerId:[''],
-      name:[''],
-      customer:[''],
-      phone:[''],
-      address:[''],
-      category:[''],
-      status:[''],
-      email:[''],
-      city:[''],
-      state:[''],
-      country:[''],
-      zipCode:[''],
-      companyId:[this.companyId]
-      // extraFields: this.formBuilder.array([])
-     
-
+    this.filterForm = this.formBuilder.group({
+      companyCustomerId: [''],
+      name: [''],
+      customer: [''],
+      phone: [''],
+      address: [''],
+      category: [''],
+      status: [''],
+      email: [''],
+      city: [''],
+      state: [''],
+      country: [''], // ✅ set synchronously
+      zipCode: [''],
+      companyId: [this.companyId]
     });
-    // this.myList=['name','category','status','phone','email','address','apartment','city','state','zipCode'];
-    // let intialField=['phone','address','status']
-    // intialField.forEach((data)=>{
-    //   this.showMandatoryBasicFields.set(data,true);
-    // });
-    this.savedExtraColumn=localStorage.getItem("showMandatoryBasicFieldsCustomers")
-    this.myArray=JSON.parse(this.savedExtraColumn)
-    this.mandatoryFieldFilterList=new Map<string,Boolean>();
-    this.myList=['companyCustomerId','name','category','status','phone','email','address','phone','status'];
 
-    this.showMandatoryBasicFields.set('email',true);
-    this.showMandatoryBasicFields.set('name',true);
-    console.log(this.myArray)
-    this.myList.forEach((x)=>{
-      if(this.myArray!=null){
-      this.myArray?.forEach((ele:any)=>{
-        if(x===ele){
-          this.showMandatoryBasicFields.set(x,true);
+    // ✅ Mark forms as ready so HTML can render
+    this.formReady = true;
+
+    // ─────────────────────────────────────────
+    // STEP 4: Subscribe to country changes (for future updates)
+    // ─────────────────────────────────────────
+    this.countrySubscription = this.countryService.countryCode$.subscribe(code => {
+      if (code && code !== this.selectedCountryCode) {
+        // only update if value actually changed to avoid loop
+        this.selectedCountryCode = code;
+        console.log(code)
+        if (this.companyCustomerForm) {
+          this.companyCustomerForm.patchValue({ country: code }, { emitEvent: false });
         }
-      })
-    }
-    else{
-      this.showMandatoryBasicFields.set(x,true);
-    }
-      this.mandatoryFieldFilterList.set(x,true);
+        // Update state list when country changes
+        this.getStateListSilent(code);
+      }
     });
-    this.companyCustomerService.getCompanyCustomerCategory(this.companyId).subscribe((data)=>{
-      this.companyCustomerCategoryList=data;
-      console.log("Asset-Category->"+data)
-    },
-    (err)=>{
-      console.log(err);
-    })
 
-    this.savedExtraColumn=localStorage.getItem("selectedExtraColumsCustomer")
-    console.log("savedextra->"+this.savedExtraColumn)
-    this.selectedExtraColums=JSON.parse(this.savedExtraColumn)
-    console.log("selected columns"+this.selectedExtraColums)
-    if(this.savedExtraColumn!=null){
-      this.selectedExtraColums=JSON.parse(this.savedExtraColumn);
-      this.selectedExtraColums.forEach((data)=>{
-        this.selectedExtraColumsMap.set(data,true);
-      })
-    }
-    console.log("selectedExtraColumsMap->"+this.selectedExtraColumsMap)
-    // this.advanceFilterFunc();
-    let myPageEvent=new PageEvent();
-    myPageEvent.length=this.totalLength;
-    myPageEvent.pageIndex=this.pageIndex
-    myPageEvent.pageSize=this.pageSize;
+    // // ─────────────────────────────────────────
+    // // STEP 5: Load state list for default country
+    // // ─────────────────────────────────────────
+    // this.getStateListSilent(this.selectedCountryCode);
 
+    // ─────────────────────────────────────────
+    // STEP 6: Pagination & page setup
+    // ─────────────────────────────────────────
+    this.pageIndex = parseInt(localStorage.getItem('customerPageInd') || '0');
+    this.pageSize = parseInt(localStorage.getItem('customerPageSize') || '15');
 
-    this.handlePageEvent(myPageEvent);
-    this.companyCustomerService.getRoleAndPermission(this.companyId,this.userRole).subscribe((data)=>{
-      this.userRoleDetails=data;
-      console.log(this.userRoleDetails);
-    },
-    err=>{
-      console.log(err);
+    this.savedExtraColumn = localStorage.getItem('showMandatoryBasicFieldsCustomers');
+    this.myArray = JSON.parse(this.savedExtraColumn);
+    this.mandatoryFieldFilterList = new Map<string, Boolean>();
+    this.myList = ['companyCustomerId', 'name', 'category', 'status', 'phone', 'email', 'address', 'phone', 'status'];
+
+    this.showMandatoryBasicFields.set('email', true);
+    this.showMandatoryBasicFields.set('name', true);
+
+    this.myList.forEach((x) => {
+      if (this.myArray != null) {
+        this.myArray?.forEach((ele: any) => {
+          if (x === ele) {
+            this.showMandatoryBasicFields.set(x, true);
+          }
+        });
+      } else {
+        this.showMandatoryBasicFields.set(x, true);
+      }
+      this.mandatoryFieldFilterList.set(x, true);
     });
-   
-    console.log("inside"+this.companyCustomerlist)
 
+    this.companyCustomerService.getCompanyCustomerCategory(this.companyId).subscribe(
+      (data) => { this.companyCustomerCategoryList = data; },
+      (err) => { console.log(err); }
+    );
 
-    this.companyCustomerService.getAllMandatoryFields(this.companyId).subscribe((data)=>{
-      this.mandatoryFieldsList=data;
-      console.log("mandatory----------------------->",this.mandatoryFieldsList)
-      this.mandatoryFieldsList.forEach((x)=>{
-        this.mandatoryFieldsMap.set(x.name,x.mandatory);
-      })
-    },
-    (err)=>{
-      console.log(err);
-    })
-    this.companyCustomerService.getAllShowFields(this.companyId).subscribe((data)=>{
-      this.showFieldsList=data;
-      console.log("show----------------------->",this.showFieldsList);
-      this.selectedFilterList=[]
-      this.showFieldsList.forEach((x)=>{
-        this.filterForm.addControl(x.name,this.formBuilder.control('',Validators.required));
-        this.selectedFilterList.push(x.name);
-        this.showFieldsMap.set(x.name,x.show);
-      })
-      
-      if(this.showFieldsList!=null){
-      this.showFieldsList.forEach((x)=>{
-        if(x.show==true)
-        this.companyCustomerForm.addControl(x.name,this.formBuilder.control(''));
-        if(x.show==true){
-          this.extraFieldFilterList.set(x.name,x.type);
-        }
-      })
-      
-    }
-    
-    },
-    (err)=>{
-      console.log(err);
-    },
-    ()=>{
-      this.companyCustomerService.getExtraFieldName(this.companyId).subscribe((data)=>{
-      
-        console.log("In extra workOder")
-         this.extraFieldName=data;
-         var arr:string[]=[];
-       this.extraFieldName.forEach((x)=>{
-         this.extraFieldNameMap?.set(x.name,x);
-         console.log(x.name+" "+this.showFieldsMap.get(x.name)+" "+x.type)
-           if(this.showFieldsMap.get(x.name)==true){
-           arr.push(x.name);
-           }
-         })
-         
-         this.extraFieldNameList=arr;
-         //console.log(this.extraFieldNameList)
-         
-      
-        
-         
-         
-       },
-       (err)=>{
-         console.log(err);
-       })
-
-        this.companyCustomerForm.patchValue({
-        status: 'active'
+    this.savedExtraColumn = localStorage.getItem('selectedExtraColumsCustomer');
+    this.selectedExtraColums = JSON.parse(this.savedExtraColumn);
+    if (this.savedExtraColumn != null) {
+      this.selectedExtraColums = JSON.parse(this.savedExtraColumn);
+      this.selectedExtraColums.forEach((data) => {
+        this.selectedExtraColumsMap.set(data, true);
       });
-    })
-   
+    }
 
+    // ─────────────────────────────────────────
+    // STEP 7: Trigger pagination (uses filterForm)
+    // ─────────────────────────────────────────
+    let myPageEvent = new PageEvent();
+    myPageEvent.length = this.totalLength;
+    myPageEvent.pageIndex = this.pageIndex;
+    myPageEvent.pageSize = this.pageSize;
+    this.handlePageEvent(myPageEvent);
 
+    this.companyCustomerService.getRoleAndPermission(this.companyId, this.userRole).subscribe(
+      (data) => { this.userRoleDetails = data; },
+      (err) => { console.log(err); }
+    );
 
-   
-    this.companyCustomerService.working().subscribe((data)=>{
-      console.log(data);
-    },
-    (err)=>{
-      console.log(err)
-    })
+    this.companyCustomerService.getAllMandatoryFields(this.companyId).subscribe(
+      (data) => {
+        this.mandatoryFieldsList = data;
+        this.mandatoryFieldsList.forEach((x) => {
+          this.mandatoryFieldsMap.set(x.name, x.mandatory);
+        });
+      },
+      (err) => { console.log(err); }
+    );
 
+    this.companyCustomerService.getAllShowFields(this.companyId).subscribe(
+      (data) => {
+        this.showFieldsList = data;
+        this.selectedFilterList = [];
+        this.showFieldsList.forEach((x) => {
+          this.filterForm.addControl(x.name, this.formBuilder.control('', Validators.required));
+          this.selectedFilterList.push(x.name);
+          this.showFieldsMap.set(x.name, x.show);
+        });
+
+        if (this.showFieldsList != null) {
+          this.showFieldsList.forEach((x) => {
+            if (x.show == true) {
+              this.companyCustomerForm.addControl(x.name, this.formBuilder.control(''));
+              this.extraFieldFilterList.set(x.name, x.type);
+            }
+          });
+        }
+
+        // ✅ re-patch after addControl calls to restore country & status
+        this.companyCustomerForm.patchValue({
+          country: this.selectedCountryCode,
+          status: 'active'
+        }, { emitEvent: false });
+        this.cdr.detectChanges();
+      },
+      (err) => { console.log(err); },
+      () => {
+        this.companyCustomerService.getExtraFieldName(this.companyId).subscribe(
+          (data) => {
+            this.extraFieldName = data;
+            var arr: string[] = [];
+            this.extraFieldName.forEach((x) => {
+              this.extraFieldNameMap?.set(x.name, x);
+              if (this.showFieldsMap.get(x.name) == true) {
+                arr.push(x.name);
+              }
+            });
+            this.extraFieldNameList = arr;
+          },
+          (err) => { console.log(err); }
+        );
+      }
+    );
+
+    this.companyCustomerService.working().subscribe(
+      (data) => { console.log(data); },
+      (err) => { console.log(err); }
+    );
   }
 
-
-ngAfterViewInit() {
-  const modalElement = document.getElementById('add-order');
-  if (modalElement) {
-    modalElement.addEventListener('hidden.bs.modal', () => {
-      // Remove any lingering backdrops
-      const backdrops = document.querySelectorAll('.modal-backdrop');
-      backdrops.forEach(backdrop => backdrop.remove());
-      
-      // Remove modal-open class from body
-      document.body.classList.remove('modal-open');
-      document.body.style.paddingRight = '';
-      document.body.style.overflow = '';
-    });
+  // ✅ Silent version - does NOT reset state fields, used for initial load
+  getStateListSilent(country: any) {
+    console.log('Fetching states for country:', country); // check what country value is
+    this.currentSelectedCountryCode = countryList[country] || '';
+    this.companyCustomerService.countryStateList(country).subscribe(
+      (data) => {
+        this.stateList = data;
+        this.cdr.detectChanges();
+      },
+      (err) => { console.log(err); }
+    );
   }
-}
-//  ngOnDestory(){
-//     console.log("destory")
-//     localStorage.removeItem("selectedExtraColumsCustomer")
-//     this.savedExtraColumn=null;
-//   }
+
+  // ✅ Normal version - resets state fields, used when user changes country
+  getStateList(country: any) {
+    this.currentSelectedCountryCode = countryList[country] || '';
+    this.companyCustomerService.countryStateList(country).subscribe(
+      (data) => {
+        this.stateList = data;
+        this.filterForm?.get('state')?.setValue('');
+        this.companyCustomerForm?.get('state')?.setValue('');
+        this.cdr.detectChanges();
+      },
+      (err) => { console.log(err); }
+    );
+  }
+
+  ngAfterViewInit() {
+    const modalElement = document.getElementById('add-order');
+    if (modalElement) {
+      modalElement.addEventListener('hidden.bs.modal', () => {
+        const backdrops = document.querySelectorAll('.modal-backdrop');
+        backdrops.forEach(backdrop => backdrop.remove());
+        document.body.classList.remove('modal-open');
+        document.body.style.paddingRight = '';
+        document.body.style.overflow = '';
+      });
+    }
+  }
+
   handlePageEvent(e: PageEvent) {
     this.pageEvent = e;
-    console.log(this.pageEvent)
     this.totalLength = e.length;
     this.pageSize = e.pageSize;
     this.pageIndex = e.pageIndex;
-    console.log(this.pageIndex+" "+e.pageIndex);
-    localStorage.setItem('customerPageInd',this.pageIndex.toString())
-    localStorage.setItem('customerPageSize',this.pageSize.toString())
+    localStorage.setItem('customerPageInd', this.pageIndex.toString());
+    localStorage.setItem('customerPageSize', this.pageSize.toString());
     this.advanceFilterFunc();
-
-   
-    
   }
+
   formatPhoneNumber(event: Event) {
-   
     let input = (event.target as HTMLInputElement).value;
-
-
-    input = input.replace(/\D/g, ''); // Remove all non-digit characters
+    input = input.replace(/\D/g, '');
     if (input.length > 6) {
       input = `(${input.substring(0, 3)}) ${input.substring(3, 6)}-${input.substring(6, 10)}`;
     } else if (input.length > 3) {
@@ -411,31 +411,37 @@ ngAfterViewInit() {
       input = `(${input.substring(0, 3)}`;
     }
     (event.target as HTMLInputElement).value = input;
-    this.companyCustomerForm.controls['phone'].setValue(input); // Update the form control value
+    this.companyCustomerForm.controls['phone'].setValue(input);
   }
 
-advanceFilterFunc() {
-  this.loadingScreen = true; // Start loading
+  advanceFilterFunc() {
+  this.loadingScreen = true;
+  console.log('filterForm value:', this.filterForm.value); // check if form is valid
+  console.log('pageIndex:', this.pageIndex, 'pageSize:', this.pageSize);
 
   this.companyCustomerService.advanceFilter(
-    this.filterForm.value, 
-    this.pageIndex, 
-    this.pageSize, 
-    this.sortedBy, 
-    this.searchData, 
+    this.filterForm.value,
+    this.pageIndex,
+    this.pageSize,
+    this.sortedBy,
+    this.searchData,
     this.asc
   ).subscribe(
     (data) => {
-      console.log("advanceSearch--->", data);
-
-      // Reset customer list and populate with new data
+      console.log('raw API response:', data); // check what API returns
       this.companyCustomerListWithExtraFields = [];
       this.paginationResult = data;
-      if(this.paginationResult.data.length==0&&this.pageIndex!=0){
-        this.pageIndex=0;
-        localStorage.setItem('customerPageInd',this.pageIndex.toString());
+
+      console.log('totalRecords:', this.paginationResult.totalRecords);
+      console.log('data length:', this.paginationResult.data.length);
+
+      if (this.paginationResult.data.length == 0 && this.pageIndex != 0) {
+        this.pageIndex = 0;
+        localStorage.setItem('customerPageInd', this.pageIndex.toString());
         this.advanceFilterFunc();
+        return; // ✅ add return to stop processing empty result
       }
+
       this.totalLength = this.paginationResult.totalRecords;
       this.companyCustomer = this.paginationResult.data;
 
@@ -445,662 +451,407 @@ advanceFilterFunc() {
         this.companyCustomerListWithExtraFields.push(jsonObject);
       });
 
+      console.log('final list:', this.companyCustomerListWithExtraFields); // check final result
       this.companyCustomerListWithExtraFieldsWithoutFilter = this.companyCustomerListWithExtraFields;
     },
     (err) => {
-      console.log("advanceSearch failed--->", err);
-      this.loadingScreen = false; 
+      console.log("advanceSearch failed--->", err); // check if API is failing
+      this.loadingScreen = false;
     },
     () => {
-      // Once everything is done, hide loading screen
       this.searchedCompanyCustomer = this.companyCustomer;
-      this.loadingScreen = false; // Stop loading
+      this.loadingScreen = false;
     }
   );
 }
 
-
-  mandatoryFieldCheckBox(isChecked:any,item:string){
-     
-    if(isChecked){
-      this.showMandatoryBasicFields.set(item,true);
+  mandatoryFieldCheckBox(isChecked: any, item: string) {
+    if (isChecked) {
+      this.showMandatoryBasicFields.set(item, true);
+    } else {
+      this.showMandatoryBasicFields.set(item, false);
     }
-    else{
-      this.showMandatoryBasicFields.set(item,false);
-    }
-    const myArry:any=[];
-      this.showMandatoryBasicFields.forEach((val,ele)=>{
-        if(val==true){
-        myArry.push(ele)
-        }
-      })
-      // console.log(JSON.stringify(Object.fromEntries(this.showMandatoryBasicFields)));
-      localStorage.setItem("showMandatoryBasicFieldsCustomers",  JSON.stringify(myArry));
-    console.log(item+"-"+this.showMandatoryBasicFields.get(item));
+    const myArry: any = [];
+    this.showMandatoryBasicFields.forEach((val, ele) => {
+      if (val == true) { myArry.push(ele); }
+    });
+    localStorage.setItem("showMandatoryBasicFieldsCustomers", JSON.stringify(myArry));
   }
-  customCheckBox(isChecked:any,item:string){
-    console.log(item+" "+isChecked);
-    if (!this.selectedExtraColums) {
-      this.selectedExtraColums = [];
-    }
-    if(isChecked){
+
+  customCheckBox(isChecked: any, item: string) {
+    if (!this.selectedExtraColums) { this.selectedExtraColums = []; }
+    if (isChecked) {
       this.selectedExtraColums.push(item);
-      this.selectedExtraColumsMap.set(item,true);
+      this.selectedExtraColumsMap.set(item, true);
+    } else {
+      this.selectedExtraColums = this.selectedExtraColums.filter((data) => data != item);
+      this.selectedExtraColumsMap?.set(item, false);
     }
-    else{
-      this.selectedExtraColums=this.selectedExtraColums.filter((data)=> data!=item);
-      this.selectedExtraColumsMap?.set(item,false);
-    }
-    console.log(this.selectedExtraColums);
-    localStorage.setItem("selectedExtraColumsCustomer",JSON.stringify(this.selectedExtraColums))
+    localStorage.setItem("selectedExtraColumsCustomer", JSON.stringify(this.selectedExtraColums));
   }
+
   get appliedFilterListSize(): number {
-    return this.appliedFilterList.size;
+    return this.appliedFilterList?.size;
   }
-addCompanyCustomer(){
-    console.log("Add Company Customer");
 
-    let myCompanyCustomer:CompanyCustomer;
-   
+  addCompanyCustomer() {
+    let myCompanyCustomer: CompanyCustomer;
     this.companyCustomerForm.controls['companyId'].setValue(this.companyId);
-    console.log(this.companyCustomerForm.value);
-    let extraFieldValueMap=new Map<String,string>();
-    let extraFieldTypeMap=new Map<String,string>();
-    
-    this.showFieldsList?.forEach((x)=>{
-      if(x.show==true){
-        console.log("----------------------------------------------showList----------+"+this.companyCustomerForm.get(x.name)?.value)
-        extraFieldValueMap.set(x.name,this.companyCustomerForm.get(x.name)?.value);
-        extraFieldTypeMap.set(x.name,x.type);
-      }
-    })
-    
-    console.log(this.companyCustomerForm.value);
-    let valid=1;
-    console.log(this.mandatoryFieldsList)
-    
-    //Name Mandatory Field So Checking it
-    if(this.companyCustomerForm.get("name")?.value==null||this.companyCustomerForm.get("name")?.value==''){
-      this.triggerAlert("Fill Mandatory Field 'Name'","warning");
-      this.loadingScreen = false; // Stop loading on validation error
-      return;
-    }
-    
-    this.mandatoryFieldsList?.forEach((val)=>{
-      console.log(val.name,"-============>",val.mandatory+" "+this.companyCustomerForm.get(val.name)?.value);
-      if(this.showFieldsMap.get(val.name)==false){
-        valid=1;
-      }
-      else if((val.mandatory==true)&&( this.companyCustomerForm.get(val.name)?.value==null||this.companyCustomerForm.get(val.name)?.value=='')){
-        this.triggerAlert("Fill Mandatory Field '"+this.toCamelCase(val.name)+"'","warning");
-        valid=0;
-      }
-      else if((val.mandatory==true)&&(this.showFieldsMap.get(val.name)==true) &&( this.companyCustomerForm.get(val.name)?.value==null||this.companyCustomerForm.get(val.name)?.value=='')){
-        this.triggerAlert("Fill Mandatory Field '"+this.toCamelCase(val.name)+"'","warning");
-        valid=0;
-      }
-    })
-    
-    if(valid==0){
-      this.loadingScreen = false; // Stop loading on validation error
-      return;
-    }
-    
-    console.log(this.companyCustomerForm.get("companyId")?.value)
+    let extraFieldValueMap = new Map<String, string>();
+    let extraFieldTypeMap = new Map<String, string>();
 
-    this.myList.forEach((col)=>{
-      if(this.companyCustomerForm.get(col)?.value==null){
-        console.log("field value---> is null for "+col);
+    this.showFieldsList?.forEach((x) => {
+      if (x.show == true) {
+        extraFieldValueMap.set(x.name, this.companyCustomerForm.get(x.name)?.value);
+        extraFieldTypeMap.set(x.name, x.type);
+      }
+    });
+
+    let valid = 1;
+
+    if (this.companyCustomerForm.get("name")?.value == null || this.companyCustomerForm.get("name")?.value == '') {
+      this.triggerAlert("Fill Mandatory Field 'Name'", "warning");
+      this.loadingScreen = false;
+      return;
+    }
+
+    this.mandatoryFieldsList?.forEach((val) => {
+      if (this.showFieldsMap.get(val.name) == false) {
+        valid = 1;
+      } else if ((val.mandatory == true) && (this.companyCustomerForm.get(val.name)?.value == null || this.companyCustomerForm.get(val.name)?.value == '')) {
+        this.triggerAlert("Fill Mandatory Field '" + this.toCamelCase(val.name) + "'", "warning");
+        valid = 0;
+      }
+    });
+
+    if (valid == 0) {
+      this.loadingScreen = false;
+      return;
+    }
+
+    this.myList.forEach((col) => {
+      if (this.companyCustomerForm.get(col)?.value == null) {
         this.companyCustomerForm.controls[col]?.setValue("");
       }
-    })
-    
-    console.log(this.companyCustomerForm.value);
-    
-    // START loading screen BEFORE API call
+    });
+
     this.loadingScreen = true;
 
-  //  //timeout to check loading screen
-  //  setTimeout(() => {
-  //   console.log('Loading screen should be visible now.');
-  // }, 1500);
-
-    
     this.companyCustomerService.addCompanyCustomer(this.companyCustomerForm.value).subscribe(
-      (data)=>{
-        console.log(data+" CompanyCustomerInserted");
-        myCompanyCustomer=data;
-        console.log("CompanyCustomer id"+myCompanyCustomer.id);
-        
-        // Check if there are extra fields to save
+      (data) => {
+        myCompanyCustomer = data;
         const extraFieldsToSave = this.showFieldsList?.filter(x => x.show) || [];
-        
-        if(extraFieldsToSave.length === 0) {
-          // No extra fields, close modal immediately
-          this.loadingScreen = false; // Stop loading
+
+        if (extraFieldsToSave.length === 0) {
+          this.loadingScreen = false;
           this.closeModalAndRefresh();
           return;
         }
-        
-        // Track completion of extra field saves
+
         let completedRequests = 0;
         const totalRequests = extraFieldsToSave.length;
         let hasError = false;
-        
-        extraFieldsToSave.forEach((x)=>{
-          const obj={
-            "email":this.email,
-            "companyId":this.companyId,
-            "name":x.name,
-            "value":(extraFieldValueMap.get(x.name)==null)?"": extraFieldValueMap.get(x.name),
-            "companyCustomerId":myCompanyCustomer.id,
-            "type":extraFieldTypeMap.get(x.name)
-          }
-          console.log("extra field object"+obj.companyCustomerId+"--"+obj.companyId+"--"+obj.name+"--"+obj.value)
-          
+
+        extraFieldsToSave.forEach((x) => {
+          const obj = {
+            "email": this.email,
+            "companyId": this.companyId,
+            "name": x.name,
+            "value": (extraFieldValueMap.get(x.name) == null) ? "" : extraFieldValueMap.get(x.name),
+            "companyCustomerId": myCompanyCustomer.id,
+            "type": extraFieldTypeMap.get(x.name)
+          };
+
           this.companyCustomerService.addExtraFields(obj).subscribe(
-            (data)=>{
-              console.log("added extra fields");
+            (data) => {
               completedRequests++;
-              
-              // Only close modal when ALL extra fields are saved
-              if(completedRequests === totalRequests && !hasError) {
-                this.loadingScreen = false; // Stop loading
+              if (completedRequests === totalRequests && !hasError) {
+                this.loadingScreen = false;
                 this.closeModalAndRefresh();
               }
             },
-            (err)=>{
-              console.log(err);
+            (err) => {
               hasError = true;
-              this.loadingScreen = false; // Stop loading on error
-              if(err.error.error==="TRIAL_EXPIRED"){
-                this.triggerAlert(err.error.message,"danger");
-              }
-              else{
-                this.triggerAlert(err.error.errorMessage,"danger");
+              this.loadingScreen = false;
+              if (err.error.error === "TRIAL_EXPIRED") {
+                this.triggerAlert(err.error.message, "danger");
+              } else {
+                this.triggerAlert(err.error.errorMessage, "danger");
               }
             }
-          )
-        })
+          );
+        });
       },
-      (err)=>{
-        console.log(err);
-        this.loadingScreen = false; // Stop loading on error
-        if(err.error.error==="TRIAL_EXPIRED"){
-          this.triggerAlert(err.error.message,"danger");
-        }
-        else{
-          this.triggerAlert(err.error.errorMessage,"danger");
-        }
-      }
-    )
-}
-
-closeModalAndRefresh() {
-  const modalElement = document.getElementById('add-order');
-  
-  if (modalElement) {
-    // Use Bootstrap's modal API to properly close
-    const modal = (window as any).bootstrap?.Modal?.getInstance(modalElement);
-    if (modal) {
-      modal.hide();
-    } else if (this.closeBox) {
-      this.closeBox.nativeElement.click();
-    }
-  }
-  
-  // Small delay to ensure modal closes before refresh
-  setTimeout(() => {
-    // Clean up any remaining backdrop
-    const backdrops = document.querySelectorAll('.modal-backdrop');
-    backdrops.forEach(backdrop => backdrop.remove());
-    document.body.classList.remove('modal-open');
-    document.body.style.paddingRight = '';
-    document.body.style.overflow = '';
-    
-    // Refresh data
-    this.advanceFilterFunc();
-    
-    // Clear form safely
-    this.clearForm();
-  }, 100);
-}
-
-clearForm() {
-  if (this.companyCustomerForm) {
-    Object.keys(this.companyCustomerForm.controls).forEach(key => {
-      const control = this.companyCustomerForm.get(key);
-      if (control) {
-        if (key === 'companyId') {
-          control.setValue(this.companyId);
-        } else if (key === 'status') {
-          control.setValue('active');
-        } else if (key === 'country') {
-          control.setValue('United States of America');
+      (err) => {
+        this.loadingScreen = false;
+        if (err.error.error === "TRIAL_EXPIRED") {
+          this.triggerAlert(err.error.message, "danger");
         } else {
-          control.setValue('');
+          this.triggerAlert(err.error.errorMessage, "danger");
         }
-        control.markAsUntouched();
-        control.markAsPristine();
       }
-    });
-  }
-}
-
-  getAllCompanyCustomerList(companyId:string){
-    // this.workOrderService.getWorkOrder(companyId).subscribe((data)=>{
-    //   this.workorderlist=data;
-     
-
-
-
-
-
-
-    // },(err)=>{
-    //   console.log(err);
-    // },
-    // ()=>{
-    //   this.searchedWorkorder=this.workorderlist
-    // }
-    // )
-    this.companyCustomerService.getAllCompanyCustomerWithExtraColumn(companyId).subscribe((data)=>{
-      this.companyCustomerListWithExtraFields=[];
-      console.log(data);
-      this.companyCustomerlist=data;
-      const jsonList:string[]=data;
-      jsonList.forEach((workorder)=>{
-        const jsonObject:any = JSON.parse(workorder);
-        console.log(typeof(jsonObject))
-        this.companyCustomerListWithExtraFields.push(jsonObject)
-      })
-      console.log(this.companyCustomerListWithExtraFields)
-      
-     
-    },
-    (err)=>{
-      console.log(err);
-    },
-    ()=>{
-      // this.searchedWorkorder=this.workOrderListWithExtraFields;
-    })
-    
-
+    );
   }
 
-
-  editButtonVisibile(id:number){
-  //  console.log(id);
-    this.editButtonId=id;
-    this.editVisibility=true;
- 
-  }
-  editButtonNotVisible(){
-    
-    this.editVisibility=false;
-    this.editButtonId=-1;
-  }
-  companyCustomerDetail(id:string){
-    console.log("Detail Id:"+id);
-    this.detailedWorkOrder=true;
-    this.detailModule=true;
-    this.detailId=id;
-    console.log(this.detailModule+" "+ this.detailId)
-    // this.dashboard.current=6
-    // localStorage.setItem('currOption','6');
-  this.selectedWorkOrder=id;
-  }
-  onBackClicked(eventData:{show:boolean}){
-    this.ngOnInit();
-   
-    this.detailedWorkOrder=eventData.show;
-  }
-  deleteloading(){
-    this.loadingScreen=true;
-    setInterval(()=>{
-      // this.loadingScreen=false;
-      this.loadingScreen=false;
-    },3000);
-    
-  }
-  deleteCompanyCustomer(id:string){
-  this.loadingScreen = true;
-  
-  this.companyCustomerService.deleteCompanyCustomer(id).subscribe(
-    (data)=>{
-      console.log('Workorder Deleted');
-      this.companyCustomerForm.reset();
-      
-      // Delete extra fields after main delete
-      this.companyCustomerService.deleteWorkorderExtraField(id).subscribe(
-        (data)=>{
-          console.log("ExtraFields Deleted");
-        },
-        (err)=>{
-          console.log(err);
-          this.loadingScreen = false; // Stop loading on error
-          if(err.error.error==="TRIAL_EXPIRED"){
-            this.triggerAlert(err.error.message,"danger");
-          }
-          else{
-            this.triggerAlert(err.error.errorMessage,"danger");
-          }
-        },
-        ()=>{
-          // Both deletes complete
-          this.ngOnInit();
-          this.loadingScreen = false; // Stop loading after everything
-        }
-      );
-    },
-    (err)=>{
-      console.log(err);
-      this.companyCustomerForm.reset();
-      this.loadingScreen = false; // Stop loading on error
-      if(err.error.error==="TRIAL_EXPIRED"){
-        this.triggerAlert(err.error.message,"danger");
-      }
-      else{
-        this.triggerAlert(err.error.errorMessage,"danger");
+  closeModalAndRefresh() {
+    const modalElement = document.getElementById('add-order');
+    if (modalElement) {
+      const modal = (window as any).bootstrap?.Modal?.getInstance(modalElement);
+      if (modal) {
+        modal.hide();
+      } else if (this.closeBox) {
+        this.closeBox.nativeElement.click();
       }
     }
-  )
-}
-  
-  // deleteCompanyCustomer(id:string){
-  //   this.loadingScreen=true;
-  
-  //   this.companyCustomerService.deleteCompanyCustomer(id).subscribe((data)=>{
-  //     console.log('Workorder Deleted');
-  //     this.companyCustomerForm.reset();
-     
-  //   },
-  //   (err)=>{
-  //     console.log(err);
-  //     this.companyCustomerForm.reset();
-  //      if(err.error.error==="TRIAL_EXPIRED"){
-  //       this.triggerAlert(err.error.message,"danger");
-  //     }
-  //     else{
-  //     this.triggerAlert(err.error.errorMessage,"danger");
-  //     }
-  //   },()=>{
-  //     this.companyCustomerService.deleteWorkorderExtraField(id).subscribe((data)=>{
-  //       console.log("ExtraFields Deleted");
-  //     },
-  //     (err)=>{
-  //       console.log(err);
-  //        if(err.error.error==="TRIAL_EXPIRED"){
-  //       this.triggerAlert(err.error.message,"danger");
-  //     }
-  //     else{
-  //     this.triggerAlert(err.error.errorMessage,"danger");
-  //     }
-  //     })
-  //     this.ngOnInit();
-  //     this.loadingScreen=false;
-  //   })
-   
 
+    setTimeout(() => {
+      const backdrops = document.querySelectorAll('.modal-backdrop');
+      backdrops.forEach(backdrop => backdrop.remove());
+      document.body.classList.remove('modal-open');
+      document.body.style.paddingRight = '';
+      document.body.style.overflow = '';
+      this.advanceFilterFunc();
+      this.clearForm();
+    }, 100);
+  }
 
-    
-  // }
-  
-  assetSelected(data:any){
-    console.log(data)
+  clearForm() {
+    if (this.companyCustomerForm) {
+      Object.keys(this.companyCustomerForm.controls).forEach(key => {
+        const control = this.companyCustomerForm.get(key);
+        if (control) {
+          if (key === 'companyId') {
+            control.setValue(this.companyId);
+          } else if (key === 'status') {
+            control.setValue('active');
+          } else if (key === 'country') {
+            control.setValue(this.countryService.getCountryCode()); // ✅ from service
+          } else {
+            control.setValue('');
+          }
+          control.markAsUntouched();
+          control.markAsPristine();
+        }
+      });
+    }
   }
-  onSearch(data:any){
-    console.log(data);
-    this.searchData=data;
+
+  getAllCompanyCustomerList(companyId: string) {
+    this.companyCustomerService.getAllCompanyCustomerWithExtraColumn(companyId).subscribe(
+      (data) => {
+        this.companyCustomerListWithExtraFields = [];
+        this.companyCustomerlist = data;
+        const jsonList: string[] = data;
+        jsonList.forEach((workorder) => {
+          const jsonObject: any = JSON.parse(workorder);
+          this.companyCustomerListWithExtraFields.push(jsonObject);
+        });
+      },
+      (err) => { console.log(err); }
+    );
   }
-  searchClick(){
-    // console.log
-   this.advanceFilterFunc();
-    
+
+  editButtonVisibile(id: number) {
+    this.editButtonId = id;
+    this.editVisibility = true;
   }
-  searchBy(data:string){
-    this.searchDataBy=data;
-    console.log(data)
-    this.sortedBy='';
+
+  editButtonNotVisible() {
+    this.editVisibility = false;
+    this.editButtonId = -1;
   }
-  removeSearchDataBy(){
-    this.searchDataBy='';
+
+  companyCustomerDetail(id: string) {
+    this.detailedWorkOrder = true;
+    this.detailModule = true;
+    this.detailId = id;
+    this.selectedWorkOrder = id;
+  }
+
+  onBackClicked(eventData: { show: boolean }) {
+    this.ngOnInit();
+    this.detailedWorkOrder = eventData.show;
+  }
+
+  deleteCompanyCustomer(id: string) {
+    this.loadingScreen = true;
+    this.companyCustomerService.deleteCompanyCustomer(id).subscribe(
+      (data) => {
+        this.companyCustomerForm.reset();
+        this.companyCustomerService.deleteWorkorderExtraField(id).subscribe(
+          (data) => { console.log("ExtraFields Deleted"); },
+          (err) => {
+            this.loadingScreen = false;
+            if (err.error.error === "TRIAL_EXPIRED") {
+              this.triggerAlert(err.error.message, "danger");
+            } else {
+              this.triggerAlert(err.error.errorMessage, "danger");
+            }
+          },
+          () => {
+            this.ngOnInit();
+            this.loadingScreen = false;
+          }
+        );
+      },
+      (err) => {
+        this.companyCustomerForm.reset();
+        this.loadingScreen = false;
+        if (err.error.error === "TRIAL_EXPIRED") {
+          this.triggerAlert(err.error.message, "danger");
+        } else {
+          this.triggerAlert(err.error.errorMessage, "danger");
+        }
+      }
+    );
+  }
+
+  assetSelected(data: any) { console.log(data); }
+
+  onSearch(data: any) {
+    this.searchData = data;
+  }
+
+  searchClick() {
+    this.advanceFilterFunc();
+  }
+
+  searchBy(data: string) {
+    this.searchDataBy = data;
+    this.sortedBy = '';
+  }
+
+  removeSearchDataBy() {
+    this.searchDataBy = '';
     this.getAllCompanyCustomerList(this.companyId);
   }
-  sortBy(data:string){
- this.sortedBy=data;
- console.log(this.sortedBy);
- this.advanceFilterFunc();
+
+  sortBy(data: string) {
+    this.sortedBy = data;
+    this.advanceFilterFunc();
   }
-  removeSort(){
-   this.sortedBy='';
+
+  removeSort() {
+    this.sortedBy = '';
   }
+
   toCamelCase(str: string): string {
     return str.replace(/\b\w/g, (char) => char.toUpperCase());
-}
+  }
+
   triggerAlert(message: string, type: string) {
-    console.log("triiger"+message)
     this.alertMessage = message;
     this.alertType = type;
     this.showAlert = true;
-    // You can set a timeout to automatically hide the alert after a certain time
-    setTimeout(() => {
-      this.showAlert = false;
-    }, 5000); // Hide the alert after 5 seconds (adjust as needed)
+    setTimeout(() => { this.showAlert = false; }, 5000);
   }
-  Echo(){
-    console.log("ecgo")
-  }
-  resetForm(){
+
+  Echo() { console.log("echo"); }
+
+  resetForm() {
     this.companyCustomerForm.reset({
-    status: 'active', // Ensure status is reset to 'active'
-    companyId: this.companyId // Keep companyId if needed
-  });
-
+      status: 'active',
+      companyId: this.companyId,
+      country: this.countryService.getCountryCode() // ✅ restore country on reset
+    });
   }
 
-  addFilterForm(){
-    // this.loading=true;
-    console.log(this.filterForm.value);
-    console.log(this.mandatoryFieldFilterList.size)
-    this.mandatoryFieldFilterList.forEach((value,data)=>{
-      console.log(value+" "+data)
-      if(value==true&&this.filterForm.controls[data]?.value!=null&&this.filterForm.controls[data]?.value!=""){
-        
-        this.appliedFilterListMap.set(data,this.filterForm.get(data)?.value);
+  addFilterForm() {
+    this.mandatoryFieldFilterList.forEach((value, data) => {
+      if (value == true && this.filterForm.controls[data]?.value != null && this.filterForm.controls[data]?.value != "") {
+        this.appliedFilterListMap.set(data, this.filterForm.get(data)?.value);
         this.appliedFilterList.add(data);
       }
-    })
-    
-    this.selectedFilterList.forEach((name: string)=>{
-      if(this.filterForm.controls[name].value!=null&&this.filterForm.controls[name].value!=""){
-      this.appliedFilterListMap.set(name,this.filterForm.get(name)?.value);
-      this.appliedFilterList.add(name);
+    });
+
+    this.selectedFilterList.forEach((name: string) => {
+      if (this.filterForm.controls[name].value != null && this.filterForm.controls[name].value != "") {
+        this.appliedFilterListMap.set(name, this.filterForm.get(name)?.value);
+        this.appliedFilterList.add(name);
       }
-    })
-    console.log("applied filter"+this.appliedFilterList.size);
+    });
+
     this.advanceFilterFunc();
-
   }
-  // reset(){
-  //   this.loadingScreen=true;
-  //   this.filterForm.reset();
-  //   this.sortedBy="";
-  //   // this.searchData=null;
-  //   this.appliedFilterList=new Set<string>();
-  //   this.appliedFilterListMap=new Map<string,string>;
-    
-  //   this.filterForm.controls['companyId'].setValue(this.companyId);
-  //   this.myList.forEach((field)=>{
-  //     this.mandatoryFieldFilterList.set(field,true);
-  //     this.filterForm.addControl(field,this.formBuilder.control('',Validators.required));
-  //   });
-  //   this.selectedFilterList=[];
-  //   this.showFieldsList.forEach((x)=>{
-     
-  //     this.selectedFilterList.push(x.name);
-  //     this.filterForm.addControl(x.name,this.formBuilder.control('',Validators.required));
-  //     this.showFieldsMap.set(x.name,x.show);
-     
-  //   })
-  //   // this.assetService.advanceFilter(this.filterForm.value,this.pageIndex,this.pageSize,this.sortedBy).subscribe((data)=>{
-  //   //   console.log(data);
-  //   //   this.assetListWithExtraFields=[]
-  //   // this.paginationResult=data;
-  //   // this.totalLength=this.paginationResult.totalRecords;
-  //   // this.assets=this.paginationResult.data;
-  //   // const jsonList:string[]=this.paginationResult.data;
-  //   // jsonList.forEach((workorder)=>{
-  //   //   const jsonObject:any = JSON.parse(workorder);
-  //   //   console.log(typeof(jsonObject))
-  //   //   this.assetListWithExtraFields.push(jsonObject)
-  //   // })
-  //   // console.log(this.assetListWithExtraFields);
-  //   // this.loading=false;
-  //   // })
-  //   this.loadingScreen=false;
-  //   this.advanceFilterFunc();
 
-  // }
+  reset() {
+    this.filterForm.reset();
+    this.sortedBy = "";
+    this.appliedFilterList = new Set<string>();
+    this.appliedFilterListMap = new Map<string, string>();
+    this.filterForm.controls['companyId'].setValue(this.companyId);
 
-  reset(){
-  this.filterForm.reset();
-  this.sortedBy="";
-  this.appliedFilterList = new Set<string>();
-  this.appliedFilterListMap = new Map<string,string>;
-  
-  this.filterForm.controls['companyId'].setValue(this.companyId);
-  this.myList.forEach((field)=>{
-    this.mandatoryFieldFilterList.set(field,true);
-    this.filterForm.addControl(field,this.formBuilder.control('',Validators.required));
-  });
-  
-  this.selectedFilterList=[];
-  this.showFieldsList.forEach((x)=>{
-    this.selectedFilterList.push(x.name);
-    this.filterForm.addControl(x.name,this.formBuilder.control('',Validators.required));
-    this.showFieldsMap.set(x.name,x.show);
-  });
-  
-  // Don't manually set loadingScreen here - let advanceFilterFunc handle it
-  this.advanceFilterFunc(); // This will set loadingScreen = true/false
-}
-  
-  removeSingleFilter(name:string){
-    console.log("single: "+name)
+    this.myList.forEach((field) => {
+      this.mandatoryFieldFilterList.set(field, true);
+      this.filterForm.addControl(field, this.formBuilder.control('', Validators.required));
+    });
+
+    this.selectedFilterList = [];
+    this.showFieldsList.forEach((x) => {
+      this.selectedFilterList.push(x.name);
+      this.filterForm.addControl(x.name, this.formBuilder.control('', Validators.required));
+      this.showFieldsMap.set(x.name, x.show);
+    });
+
+    this.advanceFilterFunc();
+  }
+
+  removeSingleFilter(name: string) {
     this.appliedFilterList.delete(name);
-
     this.filterForm.get(name)?.setValue(null);
-
-
-  this.advanceFilterFunc();
-
+    this.advanceFilterFunc();
   }
+
   onKeyDown(event: KeyboardEvent): void {
     if (event.key === 'Enter') {
       this.searchClick();
     }
   }
-  // getStateList(country: any) {
-  //   this.currentSelectedCountryCode=countryList[country]||'';
-  
-  
-  //   this.companyCustomerService.countryStateList(country).subscribe(
-  //     (data) => {
-  //       this.stateList = data;
-  //       this.companyCustomerForm.get('state')?.setValue('');
-  //          // reset state
-  
-  //       this.cdr.detectChanges();               // prevents ExpressionChanged error
-  //     },
-  //     (err) => {
-  //       console.log(err);
-  //     }
-  //   );
-  // }
-  getStateList(country: any) {
-  this.currentSelectedCountryCode = countryList[country] || '';
 
-  this.companyCustomerService.countryStateList(country).subscribe(
-    (data) => {
-      this.stateList = data;
-      
-      // Reset state in filter form
-      this.filterForm.get('state')?.setValue('');
-      
-      // Reset state in add customer form
-      this.companyCustomerForm.get('state')?.setValue('');
-      
-      this.cdr.detectChanges();
-    },
-    (err) => {
-      console.log(err);
-    }
-  );
-}
- exportData(){
-  console.log(this.exportType)
-  if(this.exportType==='export-current-page'){
-    this.exportexcel();
-    this.triggerAlert("Exported Current Page Successfully","success");
-    this.exportCloseBox?.nativeElement.click();
-  }else{
-    console.log('export-all-pages')
-    this.companyCustomerService.exportCompanyCustomer(this.companyId).subscribe((data:Blob)=>{
-      // console.log(data);
-         const blob = new Blob([data], {
-      type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
-    });
-
-    const url = window.URL.createObjectURL(blob);
-
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = 'Customers_'+this.companyId+'.xlsx';
-    a.click();
-
-    window.URL.revokeObjectURL(url);
-
-
-    },(err)=>{
-      console.log(err);
-    },()=>{
-      this.triggerAlert("Exported All Data Successfully","success"); 
+  exportData() {
+    if (this.exportType === 'export-current-page') {
+      this.exportexcel();
+      this.triggerAlert("Exported Current Page Successfully", "success");
       this.exportCloseBox?.nativeElement.click();
-    });
-    
+    } else {
+      this.companyCustomerService.exportCompanyCustomer(this.companyId).subscribe(
+        (data: Blob) => {
+          const blob = new Blob([data], {
+            type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+          });
+          const url = window.URL.createObjectURL(blob);
+          const a = document.createElement('a');
+          a.href = url;
+          a.download = 'Customers_' + this.companyId + '.xlsx';
+          a.click();
+          window.URL.revokeObjectURL(url);
+        },
+        (err) => { console.log(err); },
+        () => {
+          this.triggerAlert("Exported All Data Successfully", "success");
+          this.exportCloseBox?.nativeElement.click();
+        }
+      );
+    }
   }
- }
-   exportexcel(): void {
-  const element = document.getElementById('companycustomer-table');
-  
-  if (!element) {
-    console.error('Table element not found');
-    return;
-  }
-  
-  const rows = element.querySelectorAll('tr');
-  const data: any[] = [];
-  
-  rows.forEach(row => {
-    const rowData: any[] = [];
-    row.querySelectorAll('td, th').forEach(cell => {
-      rowData.push({
-        v: cell.textContent?.trim(),
-        t: 's', // force text type
-        z: '@'  // text format
+
+  exportexcel(): void {
+    const element = document.getElementById('companycustomer-table');
+    if (!element) { console.error('Table element not found'); return; }
+
+    const rows = element.querySelectorAll('tr');
+    const data: any[] = [];
+    rows.forEach(row => {
+      const rowData: any[] = [];
+      row.querySelectorAll('td, th').forEach(cell => {
+        rowData.push({ v: cell.textContent?.trim(), t: 's', z: '@' });
       });
+      data.push(rowData);
     });
-    data.push(rowData);
-  });
-  
-  const ws: XLSX.WorkSheet = XLSX.utils.aoa_to_sheet(data);
-  
-  /* generate workbook and add the worksheet */
-  const wb: XLSX.WorkBook = XLSX.utils.book_new();
-  XLSX.utils.book_append_sheet(wb, ws, 'Sheet1');
-  
-  /* save to file */
-  XLSX.writeFile(wb, this.fileName);
-}
+
+    const ws: XLSX.WorkSheet = XLSX.utils.aoa_to_sheet(data);
+    const wb: XLSX.WorkBook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(wb, ws, 'Sheet1');
+    XLSX.writeFile(wb, this.fileName);
+  }
 }

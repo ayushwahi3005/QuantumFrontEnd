@@ -563,16 +563,28 @@ export class ImportComponent {
   }
   exportTemplateData(){
     if(this.currExportTemplate=="asset"){
-      const link = document.createElement('a');
-    link.href = 'assets/Template_Files/Asset_Template.csv'; // path to your file
-    link.download = 'Asset_template.csv';        // name of the file to be downloaded
-    link.click();
+    //   const link = document.createElement('a');
+    // link.href = 'assets/Template_Files/Asset_Template.csv'; // path to your file
+    // link.download = 'Asset_template.csv';        // name of the file to be downloaded
+    // link.click();
+    this.importService.downloadAssetTemplate(this.companyId).subscribe((data:Blob)=>{
+       const blob = new Blob([data], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+    const fileName = `asset_template_${this.companyId}.xlsx`;
+    saveAs(blob, fileName);
+    },
+    (err)=>{
+      console.log(err)
+    })
     }
     if(this.currExportTemplate=="customer"){
-      const link = document.createElement('a');
-    link.href = 'assets/Template_Files/Customer_Template.csv'; // path to your file
-    link.download = 'Customer_Template.csv';        // name of the file to be downloaded
-    link.click();
+      this.importService.downloadCustomerTemplate(this.companyId).subscribe((data:Blob)=>{
+       const blob = new Blob([data], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+    const fileName = `customer_template_${this.companyId}.csv`;
+    saveAs(blob, fileName);
+    },
+    (err)=>{
+      console.log(err)
+    })
     }
   }
   onFileSelected(event: any): void {
@@ -592,6 +604,26 @@ export class ImportComponent {
   savedMappingLocalStorage(event:any){
     console.log(event.checked)
     this.useSavedMapping=event.checked;
+    
+    // Populate columnMappings with saved mapping when toggle is enabled
+    if(event.checked){
+      if(this.currImport === 'asset' && this.impType === 'add' && this.assetAddMapping){
+        this.columnMappings = new Map(this.assetAddMapping);
+      }
+      else if(this.currImport === 'asset' && this.impType === 'update' && this.assetUpdateMapping){
+        this.columnMappings = new Map(this.assetUpdateMapping);
+      }
+      else if(this.currImport === 'customer' && this.impType === 'add' && this.customerAddMapping){
+        this.columnMappings = new Map(this.customerAddMapping);
+      }
+      else if(this.currImport === 'customer' && this.impType === 'update' && this.customerUpdateMapping){
+        this.columnMappings = new Map(this.customerUpdateMapping);
+      }
+    }
+    else{
+      // Clear mappings when toggled off
+      this.columnMappings = new Map();
+    }
   }
   
 }

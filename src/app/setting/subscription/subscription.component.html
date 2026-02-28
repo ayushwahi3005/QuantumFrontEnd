@@ -361,7 +361,7 @@
                 >
                   <ngx-stripe-payment />
                 </ngx-stripe-elements> -->
-                  <ngx-stripe-card #cardElement [options]="cardOptions"></ngx-stripe-card>
+                  <ngx-stripe-card #cardElement [options]="cardOptions" (change)="onCardChange($event)"></ngx-stripe-card>
                   <!-- </ng-container> -->
                   <div style="margin-bottom: 20px"></div>
                   <mat-divider></mat-divider>
@@ -378,7 +378,7 @@
                     (click)="collectPayment()"
                     
                   > -->
-                    <button mat-raised-button color="primary" [disabled]="paying()||this.checkoutForm.invalid"
+                    <button mat-raised-button color="primary" [disabled]="paying()||this.checkoutForm.invalid||!cardComplete"
                       (click)="createSubscription(cardElement)">
 
                       @if (paying()) {
@@ -912,7 +912,26 @@
                 </td>
                 <td>$ {{item.amount| number:'1.2-2'}}</td>
                <!-- <td>{{ paymentMethodMap[item?.paymentType] || item?.paymentType }}</td> -->
-               <td>{{getPaymentTypeLabel(item?.paymentType)}}</td>
+               <td>
+                  {{ getPaymentTypeLabel(item?.paymentType) }}
+
+                  <span *ngIf="item?.last4digit" style="display: flex; align-items: center; gap: 6px; margin-top: 5px;">
+                    
+                    <!-- Card Provider Logo (only for known providers) -->
+                    <img
+                      *ngIf="isKnownCardProvider(item?.cardProvider)"
+                      [src]="'assets/card-logos/' + item?.cardProvider?.toLowerCase() + '.svg'"
+                      [alt]="item?.cardProvider"
+                      style="height: 20px; width: auto; object-fit: contain;"
+                    />
+
+                    <!-- Last 4 digits -->
+                    <span style="font-size: 12px; color: #666;">
+                      •••• {{ item?.last4digit }}
+                    </span>
+
+                  </span>
+                </td>
                 <td>
 
                   <!-- <img src="../../../assets/edit.svg" id="edit-button" [ngClass]="{'editoption':!(editVisibility&&(editButtonId==assetListWithExtraFields.indexOf(item)+1))}" style="float: inline-start; height: 25px; width: 25px;" (click)="changeAssetDetails(item)"> -->

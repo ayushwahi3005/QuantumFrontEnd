@@ -111,59 +111,51 @@
         <div class="avatar">{{inspectorInitials}}</div>
       </div>
     </div>
-</div>
-
-   
-   
-  
   </div>
+
   <div class="charts-grid d-flex justify-content-around">
     <div class="chart-card trend-chart">
-  <div class="chart-header">
-    <h3>📈 Inspection By Inspectors</h3>
-    <p class="chart-subtitle">Records over time</p>
-  </div>
+      <div>
+      <div class="chart-header">
+        <h3>📈 Inspection By Inspectors</h3>
+        <p class="chart-subtitle">Records over time</p>
+      </div>
 
-  <div class="chart-container">
-    <canvas #chartCanvas class="chart-canvas"></canvas>
-  </div>
-</div>
-
-
-    <div class="chart-card trend-chart">
-      <app-asset-inspection-completion-trend/>
-    </div>
-
-    <div class="chart-card status-chart">
+      <div class="chart-container">
+        <canvas #chartCanvas class="chart-canvas"></canvas>
+      </div>
+      </div>
+      <div>
+        <div class="chart-card status-chart">
       <div class="chart-header">
         <h3>Status Distribution</h3>
         <p class="chart-subtitle">By status type</p>
       </div>
       <div class="status-content">
         <svg viewBox="0 0 200 200" class="donut-chart">
-  <!-- Pending Count (First segment) -->
-  <circle 
-    cx="100" 
-    cy="100" 
-    r="80" 
-    fill="none" 
-    stroke="#dcfce7" 
-    stroke-width="40"
-    [attr.stroke-dasharray]="getPendingPercentage() * 5.024 + ' 502.4'"
-    transform="rotate(-90 100 100)" />
-  
-  <!-- Completed Count (Second segment) -->
-  <circle 
-    cx="100" 
-    cy="100" 
-    r="80" 
-    fill="none" 
-    stroke="#37c427" 
-    stroke-width="40"
-    [attr.stroke-dasharray]="getCompletedPercentage() * 5.024 + ' 502.4'"
-    [attr.stroke-dashoffset]="-getPendingPercentage() * 5.024"
-    transform="rotate(-90 100 100)" />
-</svg>
+          <!-- Pending Count (First segment) -->
+          <circle 
+            cx="100" 
+            cy="100" 
+            r="80" 
+            fill="none" 
+            stroke="#dcfce7" 
+            stroke-width="40"
+            [attr.stroke-dasharray]="getPendingPercentage() * 5.024 + ' 502.4'"
+            transform="rotate(-90 100 100)" />
+          
+          <!-- Completed Count (Second segment) -->
+          <circle 
+            cx="100" 
+            cy="100" 
+            r="80" 
+            fill="none" 
+            stroke="#37c427" 
+            stroke-width="40"
+            [attr.stroke-dasharray]="getCompletedPercentage() * 5.024 + ' 502.4'"
+            [attr.stroke-dashoffset]="-getPendingPercentage() * 5.024"
+            transform="rotate(-90 100 100)" />
+        </svg>
         <div class="status-labels">
           <div class="status-label normal">
             <span class="label-text">Pending: {{ getPendingCount()}}</span>
@@ -171,10 +163,17 @@
           <div class="status-label good">
             <span class="label-text">Completed: {{getCompletedCount() }}</span>
           </div>
-          
         </div>
       </div>
     </div>
+      </div>
+    </div>
+
+    <div class="chart-card trend-chart">
+      <app-asset-inspection-completion-trend/>
+    </div>
+
+    
   </div>
 
   <div class="inspection-types-card">

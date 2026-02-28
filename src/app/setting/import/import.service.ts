@@ -143,4 +143,16 @@ export class ImportService {
       responseType: 'blob' // Specify blob as response type
     });
   }
+  downloadAssetTemplate(companyId: string): Observable<Blob> {
+    return this.httpClient.get(this.assetEndpoint + "template-download/" + companyId, {
+      headers: this.headers,
+      responseType: 'blob' // Specify blob as response type
+    });
+  }
+  downloadCustomerTemplate(companyId: string): Observable<Blob> {
+    return this.httpClient.get(this.companyCustomerEndpoint + "template-download/" + companyId, {
+      headers: this.headers,
+      responseType: 'blob' // Specify blob as response type
+    });
+  }
 }

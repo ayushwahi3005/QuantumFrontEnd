@@ -17,9 +17,9 @@ export class CustomerResetPasswordService {
     console.log(data)
     return this.httpClient.post(this.endpoint+'customer/sentResetOTP',data);
   }
-  updatePassword(data:any):Observable<any>{
+  updatePassword(data:any,email:string):Observable<any>{
     console.log(data)
-    return this.httpClient.post(this.endpoint+'customer/updatePassword',data);
+    return this.httpClient.post(this.endpoint+'customer/updatePassword/'+email,data);
   }
 
 }

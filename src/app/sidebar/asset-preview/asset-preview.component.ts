@@ -507,7 +507,7 @@ export class AssetPreviewComponent {
         obj = {
           "assetId": this.assetId,
           "status": "Checked Out",
-          "date": this.datePipe.transform(today, 'yyyy-MM-dd'),
+         "date": this.datePipe.transform(new Date(), 'yyyy-MM-ddTHH:mm:ss'),
           "employee": employee,
           "notes": notes,
           "location": location,
@@ -518,7 +518,7 @@ export class AssetPreviewComponent {
         obj = {
           "assetId": this.assetId,
           "status": "Checked Out",
-          "date": this.datePipe.transform(today, 'yyyy-MM-dd'),
+         "date": this.datePipe.transform(new Date(), 'yyyy-MM-ddTHH:mm:ss'),
           "employee": employee,
           "notes": notes,
           "location": location,
@@ -529,7 +529,7 @@ export class AssetPreviewComponent {
         obj = {
           "assetId": this.assetId,
           "status": "Checked In",
-          "date": this.datePipe.transform(today, 'yyyy-MM-dd'),
+         "date": this.datePipe.transform(new Date(), 'yyyy-MM-ddTHH:mm:ss'),
           "employee": employee,
           "notes": notes,
           "location": location,
@@ -570,26 +570,67 @@ export class AssetPreviewComponent {
   }
 
   generatePdf(elementId: string, fileName: string) {
-    const element: any = document.getElementById(elementId);
+  const element: any = document.getElementById(elementId);
 
-    html2canvas(element, {
-      scale: 2,  // Increase scale to improve quality
-      backgroundColor: null,  // Ensures no background color is added
-      logging: false,
-    }).then((canvas) => {
-      const imgData = canvas.toDataURL('image/png');
-      const pdfWidth = this.qrSize * 100;
-      const pdfHeight = this.qrSize * 100;
-      const pdf = new jspdf.jsPDF({
-        orientation: 'p',
-        unit: 'pt',
-        format: [pdfWidth, pdfHeight]
-      });
-      pdf.addImage(imgData, 'PNG', 0, 0, pdfWidth, pdfHeight);
-      pdf.save(fileName + '.pdf');
+  // ✅ Get actual rendered dimensions
+  const rect = element.getBoundingClientRect();
+  const actualWidth = rect.width;
+  const actualHeight = rect.height;
+
+  console.log('actual width:', actualWidth, 'actual height:', actualHeight);
+
+  // ✅ Make it square by adding whitespace on shorter axis
+  const maxDimension = Math.max(actualWidth, actualHeight);
+  const horizontalPadding = (maxDimension - actualWidth) / 2;  // add to left & right
+  const verticalPadding = (maxDimension - actualHeight) / 2;   // add to top & bottom
+
+  html2canvas(element, {
+    scale: 3,
+    backgroundColor: '#ffffff',
+    logging: true,
+    x: -horizontalPadding,     // ✅ extend capture left
+    y: -verticalPadding,       // ✅ extend capture top
+    width: maxDimension,       // ✅ square capture
+    height: maxDimension,      // ✅ square capture
+    useCORS: true,
+    scrollX: 0,
+    scrollY: 0,
+  }).then((canvas) => {
+    const capturedWidth = canvas.width;
+    const capturedHeight = canvas.height;
+
+    console.log('canvas width:', capturedWidth, 'canvas height:', capturedHeight);
+
+    // ✅ Create a NEW perfectly square canvas
+    const squareCanvas = document.createElement('canvas');
+    const squareSize = Math.max(capturedWidth, capturedHeight);
+    squareCanvas.width = squareSize;
+    squareCanvas.height = squareSize;
+
+    const ctx = squareCanvas.getContext('2d')!;
+
+    // White background
+    ctx.fillStyle = '#ffffff';
+    ctx.fillRect(0, 0, squareSize, squareSize);
+
+    // ✅ Center the captured image inside the square canvas
+    const offsetX = (squareSize - capturedWidth) / 2;
+    const offsetY = (squareSize - capturedHeight) / 2;
+    ctx.drawImage(canvas, offsetX, offsetY);
+
+    // ✅ Export square canvas to PDF
+    const imgData = squareCanvas.toDataURL('image/png');
+    const sizePx = this.qrSize * 100;
+
+    const pdf = new jspdf.jsPDF({
+      orientation: 'p',
+      unit: 'pt',
+      format: [sizePx, sizePx],
     });
-
-  }
+    pdf.addImage(imgData, 'PNG', 0, 0, sizePx, sizePx);
+    pdf.save(fileName + '.pdf');
+  });
+}
   downloadQR() {
     this.generatePdf('myqr', this.assetDetails.name + "_" + this.assetDetails.serialNumber + "_QR");
   }

@@ -3,6 +3,7 @@ import { AuthService } from '../shared/auth.service';
 import { Router } from '@angular/router';
 import { DashboardService } from './dashboard.service';
 import { NotificationService } from '../notification/notification.service';
+import { CountryService } from '../shared/country/country.service';
 
 @Component({
   selector: 'app-dashboard',
@@ -69,7 +70,7 @@ export class DashboardComponent  {
       'left': '70px',
       'transition': 'width 150ms linear'
     };
-  constructor(private auth:AuthService,private router:Router,private dashService:DashboardService,private notificationService:NotificationService) {
+  constructor(private auth:AuthService,private router:Router,private dashService:DashboardService,private notificationService:NotificationService,private countryService:CountryService) {
     // this.notificationService.getNotificationObservable().subscribe((message) => {
     //   this.notification = message;
     //   console.log("Notification received:", this.notification);
@@ -181,6 +182,11 @@ export class DashboardComponent  {
     
     this.dashService.getCompanyInformation(companyId).subscribe((data)=>{
       console.log("Company Information",data)
+      if(data.country!=null){
+      this.countryService.setCountryCode(data.country);
+      }
+      console.log(this.countryService.getCountryCode());
+
       localStorage.setItem('companyEmail',data.customerEmail)
       localStorage.setItem('companyName',data.companyName)
     },(err)=>{

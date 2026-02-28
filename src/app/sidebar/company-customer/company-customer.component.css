@@ -200,15 +200,15 @@ border-style: none;
 #companycustomer-table{
     /* overflow: hidden; */
     /* margin-top: 10px; */
-    position: sticky;
-    top: 0;
+    /* position: sticky; */
+    /* top: 0; */
     border-radius: 10px;
 }
 
 #companycustomer-table thead{
     position: sticky;
     top: 0;
-    z-index: 1;
+    z-index: 2;
     border: 1px lightgray;
 }
 
@@ -536,4 +536,19 @@ border-style: none;
 .dropdown-item:hover {
   background-color: #f1f1f1;
   border-radius: 5px;
+}
+
+.sticky-paginator {
+  position: sticky;
+  bottom: 0;
+  z-index: 20;              /* below header, above rows */
+  background: white;
+  border-top: 1px solid #ddd;
+  padding: 3px 0;
+  border-radius: 0 0 10px 10px;
+}
+
+.CustomerMainScreen-wrapper {
+  border-radius: 12px;
+  box-shadow: 0 0 4px rgba(0,0,0,0.15);
 }

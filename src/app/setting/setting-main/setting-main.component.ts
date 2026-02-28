@@ -8,6 +8,7 @@ import { CompanyInformation } from './companyInformation';
 import { map, Subject, switchMap } from 'rxjs';
 import { NotificationService } from 'src/app/notification/notification.service';
 import { state } from '@angular/animations';
+import { CountryService } from 'src/app/shared/country/country.service';
 
 declare var bootstrap: any; // important
 
@@ -83,7 +84,7 @@ selectedCountryCode='United States of America';
     { number: 10, name: 'Asset QR code', icon: 'bi bi-qr-code', tab: 'asset-qr' },
 
   ];
-  constructor(private settingMainService: SettingMainService, private auth: AuthService, private router: Router, private formBuilder: FormBuilder, private route: ActivatedRoute, private notificationService: NotificationService,private cdr: ChangeDetectorRef) { }
+  constructor(private settingMainService: SettingMainService, private auth: AuthService, private router: Router, private formBuilder: FormBuilder, private route: ActivatedRoute, private notificationService: NotificationService,private cdr: ChangeDetectorRef,private countryService: CountryService) { }
 
   ngOnInit() {
       this.companyInformationForm = this.formBuilder.group({
@@ -309,6 +310,9 @@ console.log("Company Information",this.companyInformationForm.value);
   fetchCompanyInformation() {
     this.settingMainService.getCompanyInformation(this.companyId).subscribe((data) => {
       console.log("Company Information", data)
+      if (data?.country) {
+        this.countryService.setCountryCode(data.country);
+      }
        this.companyInformationForm.patchValue({
         country: this.companyInformation?.country || '',
         state: this.companyInformation?.state || ''

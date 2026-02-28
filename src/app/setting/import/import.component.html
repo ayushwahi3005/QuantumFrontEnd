@@ -13,9 +13,9 @@
             <div class="form-group">
                 <select class="form-select form-control" id="dropdown"  formControlName="module" style="width: 60%;" (change)="dropDown(val)" #val>
                 
-                <option value="asset" >Asset</option>
-                <option value="workorder" selected>Work Order</option>
-                <option value="inventory" >Inventory</option>
+                <option value="asset" selected>Asset</option>
+                <!-- <option value="workorder" selected>Work Order</option>
+                <option value="inventory" >Inventory</option> -->
                 <option value="customer">Customer</option>
                 </select>
             </div>
@@ -65,7 +65,7 @@
              {{ excelCol }}
                 </td>
                 <td style="padding-left: 10%;">
-              <select  (change)="update(excelCol,$event)" *ngIf="(currImport=='asset')">
+              <select [ngModel]="columnMappings.get(excelCol)" (change)="update(excelCol,$event)" *ngIf="(currImport=='asset')">
                 <option selected></option>
                 
                 <option *ngFor="let dbCol of assetDatabaseColumns" [value]="dbCol" >
@@ -73,7 +73,7 @@
                 </option>
               </select>
 
-              <select  (change)="update(excelCol,$event)" *ngIf="(currImport=='inventory')">
+              <select [ngModel]="columnMappings.get(excelCol)" (change)="update(excelCol,$event)" *ngIf="(currImport=='inventory')">
                 <option selected></option>
                 
                 <option *ngFor="let dbCol of inventoryDatabaseColumns" [value]="dbCol" >
@@ -81,7 +81,7 @@
                 </option>
               </select>
 
-              <select  (change)="update(excelCol,$event)" *ngIf="(currImport=='workorder')">
+              <select [ngModel]="columnMappings.get(excelCol)" (change)="update(excelCol,$event)" *ngIf="(currImport=='workorder')">
                 <option selected></option>
                 
                 <option *ngFor="let dbCol of workorderDatabaseColumns" [value]="dbCol" >
@@ -89,7 +89,7 @@
                 </option>
               </select>
 
-              <select  (change)="update(excelCol,$event)" *ngIf="(currImport=='customer')">
+              <select [ngModel]="columnMappings.get(excelCol)" (change)="update(excelCol,$event)" *ngIf="(currImport=='customer')">
                 <option selected></option>
                 
                 <option *ngFor="let dbCol of customerDatabaseColumns" [value]="dbCol" >
@@ -170,8 +170,8 @@
           <select class="form-select form-control" id="dropdown"   style="width: 100%;" (change)="exportTemplate(templateVal)" #templateVal>
                 
             <option value="asset" >Asset</option>
-            <option value="workorder" selected>Work Order</option>
-            <option value="inventory" >Inventory</option>
+            <!-- <option value="workorder" selected>Work Order</option>
+            <option value="inventory" >Inventory</option> -->
             <option value="customer">Customer</option>
             </select>
         </form>

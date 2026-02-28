@@ -167,6 +167,7 @@ export class AuthService {
                     "data":err.error.errorMessage,
                     "type":"danger"
                   }
+                  this.loginService.setLoginLoader(false);
                   this.loginService.triggerComponentFunction(obj);
                 this.errorMessage=err.errorMessage;
                   
@@ -186,6 +187,7 @@ export class AuthService {
                         "data":"Email Not Verified!!",
                         "type":"danger"
                       }
+                      this.loginService.setLoginLoader(false);
                       this.loginService.triggerComponentFunction(obj);
             }
           },
@@ -196,6 +198,7 @@ export class AuthService {
               "data":"Error: "+err.message,
               "type":"danger"
             }
+            this.loginService.setLoginLoader(false);
             this.loginService.triggerComponentFunction(obj);
             
           })
@@ -213,6 +216,7 @@ export class AuthService {
                 "data":"No User Found",
                 "type":"danger"
               }
+              this.loginService.setLoginLoader(false);
               this.loginService.triggerComponentFunction(errorobj);
               userNotFoundFlag=1;
             }
@@ -230,6 +234,7 @@ export class AuthService {
                     "data":"Wrong Credentials. 4 attempts left",
                     "type":"danger"
                   }
+                  this.loginService.setLoginLoader(false);
                   this.loginService.triggerComponentFunction(errorobj);
                 }
                 else{
@@ -271,6 +276,7 @@ export class AuthService {
                     "data":myerror,
                     "type":"danger"
                   }
+                  this.loginService.setLoginLoader(false);
                   this.loginService.triggerComponentFunction(obj);
                 })
               }
@@ -291,6 +297,7 @@ export class AuthService {
           "data":"account locked",
           "type":"danger"
         }
+        this.loginService.setLoginLoader(false);
         this.loginService.triggerComponentFunction(obj);
       }
 

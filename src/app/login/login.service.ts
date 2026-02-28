@@ -9,6 +9,7 @@ import { environment } from 'src/environments/environment';
 })
 export class LoginService {
   private triggerFunctionSubject = new Subject<void>();
+  private loginLoaderSubject = new Subject<boolean>();
   // endpoint="http://customer-lb2-1979550990.us-east-1.elb.amazonaws.com:8080/";
   endpoint=environment.endpoint;
   
@@ -31,6 +32,14 @@ export class LoginService {
 
   getTriggerFunctionSubject() {
     return this.triggerFunctionSubject.asObservable();
+  }
+
+  setLoginLoader(value: boolean) {
+    this.loginLoaderSubject.next(value);
+  }
+
+  getLoginLoaderSubject() {
+    return this.loginLoaderSubject.asObservable();
   }
   removeSession(userId:string):Observable<any>{
     

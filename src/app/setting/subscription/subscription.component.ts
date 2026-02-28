@@ -28,6 +28,7 @@ import { HttpClient } from '@angular/common/http';
 import { MatDialog } from '@angular/material/dialog';
 import { AlertDialogComponent } from 'src/app/shared/alert-dialog/alert-dialog.component';
 import { countryList } from './country';
+import { CountryService } from 'src/app/shared/country/country.service';
 
 @Component({
   selector: 'app-subscription',
@@ -60,6 +61,7 @@ export class SubscriptionComponent {
   cardDetails!: FormGroup;
   subscription!: Subscription;
   payment!: Payment;
+  cardComplete: boolean = false; // Track if card is complete
   loading: boolean = false;
   currOption = 1;
   currSubscription!: Subscription;
@@ -89,7 +91,7 @@ export class SubscriptionComponent {
   currPlanName = 'Growth';
 
 
-  selectedCountryCode = 'United States of America';
+  selectedCountryCode = '';
   countryCodeList = countryList;
   currentSelectedCountryCode = 'US';
 
@@ -167,74 +169,59 @@ export class SubscriptionComponent {
     private route: ActivatedRoute,
     private dialog: MatDialog,
     private cdr: ChangeDetectorRef,
+    private countryService: CountryService,
   ) {}
   refresh() {
-    this.subcriptionSerive.getCurrSubscription(this.companyId).subscribe(
-      (data) => {
-        console.log(data);
-        this.currSubscription = data;
-        if (data != null) {
-          console.log(data.expiryDate);
-          console.log(data.subscriptionDate);
+  this.subcriptionSerive.getCurrSubscription(this.companyId).subscribe(
+    (data) => {
+      console.log(data);
+      this.currSubscription = data;
+      if (data != null) {
+        console.log(data.expiryDate);
+        console.log(data.subscriptionDate);
 
-          this.currSubscription.expiryDate = new Date(data.expiryDate);
-          this.currSubscription.subscriptionDate = new Date(
-            data.subscriptionDate,
-          );
-          this.renewDate = new Date(data.expiryDate);
-          this.renewDate.setDate(this.renewDate.getDate() + 1);
-        }
-        this.subcriptionSerive.getAllInvoice(this.companyId).subscribe(
-          (data) => {
-            this.companyId;
-            this.InvoiceList = data;
-            console.log(this.InvoiceList);
-          },
-          (err) => {
-            console.log(err);
-          },
+        this.currSubscription.expiryDate = new Date(data.expiryDate);
+        this.currSubscription.subscriptionDate = new Date(
+          data.subscriptionDate,
         );
+        this.renewDate = new Date(data.expiryDate);
+        this.renewDate.setDate(this.renewDate.getDate() + 1);
+      }
+      
+      // Use the new method instead
+      this.loadInvoicesWithCardDetails();
 
-        // console.log(this.currSubscription.expiryDate[0])
-        // this.currSubscription.expiryDate = new Date(
-        //   this.currSubscription.expiryDate[0], // Year
-        //   this.currSubscription.expiryDate[1] - 1, // Month (0-based in JavaScript)
-        //   this.currSubscription.expiryDate[2] // Day
-        // );
-        // this.currSubscription.subscriptionDate = new Date(
-        //   this.currSubscription.subscriptionDate[0], // Year
-        //   this.currSubscription.subscriptionDate[1] - 1, // Month (0-based in JavaScript)
-        //   this.currSubscription.subscriptionDate[2] // Day
-        // );
-      },
-      (err) => {
-        console.log(err);
-      },
-    );
-    this.subcriptionSerive.getCardDetailsFromStripe(this.companyId).subscribe(
-      (data) => {
-        this.myCard = data;
-        console.log('MYCARD-----', this.myCard);
-      },
-      (err) => {
-        console.log(err);
-      },
-    );
-    this.subcriptionSerive
-      .getAllSubscription(this.companyId)
-      .subscribe((data) => {
-        console.log(data);
+      // Rest of your code...
+      this.subcriptionSerive.getCardDetailsFromStripe(this.companyId).subscribe(
+        (data) => {
+          this.myCard = data;
+          console.log('MYCARD-----', this.myCard);
+        },
+        (err) => {
+          console.log(err);
+        },
+      );
+    },
+    (err) => {
+      console.log(err);
+    },
+  );
+  
+  this.subcriptionSerive
+    .getAllSubscription(this.companyId)
+    .subscribe((data) => {
+      console.log(data);
 
-        this.subscriptionList = data;
-        this.upcomingSubscription = null; // Reset the upcoming subscription
-        this.subscriptionList.forEach((element) => {
-          if (element.status == SubscriptionEnum.UPCOMING) {
-            this.upcomingSubscription = element;
-          }
-        });
+      this.subscriptionList = data;
+      this.upcomingSubscription = null;
+      this.subscriptionList.forEach((element) => {
+        if (element.status == SubscriptionEnum.UPCOMING) {
+          this.upcomingSubscription = element;
+        }
       });
-    this.curr_phase = 1;
-  }
+    });
+  this.curr_phase = 1;
+}
   ngOnInit() {
     this.currPlanName = 'Growth';
     this.route.queryParams.subscribe((params) => {
@@ -298,10 +285,16 @@ export class SubscriptionComponent {
       zipcode: ['', [Validators.required]],
       city: ['', [Validators.required]],
       state: ['', [Validators.required]],
-      country: ['United States of America', [Validators.required]],
+      country: [this.countryService.getCountryCode() || 'United States of America', [Validators.required]],
       amount: [''],
     });
     const amount = this.checkoutForm.get('amount')?.value;
+
+    // Set selectedCountryCode from service
+    this.selectedCountryCode = this.checkoutForm.get('country')?.value;
+
+    // Load state list for default country
+    this.getStateListSilent(this.selectedCountryCode);
 
     this.editCard = false;
     this.subcriptionSerive
@@ -317,48 +310,29 @@ export class SubscriptionComponent {
         });
       });
     this.subcriptionSerive.getCurrSubscription(this.companyId).subscribe(
-      (data) => {
-        console.log(data);
-        this.currSubscription = data;
+  (data) => {
+    console.log(data);
+    this.currSubscription = data;
 
-        if (data != null) {
-          console.log(data.expiryDate);
-          console.log(data.subscriptionDate);
+    if (data != null) {
+      console.log(data.expiryDate);
+      console.log(data.subscriptionDate);
 
-          this.currSubscription.expiryDate = new Date(data.expiryDate);
-          this.currSubscription.subscriptionDate = new Date(
-            data.subscriptionDate,
-          );
-          this.renewDate = new Date(data.expiryDate);
-          this.renewDate.setDate(this.renewDate.getDate() + 1);
-        }
-        this.subcriptionSerive.getAllInvoice(this.companyId).subscribe(
-          (data) => {
-            this.companyId;
-            this.InvoiceList = data;
-            console.log(this.InvoiceList);
-          },
-          (err) => {
-            console.log(err);
-          },
-        );
-
-        // console.log(this.currSubscription.expiryDate[0])
-        // this.currSubscription.expiryDate = new Date(
-        //   this.currSubscription.expiryDate[0], // Year
-        //   this.currSubscription.expiryDate[1] - 1, // Month (0-based in JavaScript)
-        //   this.currSubscription.expiryDate[2] // Day
-        // );
-        // this.currSubscription.subscriptionDate = new Date(
-        //   this.currSubscription.subscriptionDate[0], // Year
-        //   this.currSubscription.subscriptionDate[1] - 1, // Month (0-based in JavaScript)
-        //   this.currSubscription.subscriptionDate[2] // Day
-        // );
-      },
-      (err) => {
-        console.log(err);
-      },
-    );
+      this.currSubscription.expiryDate = new Date(data.expiryDate);
+      this.currSubscription.subscriptionDate = new Date(
+        data.subscriptionDate,
+      );
+      this.renewDate = new Date(data.expiryDate);
+      this.renewDate.setDate(this.renewDate.getDate() + 1);
+    }
+    
+    // Use the new method instead
+    this.loadInvoicesWithCardDetails();
+  },
+  (err) => {
+    console.log(err);
+  },
+);
     this.subcriptionSerive.getCardDetailsFromStripe(this.companyId).subscribe(
       (data) => {
         this.myCard = data;
@@ -377,7 +351,6 @@ export class SubscriptionComponent {
     this.basicIsMonthly = true;
     this.stateList = [];
     this.basicMonthClick();
-    this.getStateList(this.selectedCountryCode);
     // this.subcriptionSerive.stateList().subscribe((data) => {
     //   this.stateList = data;
     //   console.log('stateList-------->' + this.stateList);
@@ -571,6 +544,12 @@ export class SubscriptionComponent {
     console.log(this.basicIsMonthly);
     console.log(this.expiryDate);
   }
+
+  onCardChange(event: any) {
+    this.cardComplete = event.complete;
+    console.log('Card complete:', this.cardComplete);
+  }
+
   createSubscription(cardElement: any) {
     // Ensure cardElement is not null before using it
     // if (!cardElement || !cardElement.element) {
@@ -1173,8 +1152,10 @@ export class SubscriptionComponent {
   async downloadInvoice(item: any) {
   try {
     // Await the card details
-    const cardLast4 = await this.getLast4Digit(item.paymentId);
-    console.log('Card Last4:', cardLast4);
+    const cardDetails = await this.getLast4Digit(item.paymentId);
+    const {last4, brand} = cardDetails || {last4: '', brand: ''};
+ 
+    console.log('Card Last4:', last4);
 
     // Create a hidden receipt container
     const receiptHtml = `
@@ -1226,7 +1207,8 @@ export class SubscriptionComponent {
           <div style="margin-top: 20px;">
             <div style="font-size: 12px; color: #666;">Payment method</div>
             <div style="font-weight: bold;">${this.getPaymentTypeLabel(item.paymentType)}</div>
-            ${cardLast4 ? `<div style="font-size: 12px; color: #666; margin-top: 5px;">Card ending in ${cardLast4}</div>` : ''}
+            ${last4 ? `<div style="font-size: 12px; color: #666; margin-top: 5px;">Card ending in ${last4}</div>` : ''}
+            ${brand ? `<div style="margin-top: 10px;"><img src="${this.getCardLogo(brand)}" alt="${brand}" style="height: 30px; object-fit: contain;"></div>` : ''}
           </div>
         </div>
 
@@ -1310,13 +1292,38 @@ export class SubscriptionComponent {
     }
   }
 
-  getStateList(country: any) {
+  // Silent version - does NOT reset state, used for initial load
+  getStateListSilent(country: any) {
     this.currentSelectedCountryCode = countryList[country] || '';
-
     this.subcriptionSerive.countryStateList(country).subscribe(
       (data) => {
         this.stateList = data;
-        this.checkoutForm.get('state')?.setValue(''); // reset state
+        // Auto-select the first state
+        if (this.stateList && this.stateList.length > 0) {
+          this.checkoutForm.get('state')?.setValue(this.stateList[0]);
+          this.checkoutForm.get('state')?.markAsTouched();
+        }
+        this.cdr.detectChanges();
+      },
+      (err) => {
+        console.log(err);
+      },
+    );
+  }
+
+  // Normal version - resets state, used when user changes country
+  getStateList(country: any) {
+    this.currentSelectedCountryCode = countryList[country] || '';
+    this.subcriptionSerive.countryStateList(country).subscribe(
+      (data) => {
+        this.stateList = data;
+        // Auto-select the first state
+        if (this.stateList && this.stateList.length > 0) {
+          this.checkoutForm.get('state')?.setValue(this.stateList[0]);
+          this.checkoutForm.get('state')?.markAsTouched();
+        } else {
+          this.checkoutForm.get('state')?.setValue('');
+        }
 
         this.cdr.detectChanges(); // prevents ExpressionChanged error
       },
@@ -1325,13 +1332,13 @@ export class SubscriptionComponent {
       },
     );
   }
- getLast4Digit(paymentIntent: string): Promise<string | null> {
+ getLast4Digit(paymentIntent: string): Promise<{last4: string, brand: string} | null> {
   return new Promise((resolve, reject) => {
     this.subcriptionSerive.getCardLast4Digit(paymentIntent).subscribe(
       (data) => {
         console.log('API Response:', data);
         if (data?.payment_method?.card?.last4) {
-          resolve(data.payment_method.card.last4);
+          resolve({last4: data.payment_method.card.last4, brand: data.payment_method.card.brand});
         } else {
           resolve(null);
         }
@@ -1343,4 +1350,43 @@ export class SubscriptionComponent {
     );
   });
 }
+// Add this method after refresh() method
+async loadInvoicesWithCardDetails() {
+  this.subcriptionSerive.getAllInvoice(this.companyId).subscribe(
+    async (data) => {
+      console.log(data)
+      this.InvoiceList = data;
+      console.log('Invoices:', this.InvoiceList);
+      
+      // Fetch card details for each invoice in parallel
+      const cardDetailsPromises = this.InvoiceList.map(async (item) => {
+        try {
+          const cardDetails = await this.getLast4Digit(item.paymentId);
+          if (cardDetails) {
+            item.cardLast4 = cardDetails.last4;
+            item.cardProvider = cardDetails.brand;
+          } else {
+            item.cardLast4 = null;
+            item.cardProvider = null;
+          }
+        } catch (error) {
+          console.error(`Error fetching card for payment ${item.paymentId}:`, error);
+          item.cardLast4 = null;
+        }
+      });
+      
+      // Wait for all card detail requests to complete
+      await Promise.all(cardDetailsPromises);
+      this.cdr.detectChanges(); // Trigger change detection to update the view
+    },
+    (err) => {
+      console.log(err);
+    }
+  );
+}
+ readonly knownCardProviders = ['visa', 'mastercard', 'amex'];
+    isKnownCardProvider(provider: string | undefined): boolean {
+    if (!provider) return false;
+    return this.knownCardProviders.includes(provider.toLowerCase());
+  }
 }
