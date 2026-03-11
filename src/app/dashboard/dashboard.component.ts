@@ -184,8 +184,13 @@ export class DashboardComponent  {
       console.log("Company Information",data)
       if(data.country!=null){
       this.countryService.setCountryCode(data.country);
+
+      }
+      if(data.state!=null){
+        this.countryService.setStateCode(data.state);
       }
       console.log(this.countryService.getCountryCode());
+           console.log(this.countryService.getStateCode());
 
       localStorage.setItem('companyEmail',data.customerEmail)
       localStorage.setItem('companyName',data.companyName)
