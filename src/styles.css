@@ -2,6 +2,12 @@
 
 html, body { height: 100%; }
 body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
+
+/* Ensure Material overlay (mat-select dropdown) appears above Bootstrap modals */
+.cdk-overlay-container {
+  z-index: 2000 !important;
+}
+
 .mat-form-field {
     .mat-form-field-infix {
       background: none !important; /* Remove white box */

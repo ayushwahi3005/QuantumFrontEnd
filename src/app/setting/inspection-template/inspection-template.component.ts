@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { InspectionTemplateService } from './inspection-template.service';
 import { InspectionStep } from './InspectionStep';
 import { Inspection } from './Inspection';
@@ -25,6 +25,8 @@ export class InspectionTemplateComponent {
   editVisibility:boolean=false;
   editButtonId:number=-1;
   deleteInspectionId!:string;
+  selectedCategory = new FormControl<string[]>([]);
+  
   constructor(
     private inspectionTemplateService: InspectionTemplateService
   ) {}
@@ -83,28 +85,74 @@ export class InspectionTemplateComponent {
     // inspection.stepNumber=this.currStep;
     this.inspectionSteps.push(inspection);
   }
+  // addInspection() {
+  //   console.log(this.inspectionSteps.toString)
+  //   console.log(this.selectedCategory.value);
+  //   this.inspectionForm.status='active';
+  //   this.inspectionForm.companyId=this.companyId;
+  //   this.inspectionForm.steps=this.inspectionSteps;
+  //   const selectedCategory = this.assetCategoryList.find(
+  //     (category) => {
+  //       return category.name === this.inspectionForm.categoryName}
+  //   );
+ 
+  //   if (selectedCategory) {
+  //     this.inspectionForm.categoryId = selectedCategory.id;
+      
+  //   } else {
+  //     this.inspectionForm.categoryId = ''; // if 'None' is selected or no match found
+  //   }
+  //   console.log(this.inspectionForm);
+  //   if(this.inspectionForm.name==''||this.inspectionForm.name==null||this.inspectionForm.name==undefined){
+  //     this.triggerAlert("Please Enter Name","warning");
+  //     return;
+  //   }
+  //   if(this.inspectionForm.categoryName==''||this.inspectionForm.categoryName==null||this.inspectionForm.categoryName==undefined){
+  //     this.triggerAlert("Please Enter Asset Category","warning");
+  //     return;
+  //   }
+
+  //   this.inspectionTemplateService
+  //     .addAssetInspection(this.inspectionForm)
+  //     .subscribe((data) => {
+  //       console.log('Successfully Added Inspection');
+  //       this.triggerAlert("Successfully Added Inspection","success");
+  //     },
+  //     (err)=>{
+  //       console.log(err);
+  //     }, 
+  //     ()=>{
+  //       this.inspectionForm=new Inspection();
+  //       // this.inspectionSteps=Anew InspectionStep();
+  //       this.ngOnInit();
+  //     });
+  // }
   addInspection() {
     console.log(this.inspectionSteps.toString)
+    console.log(this.selectedCategory.value);
     this.inspectionForm.status='active';
     this.inspectionForm.companyId=this.companyId;
     this.inspectionForm.steps=this.inspectionSteps;
-    const selectedCategory = this.assetCategoryList.find(
-      (category) => {
-        return category.name === this.inspectionForm.categoryName}
-    );
- 
-    if (selectedCategory) {
-      this.inspectionForm.categoryId = selectedCategory.id;
-      
-    } else {
-      this.inspectionForm.categoryId = ''; // if 'None' is selected or no match found
+    if(this.selectedCategory.value && this.selectedCategory.value.length > 0) {
+      this.inspectionForm.categoryName = this.selectedCategory.value; // Assuming single selection for now
     }
+    // const selectedCategory = this.assetCategoryList.find(
+    //   (category) => {
+    //     return category.name === this.inspectionForm.categoryName}
+    // );
+ 
+    // if (selectedCategory) {
+    //   this.inspectionForm.categoryId = selectedCategory.id;
+      
+    // } else {
+    //   this.inspectionForm.categoryId = ''; // if 'None' is selected or no match found
+    // }
     console.log(this.inspectionForm);
     if(this.inspectionForm.name==''||this.inspectionForm.name==null||this.inspectionForm.name==undefined){
       this.triggerAlert("Please Enter Name","warning");
       return;
     }
-    if(this.inspectionForm.categoryName==''||this.inspectionForm.categoryName==null||this.inspectionForm.categoryName==undefined){
+    if(this.inspectionForm.categoryName.length===0||this.inspectionForm.categoryName==null||this.inspectionForm.categoryName==undefined){
       this.triggerAlert("Please Enter Asset Category","warning");
       return;
     }
@@ -159,4 +207,8 @@ export class InspectionTemplateComponent {
       this.showAlert = false;
     }, 5000); // Hide the alert after 5 seconds (adjust as needed)
   }
+ getCategoryNames(categoryName: Array<{id: number, categoryName: string}>): string {
+  if (!categoryName || categoryName.length === 0) return '';
+  return categoryName.map(c => c.categoryName).join(', ');
+}
 }
