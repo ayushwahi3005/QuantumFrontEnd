@@ -97,6 +97,7 @@ import { AnalyticsHomePageComponent } from './sidebar/Analytics/analytics-home-p
 import { AssetInspectionComponent } from './sidebar/Analytics/asset-inspection/asset-inspection.component';
 import { AssetInspectionCompletionTrendComponent } from './sidebar/Analytics/asset-inspection-completion-trend/asset-inspection-completion-trend.component';
 import { ReducePipe } from './sidebar/Analytics/asset-inspection-completion-trend/reduce.pipe';
+import { ChatbotComponent } from './chatbot/chatbot.component';
 
 @NgModule({
   declarations: [
@@ -153,7 +154,8 @@ import { ReducePipe } from './sidebar/Analytics/asset-inspection-completion-tren
     AnalyticsHomePageComponent,
     AssetInspectionComponent,
     AssetInspectionCompletionTrendComponent,
-    ReducePipe
+    ReducePipe,
+    ChatbotComponent
     
     
     
