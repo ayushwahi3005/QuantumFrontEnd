@@ -573,7 +573,8 @@ export class CompanyCustomerComponent implements OnInit, OnDestroy, AfterViewIni
             (err) => {
               hasError = true;
               this.loadingScreen = false;
-              if (err.error.error === "TRIAL_EXPIRED") {
+              // if (err.error.error === "TRIAL_EXPIRED"||err.error.error==="SUBSCRIPTION_REQUIRED") {
+               if(err.error.error==="TRIAL_EXPIRED"){
                 this.triggerAlert(err.error.message, "danger");
               } else {
                 this.triggerAlert(err.error.errorMessage, "danger");
@@ -584,7 +585,8 @@ export class CompanyCustomerComponent implements OnInit, OnDestroy, AfterViewIni
       },
       (err) => {
         this.loadingScreen = false;
-        if (err.error.error === "TRIAL_EXPIRED") {
+        // if (err.error.error === "TRIAL_EXPIRED"||err.error.error==="SUBSCRIPTION_REQUIRED") {
+         if(err.error.error==="TRIAL_EXPIRED"){
           this.triggerAlert(err.error.message, "danger");
         } else {
           this.triggerAlert(err.error.errorMessage, "danger");
@@ -682,7 +684,8 @@ export class CompanyCustomerComponent implements OnInit, OnDestroy, AfterViewIni
           (data) => { console.log("ExtraFields Deleted"); },
           (err) => {
             this.loadingScreen = false;
-            if (err.error.error === "TRIAL_EXPIRED") {
+            // if (err.error.error === "TRIAL_EXPIRED"||err.error.error==="SUBSCRIPTION_REQUIRED") {
+             if(err.error.error==="TRIAL_EXPIRED"){
               this.triggerAlert(err.error.message, "danger");
             } else {
               this.triggerAlert(err.error.errorMessage, "danger");
@@ -743,7 +746,17 @@ export class CompanyCustomerComponent implements OnInit, OnDestroy, AfterViewIni
     this.alertMessage = message;
     this.alertType = type;
     this.showAlert = true;
-    setTimeout(() => { this.showAlert = false; }, 5000);
+    setTimeout(() => { this.dismissAlert(); }, 5000);
+  }
+
+  dismissAlert() {
+    this.showAlert = false;
+    // Remove any lingering modal backdrops
+    const backdrops = document.querySelectorAll('.modal-backdrop');
+    backdrops.forEach(backdrop => backdrop.remove());
+    document.body.classList.remove('modal-open');
+    document.body.style.paddingRight = '';
+    document.body.style.overflow = '';
   }
 
   Echo() { console.log("echo"); }

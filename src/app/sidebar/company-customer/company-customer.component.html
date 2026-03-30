@@ -2,7 +2,7 @@
   <div *ngIf="showAlert" class="alert" [ngClass]="'alert-' + alertType" role="alert" style="margin: 5px; position: fixed; width: 95%; z-index: 10000; top:70px">
   {{ alertMessage }}
  
-  <button type="button" class="btn-close" (click)="showAlert = false" aria-label="Close" style="float: right;"></button>
+  <button type="button" class="btn-close" (click)="dismissAlert()" aria-label="Close" style="float: right;"></button>
 </div>
 
 <div *ngIf="!loadingScreen" >

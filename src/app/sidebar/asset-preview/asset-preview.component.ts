@@ -542,7 +542,8 @@ export class AssetPreviewComponent {
       },
         (err) => {
           console.log(err);
-          if (err.error.error === "TRIAL_EXPIRED") {
+          // if (err.error.error === "TRIAL_EXPIRED"||err.error.error==="SUBSCRIPTION_REQUIRED") {
+           if(err.error.error==="TRIAL_EXPIRED"){
             this.triggerAlert(err.error.message, "danger");
           }
           else {

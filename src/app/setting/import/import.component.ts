@@ -321,7 +321,12 @@ export class ImportComponent {
         (err)=>{
           this.loading=false;
           console.log(err);
-          this.triggerAlert("Failed!! Please check file again and map all fields correctly ","danger");
+          if(err.error.errorMessage.startsWith("Import File")){
+            this.triggerAlert("Failed!! "+err.error.errorMessage,"danger");
+          }
+          else{
+            this.triggerAlert("Failed!! Please check file again and map all fields correctly ","danger");
+          }
           this.loading = false;
           this.uploadInProgress = false;
           this.progress = 0;
@@ -386,8 +391,8 @@ export class ImportComponent {
         (err)=>{
           this.loading=false;
           console.log(err);
-          if(err.error.errorMessage=="Import File cannot import more than 5000 rows"){
-            this.triggerAlert("Failed!! "+err.error.errorMessage,"danger");
+          if(err.error.errorMessage.startsWith("Upload Limit Exceeded")){
+            this.triggerAlert(err.error.errorMessage,"danger");
           }
           else{
             this.triggerAlert("Failed!! Please check file again and map all fields correctly ","danger");
@@ -445,8 +450,8 @@ export class ImportComponent {
         (err)=>{
           this.loading=false;
           console.log(err);
-          if(err.error.errorMessage=="Import File cannot import more than 1000 rows"){
-            this.triggerAlert("Failed!! "+err.error.errorMessage,"danger");
+           if(err.error.errorMessage.startsWith("Upload Limit Exceeded")){
+            this.triggerAlert(err.error.errorMessage,"danger");
           }
           else if(err.error.errorMessage=="Mandatory Column Name Is Missing in Mapping"){
             this.triggerAlert("Failed!! "+err.error.errorMessage,"danger");
@@ -556,7 +561,7 @@ export class ImportComponent {
   }
 
   exportTemplate(event:any){
-    // console.log(event.value)
+    console.log(event.value)
     this.currExportTemplate=event.value;
 
     // console.log(this.currExportTemplate)

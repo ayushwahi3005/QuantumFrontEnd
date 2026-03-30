@@ -1,4 +1,4 @@
-import { Component, ElementRef, ViewChild, AfterViewInit } from '@angular/core';
+import { Component, ElementRef, ViewChild, AfterViewInit, Input, OnChanges, SimpleChanges } from '@angular/core';
 import { AssetInspectionCompletionTrendService } from './asset-inspection-completion-trend.service';
 import { Chart, ChartConfiguration } from 'chart.js';
 
@@ -23,8 +23,10 @@ interface AggregatedData {
   templateUrl: './asset-inspection-completion-trend.component.html',
   styleUrl: './asset-inspection-completion-trend.component.css',
 })
-export class AssetInspectionCompletionTrendComponent implements AfterViewInit {
+export class AssetInspectionCompletionTrendComponent implements AfterViewInit, OnChanges {
   @ViewChild('chartCanvas') chartCanvas!: ElementRef<HTMLCanvasElement>;
+  @Input() startDate: string | null = null;
+  @Input() endDate: string | null = null;
 
   chart: Chart | null = null;
   loading = true;
@@ -47,13 +49,31 @@ export class AssetInspectionCompletionTrendComponent implements AfterViewInit {
 
   ngAfterViewInit(): void {
     this.companyId = localStorage.getItem('companyId');
-    const start = new Date();
-    start.setDate(start.getDate() - 600);
-    const end = new Date();
+    // Set default dates if inputs are not provided
+    if (!this.startDate || !this.endDate) {
+      const start = new Date();
+      start.setDate(start.getDate());
+      const end = new Date();
 
-    this.startDateFilter = this.startEndformatDate(start);
-    this.endDateFilter = this.startEndformatDate(end);
+      this.startDateFilter = this.startEndformatDate(start);
+      this.endDateFilter = this.startEndformatDate(end);
+    } else {
+      // Use the input dates
+      this.startDateFilter = this.startDate;
+      this.endDateFilter = this.endDate;
+    }
     this.loadChartData();
+  }
+
+  ngOnChanges(changes: SimpleChanges): void {
+    // When startDate or endDate inputs change, reload the chart
+    if ((changes['startDate'] || changes['endDate']) && !changes['startDate']?.firstChange && !changes['endDate']?.firstChange) {
+      if (this.startDate && this.endDate) {
+        this.startDateFilter = this.startDate;
+        this.endDateFilter = this.endDate;
+        this.loadChartData();
+      }
+    }
   }
 
   // myMock(): InspectionData[] {

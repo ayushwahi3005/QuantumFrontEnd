@@ -17,11 +17,11 @@ export class AssetInspectionService {
       }
       analyticsEndpoint = environment.endpoint + "inspection/";
   
-      getUserInspection(companyId: any,pageNumber?:number,pageSize?:number) {
-        return this.httpClient.get(this.analyticsEndpoint + "user-inspection-analytics/"+companyId,{headers:this.headers});
+      getUserInspection(companyId: any,startDate:any,endDate:any) {
+        return this.httpClient.get(this.analyticsEndpoint + "user-inspection-analytics/"+companyId+'?startDate='+startDate+'&endDate='+endDate,{headers:this.headers});
       }
-      getStatusDistribution(companyId: any,pageNumber?:number,pageSize?:number) {
-        return this.httpClient.get(this.analyticsEndpoint + "status-distribution/"+companyId,{headers:this.headers});
+      getStatusDistribution(companyId: any,startDate:any,endDate:any) {
+        return this.httpClient.get(this.analyticsEndpoint + "status-distribution/"+companyId+'?startDate='+startDate+'&endDate='+endDate,{headers:this.headers});
       }
       getInspectionTypeCompletion(companyId: any,pageNumber?:number,pageSize?:number) {
         return this.httpClient.get(this.analyticsEndpoint + "inspection-type-completion/"+companyId,{headers:this.headers});

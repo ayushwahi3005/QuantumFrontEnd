@@ -465,6 +465,7 @@ currentSelectedCountryCode='US'
     err=>{
       console.log(err);
       this.loadingScreen=false;
+      //  if(err.error.error==="TRIAL_EXPIRED"||err.error.error==="SUBSCRIPTION_REQUIRED"){
        if(err.error.error==="TRIAL_EXPIRED"){
         this.triggerAlert(err.error.message,"danger");
       }
@@ -539,6 +540,7 @@ currentSelectedCountryCode='US'
         (err)=>{
           console.log(err);
           this.loadingScreen=false;
+          //  if(err.error.error==="TRIAL_EXPIRED"||err.error.error==="SUBSCRIPTION_REQUIRED"){
            if(err.error.error==="TRIAL_EXPIRED"){
         this.triggerAlert(err.error.message,"danger");
       }
@@ -558,6 +560,7 @@ currentSelectedCountryCode='US'
       (err)=>{
         console.log(err);
         this.loadingScreen=false;
+        //  if(err.error.error==="TRIAL_EXPIRED"||err.error.error==="SUBSCRIPTION_REQUIRED"){
          if(err.error.error==="TRIAL_EXPIRED"){
         this.triggerAlert(err.error.message,"danger");
       }
@@ -704,6 +707,7 @@ currentSelectedCountryCode='US'
           this.currentFile=null;
           this.message = 'Could not upload the file!';
           console.log(this.message);
+          //  if(err.error.error==="TRIAL_EXPIRED"||err.error.error==="SUBSCRIPTION_REQUIRED"){
            if(err.error.error==="TRIAL_EXPIRED"){
         this.triggerAlert(err.error.message,"danger");
       }
@@ -807,6 +811,7 @@ currentSelectedCountryCode='US'
     },
     (err)=>{
       console.log(err);
+      //  if(err.error.error==="TRIAL_EXPIRED"||err.error.error==="SUBSCRIPTION_REQUIRED"){
        if(err.error.error==="TRIAL_EXPIRED"){
         this.triggerAlert(err.error.message,"danger");
       }
@@ -822,6 +827,7 @@ currentSelectedCountryCode='US'
     },
     (err)=>{
       console.log(err);
+      //  if(err.error.error==="TRIAL_EXPIRED"||err.error.error==="SUBSCRIPTION_REQUIRED"){
        if(err.error.error==="TRIAL_EXPIRED"){
         this.triggerAlert(err.error.message,"danger");
       }
@@ -845,6 +851,7 @@ currentSelectedCountryCode='US'
       },
     (err)=>{
       console.log(err);
+      //  if(err.error.error==="TRIAL_EXPIRED"||err.error.error==="SUBSCRIPTION_REQUIRED"){
        if(err.error.error==="TRIAL_EXPIRED"){
         this.triggerAlert(err.error.message,"danger");
       }

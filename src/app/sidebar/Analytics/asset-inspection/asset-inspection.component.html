@@ -121,7 +121,14 @@
         <p class="chart-subtitle">Records over time</p>
       </div>
 
-      <div class="chart-container">
+      <!-- Loading State -->
+      <div *ngIf="chartLoading" class="loading-state">
+        <div class="spinner"></div>
+        <p>Loading inspection data...</p>
+      </div>
+
+      <!-- Chart Content -->
+      <div *ngIf="!chartLoading" class="chart-container">
         <canvas #chartCanvas class="chart-canvas"></canvas>
       </div>
       </div>
@@ -131,7 +138,15 @@
         <h3>Status Distribution</h3>
         <p class="chart-subtitle">By status type</p>
       </div>
-      <div class="status-content">
+      
+      <!-- Loading State -->
+      <div *ngIf="statusLoading" class="loading-state">
+        <div class="spinner"></div>
+        <p>Loading status data...</p>
+      </div>
+      
+      <!-- Chart Content -->
+      <div *ngIf="!statusLoading" class="status-content">
         <svg viewBox="0 0 200 200" class="donut-chart">
           <!-- Pending Count (First segment) -->
           <circle 
@@ -170,7 +185,7 @@
     </div>
 
     <div class="chart-card trend-chart">
-      <app-asset-inspection-completion-trend/>
+      <app-asset-inspection-completion-trend [startDate]="startDateForCompletionTrend" [endDate]="endDateForCompletionTrend"/>
     </div>
 
     

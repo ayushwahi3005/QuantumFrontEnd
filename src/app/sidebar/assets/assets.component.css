@@ -1,52 +1,60 @@
 
 
+* {
+  font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+}
+
 #asset-table{
     
     /* overflow: hidden; */
     /* margin-top: 10px; */
     border-radius: 10px;
     /* border: 1px solid lightgray; */
+    margin-bottom: 0;
+}
+#asset-table td, #asset-table th {
+    min-width: 100px;
+    /* border: 1px solid lightgray; */
 }
 
 .row{
-    /* margin: 10px 0px; */
-    margin-top: 20px;
-    margin-bottom: 0;
-    margin-left: 0;
-    margin-right: 0;
-    
+  margin: 20px 0 0 0;
 }
+
 .filter{
-display: flex;
-flex-direction: row-reverse;
+  display: flex;
+  flex-direction: row-reverse;
 }
+
 /* button{
     margin: 0px 10px;
 } */
+
 /* .filter svg{
     padding-top: 5px;
 } */
-.sort{
-    
-    padding: 5px;
-    margin-right: 5px;
+
+.sort{  
+  padding: 5px;
+  margin-right: 5px;
 }
+
 .search{
-    background-color: rgb(49, 131, 214);
-    border-radius: 5px;
-    padding: 4px;
+  background-color: rgb(49, 131, 214);
+  border-radius: 5px;
+  padding: 4px;
 }
+
 .image{
-    width: 80px;
-    height: 80px;
-    margin: 10px;
-    border-radius: 5px;
+  width: 80px;
+  height: 80px;
+  margin: 10px;
+  border-radius: 5px;
 }
+
 .upload button{
-
-height: 40px;
-font-size: x-small;
-
+  height: 40px;
+  font-size: x-small;
 }
 
 .searchBar {
@@ -101,17 +109,17 @@ font-size: x-small;
 
 #asset-table td {
   vertical-align: middle;
+
 }
 
-app-asset-details  {
+/* app-asset-details  {
     width: calc(100vw - 85px);
     transition: width 150ms linear;
-    /* overflow-y: scroll; */
     height: calc(100vh - 80px);
 }
 .app-assets-open{
     width: calc(100vw - 270px);
-}
+} */
 .extra-columns{
     float: right;
 }
@@ -138,28 +146,30 @@ border-style: none;
 .editoption{
     opacity: 0;
 }
+
 #edit-button{
-    font-size: 18px;
-     color: #5E6164;
+  font-size: 18px;
+  color: #5E6164;
 }
+
 #edit-button:hover{
-    color: #0D6EFD;
+  color: #0D6EFD;
 }
+
 label{
-    margin-bottom: 5px;
+  margin-bottom: 5px;
 }
+
 table{
-    color: #5E6164;
-    /* font-size: medium;
-    padding: 20px 5px; */
-   
-   
+  color: #5E6164;
+  /* font-size: medium;
+  padding: 20px 5px; */
+  border-radius: 10px;
 }
+
 th{
-    /* padding: 20px 5px; */
-    font-size: medium;
-    
-   
+  /* padding: 20px 5px; */
+  font-size: medium;
 }
 
 /* .loading{
@@ -264,17 +274,15 @@ select{
     -webkit-transition: 0.5s;
     transition: 0.5s;
     outline:none
- }
- #filter_table  input:focus{
-    border: 2px solid #1a65ab;
- }
+}
+
+#filter_table  input:focus{
+  border: 2px solid #1a65ab;
+}
 
  .extraFieldInput{
     color: #717275;
     border-radius: 8px;
-    
-   
-
     border: 2px solid #aab1b8;
     -webkit-transition: 0.5s;
     transition: 0.5s;
@@ -379,25 +387,26 @@ select{
     animation-delay: -0.1s;
   } */
 
-
 .table-dark {
   --bs-table-bg: #12232E;
   --bs-table-color: white;
 }
 
+#asset-table thead{
+  position: sticky;
+  top: 0;
+  z-index: 2;
+  border: 1px lightgray;
+}
 
-   #asset-table thead{
-    position: sticky;
-    top: 0;
-    z-index: 1;
-    border: 1px lightgray;
-   }
-   mat-form-field {
-    z-index: 100000;
-  }
-  label {
-    display: block;
-  }
+mat-form-field {
+  z-index: 100000;
+}
+
+/* label {
+  display: block;
+} */
+
   /* Lower the z-index of the mat paginator dropdown */
 .mat-select-panel {
     z-index: 1050 !important; /* Ensure this is lower than the modal's z-index */
@@ -425,10 +434,10 @@ select{
   overflow: auto;
 }
 
-.dropdown {
+/* .dropdown {
   position: relative;
   width: 100%;
-}
+} */
 
 .dropdown-menu {
   position: absolute;
@@ -493,13 +502,13 @@ select{
   text-align: center;
   line-height: 1;
 }
+
 .dropdown-toggle-arrow::after{
   content: '';
 }
 .dropdown-toggle-arrow::before{
   content: '';
 }
-
 
 /* .arrow-down::before {
   content: "▼"; 
@@ -604,7 +613,7 @@ select{
   color: #888;
   margin-top: 15px;
   font-size: 16px;
-  /* padding: 10px; */
+  padding: 10px;
 }
 
 .search-bar:focus-within {
@@ -798,4 +807,14 @@ select{
   100% {
     background-color: transparent;
   }
+}
+
+.sticky-paginator {
+  position: sticky;
+  bottom: 0;
+  z-index: 20;
+  background: white;
+  border-top: 1px solid #ddd;
+  padding: 3px 0;
+  border-radius: 0 0 10px 10px;
 }

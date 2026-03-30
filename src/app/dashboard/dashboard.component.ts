@@ -201,7 +201,7 @@ export class DashboardComponent  {
     this.dashService.getFreeTrailDetails(companyId).subscribe((data)=>{
       console.log("Free Trial Details",data)
       this.freeTrialDetails=data;
-       if(this.freeTrialDetails.trialExpired==false){
+       if(this.freeTrialDetails?.trialExpired==false){
         
         const today = new Date();
         const trialEndDate = new Date(this.freeTrialDetails.trialEndDate);
@@ -216,7 +216,7 @@ export class DashboardComponent  {
         
         this.currentSubscriptionMessageStyle+=' border:solid #800e94ff 1px; background-color: #9C27B0';
       }
-      else if((this.currentSubscription==null||this.currentSubscription.status!='ACTIVE')&&this.freeTrialDetails.trialExpired===false &&this.trialDayLeft>0){
+      else if((this.currentSubscription==null||this.currentSubscription.status!='ACTIVE')&&this.freeTrialDetails?.trialExpired===false &&this.trialDayLeft>0){
         this.currentSubcriptionMessage='Trial Period - '+this.trialDayLeft+ ' Days Left';
         this.currentSubscriptionMessageStyle+='border:solid #ffab00 1px; background-color: #f5c242;';
 

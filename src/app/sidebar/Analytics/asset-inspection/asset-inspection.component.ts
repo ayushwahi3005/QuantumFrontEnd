@@ -40,17 +40,26 @@ export class AssetInspectionComponent {
   leadInspector: any = '';
   startDate: string = '';
   endDate: string = '';
+  startDateForCompletionTrend: string = '';
+  endDateForCompletionTrend: string = '';
   extraInspectorNames: string[] = [];
   extraInspectorNamesVisible: boolean = false;
   inspectionDetails: any;
   totalAssets = 0;
   totalInspections = 0;
   totalRecords = 0;
+  chartLoading = true;
+  statusLoading = true;
 
   constructor(private assetInspectionService: AssetInspectionService) {}
 
   ngOnInit() {
-    this.assetInspectionService.getUserInspection(localStorage.getItem('companyId')).subscribe((data: any) => {
+    this.startDate = new Date(new Date().setDate(new Date().getDate() - 30)).toISOString().split('T')[0]; // 30 days ago
+    this.endDate = new Date().toISOString().split('T')[0]; // today
+    this.startDateForCompletionTrend = this.startDate;
+    this.endDateForCompletionTrend = this.endDate;
+
+    this.assetInspectionService.getUserInspection(localStorage.getItem('companyId'), this.startDate, this.endDate).subscribe((data: any) => {
       // console.log("Inspection Data", data);
       this.userInspectionAnalyticsData = data;
       this.userInspectionAnalyticsDataNames = this.userInspectionAnalyticsData.map(user => user.userName);
@@ -58,15 +67,17 @@ export class AssetInspectionComponent {
       // console.log("Names:", this.userInspectionAnalyticsDataNames);
       // console.log("Values:", this.userInspectionAnalyticsDataValues);
       
-      // Create chart after data is loaded
-      if (this.chartCanvas) {
+      this.chartLoading = false;
+      // Create chart after data is loaded and DOM is updated
+      setTimeout(() => {
         this.createChart();
-      }
+      }, 100);
     }, error => {
       console.log("Error in Inspection Data", error);
+      this.chartLoading = false;
     });
 
-     this.assetInspectionService.getStatusDistribution(localStorage.getItem('companyId')).subscribe((data: any) => {
+     this.assetInspectionService.getStatusDistribution(localStorage.getItem('companyId'),this.startDate, this.endDate).subscribe((data: any) => {
       
       this.statusDistributionData = data;
       // console.log("Status Data", this.statusDistributionData);
@@ -75,8 +86,10 @@ export class AssetInspectionComponent {
       if (this.chartCanvas) {
         this.createChart();
       }
+      this.statusLoading = false;
     }, error => {
       console.log("Error in Inspection Data", error);
+      this.statusLoading = false;
     });
 
     this.assetInspectionService.getInspectionTypeCompletion(localStorage.getItem('companyId')).subscribe((data: any) => {
@@ -309,7 +322,42 @@ get inspectorInitials(): string {
     .join('')
     .toUpperCase();
 }
-applyFilter(){}
+  applyFilter(){
+  this.startDateForCompletionTrend = this.startDate;
+  this.endDateForCompletionTrend = this.endDate;
+  
+  this.chartLoading = true;
+  this.statusLoading = true;
+
+  this.assetInspectionService.getUserInspection(localStorage.getItem('companyId'), this.startDate, this.endDate).subscribe((data: any) => {
+      // console.log("Inspection Data", data);
+      this.userInspectionAnalyticsData = data;
+      this.userInspectionAnalyticsDataNames = this.userInspectionAnalyticsData.map(user => user.userName);
+      this.userInspectionAnalyticsDataValues = this.userInspectionAnalyticsData.map(user => user.totalCompletedInspections);
+      // console.log("Names:", this.userInspectionAnalyticsDataNames);
+      // console.log("Values:", this.userInspectionAnalyticsDataValues);
+      
+      this.chartLoading = false;
+      // Create chart after data is loaded and DOM is updated
+      setTimeout(() => {
+        this.createChart();
+      }, 100);
+    }, error => {
+      console.log("Error in Inspection Data", error);
+      this.chartLoading = false;
+    });
+
+     this.assetInspectionService.getStatusDistribution(localStorage.getItem('companyId'),this.startDate, this.endDate).subscribe((data: any) => {
+      
+      this.statusDistributionData = data;
+      // console.log("Status Data", this.statusDistributionData);
+      
+      this.statusLoading = false;
+    }, error => {
+      console.log("Error in Inspection Data", error);
+      this.statusLoading = false;
+    });
+}
 
 private generateColors(count: number): string[] {
   const colors: string[] = [];

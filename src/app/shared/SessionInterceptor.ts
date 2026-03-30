@@ -40,42 +40,42 @@ import { DialogueComponent } from '../dialogue/dialogue.component';
     ): Observable<HttpEvent<any>> {
       return next.handle(req).pipe(
         catchError((error: HttpErrorResponse) => {
-          const currentUrl = this.router.url;
-          // console.log("Current URL:", currentUrl);
-          if (error.status === 401 && 
-              !currentUrl.startsWith('/login') && 
-              !currentUrl.startsWith('/register') && 
-              !currentUrl.startsWith('/admin') && 
-              !currentUrl.includes('/invitation/')) {
-          // if(false){
-              // const currentUrl = this.router.url;
-              // console.log("Current URL:", currentUrl);
-                // Ensure logout and redirection are handled only once
-                // console.log("IsloggedIn=========>"+this.authService.isLoggedIn)
-                if(this.authService.isLoggedIn === "true"||this.authService.isLoggedIn === undefined){
-                    this.authService.isLoggedIn = "false";
-                    localStorage.setItem('isLoggedIn', 'false');
-                    this.authService.sessionExpired$.next(true);
-                    console.log('Session expired - Interceptor: Session has expired. User will be logged out.');
-                    
-                    // alert('Session Expired');
-                    console.log(error);
-                    this.openSessionExpiredDialog();
-                  //   this.router.navigate(['/login']);
-                    // this.authService.logout().then(() => {
-                    //   this.router.navigate(['/login']); // Redirect after logout
-                    // }).catch(err => {
-                    //   console.error('Logout failed:', err);
-                    // });
-                }  
-           
-                 
-                    
-        
-               
-              }
-          return throwError(() => error);
-        })
+  const currentUrl = this.router.url;
+
+  // Handle subscription required case
+  if (error?.error?.error === "SUBSCRIPTION_REQUIRED") {
+    this.router.navigate(['/setting-home'], {
+      queryParams: { tab: 'subscription' }
+    });
+    return throwError(() => error);
+  }
+
+  // Existing 401 logic
+  if (
+    error.status === 401 &&
+    !currentUrl.startsWith('/login') &&
+    !currentUrl.startsWith('/register') &&
+    !currentUrl.startsWith('/admin') &&
+    !currentUrl.includes('/invitation/')
+  ) {
+    if (
+      this.authService.isLoggedIn === "true" ||
+      this.authService.isLoggedIn === undefined
+    ) {
+      this.authService.isLoggedIn = "false";
+      localStorage.setItem('isLoggedIn', 'false');
+      this.authService.sessionExpired$.next(true);
+
+      console.log(
+        'Session expired - Interceptor: Session has expired. User will be logged out.'
+      );
+
+      this.openSessionExpiredDialog();
+    }
+  }
+
+  return throwError(() => error);
+})
       );
     }
   }

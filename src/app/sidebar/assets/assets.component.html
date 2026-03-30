@@ -1,15 +1,14 @@
+
+
 <div>
 
-  <div class="d-flex justify-content-center">
-    <div *ngIf="showAlert" class="alert" [ngClass]="'alert-' + alertType" role="alert"
-      style="width: 95%; z-index: 20000; position:absolute; top:70px">
-      {{ alertMessage }}
+  <!-- <div class="d-flex justify-content-center"> -->
+  <div *ngIf="showAlert" class="alert" [ngClass]="'alert-' + alertType" role="alert" style="width: 95%; z-index: 10000; position:absolute; top:70px;margin: 5px;">
+    {{ alertMessage }}
 
-      <button type="button" class="btn-close" (click)="showAlert = false" aria-label="Close"
-        style="float: right;"></button>
-    </div>
+    <button type="button" class="btn-close" (click)="showAlert = false" aria-label="Close" style="float: right;"></button>
   </div>
-
+  <!-- </div> -->
 
   <div class="loading" *ngIf="loading">
     <div class="spinner center">
@@ -28,9 +27,21 @@
 </div>
   </div>
 
+  <div *ngIf="!detailedAsset" class="d-flex justify-content-center" style="margin: 20px 30px 0 30px;">
+    <div class="d-flex justify-content-between" style=" width: 100%;">
+  
+      <div style="height: 40px;">
+        <label style="font-size: 24px; font-weight: bold; padding: 10px 0;">Assets</label>
+      </div>
+  
+      <button class="btn btn-dark" data-toggle="modal" data-target="#exportModal">Export</button>
+  
+    </div>
+  </div>
+
 
   <div *ngIf="!detailedAsset&&!loading"
-    style="border: 1px solid lightgray; border: 1px black lightgray; background-color: white; border-radius: 10px; padding: 0px; margin: 30px 30px 30px 30px; box-shadow: 0 0 4px 0 rgba(0, 0, 0, .16); height: auto; padding-bottom: 8px;">
+    style="border: 1px solid lightgray; border: 1px black lightgray; background-color: white; border-radius: 10px; padding: 0px; margin: 20px 30px 30px 30px; box-shadow: 0 0 4px 0 rgba(0, 0, 0, .16); height: auto; padding-bottom: 8px;">
     <div *ngIf="mainAsset && !loading" class="main-asset">
       <div class="row">
         <!-- <div class="col flex justify-content-between searchBar" style="float: left;" > -->
@@ -72,7 +83,7 @@
             *ngIf="!(userRoleDetails?.assets!='full' &&userRole!='ADMIN')">+ Asset</button> -->
            <button class="btn btn-primary" data-toggle="modal" data-target="#addAssetPopup"
             style=" margin: 0px 5px; width: 100%; max-width: 100px; min-width: 100px;">+ Asset</button>
-          <button class="btn btn-dark" style=" margin: 0px 5px;" data-toggle="modal" data-target="#exportModal">Export</button>
+          <!-- <button class="btn btn-dark" style=" margin: 0px 5px;" data-toggle="modal" data-target="#exportModal">Export</button> -->
 
           <a class="btn btn-light dropdown-toggle" type="button" id="sortButtonAsset" data-toggle="dropdown"
             aria-haspopup="true" aria-expanded="false"
@@ -91,14 +102,8 @@
             <a class="dropdown-item" (click)="sortBy('assetId')">ID</a>
             <a class="dropdown-item" (click)="sortBy('name')">
               <span *ngIf="sortedBy === 'name'" style="margin-left: -24px; margin-right: 8px;">
-                <!-- <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-check-circle" viewBox="0 0 16 16">
-              <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14m0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16"/>
-              <path d="m10.97 4.97-.02.022-3.473 4.425-2.093-2.094a.75.75 0 0 0-1.06 1.06L6.97 11.03a.75.75 0 0 0 1.079-.02l3.992-4.99a.75.75 0 0 0-1.071-1.05"/>
-            </svg> -->
-                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-check2"
-                  viewBox="0 0 16 16">
-                  <path
-                    d="M13.854 3.646a.5.5 0 0 1 0 .708l-7 7a.5.5 0 0 1-.708 0l-3.5-3.5a.5.5 0 1 1 .708-.708L6.5 10.293l6.646-6.647a.5.5 0 0 1 .708 0" />
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-check2" viewBox="0 0 16 16">
+                  <path d="M13.854 3.646a.5.5 0 0 1 0 .708l-7 7a.5.5 0 0 1-.708 0l-3.5-3.5a.5.5 0 1 1 .708-.708L6.5 10.293l6.646-6.647a.5.5 0 0 1 .708 0" />
                 </svg>
               </span>Name</a>
             <a class="dropdown-item" (click)="sortBy('serialNumber')">Serial Number</a>
@@ -123,7 +128,7 @@
         </span>
       </div>
 
-      <div class="row" style="height: calc(100vh - 260px); overflow: auto; width: 100%;">
+      <div class="row" style="overflow: auto; width: 100%;">
         <div class="col" style="margin: 0; padding: 0; width: 100%;">
 
           <div class="extra-columns">
@@ -147,8 +152,8 @@
                 <th scope="col" *ngIf="showMandatoryBasicFields?.get('location')">Location</th>
                 <th scope="col" *ngIf="showMandatoryBasicFields?.get('status')">Status</th>
                 <th scope="col" *ngIf="showMandatoryBasicFields?.get('checkInOut')">Checked In/Out</th>
-                 <th scope="col" *ngIf="showMandatoryBasicFields?.get('lastHandler')">Last Handled By</th>
-                    <th scope="col" *ngIf="showMandatoryBasicFields?.get('lastHandlerLocation')">Last Known Location</th>
+                <th scope="col" *ngIf="showMandatoryBasicFields?.get('lastHandler')">Last Handled By</th>
+                <th scope="col" *ngIf="showMandatoryBasicFields?.get('lastHandlerLocation')">Last Known Location</th>
                 <th scope="col" *ngFor="let col of selectedExtraColums">{{col}}</th>
                 <th></th>
               </tr>
@@ -164,15 +169,13 @@
                   <td *ngIf="showMandatoryBasicFields?.get('name')">{{(item.name||'')|titlecase}}</td>
                   <td *ngIf="showMandatoryBasicFields?.get('serialNumber')">{{(item.serialNumber||'')}}</td>
                   <td *ngIf="showMandatoryBasicFields?.get('category')">{{(item.category||'')|titlecase}}</td>
-                  <td *ngIf="showMandatoryBasicFields?.get('customer')">
-                    {{customerIdNameMap?.get(item.customerId)|titlecase}}</td>
+                  <td *ngIf="showMandatoryBasicFields?.get('customer')">{{customerIdNameMap?.get(item.customerId)|titlecase}}</td>
                   <td *ngIf="showMandatoryBasicFields?.get('location')">{{(item.locationName||'')|titlecase}}</td>
                   <td *ngIf="item.status=='active'&&showMandatoryBasicFields?.get('status')">Active</td>
-                  <td *ngIf="item.status=='inActive'&&showMandatoryBasicFields?.get('status')">In Active</td>
+                  <td *ngIf="item.status=='inActive'&&showMandatoryBasicFields?.get('status')">Inactive</td>
                   <td *ngIf="item.status=='outofservice'&&showMandatoryBasicFields?.get('status')">Out Of Service</td>
                   <td *ngIf="item.status==null||item.status==''&&showMandatoryBasicFields?.get('status')">{{''}}</td>
-                  <td *ngIf="showMandatoryBasicFields?.get('checkInOut')">{{(item.checkedInOutStatus
-                    ||'')}}</td>
+                  <td *ngIf="showMandatoryBasicFields?.get('checkInOut')">{{(item.checkedInOutStatus||'')}}</td>
                   <td *ngIf="showMandatoryBasicFields?.get('lastHandler')">{{getLastCheckInOutBy(item)}}</td>
                    <td *ngIf="showMandatoryBasicFields?.get('lastHandlerLocation')">{{getLastLocation(item)}}</td>
 
@@ -197,22 +200,22 @@
               </ng-container>
             </tbody>
           </table>
-          <!-- <ng-template #noAssets>
+          <ng-template #noAssets>
             <tr>
-              <td colspan="5" class="text-center">
-          <p *ngIf="searchedLocationList || searchedLocationList.length === 0" class="no-data">No Assets available</p>
+              <td colspan="100" class="text-center">
+          <p *ngIf="searchedAssets || searchedAssets.length === 0" class="no-data">No Assets available</p>
           </td>
             </tr>
-          </ng-template> -->
+          </ng-template>
 
         </div>
       </div>
 
 
-      <hr style="border: 0.5px solid gray; margin: 0; width: 100%;">
-      <mat-paginator [length]="totalLength" (page)="handlePageEvent($event)" [pageSize]="pageSize"
+      <!-- <hr style="border: 0.5px solid gray; margin: 0; width: 100%;"> -->
+      <mat-paginator class="sticky-paginator" [length]="totalLength" (page)="handlePageEvent($event)" [pageSize]="pageSize"
         [pageIndex]="pageIndex" [pageSizeOptions]="[50, 100, 200]" aria-label="Select page"
-        style="z-index: 0; height: auto; font-size: 14px;">
+        style="z-index: 0; height: auto; font-size: 15px;">
       </mat-paginator>
 
 
@@ -226,14 +229,9 @@
   aria-hidden="true" data-backdrop="static" data-keyboard="false" style="z-index :10000;">
   <div class="modal-dialog modal-lg" role="document">
     <div class="modal-content" style="max-height: 90vh;">
-      <div class="modal-header"
-        style="padding: 13px 15px; position: sticky; top: 0; z-index: 100; background-color: white;">
-        <h2 class="modal-title" style="margin:0; display: flex; justify-content: center;" id="exampleModalLongTitle">Add
-          Asset</h2>
-        <button type="button" class="btn btn-light btn-sm ms-auto" data-dismiss="modal" aria-label="Close"
-          style="border-radius: 10px; border: 1px solid #c0c0c0;--bs-btn-bg: white" (click)="clearAddFormData()"
-          #closeBox2>
-          <!-- <span aria-hidden="true">&times;</span> -->
+      <div class="modal-header" style="padding: 13px 15px; position: sticky; top: 0; z-index: 100; background-color: white;">
+        <h2 class="modal-title" style="margin:0; display: flex; justify-content: center;" id="exampleModalLongTitle">Add Asset</h2>
+        <button type="button" class="btn btn-light btn-sm ms-auto" data-dismiss="modal" aria-label="Close" style="border-radius: 10px;" (click)="clearAddFormData()" #closeBox2>
           <i class="bi bi-x-lg"></i>
         </button>
       </div>
@@ -242,44 +240,33 @@
         <!-- <form [formGroup]="assetForm" (ngSubmit)="addAsset($event)"> -->
         <form [formGroup]="assetForm">
 
-          <div class="form-group">
-            <label for="image">Image<span *ngIf="mandatoryFieldsMap?.get('image')" class="text-danger">*</span> </label>
+          <div class="mb-3">
+            <label for="image">Image<span *ngIf="mandatoryFieldsMap?.get('image')" class="text-danger"> *</span> </label>
             <input type="file" class="form-control" id="image" (change)="imageUpload($event)" #image>
           </div>
-          <br>
 
-          <div class="form-group">
+          <div class="mb-3">
             <label for="name">Name<span class="text-danger"> *</span> </label>
             <input type="text" class="form-control" id="name" formControlName="name" placeholder="Name" #name>
           </div>
-          <br>
 
-          <div class="form-group">
-            <label for="serialNumber">Serial Number<span *ngIf="mandatoryFieldsMap?.get('serialNumber')"
-                class="text-danger">*</span> </label>
-            <input type="text" class="form-control" id="serialNumber" formControlName="serialNumber"
-              placeholder="Serial Number">
+          <div class="mb-3">
+            <label for="serialNumber">Serial Number<span *ngIf="mandatoryFieldsMap?.get('serialNumber')" class="text-danger"> *</span> </label>
+            <input type="text" class="form-control" id="serialNumber" formControlName="serialNumber" placeholder="Serial Number">
           </div>
-          <br>
 
-          <div class="form-group">
-            <label for="category">Category<span *ngIf="mandatoryFieldsMap?.get('category')"
-                class="text-danger">*</span></label>
+          <div class="mb-3">
+            <label for="category">Category<span *ngIf="mandatoryFieldsMap?.get('category')" class="text-danger"> *</span></label>
             <!-- <input type="text" class="form-control" id="category" formControlName="category"  placeholder="Category"> -->
-
-            <select class="form-select custom-dropdown" class="form-control" id="category" formControlName="category"
+            <select class="form-select" id="category" formControlName="category"
               #category style="height: fit-content;">
               <option value="{{category.name}}" *ngFor="let category of assetCategoryList">{{category.name|titlecase}}
               </option>
-              <!-- <option value="{{[customer.name,customer.id]}}" *ngFor="let customer of companyCustomerList">{{customer.name}}</option> -->
-              <!-- <option value="outOfService" selected>Out Of Service</option> -->
             </select>
           </div>
-          <br>
 
-          <div class="form-group">
-            <label for="customer">Customer<span *ngIf="mandatoryFieldsMap?.get('customer')"
-                class="text-danger">*</span></label>
+          <div class="mb-3">
+            <label for="customer">Customer<span *ngIf="mandatoryFieldsMap?.get('customer')" class="text-danger"> *</span></label>
             <div class="dropdown">
               <div class="d-flex">
                 <span class="dropdown-toggle-arrow">
@@ -298,18 +285,14 @@
               </ul>
             </div>
           </div>
-          <br>
 
           <!-- <div class="form-group">
                 <label for="location">Location<span *ngIf="mandatoryFieldsMap?.get('location')" class="text-danger">*</span></label>
                 <input type="text" class="form-control" id="location" formControlName="location"  placeholder="Location">
               </div> -->
 
-          <div class="form-group">
-            <label for="location">
-              Location
-              <span *ngIf="mandatoryFieldsMap?.get('location')" class="text-danger">*</span>
-            </label>
+          <div class="mb-3">
+            <label for="location">Location<span *ngIf="mandatoryFieldsMap?.get('location')" class="text-danger"> *</span></label>
             <div class="dropdown">
               <div #dropdownContainerAsset>
                 <span class="dropdown-toggle-arrow">
@@ -352,45 +335,28 @@
             </div>
           </div>
 
-          <br>
-
-          <div class="form-group">
-            <label for="status">Status<span *ngIf="mandatoryFieldsMap?.get('status')"
-                class="text-danger">*</span></label>
+          <div class="mb-3">
+            <label for="status">Status<span *ngIf="mandatoryFieldsMap?.get('status')" class="text-danger"> *</span></label>
             <select class="form-select" id="status" formControlName="status">
               <option value="active">Active</option>
               <option value="inactive">Inactive</option>
             </select>
           </div>
-          <br>
 
-          <div class="form-group" *ngFor="let item of showFieldsList">
+          <div class="mb-3" *ngFor="let item of showFieldsList">
             <div *ngIf="item.show">
-              <label for={{item.name}}>{{item.name}}<span *ngIf="mandatoryFieldsMap?.get(item.name)"
-                  class="text-danger" style="display: inline-block;">*</span></label><br>
-              <input type={{item.type}} class="form-control" id="{{item.name}}" formControlName={{item.name}}
-                placeholder={{item.name}}>
+              <label for={{item.name}}>{{item.name}}<span *ngIf="mandatoryFieldsMap?.get(item.name)" class="text-danger" style="display: inline-block;"> *</span></label>
+              <input type={{item.type}} class="form-control" id="{{item.name}}" formControlName={{item.name}} placeholder={{item.name}}>
             </div>
-            <br>
           </div>
-          <!-- <button class="btn btn-light">Cancel</button> -->
-          <!-- <div class="modal-footer"> -->
-          <!-- <div style="display: flex; justify-content: center; margin-top: 15px;">
-                <button class="btn btn-light"  (click)="closeBox2.click()" style="margin: 10px; margin-right: 30px; width: 100px; border: 1px solid #c0c0c0">Cancel</button>
-                
-                <button type="submit" class="btn btn-primary"  (click)="image.value=''" style="margin: 10px; width: 100px;">Save</button>
-              </div> -->
 
         </form>
 
-      </div>
-      <div class="model-footer">
-        <div style="display: flex; justify-content: center; margin-top: 15px;">
-          <button class="btn btn-light" (click)="closeBox2.click()"
-            style="margin: 10px; margin-right: 30px; width: 100px; border: 1px solid #c0c0c0">Cancel</button>
+      <!-- </div> -->
 
-          <button type="button" class="btn btn-primary" (click)="addAsset()"  (click)="image.value=''"
-            style="margin: 10px; width: 100px;">Save</button>
+        <div style="display: flex; justify-content: center; margin-top: 15px;">
+          <button class="btn btn-light" (click)="closeBox2.click()" style="margin: 10px; margin-right: 30px; width: 100px; border: 1px solid #c0c0c0">Cancel</button>
+          <button type="button" class="btn btn-primary" (click)="addAsset()"  (click)="image.value=''" style="margin: 10px; width: 100px;">Save</button>
         </div>
       </div>
     </div>
@@ -399,19 +365,15 @@
 <app-asset-details *ngIf="detailedAsset" [assetDetails]="currDetails" (backStatus)=onBackClicked($event)
   [ngClass]="{'app-assets-open':!hoverOverSidebar}"></app-asset-details>
 
-
 <!-- Advance Filter -->
 
 <div class="modal fade" id="advanceFilterModule" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle"
   aria-hidden="true" style="z-index :10000 !important; position: absolute !important;">
   <div class="modal-dialog" role="document">
     <div class="modal-content" style="max-height: 90vh;">
-      <div class="modal-header"
-        style="padding: 13px 15px; position: sticky; top: 0; z-index: 100; background-color: white;">
-        <h2 class="modal-title" style="margin:0; display: flex; justify-content: center;" id="exampleModalLongTitle">
-          Advance Filter</h2>
-        <button type="button" class="btn btn-light btn-sm ms-auto" data-dismiss="modal" aria-label="Close"
-          style="border-radius: 10px;" #closeBox3>
+      <div class="modal-header" style="padding: 13px 15px; position: sticky; top: 0; z-index: 100; background-color: white;">
+        <h2 class="modal-title" style="margin:0; display: flex; justify-content: center;" id="exampleModalLongTitle">Advance Filter</h2>
+        <button type="button" class="btn btn-light btn-sm ms-auto" data-dismiss="modal" aria-label="Close" style="border-radius: 10px;" #closeBox3>
           <i class="bi bi-x-lg"></i>
         </button>
       </div>
@@ -420,40 +382,39 @@
         <form [formGroup]="filterForm">
 
           <div style="width: 100%;">
-            <div class="form-group" >
+            <div class="mb-3" >
               <label for="assetId">ID</label>
               <div class="d-flex justify-content-around">
                 <input type="text" class="form-control" id="assetId" formControlName="assetId" #name>
               </div>
-              <br>
             </div>
 
-            <div class="form-group" >
+            <div class="mb-3" >
               <label for="name">Name</label>
               <div class="d-flex justify-content-around">
                 <input type="text" class="form-control" id="name" formControlName="name" #name>
               </div>
-              <br>
             </div>
 
-            <div class="form-group" >
+            <div class="mb-3" >
               <label for="serialNumber">Serial Number</label>
               <div class="d-flex justify-content-around">
                 <input type="text" class="form-control" id="serialNumber" formControlName="serialNumber">
               </div>
-              <br>
             </div>
 
 
-            <div class="form-group" >
+            <div class="mb-3" >
               <label for="category">Category</label>
               <div class="d-flex justify-content-around">
-                <input type="text" class="form-control" id="category" formControlName="category">
+                <!-- <input type="text" class="form-control" id="category" formControlName="category"> -->
+                <select class="form-select" id="category" formControlName="category" #category style="height: fit-content;">
+                  <option value="{{category.name}}" *ngFor="let category of assetCategoryList">{{category.name|titlecase}}</option>
+                </select>
               </div>
-              <br>
             </div>
 
-            <div class="form-group" >
+            <div class="mb-3" >
               <label for="customer">Customer</label>
               <div class="d-flex justify-content-around">
                 <!-- <input type="text" class="form-control" id="customer" formControlName="customer" > -->
@@ -480,10 +441,9 @@
 
 
               </div>
-              <br>
             </div>
 
-            <div class="form-group" *ngIf="mandatoryFieldFilterList?.get('location')">
+            <div class="mb-3" *ngIf="mandatoryFieldFilterList?.get('location')">
               <label for="location">Location</label>
               <div class="d-flex justify-content-around">
                 <!-- <input type="text" class="form-control" id="location" formControlName="location"  > -->
@@ -511,12 +471,6 @@
                     </li>
                   </ng-container>
                 </ul>
-
-
-
-
-
-
 
 
                   <!-- <span class="dropdown-toggle-arrow">
@@ -559,15 +513,14 @@
 
                 </div>
               </div>
-              <br>
             </div>
 
-            <div class="form-group" *ngIf="mandatoryFieldFilterList?.get('status')">
+            <div class="mb-3" *ngIf="mandatoryFieldFilterList?.get('status')">
               <label for="status">Status</label>
               <div class="d-flex justify-content-around">
                 <select class="form-select form-control" id="status" formControlName="status" #status>
                   <option value="active" selected>Active</option>
-                  <option value="inactive" selected>In Active</option>
+                  <option value="inactive" selected>Inactive</option>
                   <option value="outofservice" selected>Out Of Service</option>
                 </select>
               </div>
@@ -575,7 +528,7 @@
 
             <!-- <h1 *ngIf="this.selectedFilterList?.length>0" style="margin-left: 33%; margin-top: 5px;">Custom Fields</h1> -->
             <div *ngFor="let input of selectedFilterList; let i = index" style="margin-top: 5px;">
-              <div class="form-group">
+              <div class="mb-3">
                 <label for={{input}}>{{input}} (Custom)</label>
                 <div class="d-flex justify-content-around">
                   <input [formControlName]="input" type={{extraFieldFilterList?.get(input)}} class="extraFieldInput"
@@ -600,18 +553,14 @@
   </div>
 </div>
 
-
 <!-- Column Options -->
 
-<div class="modal fade" id="customFieldModule" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle"
-  aria-hidden="true">
+<div class="modal fade" id="customFieldModule" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle" aria-hidden="true">
   <div class="modal-dialog" role="document">
     <div class="modal-content">
       <div class="modal-header" style="padding: 13px 15px;">
-        <h2 class="modal-title" style="margin:0; display: flex; justify-content: center;" id="exampleModalLongTitle">All
-          Fields</h2>
-        <button type="button" class="btn btn-light btn-sm ms-auto" data-dismiss="modal" aria-label="Close"
-          style="border-radius: 10px;" #closeBox4>
+        <h2 class="modal-title" style="margin:0; display: flex; justify-content: center;" id="exampleModalLongTitle">All Fields</h2>
+        <button type="button" class="btn btn-light btn-sm ms-auto" data-dismiss="modal" aria-label="Close" style="border-radius: 10px;" #closeBox4>
           <i class="bi bi-x-lg"></i>
         </button>
       </div>
@@ -620,11 +569,11 @@
         <h3>Select Checkbox</h3>
 
         <div style="width: 100%;">
-          <div> <mat-checkbox [color]="checkBoxColor" [checked]="showMandatoryBasicFields?.get('image')==true?true:false"
-              (change)="mandatoryFieldCheckBox($event.checked,'image')" disabled="true">Image</mat-checkbox></div>
+          <!-- <div> <mat-checkbox [color]="checkBoxColor" [checked]="showMandatoryBasicFields?.get('image')==true?true:false"
+              (change)="mandatoryFieldCheckBox($event.checked,'image')" disabled="true">Image</mat-checkbox></div> -->
           <div> <mat-checkbox [color]="checkBoxColor"
               [checked]="showMandatoryBasicFields?.get('assetId')==true?true:false"
-              (change)="mandatoryFieldCheckBox($event.checked,'assetId')" disabled="true">Asset Id</mat-checkbox></div>
+              (change)="mandatoryFieldCheckBox($event.checked,'assetId')" disabled="true">ID</mat-checkbox></div>
           <div> <mat-checkbox [color]="checkBoxColor" [checked]="showMandatoryBasicFields?.get('name')==true?true:false"
               (change)="mandatoryFieldCheckBox($event.checked,'name')" disabled="true">Name</mat-checkbox></div>
           <div> <mat-checkbox [color]="checkBoxColor"
@@ -664,8 +613,7 @@
 
           <!-- <div class="modal-footer d-flex justify-content-around"> -->
           <div style="display: flex; justify-content: center; margin-top: 15px;">
-            <button class="btn btn-light" (click)="closeBox4.click()"
-              style="margin: 10px; width: 100px; border: 1px solid #c0c0c0">Close</button>
+            <button class="btn btn-light" (click)="closeBox4.click()" style="margin: 10px; width: 100px; border: 1px solid #c0c0c0">Close</button>
 
           </div>
         </div>
@@ -674,13 +622,14 @@
   </div>
 </div>
 
+<!-- Export -->
 
 <div class="modal fade" id="exportModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle" aria-hidden="true">
     <div class="modal-dialog" role="document">
       <div class="modal-content">
-        <div class="modal-header">
-          <h2 class="modal-title" id="exampleModalLongTitle">Select Export Type?</h2>
-          <button type="button" class="close  ms-auto" data-dismiss="modal" aria-label="Close" #exportCloseBox>
+        <div class="modal-header" style="padding: 13px 15px">
+          <h2 class="modal-title" id="exampleModalLongTitle" style="margin:0; display: flex; justify-content: center;">Export assets</h2>
+          <button type="button" class="btn btn-light btn-sm ms-auto" data-dismiss="modal" aria-label="Close" style="border-radius: 10px;" #exportCloseBox>
             <i class="bi bi-x-lg"></i>
           </button>
         </div>
@@ -699,21 +648,16 @@
                 <label for="excel">Export All Data</label>
               </div>
 
-             
-            <!-- </div> -->
-
-            
-         
+            </div>
        
-        <div class="modal-footer d-flex justify-content-around">
+        <div class="modal-footer d-flex justify-content-center">
           
-          
-          <button  class="btn btn-light mt-3"  (click)="exportCloseBox.click()"  >Close</button>
-          <button type="submit" class="btn btn-primary mt-3" (click)="exportData()" >Export</button>
+          <button  class="btn btn-light" (click)="exportCloseBox.click()" style="margin: 10px; width: 100px; margin-right: 30px; border: 1px solid #c0c0c0">Close</button>
+          <button type="submit" class="btn btn-primary" (click)="exportData()" style="margin: 10px; width: 100px;">Export</button>
           <!-- <button type="submit" class="btn btn-primary mt-3" (click)="closeBox3.click()" (click)="addFilterForm()"   >Filter</button> -->
           
         </div>
-        </div>
+        <!-- </div> -->
       </div>
     </div>
   </div>

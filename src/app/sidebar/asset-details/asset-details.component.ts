@@ -677,7 +677,8 @@ export class AssetDetailsComponent {
       },
       (err) => {
         console.log(err.error.errorMessage);
-        if (err.error.error === 'TRIAL_EXPIRED') {
+        // if (err.error.error === 'TRIAL_EXPIRED'||err.error.error==="SUBSCRIPTION_REQUIRED") {
+         if(err.error.error==="TRIAL_EXPIRED"){
           this.triggerAlert(err.error.message, 'danger');
         } else {
           this.triggerAlert(err.error.errorMessage, 'danger');
