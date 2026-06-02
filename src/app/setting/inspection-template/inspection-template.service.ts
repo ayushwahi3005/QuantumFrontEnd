@@ -26,11 +26,14 @@ export class InspectionTemplateService {
       deleteAssetInspection(id:string):Observable<any>{
         return this.httpClient.delete(this.endpoint+'assets/deleteAssetInspection/'+id,{headers:this.headers});
       }
+      updateAssetInspection(obj:Inspection):Observable<any>{
+        return this.httpClient.put(this.endpoint+'assets/updateAssetInspection',obj,{headers:this.headers});
+      }
 
 
       assetEndpoint=environment.endpoint+"assets/"
 
       getAssetCategory(companyId:any):Observable<any>{
-        return this.httpClient.get(this.assetEndpoint+"getCategoryList/"+companyId,{headers:this.headers});
+        return this.httpClient.get(this.assetEndpoint+"getCategoryActiveList/"+companyId,{headers:this.headers});
       }
 }

@@ -128,6 +128,7 @@ export class AssetDetailsComponent {
     assetCategoryInspectionId: '',
     assetCategoryInspectionName: '',
     actionPerformedBy: '',
+    createdBy: '',
     notes: '',
     createdAt: null,
     updatedAt: null,
@@ -190,7 +191,7 @@ export class AssetDetailsComponent {
     this.selectedCustomerId = this.assetDetails.customerId;
     this.selectedLocation = this.assetDetails.location;
 
-    console.log(this.selectedEmpName);
+    
     console.log(
       '----//////------------>>>>>>>>' + this.assetDetails.customerId,
     );
@@ -199,6 +200,7 @@ export class AssetDetailsComponent {
     this.currentInspection = null;
     this.username = localStorage.getItem('name');
     this.selectedEmpName = this.username;
+    console.log(this.selectedEmpName);
     this.message = '';
     this.progress = 20;
     this.extraFieldString = [];
@@ -218,6 +220,7 @@ export class AssetDetailsComponent {
       this.img = this.assetDetails.image;
     });
     this.userRole = localStorage.getItem('role');
+    console.log(this.userRole);
     this.assetDetailService
       .getRoleAndPermission(this.companyId, this.userRole)
       .subscribe(
@@ -261,10 +264,10 @@ export class AssetDetailsComponent {
     this.assetDetailService.getCompanyCustomerList(this.companyId).subscribe(
       (data) => {
         this.companyCustomerList = data;
-        this.companyCustomerList.forEach((x) => {
-          console.log(x.name + ' ' + (x.id === this.assetDetails.customerId));
-        });
-        console.log(this.companyCustomerList);
+        // this.companyCustomerList.forEach((x) => {
+        //   console.log(x.name + ' ' + (x.id === this.assetDetails.customerId));
+        // });
+        // console.log(this.companyCustomerList);
       },
       (err) => {
         console.log(err);
@@ -650,7 +653,10 @@ export class AssetDetailsComponent {
         },
         (err) => {
           console.log(err);
-          if (err.error.error === 'TRIAL_EXPIRED') {
+           if(err.status===409){
+          this.triggerAlert(err.error.validationDetails.message,"warning");
+          }
+          else if (err.error.error === 'TRIAL_EXPIRED') {
             this.triggerAlert(err.error.message, 'danger');
           } else {
             this.triggerAlert(err.error.errorMessage, 'danger');
@@ -676,9 +682,12 @@ export class AssetDetailsComponent {
         this.router.navigate(['/assets/' + this.assetDetails.id]);
       },
       (err) => {
-        console.log(err.error.errorMessage);
+        console.log(err);
         // if (err.error.error === 'TRIAL_EXPIRED'||err.error.error==="SUBSCRIPTION_REQUIRED") {
-         if(err.error.error==="TRIAL_EXPIRED"){
+         if(err.status===409){
+          this.triggerAlert(err.error.validationDetails.message,"warning");
+        }
+         else if(err.error.error==="TRIAL_EXPIRED"){
           this.triggerAlert(err.error.message, 'danger');
         } else {
           this.triggerAlert(err.error.errorMessage, 'danger');
@@ -1244,6 +1253,7 @@ export class AssetDetailsComponent {
     this.inspectionInstance.actionPerformedBy = this.username;
     const currDateTime = new Date();
     if (this.inspectionInstance.createdAt == null) {
+      this.inspectionInstance.createdBy = this.username;
       this.inspectionInstance.createdAt = currDateTime;
     }
     this.inspectionInstance.updatedAt = currDateTime;
@@ -1503,6 +1513,7 @@ export class AssetDetailsComponent {
     const currDateTime = new Date();
 
     if (this.inspectionInstance.createdAt == null) {
+      this.inspectionInstance.createdBy=this.username;
       this.inspectionInstance.createdAt = currDateTime;
     }
     this.inspectionInstance.updatedAt = currDateTime;
@@ -1545,6 +1556,47 @@ export class AssetDetailsComponent {
 
     this.selectedItems = [];
     this.notedData = '';
+  }
+  cancelInspection(){
+    this.inspectionInstance.actionPerformedBy = this.username;
+    const currDateTime = new Date();
+
+    if (this.inspectionInstance.createdAt == null) {
+      this.inspectionInstance.createdBy=this.username;
+      this.inspectionInstance.createdAt = currDateTime;
+    }
+    this.inspectionInstance.updatedAt = currDateTime;
+    this.inspectionInstance.status = 'CANCELLED';
+    this.inspectionInstance.selectedItemList = this.selectedItems;
+    this.assetDetailService
+      .addAssetInspection(this.inspectionInstance)
+      .subscribe(
+        (data) => {
+          console.log('Inspection Saved' + data);
+          this.triggerAlert('Inspection saved sucessfully', 'success');
+          this.selectedItems = [];
+        },
+        (err) => {
+          console.log(err);
+          if (err.error.error === 'TRIAL_EXPIRED') {
+            this.triggerAlert(err.error.message, 'danger');
+          } else {
+            this.triggerAlert(err.error.errorMessage, 'danger');
+          }
+          this.selectedItems = [];
+        },
+        () => {
+          this.selectedItems = [];
+          this.clearSavedData();
+          this.loadInspectionInstances();
+        },
+      );
+    console.log(this.inspectionInstance);
+    this.selectedItems = [];
+    console.log(this.selectedItems);
+    // localStorage.setItem(this.assetId+'tempInspection', JSON.stringify(this.inspectionInstance));
+    // localStorage.setItem(this.assetId+'selectedItems', JSON.stringify(this.selectedItems));
+    this.triggerAlert('Inspection Instance Cancelled', 'success');
   }
   updateNotedData(data: any) {
     this.notedData = data;
@@ -1642,69 +1694,69 @@ export class AssetDetailsComponent {
         break;
     }
   }
-//    exportInspectionData(){
-//     if(this.inspectionExportType=='inspection-overview'){
-//       console.log("Export inspection-overview")
-//       this.assetDetailService.getInspectionOverviewExport(this.companyId,this.assetId).subscribe((data:Blob)=>{
+   exportInspectionData(){
+    if(this.inspectionExportType=='inspection-overview'){
+      console.log("Export inspection-overview")
+      this.assetDetailService.getInspectionOverviewExport(this.companyId,this.assetId).subscribe((data:Blob)=>{
       
-//          const blob = new Blob([data], {
-//       type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
-//     });
+         const blob = new Blob([data], {
+      type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+    });
 
-//     const url = window.URL.createObjectURL(blob);
+    const url = window.URL.createObjectURL(blob);
 
-//     const a = document.createElement('a');
-//     a.href = url;
-//     a.download = 'AssetInspectionOverview_'+this.assetId+'.xlsx';
-//     a.click();
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'AssetInspectionOverview_'+this.assetId+'.xlsx';
+    a.click();
 
-//     window.URL.revokeObjectURL(url);
-//         // this.triggerAlert("Inspections exported sucessfully", "success");
-//       },(err)=>{
-//         console.log(err);
-//         if (err.error.error === "TRIAL_EXPIRED") {
-//           this.triggerAlert(err.error.message, "danger");
-//         } else {
-//           this.triggerAlert(err.error.errorMessage, "danger");
-//         }
-//       },
-//     ()=>{
-//       this.triggerAlert("Exported Assets Inspections Overview Successfully","success");
-//       this.exportCloseBox?.nativeElement.click();
-//     })
-//   }else{
-//       console.log("Export inspection-details")
-//       this.assetDetailService.getInspectionDetailedExport(this.companyId,this.assetId).subscribe((data:Blob)=>{
-//         console.log('export Inspection data',data)
-//          const blob = new Blob([data], {
-//       type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
-//     });
+    window.URL.revokeObjectURL(url);
+        // this.triggerAlert("Inspections exported sucessfully", "success");
+      },(err)=>{
+        console.log(err);
+        if (err.error.error === "TRIAL_EXPIRED") {
+          this.triggerAlert(err.error.message, "danger");
+        } else {
+          this.triggerAlert(err.error.errorMessage, "danger");
+        }
+      },
+    ()=>{
+      this.triggerAlert("Exported Assets Inspections Overview Successfully","success");
+      this.exportCloseBox?.nativeElement.click();
+    })
+  }else{
+      console.log("Export inspection-details")
+      this.assetDetailService.getInspectionDetailedExport(this.companyId,this.assetId).subscribe((data:Blob)=>{
+        console.log('export Inspection data',data)
+         const blob = new Blob([data], {
+      type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+    });
 
-//     const url = window.URL.createObjectURL(blob);
+    const url = window.URL.createObjectURL(blob);
 
-//     const a = document.createElement('a');
-//     a.href = url;
-//     a.download = 'AssetInspectionDetailed_'+this.assetId+'.xlsx';
-//     a.click();
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'AssetInspectionDetailed_'+this.assetId+'.xlsx';
+    a.click();
 
-//     window.URL.revokeObjectURL(url);
-//         // this.triggerAlert("Inspections exported sucessfully", "success");
-//       },(err)=>{
-//         console.log(err);
-//         if (err.error.error === "TRIAL_EXPIRED") {
-//           this.triggerAlert(err.error.message, "danger");
-//         } else {
-//           this.triggerAlert(err.error.errorMessage, "danger");
-//         }
-//       },
-//     ()=>{
-//       this.triggerAlert("Exported Assets Inspections Details Successfully","success");
-//       this.exportCloseBox?.nativeElement.click();
-//     })
-//   }
+    window.URL.revokeObjectURL(url);
+        // this.triggerAlert("Inspections exported sucessfully", "success");
+      },(err)=>{
+        console.log(err);
+        if (err.error.error === "TRIAL_EXPIRED") {
+          this.triggerAlert(err.error.message, "danger");
+        } else {
+          this.triggerAlert(err.error.errorMessage, "danger");
+        }
+      },
+    ()=>{
+      this.triggerAlert("Exported Assets Inspections Details Successfully","success");
+      this.exportCloseBox?.nativeElement.click();
+    })
+  }
   
 
-// }
+}
 downloadAllInspection(){
   this.assetDetailService.getInspectionExport(this.companyId,this.assetId).subscribe((data:Blob)=>{
         console.log('export Inspection data',data)
@@ -1808,6 +1860,7 @@ downloadInspectionPDF(instance: any) {
   doc.setFont('helvetica', 'normal');
   doc.setFontSize(9);
 
+
   // Collect all steps from inspectionTemplates
   let allSteps: any[] = [];
   if (instance.inspectionTemplates && instance.inspectionTemplates.length > 0) {
@@ -1827,8 +1880,8 @@ downloadInspectionPDF(instance: any) {
         yPosition = 10;
       }
 
-      doc.text((index + 1).toString(), margin + 5, yPosition);
-      doc.text(step.name || 'N/A', margin + 20, yPosition);
+      doc.text((index + 1).toString(), margin + 5, yPosition+5);
+      doc.text(step.name || 'N/A', margin + 20, yPosition+5);
       
       let valueText = 'N/A';
       if (step.type === 'CHECKBOX') {
@@ -1836,7 +1889,7 @@ downloadInspectionPDF(instance: any) {
       } else if (step.type === 'NUMBER' || step.type === 'TEXT') {
         valueText = step.value || 'N/A';
       }
-      doc.text(valueText, margin + 100, yPosition);
+      doc.text(valueText, margin + 100, yPosition+5);
       yPosition += lineHeight;
     });
   } else {

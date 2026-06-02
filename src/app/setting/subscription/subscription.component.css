@@ -573,6 +573,7 @@ border:2px solid darkgray;
   background-color: white;
   border-radius: 10px;
   border: 0.5px solid lightgray;
+  margin: 30px;
 }
 
 .card-logo {
@@ -583,13 +584,15 @@ border:2px solid darkgray;
 }
 
 .invoice-details {
-  width: 100%;
+  width: calc(100% - 60px);
   min-height: 100px;
   margin-top: 20px;
   background-color: white;
   border-radius: 10px;
   border: 1px solid lightgray;
   padding-bottom: 20px;
+  margin:30px;
+  margin-bottom: 30px;
 }
 
 #invoice-table thead {

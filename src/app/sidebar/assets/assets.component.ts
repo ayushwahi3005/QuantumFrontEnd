@@ -127,6 +127,8 @@ export class AssetsComponent implements OnDestroy{
   filteredLocationOrBinList: any = [];
   binLocationIdNameMap: Map<String, String> = new Map<String, String>();
 
+  extraFields: Map<string, string> = new Map<string, string>();
+
    exportType:string='export-current-page';
 
 
@@ -154,6 +156,7 @@ export class AssetsComponent implements OnDestroy{
   @ViewChild('dropdownContainerAsset', { static: false }) dropdownContainerAsset!: ElementRef;
   ngOnInit() {
     this.exportType='export-current-page';
+    this.extraFields=new Map<string, string>();
     if (localStorage.getItem("assetIdDetail") != null) {
       this.tempId = localStorage.getItem("assetIdDetail")
       this.assetService.getAssetDetails(this.tempId).subscribe((data: Assets) => {
@@ -298,10 +301,11 @@ export class AssetsComponent implements OnDestroy{
       });
     this.assetService.getCompanyCustomerList(this.companyId).subscribe((data) => {
       this.companyCustomerList = data;
-      this.filteredCustomerList = this.companyCustomerList;
+      this.filteredCustomerList = this.companyCustomerList.filter(x=> x.name != null);;
       this.companyCustomerList.forEach((x) => {
         this.customerIdNameMap.set(x.id, x.name);
-      })
+      });
+      
       console.log("companyCustomer" + this.companyCustomerList)
     },
       (err) => {
@@ -486,7 +490,7 @@ export class AssetsComponent implements OnDestroy{
   filterCustomers(event: Event) {
     const searchValue = (event.target as HTMLInputElement).value.toLowerCase();
     this.filteredCustomerList = this.companyCustomerList.filter(customer =>
-      customer.name.toLowerCase().includes(searchValue)
+      customer.name?.toLowerCase().includes(searchValue)
     );
   }
 
@@ -546,6 +550,11 @@ export class AssetsComponent implements OnDestroy{
     this.selectedCustomerId = null;
     this.selectedCustomer = null;
     this.assetForm.reset();
+    this.assetForm.controls['status'].setValue('active');
+    this.assetForm.controls['email'].setValue(this.email);
+    this.assetForm.controls['companyId'].setValue(this.companyId);
+
+    
   }
   clearSearchData() {
     console.log("clear search data")
@@ -675,36 +684,39 @@ exportexcel(): void {
 }
 
   exportData(): void {
-
-     if(this.exportType==='export-current-page'){
-    this.exportexcel();
-    this.triggerAlert("Exported Current Page Successfully","success");
+    // Close dialog immediately
     this.exportCloseBox?.nativeElement.click();
-  }
-  else{
-    this.assetService.exportAsset(this.companyId).subscribe((data:Blob)=>{
-       const blob = new Blob([data], {
-      type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
-    });
 
-    const url = window.URL.createObjectURL(blob);
+    if(this.exportType==='export-current-page'){
+      this.exportexcel();
+      this.triggerAlert("Current page exported successfully","success");
+    }
+    else{
+      // Show message that export is in progress
+      this.triggerAlert("Exporting all assets... This may take a moment","info");
+      
+      this.assetService.exportAsset(this.companyId).subscribe((data:Blob)=>{
+        const blob = new Blob([data], {
+          type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+        });
 
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = 'Assets_'+this.companyId+'.xlsx';
-    a.click();
+        const url = window.URL.createObjectURL(blob);
 
-    window.URL.revokeObjectURL(url);
-    },
-    (err)=>{
-      console.log(err);
-    },
-    ()=>{
-      this.triggerAlert("Exported All Assets Successfully","success");
-      this.exportCloseBox?.nativeElement.click();
-    })
-  }
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = 'Assets_'+this.companyId+'.xlsx';
+        a.click();
 
+        window.URL.revokeObjectURL(url);
+      },
+      (err)=>{
+        console.log(err);
+        this.triggerAlert("Error exporting assets","danger");
+      },
+      ()=>{
+        this.triggerAlert("All assets exported successfully","success");
+      })
+    }
   }
 
   removeFilter() {
@@ -752,13 +764,18 @@ exportexcel(): void {
     let extraFieldValueMap = new Map<String, string>();
     let extraFieldTypeMap = new Map<String, string>();
     this.assetForm.controls['customer'].setValue(this.selectedCustomer);
+    const extraFieldsObj: { [key: string]: string } = {};
+
     this.showFieldsList?.forEach((x) => {
       if (x.show == true) {
         extraFieldValueMap.set(x.name, this.assetForm.get(x.name)?.value);
         extraFieldTypeMap.set(x.name, this.assetForm.get(x.type)?.value);
+
+        extraFieldsObj[x.name] = this.assetForm.get(x.name)?.value ?? '';
       }
     })
     this.assetForm.controls['image'].setValue(this.myImage);
+    this.assetForm.addControl('extraFields', this.formBuilder.control( extraFieldsObj));
     let name = this.assetForm.controls['name'].value;
     if (name == null || name == '') {
       this.triggerAlert("Fill Mandatory Field '" + this.toCamelCase("name") + "'", "warning");
@@ -803,7 +820,7 @@ exportexcel(): void {
       this.assetForm.controls['customerId'].setValue(this.selectedCustomer.id);
     }
     this.assetForm.controls['location'].setValue(this.selectedLocationId);
-    console.log("assetFormData - " + this.assetForm.value)
+    console.log(this.assetForm.value)
     this.assetService.addNewAsset(this.assetForm.value).subscribe((data) => {
 
       myAsset = data;
@@ -811,9 +828,14 @@ exportexcel(): void {
       this.closeAddAssetModal()
     },
       (err) => {
+        this.closeAddAssetModal()
         console.log(err);
+        console.log(err.status);
         //  if(err.error.error==="TRIAL_EXPIRED"||err.error.error==="SUBSCRIPTION_REQUIRED"){
-        if(err.error.error==="TRIAL_EXPIRED"){
+        if(err.status===409){
+          this.triggerAlert(err.error.validationDetails.message,"warning");
+      }
+        else if(err.error.error==="TRIAL_EXPIRED"){
         this.triggerAlert(err.error.message,"danger");
       }
       else{

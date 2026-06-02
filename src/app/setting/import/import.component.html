@@ -203,14 +203,37 @@
         
         <div *ngIf="impType=='add'">
           <div *ngIf="currImport === 'customer'">
-            <b>Excel Column : Database Column</b><br>
-            <div *ngFor="let item of customerAddMapping | keyvalue">
-              {{ item.key }} : {{ item.value }}
-            </div>
+            <table class="table table-bordered table-sm">
+              <thead class="table-dark">
+                <tr>
+                  <th>Excel Column</th>
+                  <th>Database Column</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let item of customerAddMapping | keyvalue">
+                  <td>{{ item.key }}</td>
+                  <td>{{ item.value }}</td>
+                </tr>
+              </tbody>
+            </table>
           </div>
 
           <div *ngIf="currImport=='asset'">
-            {{this.assetAddMapping | json}}
+            <table class="table table-bordered table-sm">
+              <thead class="table-dark">
+                <tr>
+                  <th>Excel Column</th>
+                  <th>Database Column</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let item of assetAddMapping | keyvalue">
+                  <td>{{ item.key }}</td>
+                  <td>{{ item.value }}</td>
+                </tr>
+              </tbody>
+            </table>
           </div>
         </div>
         <div *ngIf="impType=='update'">

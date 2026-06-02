@@ -22,7 +22,7 @@ export class AssetPreviewService {
   assetInspectionEndpoint=environment.endpoint+"inspection/";
   getAsset(id: string): Observable<any> {
 
-    return this.httpClient.get(this.assetEndpoint + "getAsset/" + id, { headers: this.headers });
+    return this.httpClient.get(this.assetEndpoint + "getAssetDetails/" + id, { headers: this.headers });
   }
 
   getExtraFields(id: string): Observable<any> {

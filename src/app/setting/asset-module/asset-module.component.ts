@@ -18,6 +18,8 @@ export class AssetModuleComponent {
   mandatoryFieldsList!:MandatoryFields[];
   mandatoryFieldsMap!:Map<string,boolean>;
   showFieldsMap!:Map<string,boolean>;
+  standardUniqueMap: Map<string, boolean> = new Map<string, boolean>();
+  extraUniqueMap: Map<string, boolean> = new Map<string, boolean>();
   extraFieldOption!:string;
   currOption:number=1;
   email!:any;
@@ -97,6 +99,21 @@ export class AssetModuleComponent {
       this.showFieldsList.forEach((x)=>{
         this.showFieldsMap.set(x.name,x.show);
       })
+    },
+    (err)=>{
+      console.log(err);
+    })
+
+    this.assetModuleService.getUniqueFields(this.companyId).subscribe((data: any[])=>{
+      if (data) {
+        data.forEach((item) => {
+          if (item.type === 'STANDARD') {
+            this.standardUniqueMap.set(item.fieldName, item.isUnique);
+          } else if (item.type === 'EXTRA') {
+            this.extraUniqueMap.set(item.fieldName, item.isUnique);
+          }
+        });
+      }
     },
     (err)=>{
       console.log(err);
@@ -217,10 +234,11 @@ export class AssetModuleComponent {
       }
       this.assetModuleService.mandatoryFields(obj).subscribe((data)=>{
         console.log("Updated");
-        this.triggerAlert("SuccessFully Updated Field","success");
+        this.triggerAlert("Successfully Updated","success");
       },
       (err)=>{
         console.log(err);
+        this.triggerAlert(err.error.message,"danger");
         
       })
       
@@ -300,7 +318,7 @@ export class AssetModuleComponent {
       }
       this.assetModuleService.showFields(obj).subscribe((data)=>{
         console.log("Updated");
-        this.triggerAlert("SuccessFully Updated Field","success");
+        this.triggerAlert("Successfully Updated","success");
         this.ngOnInit();
       },
       (err)=>{
@@ -387,5 +405,39 @@ export class AssetModuleComponent {
           console.log(err.error); 
         });
       }
+    }
+
+    uniqueField(event:any,name:string,type:string){
+      console.log(event.checked);
+      console.log(name);
+      const payload = {
+        "companyId": Number(this.companyId),
+        "fieldName": name,
+        "isUnique": event.checked,
+        "type": type,
+        "email": this.email
+      };
+        console.log("Unique field payload:", payload);
+      this.assetModuleService.uniqueFieldConfig(payload).subscribe(
+        (res) => {
+          console.log("Unique field configuration updated successfully", res);
+        },
+        (err) => {
+          console.error("Error updating unique field configuration", err);
+        }
+      );
+    }
+    getValueOfStandardUniqueMap(name:string):boolean{
+      if (this.standardUniqueMap && this.standardUniqueMap.has(name)) {
+        return this.standardUniqueMap.get(name) || false;
+      }
+      return false;
+    }
+
+    getValueOfExtraUniqueMap(name:string):boolean{
+      if (this.extraUniqueMap && this.extraUniqueMap.has(name)) {
+        return this.extraUniqueMap.get(name) || false;
+      }
+      return false;
     }
 }

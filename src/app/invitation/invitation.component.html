@@ -1,104 +1,65 @@
-<div class="header">
-  <div class="header-centre">
-    <!-- <img src='../../assets/logo.png'> -->
-    <h1>AssetYug</h1>
+<div class="invitation-container">
+  <div class="header">
+    <div class="header-centre">
+      <h1 class="header-title">AssetYug</h1>
+    </div>
   </div>
-</div>
-<div *ngIf="showAlert" class="alert" [ngClass]="'alert-' + alertType" role="alert">
-  {{ alertMessage }}
-  <!-- Optionally, add a close button -->
-  <button type="button" class="btn-close" (click)="showAlert = false" aria-label="Close" style="float: right;"></button>
-</div>
-<div class="register">
-  <form [formGroup]="inviteForm" (ngSubmit)="register()">
-    <h1 id="reg">You are Invited!!!</h1>
-    <h3 id="reg">Register</h3>
-    <!-- <div class="form-group d-flex justify-content-between">
-          <mat-form-field style="padding-left: 0px;">
-            <mat-label>FirstName</mat-label>
-            <input matInput type="text" class="form-control" formControlName="firstName" >
-            
-          </mat-form-field>
-        
-          <mat-form-field >
-            <mat-label>LastName</mat-label>
-            <input matInput type="text" class="form-control" formControlName="lastName">
-            
-          </mat-form-field>
-        </div>
-        <div class="form-group">
-          <mat-form-field style="width: 100%;">
-            <mat-label>Email</mat-label>
-            <input matInput type="email" class="form-control" formControlName="email">
-            
-          </mat-form-field>
-      
-        </div>
-        <div class="form-group">
-          <mat-form-field style="width: 100%;">
-            <mat-label>Mobile Number</mat-label>
-            <input matInput type="tel" class="form-control" formControlName="mobileNumber">
-            
-          </mat-form-field>
-      
-        </div> -->
-    <div class="form-group">
-      <mat-form-field style="width: 100%;" appearance="outline">
-        <mat-label>Password</mat-label>
 
-        <input matInput [type]="showPassword ? 'text' : 'password'" formControlName="password" />
+  <div *ngIf="showAlert" class="alert" [ngClass]="'alert-' + alertType" role="alert" style="margin: 20px; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
+    {{ alertMessage }}
+    <button type="button" class="btn-close" (click)="showAlert = false" aria-label="Close" style="float: right;"></button>
+  </div>
 
-        <!-- Eye icon toggle -->
-        <button mat-icon-button matSuffix type="button" (click)="toggleShowPassword()"
-          aria-label="Toggle password visibility">
-          <i class="bi" [ngClass]="showPassword ? 'bi-eye-slash' : 'bi-eye'" style="font-size: 14px;"></i>
+  <div class="register-wrapper">
+    <div class="register-card">
+      <div class="register-header">
+        <h1>You are Invited!</h1>
+        <h3>Complete Your Registration</h3>
+      </div>
+
+      <form [formGroup]="inviteForm" (ngSubmit)="register()">
+        <div class="form-group">
+          <mat-form-field appearance="outline" class="w-100 password-field" >
+            <mat-label>Password</mat-label>
+            <input matInput [type]="showPassword ? 'text' : 'password'" formControlName="password" />
+            <button mat-icon-button matSuffix type="button" (click)="toggleShowPassword()" aria-label="Toggle password visibility">
+              <i class="bi" [ngClass]="showPassword ? 'bi-eye-slash' : 'bi-eye'"></i>
+            </button>
+          </mat-form-field>
+          <small *ngIf="inviteForm.get('password')?.invalid && inviteForm.get('password')?.touched" class="text-danger">
+            Password is required
+          </small>
+        </div>
+
+        <div class="form-group">
+          <mat-form-field appearance="outline" class="w-100 password-field">
+            <mat-label>Confirm Password</mat-label>
+            <input matInput [type]="showCPassword ? 'text' : 'password'" formControlName="cpassword" />
+            <button mat-icon-button matSuffix type="button" (click)="toggleShowCPassword()" aria-label="Toggle confirm password visibility">
+              <i class="bi" [ngClass]="showCPassword ? 'bi-eye-slash' : 'bi-eye'"></i>
+            </button>
+          </mat-form-field>
+          <small *ngIf="inviteForm.get('cpassword')?.invalid && inviteForm.get('cpassword')?.touched" class="text-danger">
+            Passwords must match
+          </small>
+        </div>
+
+        <button type="submit" class="submit-btn w-100 password-field" [disabled]="inviteForm.invalid">
+          <span>Submit</span>
         </button>
-      </mat-form-field>
-
+      </form>
     </div>
-    <div class="form-group">
-        <mat-form-field style="width: 100%;" appearance="outline">
-  <mat-label>Confirm Password</mat-label>
-
-  <input
-    matInput
-    [type]="showCPassword ? 'text' : 'password'"
-    formControlName="cpassword"
-  />
-
-  <!-- Eye icon toggle -->
-  <button
-    mat-icon-button
-    matSuffix
-    type="button"
-    (click)="toggleShowCPassword()"
-    aria-label="Toggle confirm password visibility"
-  >
-    <i class="bi" [ngClass]="showCPassword ? 'bi-eye-slash' : 'bi-eye'" style="font-size: 14px;"></i>
-  </button>
-</mat-form-field>
-
-    </div>
-
-    <button id="submitButton" type="submit" class="btn btn-primary" [disabled]="inviteForm.invalid">Submit</button>
-
-  </form>
+  </div>
 </div>
-<div class="modal fade" id="popup" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle"
-  aria-hidden="true">
-  <div class="modal-dialog" role="document">
-    <div class="modal-content">
-      <div class="modal-header d-flex justify-content-center">
-        Successfully Registered
 
-      </div>
-      <div class="d-flex justify-content-center">
+<div class="modal fade" id="popup" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content success-modal">
+      <div class="modal-body d-flex flex-column align-items-center" style="padding: 40px;">
+        <h2 style="margin-bottom: 20px; color: #28a745;">Successfully Registered!</h2>
         <app-tick-animation></app-tick-animation>
-
-
-
-
       </div>
     </div>
   </div>
 </div>
+

@@ -239,10 +239,11 @@ export class CustomerModuleComponent {
       }
       this.customerModuleService.mandatoryFields(obj).subscribe((data)=>{
         console.log("Updated");
-        this.triggerAlert("SuccessFully Updated Field","success");
+        this.triggerAlert("Successfully Updated","success");
       },
       (err)=>{
         console.log(err);
+        this.triggerAlert(err.error.message,"danger");
       })
       
     })
@@ -290,7 +291,7 @@ export class CustomerModuleComponent {
       console.log(obj)
       this.customerModuleService.showFields(obj).subscribe((data)=>{
         console.log("Updated");
-        this.triggerAlert("SuccessFully Updated Field","success");
+        this.triggerAlert("Successfully Updated","success");
         this.ngOnInit();
       },
       (err)=>{

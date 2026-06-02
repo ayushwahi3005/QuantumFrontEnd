@@ -229,10 +229,10 @@ export class CompanyCustomerComponent implements OnInit, OnDestroy, AfterViewIni
       }
     });
 
-    // // ─────────────────────────────────────────
-    // // STEP 5: Load state list for default country
-    // // ─────────────────────────────────────────
-    // this.getStateListSilent(this.selectedCountryCode);
+    // ─────────────────────────────────────────
+    // STEP 5: Load state list for default country
+    // ─────────────────────────────────────────
+    this.getStateListSilent(this.selectedCountryCode);
 
     // ─────────────────────────────────────────
     // STEP 6: Pagination & page setup
@@ -357,6 +357,7 @@ export class CompanyCustomerComponent implements OnInit, OnDestroy, AfterViewIni
     this.companyCustomerService.countryStateList(country).subscribe(
       (data) => {
         this.stateList = data;
+        console.log('State list loaded for country:', country, this.stateList); // check loaded state list
         this.cdr.detectChanges();
       },
       (err) => { console.log(err); }
@@ -366,9 +367,10 @@ export class CompanyCustomerComponent implements OnInit, OnDestroy, AfterViewIni
   // ✅ Normal version - resets state fields, used when user changes country
   getStateList(country: any) {
     this.currentSelectedCountryCode = countryList[country] || '';
-    this.companyCustomerService.countryStateList(country).subscribe(
+    this.companyCustomerService.countryStateList(this.currentSelectedCountryCode).subscribe(
       (data) => {
         this.stateList = data;
+        console.log('State list updated for country:', this.currentSelectedCountryCode, this.stateList); // check updated state list
         this.filterForm?.get('state')?.setValue('');
         this.companyCustomerForm?.get('state')?.setValue('');
         this.cdr.detectChanges();

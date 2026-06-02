@@ -35,7 +35,7 @@ export class NotificationService {
         'Authorization': `Bearer ${token}`
       },
       reconnectDelay: 5000,
-      debug: (str) => console.log('STOMP:', str), // Add debug logging
+      // debug: (str) => console.log('STOMP:', str), // Add debug logging
       onConnect: (frame) => {
         console.log('Connected:', frame);
         this.subscribeToNotifications(); // Moved subscription here

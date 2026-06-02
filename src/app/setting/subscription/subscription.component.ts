@@ -1121,7 +1121,12 @@ export class SubscriptionComponent {
           console.log(err.error.errorMessage);
           console.log(err);
           this.paying.set(false);
+          if(err.status == '400'){
+             this.triggerAlert(err.error.error, 'danger');
+          }
+          else{
           this.triggerAlert(err.error.errorMessage, 'danger');
+          }
         },
       );
   }

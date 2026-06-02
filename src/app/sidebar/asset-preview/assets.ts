@@ -6,6 +6,7 @@ export class Assets{
     customer!:string;
     customerId!:string;
     location!:string;
+    locationName!:string;
     status!:string;
     image!:string;
 

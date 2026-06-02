@@ -43,4 +43,15 @@ export class HeaderService {
 
     return this.httpClient.get(this.endpoint + 'customer/get/' + email, { headers });
   }
+
+  getPaginatedNotifications(email: string, pageNumber: number = 0, pageSize: number = 10): Observable<any> {
+    const headers = new HttpHeaders()
+      .set('Authorization', `Bearer ${localStorage.getItem('authToken')}`)
+      .set('device-id', `${localStorage.getItem('deviceId')}`);
+    
+    return this.httpClient.get(
+      `${this.endpoint}notification/user/${email}/paginated?pageNumber=${pageNumber}&pageSize=${pageSize}`,
+      { headers }
+    );
+  }
 }

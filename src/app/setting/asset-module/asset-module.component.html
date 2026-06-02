@@ -33,6 +33,7 @@
             <th scope="col">Type</th>
             <th scope="col">Show</th>
             <th scope="col">Mandatory</th>
+            <th scope="col">Unique</th>
            <th></th>
           </tr>
         </thead>
@@ -42,8 +43,12 @@
 
             <td>{{item.type|titlecase}} </td>
             <td><mat-slide-toggle  color="primary" [ngModel]=true  disabled=""></mat-slide-toggle></td>
+         
             <td *ngIf="item.name=='name'"><mat-slide-toggle  color="primary" [ngModel]="true" disabled=""></mat-slide-toggle></td>
+          
             <td  *ngIf="item.name!='name'"><mat-slide-toggle  color="primary" [ngModel]="getValueOfMandatoryMap(item.name)" (change)="mandatoryField(ch,item.name,item.type)"  #ch></mat-slide-toggle></td>
+             <td  *ngIf="item.name=='name'||item.name=='serialNumber'"><mat-slide-toggle  color="primary" [ngModel]="getValueOfStandardUniqueMap(item.name)" (change)="uniqueField(ch,item.name,'STANDARD')"  #ch></mat-slide-toggle></td>
+              <td  *ngIf="item.name!='name'&&item.name!='serialNumber'"><mat-slide-toggle  color="primary" [ngModel]=false  disabled=""></mat-slide-toggle></td>
             <!-- <td>
               <mat-slide-toggle  color="primary" [ngModel]="getValueOfMandatoryMap(item.name)" (change)="mandatoryField(ch,item.name,item.type)"  #ch></mat-slide-toggle>
             </td> -->
@@ -60,6 +65,10 @@
             
               <td>
                 <mat-slide-toggle  color="primary" [ngModel]="getValueOfMandatoryMap(item.name)" (change)="mandatoryField(ex,item.name,item.type)"  #ex></mat-slide-toggle>
+              </td>
+
+              <td>
+                <mat-slide-toggle  color="primary" [ngModel]="getValueOfExtraUniqueMap(item.name)" (change)="uniqueField(unq,item.name,'EXTRA')"  #unq></mat-slide-toggle>
               </td>
            
             <td>

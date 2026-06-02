@@ -171,10 +171,14 @@
                   <td *ngIf="showMandatoryBasicFields?.get('category')">{{(item.category||'')|titlecase}}</td>
                   <td *ngIf="showMandatoryBasicFields?.get('customer')">{{customerIdNameMap?.get(item.customerId)|titlecase}}</td>
                   <td *ngIf="showMandatoryBasicFields?.get('location')">{{(item.locationName||'')|titlecase}}</td>
-                  <td *ngIf="item.status=='active'&&showMandatoryBasicFields?.get('status')">Active</td>
-                  <td *ngIf="item.status=='inActive'&&showMandatoryBasicFields?.get('status')">Inactive</td>
-                  <td *ngIf="item.status=='outofservice'&&showMandatoryBasicFields?.get('status')">Out Of Service</td>
-                  <td *ngIf="item.status==null||item.status==''&&showMandatoryBasicFields?.get('status')">{{''}}</td>
+                  <ng-container *ngIf="showMandatoryBasicFields?.get('status')">
+                  <td [ngSwitch]="item.status">
+                    <span *ngSwitchCase="'active'">Active</span>
+                    <span *ngSwitchCase="'inactive'">Inactive</span>
+                    <span *ngSwitchCase="'outofservice'">Out Of Service</span>
+                    <span *ngSwitchDefault></span>
+                  </td>
+                </ng-container>
                   <td *ngIf="showMandatoryBasicFields?.get('checkInOut')">{{(item.checkedInOutStatus||'')}}</td>
                   <td *ngIf="showMandatoryBasicFields?.get('lastHandler')">{{getLastCheckInOutBy(item)}}</td>
                    <td *ngIf="showMandatoryBasicFields?.get('lastHandlerLocation')">{{getLastLocation(item)}}</td>
@@ -277,7 +281,7 @@
 
               </div>
 
-              <ul class="dropdown-menu" [class.show]="dropdownOpen">
+              <ul class="dropdown-menu scrollable-dropdown" [class.show]="dropdownOpen">
                 <li *ngFor="let customer of filteredCustomerList" (click)="selectCustomer(customer)"
                   class="dropdown-item">
                   {{ customer.name }}
@@ -430,7 +434,7 @@
 
                   </div>
 
-                  <ul class="dropdown-menu" [class.show]="dropdownOpen">
+                  <ul class="dropdown-menu scrollable-dropdown" [class.show]="dropdownOpen">
                     <li *ngFor="let customer of filteredCustomerList" (click)="selectCustomer(customer)"
                       class="dropdown-item">
                       {{ customer.name }}

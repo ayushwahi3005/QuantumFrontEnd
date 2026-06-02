@@ -1,3 +1,4 @@
+
 * {
     font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
 }
@@ -9,10 +10,6 @@
     font-weight: 600;
 }
 
-/* .main {
-  overflow: hidden;
-  height: 100vh;
-} */
 body {
     overflow: hidden;
 }
@@ -26,19 +23,10 @@ body {
 
 li {
     padding-right: 50px;
-   
     padding-left: 5px;
 }
 
-/* button{
-    margin-top: 10px;
-} */
-/* .nav-item i{
-    padding-left: 20px;
-} */
-
 .nav-item {
-    /* font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif; */
     font-size: 18px;
 }
 
@@ -60,12 +48,6 @@ li {
     background-color: #12232E;
     color: white;
     text-align: center;
-    /* added later */
-    /* position: fixed; */
-    /* top: 0; */
-    /* z-index: 1000; */
-    /* width: 100%; */
-    /* overflow: visible !important; */
 }
 
 img {
@@ -77,16 +59,13 @@ img {
     justify-content: center;
     align-items: center;
     flex-direction: row;
-    /* padding: 1.25em; */
     padding: 12.5px;
 }
 
 .header-centre h1 {
     display: block;
-    /* font-size: 2em; */
     font-size: 28px;
     font-weight: bold;
-    padding-left: 15px;
     font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
     -webkit-font-smoothing: antialiased;
     margin: 0;
@@ -99,17 +78,14 @@ img {
 
 .side-navbar {
     position: absolute;
-    /* position: fixed; */
     left: 0rem;
     width: 250px;
-    /* height: calc(100vh - 76px); */
     height: calc(100vh - 53px);
     background-color: #12232E;
     box-shadow: rgba(255, 255, 255, 0.5);
     color: white;
     transition: width 150ms linear;
     overflow-x: hidden;
-    /* margin-top: 63px;     */
 }
 
 .nav-list {
@@ -159,7 +135,6 @@ i {
 
 .nav-list-open {
     width: 60px;
-
 }
 
 .nav-list-open span {
@@ -167,7 +142,6 @@ i {
 }
 
 .content-area {
-    /* width: max-content; */
     margin-left: 60px;
     display: flex;
     justify-content: center;
@@ -177,8 +151,6 @@ i {
     transition: margin 150ms linear;
     overflow-y: auto;
     max-height: calc(100vh - [header-height]);
-    /* position: fixed; */
-    /* overflow: visible !important; */
 }
 
 .content-area-onhover {
@@ -190,13 +162,9 @@ app-workorder,
 app-inventory,
 app-company-customer {
     background-color: #F4F5F7;
-    /* background-color: #FFFDF8; */
     width: calc(100vw - 60px);
     transition: width 150ms linear;
-    /* height: calc(100vh - 80px); */
-    /* height: calc(100vh - 55px); */
     overflow-x: hidden;
-    /* margin-top: 63px; */
 }
 
 .app-assets-open {
@@ -219,7 +187,7 @@ td {
     position: absolute;
     width: auto;
     max-height: 40vh;
-    overflow-y: hidden;
+    overflow-y: hidden;  /* ✅ keep this — prevents outer scroll */
     border: 1px solid #ccc;
     border-radius: 4px;
     background-color: #fff;
@@ -233,7 +201,7 @@ td {
 }
 
 .dropdown-menu:hover {
-    overflow-y: auto; /* Show scrollbar on hover */
+    overflow-y: hidden;  /* ✅ was 'auto' — this was causing the outer scroll on hover */
 }
 
 .dropdown-menu.show {
@@ -254,10 +222,6 @@ td {
     display: none;
 }
 
-/* .dropdown {
-    margin: 10px;
-} */
-
 .dropdown-header {
     position: sticky;
     top: 0;
@@ -267,6 +231,104 @@ td {
     border-bottom: 1px solid #ddd;
 }
 
+/* ── Notification styles ── */
+.notification-list {
+    max-height: 420px;
+    overflow-y: auto;
+    padding: 8px 0;
+}
+
+.notification-list::-webkit-scrollbar {
+    width: 4px;
+}
+
+.notification-list::-webkit-scrollbar-thumb {
+    background: #dee2e6;
+    border-radius: 4px;
+}
+
+.notification-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    padding: 12px 16px;
+    position: relative;
+    transition: background 0.2s ease;
+    border-bottom: 1px solid #f1f3f5;
+    cursor: pointer;
+}
+
+.notification-item:hover {
+    background-color: #f8f9ff;
+}
+
+.notification-item:last-child {
+    border-bottom: none;
+}
+
+.notification-icon-wrap {
+    flex-shrink: 0;
+}
+
+.notification-icon {
+    width: 38px;
+    height: 38px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 14px;
+}
+
+.notification-content {
+    flex: 1;
+    min-width: 0;
+}
+
+.notification-message {
+    margin: 0 0 4px 0;
+    font-size: 13.5px;
+    color: #212529;
+    line-height: 1.5;
+    font-weight: 500;
+}
+
+.notification-time {
+    font-size: 11.5px;
+    color: #adb5bd;
+}
+
+.notification-dot-badge {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background-color: #4c6ef5;
+    flex-shrink: 0;
+    margin-top: 6px;
+}
+
+.notification-empty {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 40px 20px;
+    color: #adb5bd;
+}
+
+.notification-empty i {
+    font-size: 36px;
+    margin-bottom: 10px;
+}
+
+.notification-empty p {
+    font-size: 13px;
+    margin: 0;
+}
+
+/* ── kept for backward compat if used elsewhere ── */
 .notification-dot {
     width: 8px;
     height: 8px;
@@ -274,16 +336,12 @@ td {
     border-radius: 50%;
     display: inline-block;
     flex-shrink: 0;
-    /* 🔒 don't let the dot shrink */
     margin-top: 4px;
-    /* optional: vertically align with first text line */
 }
 
 .notification-text {
     white-space: normal;
-    /* allow wrapping */
     word-break: break-word;
-    /* break long words if needed */
 }
 
 .notification-list-item:hover {
@@ -292,11 +350,84 @@ td {
 }
 
 .loading {
-
-
     background-image: url('../../assets/loader.gif');
-    /* background-size: 100%; */
     height: 100%;
     background-position: top;
     background-repeat: no-repeat;
+}
+
+/* ── Enhanced Notification Loading Styles ── */
+.notification-loading-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 20px 16px;
+    background: linear-gradient(135deg, #f8f9ff 0%, #fff 100%);
+    border-top: 1px solid #f1f3f5;
+    border-bottom: 1px solid #f1f3f5;
+}
+
+.notification-loader-wrapper {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+}
+
+/* Custom Spinner Animation */
+.notification-spinner {
+    width: 32px;
+    height: 32px;
+    border: 3px solid #e9ecef;
+    border-top-color: #4c6ef5;
+    border-radius: 50%;
+    animation: notificationSpinnerRotate 0.8s linear infinite;
+}
+
+@keyframes notificationSpinnerRotate {
+    from {
+        transform: rotate(0deg);
+    }
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+.notification-loading-text {
+    margin: 0;
+    font-size: 13px;
+    color: #495057;
+    font-weight: 500;
+    letter-spacing: 0.5px;
+    animation: notificationLoadingPulse 1.5s ease-in-out infinite;
+}
+
+@keyframes notificationLoadingPulse {
+    0%, 100% {
+        opacity: 1;
+    }
+    50% {
+        opacity: 0.6;
+    }
+}
+
+/* Alternative: Dots loader animation for loading text */
+.notification-loading-text::after {
+    content: '';
+    animation: notificationDots 1.5s steps(4, end) infinite;
+}
+
+@keyframes notificationDots {
+    0%, 20% {
+        content: '';
+    }
+    40% {
+        content: '.';
+    }
+    60% {
+        content: '..';
+    }
+    80%, 100% {
+        content: '...';
+    }
 }

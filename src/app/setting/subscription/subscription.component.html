@@ -209,7 +209,8 @@
                <div class="d-flex" ><span style="margin: 5px auto; font-size: large;"> OR</span> </div>
          
             </div> -->
-            <div *ngIf="this.currSubscription && myCard?.length>0">
+            <!-- <div *ngIf="this.currSubscription && myCard?.length>0"> -->
+                <div *ngIf="myCard?.length>0"></div>
               <button (click)="payWithSavedCard()" class="btn btn-success" [disabled]="paying()">
                 @if (paying()) {
                 <div class="d-flex justify-content-around">

@@ -34,6 +34,7 @@ export class AssetPreviewComponent {
   @ViewChild('notes') notesRef!: ElementRef;
   @ViewChild('location') locationRef!: ElementRef;
   @ViewChild('exportCloseBox') exportCloseBox!: ElementRef;
+  @ViewChild('closeBox5') closeBox5!: ElementRef;
   qr!: QR;
   qrData!: string;
   hoverOverSidebar = true;
@@ -94,6 +95,7 @@ export class AssetPreviewComponent {
     assetCategoryInspectionId: '',
     assetCategoryInspectionName: '',
     actionPerformedBy: '',
+    createdBy: '',
     notes: '',
     createdAt: null,
     updatedAt: null,
@@ -188,17 +190,21 @@ export class AssetPreviewComponent {
       console.log(data)
       this.assetDetails = data;
       
-      this.assetPreviewService.getLocationBinDetails(this.companyId, this.assetDetails.location).subscribe((data) => {
-        console.log("location bin details", data);
-        this.assetDetails.location = data;
-      },
-        (err) => {
-          console.log(err);
-        },
-        () => {
-          this.loading = false;
-        });
-        
+        if (this.assetDetails.location && this.assetDetails.location.trim() !== '') {
+    this.assetPreviewService.getLocationBinDetails(this.companyId, this.assetDetails.location).subscribe((data) => {
+      console.log("location bin details", data);
+      this.assetDetails.location = data;
+    },
+    (err) => {
+      console.log(err);
+    },
+    () => {
+      this.loading = false;
+    });
+  } else {
+    // location is empty — fall through to locationName, no API call needed
+    this.loading = false;
+  }
 
       console.log("preview:-" + this.assetDetails.customerId)
       if (this.assetDetails.customerId != null && this.assetDetails.customerId != '') {
@@ -476,6 +482,44 @@ export class AssetPreviewComponent {
     console.log(data.target.value)
     this.selectedEmpName = data.target.value;
   }
+
+  /**
+   * Parse location hierarchy path and return array of location levels
+   * Example: "Building A -> Floor 2 -> Office" → ["Building A", "Floor 2", "Office"]
+   * Falls back to locationName if location is empty
+   */
+  getLocationHierarchy(): string[] {
+    // Use location if it has data, otherwise fall back to locationName
+    const locationPath = this.assetDetails?.location || this.assetDetails?.locationName;
+    
+    if (!locationPath || locationPath.trim() === '') {
+      return [];
+    }
+    
+    return locationPath
+      .split(' -> ')
+      .map(level => level.trim())
+      .filter(level => level.length > 0);
+  }
+
+  /**
+   * Get the full location path for display
+   * Returns location if available, otherwise locationName
+   */
+  getFullLocationPath(): string {
+    return this.assetDetails?.location && this.assetDetails.location.trim() !== '' 
+      ? this.assetDetails.location 
+      : this.assetDetails?.locationName || '';
+  }
+
+  /**
+   * Check if the location hierarchy is long (more than 3 levels)
+   * This determines if we should show the full path tooltip
+   */
+  isLongHierarchy(): boolean {
+    const hierarchy = this.getLocationHierarchy();
+    return hierarchy.length > 3;
+  }
   handleSubmit(employee: any, notes: string, location: string) {
     console.log("emp=> " + this.selectedEmpName)
     console.log("emp=> " + employee)
@@ -567,7 +611,7 @@ export class AssetPreviewComponent {
     // You can set a timeout to automatically hide the alert after a certain time
     setTimeout(() => {
       this.showAlert = false;
-    }, 50000); // Hide the alert after 5 seconds (adjust as needed)
+    }, 5000); // Hide the alert after 5 seconds (adjust as needed)
   }
 
   generatePdf(elementId: string, fileName: string) {
@@ -816,6 +860,7 @@ export class AssetPreviewComponent {
     const currDateTime = new Date();
 
     if (this.inspectionInstance.createdAt == null ) {
+      this.inspectionInstance.createdBy = this.username;
       this.inspectionInstance.createdAt = currDateTime;
     }
     this.inspectionInstance.updatedAt = currDateTime;
@@ -926,6 +971,7 @@ export class AssetPreviewComponent {
       this.inspectionInstance.actionPerformedBy = this.username;
       const currDateTime = new Date();
       if (this.inspectionInstance.createdAt == null ) {
+        this.inspectionInstance.createdBy = this.username;
         this.inspectionInstance.createdAt = currDateTime;
       }
       this.inspectionInstance.updatedAt = currDateTime;
@@ -1023,6 +1069,41 @@ export class AssetPreviewComponent {
           this.ngOnInit();
         })
     }
+    cancelInspection() {
+    console.log(this.inspectionInstance)
+    console.log(this.stepObject)
+    this.inspectionInstance.actionPerformedBy = this.username;
+    const currDateTime = new Date();
+    if (this.inspectionInstance.createdAt == null) {
+        this.inspectionInstance.createdBy = this.username;
+        this.inspectionInstance.createdAt = currDateTime;
+    }
+    this.inspectionInstance.updatedAt = currDateTime;
+    this.inspectionInstance.status = 'CANCELLED';
+    this.inspectionInstance.selectedItemList = this.selectedItems;
+    console.log(this.inspectionInstance)
+    this.assetPreviewService.addAssetInspection(this.inspectionInstance).subscribe((data) => {
+        console.log("Inspection Saved" + data);
+        this.triggerAlert("Inspection Cancelled sucessfully", "success");
+        this.selectedItems = []
+    },
+    (err) => {
+        console.log(err);
+        if (err.error.error === "TRIAL_EXPIRED") {
+            this.triggerAlert(err.error.message, "danger");
+        } else {
+            this.triggerAlert(err.error.errorMessage, "danger");
+        }
+        this.selectedItems = []
+    },
+    () => {
+        this.selectedItems = []
+        this.clearSavedData();
+        this.closeBox5.nativeElement.click();
+        // ✅ close modal only after API succeeds
+        this.ngOnInit();
+    })
+}
 
      clearData(){
     this.selectedItems=[]

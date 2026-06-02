@@ -23,6 +23,14 @@ export class HeaderComponent {
   notificationList: Notification[] = [];
   private notificationSubject = new Subject<string>();
 
+  // Pagination properties
+  currentPage: number = 0;
+  pageSize: number = 10;
+  totalPages: number = 0;
+  hasMore: boolean = true;
+  isLoadingMoreNotifications: boolean = false;
+  totalCount: number = 0;
+
   ngOnInit(): void {
     this.email = localStorage.getItem('user');
     console.log(localStorage.getItem('name'))
@@ -46,35 +54,13 @@ export class HeaderComponent {
 
     }
 
-    this.headerService.getNotification(this.email).subscribe((data) => {
-      // console.log("Notification Data",data);  
-      this.unReadCount = 0;
-      if (data != null) {
-        // console.log("Notification",data);
-        this.notificationList = data;
-        console.log("Notification", this.notificationList);
-        this.notificationList.forEach((notification: any) => {
-          console.log("Is Unread", notification.isRead);
-          if (notification.read === false) {
-            this.unReadCount++;
-          }
-        });
-        console.log("Unread Count", this.unReadCount);
-      }
-      else {
-        this.notificationList = [];
-      }
-    },
-      (err) => {
-        console.log("Notification Error", err);
-        this.notificationList = [];
-      });
-
-
+    // Load initial paginated notifications
+    this.loadPaginatedNotifications();
 
     this.notificationService.getNotificationObservable().subscribe((message) => {
       try {
         this.unReadCount = 0;
+        console.log("Raw notification message:", message);
         this.notificationList = typeof message === 'string' ? JSON.parse(message) : message;
         this.notificationList.forEach((notification: any) => {
           console.log("Is Unread", notification.isRead);
@@ -88,6 +74,82 @@ export class HeaderComponent {
       }
       console.log("Notification received:", this.notificationList);
     });
+  }
+
+  /**
+   * Load paginated notifications from backend
+   */
+  loadPaginatedNotifications(): void {
+    this.headerService.getPaginatedNotifications(this.email, this.currentPage, this.pageSize).subscribe((data) => {
+      console.log("Paginated Notification Data", data);
+      
+      if (data != null) {
+        // If it's the first page, replace; otherwise append
+        if (this.currentPage === 0) {
+          this.notificationList = data.notifications || [];
+        } else {
+          this.notificationList = [...this.notificationList, ...(data.notifications || [])];
+        }
+        console.log("Updated Notification List", this.notificationList);
+        // Update pagination metadata
+        this.totalPages = data.totalPages;
+        this.hasMore = data.hasMore;
+        this.totalCount = data.totalCount;
+
+        // Count unread notifications
+        this.unReadCount = 0;
+        this.notificationList.forEach((notification: any) => {
+          if (notification.isRead === false) {
+            this.unReadCount++;
+          }
+        });
+
+        console.log("Unread Count", this.unReadCount);
+        console.log("Pagination Info - Page:", this.currentPage, "Total Pages:", this.totalPages, "Has More:", this.hasMore);
+      } else {
+        if (this.currentPage === 0) {
+          this.notificationList = [];
+        }
+      }
+
+      this.isLoadingMoreNotifications = false;
+    },
+      (err) => {
+        console.log("Notification Error", err);
+        if (this.currentPage === 0) {
+          this.notificationList = [];
+        }
+        this.isLoadingMoreNotifications = false;
+      });
+  }
+
+  /**
+   * Load next page of notifications
+   */
+  loadMoreNotifications(): void {
+    if (this.isLoadingMoreNotifications || !this.hasMore) {
+      return; // Already loading or no more notifications
+    }
+
+    this.isLoadingMoreNotifications = true;
+    this.currentPage++;
+    this.loadPaginatedNotifications();
+  }
+
+  /**
+   * Handle scroll event in notification dropdown
+   */
+  onNotificationListScroll(event: any): void {
+    const element = event.target;
+    
+    // Check if scrolled to bottom (with small threshold for better UX)
+    const scrollThreshold = 50; // pixels from bottom
+    const isAtBottom = element.scrollHeight - element.scrollTop <= element.clientHeight + scrollThreshold;
+
+    if (isAtBottom && this.hasMore && !this.isLoadingMoreNotifications) {
+      console.log("Scrolled to bottom, loading more notifications...");
+      this.loadMoreNotifications();
+    }
   }
 
   notificationClick() {

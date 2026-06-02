@@ -26,10 +26,16 @@ export class InspectionTemplateComponent {
   editButtonId:number=-1;
   deleteInspectionId!:string;
   selectedCategory = new FormControl<string[]>([]);
+  isEditMode: boolean = false;
+  currentEditingId!: string;
   
   constructor(
     private inspectionTemplateService: InspectionTemplateService
   ) {}
+
+  compareCategoryObjects(c1: any, c2: any): boolean {
+    return c1 && c2 ? c1.id === c2.id : c1 === c2;
+  }
 
   ngOnInit() {
     this.searchedInspection = [];
@@ -169,6 +175,8 @@ export class InspectionTemplateComponent {
       ()=>{
         this.inspectionForm=new Inspection();
         // this.inspectionSteps=Anew InspectionStep();
+        this.selectedCategory.reset();
+        this.isEditMode = false;
         this.ngOnInit();
       });
   }
@@ -184,8 +192,70 @@ export class InspectionTemplateComponent {
   setDeleteInspectionId(id:string){
     this.deleteInspectionId=id;
   }
+  changeAssetDetails(item: Inspection) {
+    this.isEditMode = true;
+    this.currentEditingId = item.id!;
+    this.inspectionForm = JSON.parse(JSON.stringify(item)); // Deep copy
+    this.inspectionSteps = JSON.parse(JSON.stringify(item.steps || []));
+    
+    // Populate selectedCategory with the inspection's categories
+    if (item.categoryName && Array.isArray(item.categoryName)) {
+      this.selectedCategory.setValue(item.categoryName);
+    }
+    
+    // Trigger modal opening using jQuery
+    (window as any).$('#edit-inspection').modal('show');
+  }
+  updateInspection() {
+    console.log(this.inspectionSteps.toString)
+    console.log(this.selectedCategory.value);
+    // this.inspectionForm.status='active';
+    this.inspectionForm.companyId=this.companyId;
+    this.inspectionForm.steps=this.inspectionSteps;
+    if(this.selectedCategory.value && this.selectedCategory.value.length > 0) {
+      this.inspectionForm.categoryName = this.selectedCategory.value;
+    }
+    
+    console.log(this.inspectionForm);
+    if(this.inspectionForm.name==''||this.inspectionForm.name==null||this.inspectionForm.name==undefined){
+      this.triggerAlert("Please Enter Name","warning");
+      return;
+    }
+    if(this.inspectionForm.categoryName.length===0||this.inspectionForm.categoryName==null||this.inspectionForm.categoryName==undefined){
+      this.triggerAlert("Please Enter Asset Category","warning");
+      return;
+    }
+
+    this.inspectionTemplateService
+      .updateAssetInspection(this.inspectionForm)
+      .subscribe((data) => {
+        console.log('Successfully Updated Inspection');
+        this.triggerAlert("Successfully Updated Inspection","success");
+      },
+      (err)=>{
+        console.log(err);
+      }, 
+      ()=>{
+        this.inspectionForm=new Inspection();
+        this.inspectionSteps = [new InspectionStep()];
+        this.selectedCategory.reset();
+        this.isEditMode = false;
+        // Close the modal
+        (window as any).$('#edit-inspection').modal('hide');
+        this.ngOnInit();
+      });
+  }
   removeStep(i: number) {
     this.inspectionSteps.splice(i, 1);
+  }
+  resetFormForNewInspection() {
+    this.isEditMode = false;
+    this.inspectionForm = new Inspection();
+    this.inspectionSteps = [new InspectionStep()];
+    this.selectedCategory.reset();
+  }
+  closeEditModal() {
+    (window as any).$('#edit-inspection').modal('hide');
   }
   editButtonVisibile(id:number){
     

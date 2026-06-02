@@ -166,10 +166,10 @@ export class AssetInsightsComponent {
       this.checkOutCount = this.paginationResult.totalCheckOut;
       this.records = this.paginationResult.data  as AssetRecord[];
       this.filteredRecords = this.paginationResult.data as AssetRecord[];
-
-      this.distinctAssetsCount = new Set(
-  this.filteredRecords.map(r => r.assetId)
-).size;
+      this.distinctAssetsCount=this.checkInCount+this.checkOutCount;
+//       this.distinctAssetsCount = new Set(
+//   this.filteredRecords.map(r => r.assetId)
+// ).size;
 
       //  this.records = this.paginationResult.data.map((record: string) => JSON.parse(record) as AssetRecord);
       // this.filteredRecords = this.paginationResult.data.map((record: string) => JSON.parse(record) as AssetRecord);

@@ -52,5 +52,13 @@ export class AssetModuleService {
     updateExtraFieldName(data:any):Observable<any>{
     return this.httpClient.put(this.assetEndpoint+"extraFieldName",data,{headers:this.headers});
   }
-  
+
+  uniqueFieldConfig(data:any):Observable<any>{
+    return this.httpClient.post(this.assetEndpoint+"uniqueFieldConfig",data,{headers:this.headers});
+  }
+
+  getUniqueFields(companyId:any):Observable<any>{
+    return this.httpClient.get(this.assetEndpoint+"uniqueFieldConfig/"+companyId,{headers:this.headers});
+  }
 }
+

@@ -321,7 +321,13 @@ export class ImportComponent {
         (err)=>{
           this.loading=false;
           console.log(err);
-          if(err.error.errorMessage.startsWith("Import File")){
+          if(err.status=='409'){
+            this.triggerAlert(err.error.message,"danger");
+          }
+           else if(err.error.errorMessage.startsWith("Upload Limit Exceeded")){
+            this.triggerAlert(err.error.errorMessage,"danger");
+          }
+          else if(err.error.errorMessage=="Mandatory Column Name Is Missing in Mapping"){
             this.triggerAlert("Failed!! "+err.error.errorMessage,"danger");
           }
           else{
@@ -332,7 +338,7 @@ export class ImportComponent {
           this.progress = 0;
           localStorage.removeItem('uploadProgress');
           localStorage.removeItem('uploadInProgress');
-          this.triggerAlert('Failed to Upload File', 'danger');
+          // this.triggerAlert('Failed to Upload File', 'danger');
           this.ngOnInit();
         })
       }

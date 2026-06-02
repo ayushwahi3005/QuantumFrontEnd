@@ -28,7 +28,7 @@
                     <i class="bi bi-search searchIcon"></i>
                 </div>
                 <button class="btn btn-primary" style="max-width: 120px; width: 100%;" data-toggle="modal"
-                    data-target="#add-inspection">+ Inspection</button>
+                    data-target="#add-inspection" (click)="resetFormForNewInspection()">+ Inspection</button>
             </div>
         </div>
 
@@ -121,19 +121,10 @@
                                 name="name" id="name" placeholder="Name" [(ngModel)]="inspectionForm.name">
 
                         </div>
-                        <div >
-                            <!-- <label for="categoryName">
-                              Asset Category<span class="text-danger"> *</span>
-                            </label>
-                          <select class="form-select" name="categoryName" id="categoryName" [(ngModel)]="inspectionForm.categoryName" #categoryName >
-                              <option value="none" selected>None</option>
-                              <option *ngFor="let category of assetCategoryList" [value]="category.name">
-                                {{ category.name }}
-                              </option>
-                            </select> -->
-                            <mat-form-field>
+                        <div style="margin-top: 15px;">
+                            <mat-form-field appearance="outline" class="w-100">
                               <mat-label>Asset Category</mat-label>
-                              <mat-select [formControl]="selectedCategory" multiple>
+                              <mat-select [formControl]="selectedCategory" multiple [compareWith]="compareCategoryObjects">
                                 <mat-option *ngFor="let category of assetCategoryList" [value]="{'id':category.assetCategoryId,'categoryName':category.name}">{{category.name}}</mat-option>
                               </mat-select>
                             </mat-form-field>
@@ -221,186 +212,94 @@
         </div>
     </div>
 
-    <!-- Editing an existing Role -->
+    <!-- Editing an existing Inspection template -->
 
     <div class="modal fade" id="edit-inspection" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle"
-        aria-hidden="true">
+        aria-hidden="true" style="z-index: 1055;">
         <div class="modal-dialog  modal-lg" role="document">
             <div class="modal-content">
-                <div class="modal-header">
-                    <h2 class="modal-title" id="exampleModalLongTitle">Edit Inspection</h2>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close" #closeBox2>
-                        <span aria-hidden="true">&times;</span>
-                    </button>
+                <div class="modal-header" style="padding: 13px 15px">
+                    <h2 class="modal-title" id="exampleModalLongTitle"
+                        style="margin:0; display: flex; justify-content: center;">Edit Inspection</h2>
+                     <button type="button" class="btn btn-light btn-sm ms-auto" (click)="closeEditModal()" aria-label="Close" style="border-radius: 10px;">
+                  <i class="bi bi-x-lg"></i>
+                </button>
                 </div>
                 <div class="modal-body">
-                    <!-- <form [formGroup]="roleAndPermissionFormEdit" (ngSubmit)="updateRoleAndPermission()">
-              <div class="form-group">
-                <label for="name">Name<span  class="text-danger">*</span></label>
-                <input type="text" class="form-control" id="name"  formControlName="name"  placeholder="Name" [ngModel]="this.currItem?.name">
-               
-              </div>
-  
-              <div class="form-group">
-                <label for="status">Status<span  class="text-danger">*</span></label>
-                <select class="form-select form-control" id="status" formControlName="status" #Asset [ngModel]="this.currItem?.status" >
-                 
-                  <option value="active">Active</option>
-                  <option value="inactive" >Inactive</option>
-                 
-                  
-                </select>
-              </div>
-  
-             
-              <h2 class="mt-2">Permissions</h2>
-              <table class="addTable table " style="margin: 10px auto; border-radius: 10px;">
-                <thead class="table-dark">
-                  <tr>
-                    <th style="width: 50%; padding-left: 20%;">Name</th>
-                    <th style="width: 50%; padding-left: 20%;">Level</th>
-                  </tr>
-                </thead>
-                <tr class="form-group">
-            
-                
-                <td>
-                <label for="assets">Asset</label>
-                </td>
-                
-                <td>
-                <select class="form-select form-control" id="assets" formControlName="assets" #Asset [ngModel]="this.currItem?.assets" >
-                  <option value="none" selected>None</option>
-                  <option value="view">View</option>
-                  <option value="create" >Create</option>
-                  <option value="edit" >Edit</option>
-                  <option value="full" >Full</option>
-                  
-                </select>
-              </td>
-            
-              
-            </tr>
-       
-              
-                <tr class="form-group">
-                  <td>
-                  <label for="customers">Customer</label>
-                </td>
-                <td>
-                  <select class="form-select form-control" id="customers" formControlName="customers" #customers [ngModel]="this.currItem?.customers">
-                    <option value="none" selected>None</option>
-                    <option value="view" selected>View</option>
-                    <option value="create" selected>Create</option>
-                    <option value="edit" selected>Edit</option>
-                    <option value="full" selected>Full</option>
-                    
-                  </select>
-                </td>
-                </tr>
-              
-            
-                <tr class="form-group">
-                  <td>
-                  <label for="workOrders">WorkOrders</label>
-                </td>
-                <td>
-                  <select class="form-select form-control" id="workOrders" formControlName="workOrders" #workOrders [ngModel]="this.currItem?.workOrders">
-                    <option value="none" selected>None</option>
-                    <option value="view" selected>View</option>
-                    <option value="create" selected>Create</option>
-                    <option value="edit" selected>Edit</option>
-                    <option value="full" selected>Full</option>
-                    
-                  </select>
-                </td>
-                </tr>
-         
-                <tr class="form-group">
-                  <td>
-                  <label for="users">Users</label>
-                </td>
-                <td>
-                    <select class="form-select form-control" id="users" formControlName="users" #users  [ngModel]="this.currItem?.users">
-                      <option value="none" selected>None</option>
-                    <option value="view" selected>View</option>
-                    <option value="create" selected>Create</option>
-                    <option value="edit" selected>Edit</option>
-                    <option value="full" selected>Full</option>
-                    
-                  </select>
-                </td>
-                </tr>
-      
-                <tr class="form-group">
-                  <td>
-                  <label for="roleAndPermissions">Role And Permissions</label>
-                </td>
-                <td>
-                    <select class="form-select form-control" id="roleAndPermissions" formControlName="roleAndPermissions" #roleAndPermissions [ngModel]="this.currItem?.roleAndPermissions">
-                      <option value="none" selected>None</option>
-                    <option value="view" selected>View</option>
-                    <option value="create" selected>Create</option>
-                    <option value="edit" selected>Edit</option>
-                    <option value="full" selected>Full</option>
-                    
-                  </select>
-                </td>
-                </tr>
-    
-                <tr class="form-group">
-                  <td>
-                  <label for="imports">Imports</label>
-                </td>
-                  <td>
-                  <select class="form-select form-control" id="imports" formControlName="imports" #imports [ngModel]="this.currItem?.imports">
-                    <option value="none" selected>None</option>
-                    <option value="view" selected>View</option>
-                    <option value="create" selected>Create</option>
-                    <option value="edit" selected>Edit</option>
-                    <option value="full" selected>Full</option>
-                    
-                  </select>
-                </td>
-                </tr>
-    
-                <tr class="form-group">
-                <td>
-                  <label for="category">Category</label>
-                </td>
-              <td>
-                   <select class="form-select form-control" id="category" formControlName="category" #category  [ngModel]="this.currItem?.category">
-                    <option value="none" selected>None</option>
-                    <option value="view" selected>View</option>
-                    <option value="create" selected>Create</option>
-                    <option value="edit" selected>Edit</option>
-                    <option value="full" selected>Full</option>
-                    
-                  </select>
-                </td>
-                </tr>
-       
-                <tr class="form-group">
-                <td>
-                  <label for="inventory">Inventory</label>
-                </td>
-              <td>
-                       <select class="form-select form-control" id="inventory" formControlName="inventory" #inventory  [ngModel]="this.currItem?.inventory">
-                        <option value="none" selected>None</option>
-                    <option value="view" selected>View</option>
-                    <option value="create" selected>Create</option>
-                    <option value="edit" selected>Edit</option>
-                    <option value="full" selected>Full</option>
-                    
-                  </select>
-                </td>
-              </tr>
-             
-              </table>
-              
-              
-              <button type="submit" class="btn btn-primary mt-3" style="margin-left: 45%;" (click)="closeBox2.click()" [disabled]="roleAndPermissionFormEdit.invalid" >Update</button>
-            </form> -->
+                    <form>
+                        <div >
+                            <label for="nameEdit">Name<span class="text-danger"> *</span></label>
+                            <input type="text" class="highlight-input"
+                                style="font-size: 16px; padding-left: 11px; width: 100%; margin-top: 10px; border-radius: 5px; height: 35px; border: 1px solid #c0c0c0; transition: border-color 0.3s, box-shadow 0.3s;"
+                                name="nameEdit" id="nameEdit" placeholder="Name" [(ngModel)]="inspectionForm.name">
+
+                        </div>
+                        <div style="margin-top: 15px;">
+                            <mat-form-field appearance="outline" class="w-100">
+                              <mat-label>Asset Category</mat-label>
+                              <mat-select [formControl]="selectedCategory" multiple [compareWith]="compareCategoryObjects">
+                                <mat-option *ngFor="let category of assetCategoryList" [value]="{'id':category.assetCategoryId,'categoryName':category.name}">{{category.name}}</mat-option>
+                              </mat-select>
+                            </mat-form-field>
+                          </div>
+                          
+                        <div style="margin-top: 15px;">
+                            <mat-form-field appearance="outline" class="w-100">
+                              <mat-label>Status</mat-label>
+                              <mat-select [(ngModel)]="inspectionForm.status" name="status">
+                                <mat-option value="active">Active</mat-option>
+                                <mat-option value="inActive">Inactive</mat-option>
+                              </mat-select>
+                            </mat-form-field>
+                        </div>
+                          
+                        <div class="d-flex justify-content-between">
+                        <h2 class="mt-2">Instructions</h2>
+                        <span style="padding-top: 15px; color: rgb(41, 181, 228);cursor: pointer; font-size: large;" (click)="addInspectionStep()">Instructions+</span>
+                        </div>
+                        <table class="addTable table " style="margin: 10px auto; border-radius: 10px;">
+                            <thead class="table-dark">
+                                <tr>
+                                    <th style="width: 50%; padding-left: 20%;">Name</th>
+                                    <th style="width: 50%; padding-left: 20%;">Input</th>
+                                    <th style="width: 50%; padding-left: 20%;"></th>
+                                </tr>
+                            </thead>
+                       
+                            <tr *ngFor="let step of inspectionSteps; let i = index">
+                              <td>
+                                <input [(ngModel)]="step.name" type="text" name="nameEdit{{i}}" id="nameEdit{{i}}" class="inspection-step-input">
+                              </td>
+                            
+                              <td>
+                                <div class="permissionlevel">
+                                  <select class="form-select" id="inspectionTypeEdit{{i}}" name="inspectionTypeEdit{{i}}"
+                                    [(ngModel)]="step.type" #type>
+                                    
+                                    <option value="CHECKBOX">CHECKBOX</option>
+                                    <option value="NUMBER">NUMBER</option>
+                                    <option value="TEXT">TEXT</option>
+                            
+                                  </select>
+                                </div>
+                              </td>
+                              <td>
+                                <i  class="bi bi-trash3" (click)="removeStep(i)"></i>
+                              </td>
+                            </tr>
+                            
+
+                        </table>
+
+                        <div style="display: flex; justify-content: center; margin-top: 15px;">
+
+                            <button class="btn btn-light" type="button" (click)="closeEditModal()"
+                                style="margin: 10px; width: 100px; margin-right: 30px; border: 1px solid #c0c0c0">Cancel</button>
+                            <button type="submit" class="btn btn-primary mt-2"
+                         
+                                style="margin: 10px; width: 100px;" (click)="updateInspection()">Update</button>
+                        </div>
+                    </form>
 
                 </div>
             </div>

@@ -151,12 +151,32 @@
               <div style="margin: 0px 2vw;">
                 <label for="name" style="color: black; font-weight: bold;">Location<span
                     *ngIf="mandatoryFieldsMap.get('name')" class="text-danger">*</span></label>
-                <!-- <input type="text"  id="name"   [(ngModel)]=" companyCustomer.name" disabled> -->
+                <!-- Location Hierarchy Breadcrumb -->
                 <div style="margin: 10px;">
-                  <p *ngIf="assetDetails?.location"
-                    style="word-wrap: break-word; word-break: break-word; max-width: 20vw; white-space: normal;">
-                    {{assetDetails.location|titlecase}}</p>
-                  <p *ngIf="!assetDetails?.location">&nbsp; </p>
+                  <div *ngIf="getFullLocationPath()" class="location-hierarchy-container">
+                    <!-- Breadcrumb Display -->
+                    <div class="location-breadcrumb">
+                      <ng-container *ngFor="let level of getLocationHierarchy(); let last = last">
+                        <span class="breadcrumb-item">{{ level | titlecase }}</span>
+                        <span *ngIf="!last" class="breadcrumb-separator">
+                          <i class="bi bi-chevron-right"></i>
+                        </span>
+                      </ng-container>
+                    </div>
+                    
+                    <!-- Full Path Fallback (for small screens) -->
+                    <div class="location-fullpath" *ngIf="isLongHierarchy()">
+                      <small style="color: #6c757d; display: block; margin-top: 8px;">
+                        {{ getFullLocationPath() | titlecase }}
+                      </small>
+                    </div>
+                  </div>
+                  
+                  <!-- Empty State -->
+                  <div *ngIf="!getFullLocationPath()" style="color: #6c757d;">
+                    <span>&mdash;</span>
+                  </div>
+                  
                   <hr style="width: 20vw;">
                 </div>
               </div>
@@ -313,7 +333,8 @@
                   <span
                     [ngClass]="{
                       'pending': instance.status === 'PENDING',
-                      'completed': instance.status === 'COMPLETED'
+                      'completed': instance.status === 'COMPLETED',
+                      'cancelled': instance.status === 'CANCELLED'
                     }"
                   >
                     {{ instance.status }}
@@ -322,7 +343,7 @@
                  
                 </td>
                   
-                  <td *ngIf="instance.status=='PENDING' ; else emptyTd"><i class="bi bi-eye" data-target="#inspection-edit-popup" data-toggle="modal" (click)="mySelectedInspectionInstanceFunc(instance)"></i></td>
+                  <td *ngIf="instance.status=='PENDING' || userRole === 'ADMIN';else emptyTd"><i class="bi bi-eye" data-target="#inspection-edit-popup" data-toggle="modal" (click)="mySelectedInspectionInstanceFunc(instance)"></i></td>
                   <ng-template #emptyTd>
                     <td><i class="bi bi-eye" data-target="#inspection-view-popup" data-toggle="modal" (click)="mySelectedInspectionInstanceFunc(instance)"></i></td>
                   </ng-template>
@@ -604,9 +625,9 @@
 
         <div>
           <label>Employee<span class="text-danger"> *</span></label>
-          <select class="form-select form-control" id="technician" #employeeName>
+          <select class="form-select form-control" id="technician" #employeeName [(ngModel)]="selectedEmpName" name="technician">
 
-            <option value="{{technician.firstName}}  {{technician.lastName}}"
+            <option value="{{technician.firstName}} {{technician.lastName}}"
               *ngFor="let technician of technicalUserList">{{technician.firstName}} {{technician.lastName}}</option>
 
           </select>
@@ -932,10 +953,11 @@
           </div>
         </div>
         <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal"  (click)="cancelInspection()" *ngIf="userRole=='ADMIN' && selectedInspectionInstance?.status!='CANCELLED'">Cancel Inspection</button>
           <button type="button" class="btn btn-secondary" data-dismiss="modal" (click)="clearData()">Close</button>
-          <button type="button" class="btn btn-secondary" (click)="clearSavedData()" (click)="closeBox5.click()">Clear</button>
-          <button type="button" class="btn btn-primary" (click)="saveInpectionValue()" (click)="closeBox5.click()">Submit</button>
-          <button type="button" class="btn btn-primary" (click)="tempSave()" (click)="closeBox5.click()">Save changes</button>
+          <button type="button" class="btn btn-secondary" (click)="clearSavedData()" (click)="closeBox5.click()"  *ngIf="selectedInspectionInstance?.status!='CANCELLED'">Clear</button>
+          <button type="button" class="btn btn-primary" (click)="saveInpectionValue()" (click)="closeBox5.click()"  *ngIf="selectedInspectionInstance?.status!='CANCELLED'">Submit</button>
+          <button type="button" class="btn btn-primary" (click)="tempSave()" (click)="closeBox5.click()"  *ngIf="selectedInspectionInstance?.status!='CANCELLED'">Save changes</button>
           
         </div>
       <!-- <div class="d-flex justify-content-center"> -->
