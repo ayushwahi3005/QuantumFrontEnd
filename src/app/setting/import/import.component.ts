@@ -10,25 +10,25 @@ import * as saveAs from 'file-saver';
 import { MatDialog } from '@angular/material/dialog';
 
 declare var bootstrap: any;
+
 @Component({
   selector: 'app-import',
   templateUrl: './import.component.html',
   styleUrls: ['./import.component.css']
 })
-
 export class ImportComponent {
-  
+
   @ViewChild('infoNotice') myModal!: ElementRef;
-  
-  loading:boolean=false;
-  email!:any;
-  importForm!:FormGroup;
-  myFile!:any;
-  selectedModule="asset";
-  showAlert: boolean = false; // Flag to toggle alert visibility
-  alertMessage: string = ''; // Alert message
-  alertType: string = 'success'; // Alert type: success, warning, error, etc.
-  companyId!:any;
+
+  loading: boolean = false;
+  email!: any;
+  importForm!: FormGroup;
+  myFile!: any;
+  selectedModule = "asset";
+  showAlert: boolean = false;
+  alertMessage: string = '';
+  alertType: string = 'success';
+  companyId!: any;
   excelColumns: string[] = [];
   assetDatabaseColumns: string[] = [];
   assetDatabaseColumnsToAdd: string[] = [];
@@ -46,188 +46,221 @@ export class ImportComponent {
   customerDatabaseColumnsToAdd: string[] = [];
   customerDatabaseColumnsToUpdate: string[] = [];
 
-  currImport:string='asset';
-  
-  col=new ColumnMapping();
-  // columnMappings: { excel: string, database: string }[] = [];
-  columnMappings!:Map<String,String>;
-  assetExtraFieldsColumns!:ExtraFieldName[];
-  inventoryExtraFieldsColumns!:ExtraFieldName[];
-  workorderExtraFieldsColumns!:ExtraFieldName[];
-  customerExtraFieldsColumns!:ExtraFieldName[];
-  convertedFile!:any;
-  impType:string='add';
+  currImport: string = 'asset';
+
+  col = new ColumnMapping();
+  columnMappings!: Map<String, String>;
+  assetExtraFieldsColumns!: ExtraFieldName[];
+  inventoryExtraFieldsColumns!: ExtraFieldName[];
+  workorderExtraFieldsColumns!: ExtraFieldName[];
+  customerExtraFieldsColumns!: ExtraFieldName[];
+  convertedFile!: any;
+  impType: string = 'add';
 
   progress: number = 0;
   uploadInProgress: boolean = false;
-  currExportModuel:any;
-  currExportTemplate:any;
+  currExportModuel: any;
+  currExportTemplate: any;
   selectedFileName!: string;
   useSavedMapping: boolean = false;
-  customerAddMapping!: Map<String, String>;
 
-  // Create a getter to convert Map to object for display
-  assetAddMapping!:Map<String,String>
-  customerUpdateMapping!:Map<String,String>;
-  assetUpdateMapping!:Map<String,String>;
-  constructor(private formBuilder:FormBuilder,private importService:ImportService,private assetService:AssetsService,private dialog: MatDialog){
+  // Named mapping lists
+  customerAddMappings: any[] = [];
+  assetAddMappings: any[] = [];
+  customerUpdateMappings: any[] = [];
+  assetUpdateMappings: any[] = [];
+  selectedMappingName: string = '';
+  previewMapping: any[] = [];
 
+  constructor(
+    private formBuilder: FormBuilder,
+    private importService: ImportService,
+    private assetService: AssetsService,
+    private dialog: MatDialog
+  ) { }
+
+  get currentMappingList(): any[] {
+    if (this.currImport === 'asset' && this.impType === 'add') return this.assetAddMappings;
+    if (this.currImport === 'asset' && this.impType === 'update') return this.assetUpdateMappings;
+    if (this.currImport === 'customer' && this.impType === 'add') return this.customerAddMappings;
+    if (this.currImport === 'customer' && this.impType === 'update') return this.customerUpdateMappings;
+    return [];
   }
-   
 
-
-
-  ngOnInit(){
-   
+  ngOnInit() {
     this.fetchDataFromLocalStorage();
-    console.log(this.customerAddMapping);
-    console.log(this.assetAddMapping);
-    console.log(this.customerUpdateMapping);
-    console.log(this.assetUpdateMapping);
-    this.loading=false;
-    this.email=localStorage.getItem('user');
-    this.companyId=localStorage.getItem('companyId');
+    this.loading = false;
+    this.email = localStorage.getItem('user');
+    this.companyId = localStorage.getItem('companyId');
     this.selectedFileName = 'No file chosen';
     this.useSavedMapping = false;
-    
-    this.importForm=this.formBuilder.group({
-      module:['asset',Validators.required],
-      importType:['add',Validators.required],
-      file:['',Validators.required]
-    })
+    this.selectedMappingName = '';
+
+    this.importForm = this.formBuilder.group({
+      module: ['asset', Validators.required],
+      importType: ['add', Validators.required],
+      file: ['', Validators.required]
+    });
+
     localStorage.removeItem('uploadProgress');
     localStorage.removeItem('uploadInProgress');
     const savedProgress = localStorage.getItem('uploadProgress');
     const savedLoading = localStorage.getItem('uploadInProgress');
-    
-    console.log("savedLoading"+savedLoading)
-    if (savedProgress) {
-      this.progress = parseInt(savedProgress, 10);
-    }
-    if (savedLoading === 'true') {
-      this.loading = true;
-    }
-    this.assetDatabaseColumnsToUpdate=[];
-    this.assetDatabaseColumnsToAdd=[];
-    this.workorderDatabaseColumnsToUpdate=[]
-    this.workorderDatabaseColumnsToAdd=[]
-    this.inventoryDatabaseColumnsToUpdate=[]
-    this.inventoryDatabaseColumnsToAdd=[]
-    this.customerDatabaseColumnsToUpdate=[]
-    this.customerDatabaseColumnsToAdd=[]
 
-    this.assetDatabaseColumnsToUpdate.push("AssetId","Category","Name","SerialNumber","Customer","Location","Status");
-    this.assetDatabaseColumnsToAdd.push("Category","Name","SerialNumber","Customer","Location","Status");
+    if (savedProgress) this.progress = parseInt(savedProgress, 10);
+    if (savedLoading === 'true') this.loading = true;
 
-    this.workorderDatabaseColumnsToUpdate.push("AssetId","Category","Name","SerialNumber","Customer","Location","Status");
-    this.workorderDatabaseColumnsToAdd.push("Category","Name","SerialNumber","Customer","Location","Status");
+    this.assetDatabaseColumnsToUpdate = [];
+    this.assetDatabaseColumnsToAdd = [];
+    this.workorderDatabaseColumnsToUpdate = [];
+    this.workorderDatabaseColumnsToAdd = [];
+    this.inventoryDatabaseColumnsToUpdate = [];
+    this.inventoryDatabaseColumnsToAdd = [];
+    this.customerDatabaseColumnsToUpdate = [];
+    this.customerDatabaseColumnsToAdd = [];
 
-    this.inventoryDatabaseColumnsToUpdate.push("InventoryId","PartId","PartName","Price","Cost","Category","Quantity");
-    this.inventoryDatabaseColumnsToAdd.push("PartId","PartName","Price","Cost","Category","Quantity");
+    this.assetDatabaseColumnsToUpdate.push("AssetId", "Category", "Name", "SerialNumber", "Customer", "Location", "Status");
+    this.assetDatabaseColumnsToAdd.push("Category", "Name", "SerialNumber", "Customer", "Location", "Status");
 
-    this.customerDatabaseColumnsToUpdate.push("CompanyCustomerId","Name","Category","Phone","Email","Address","City","State","Status","Zip code");
-    this.customerDatabaseColumnsToAdd.push("Name","Category","Phone","Email","Address","City","State","Status","Zip Code");
+    this.workorderDatabaseColumnsToUpdate.push("AssetId", "Category", "Name", "SerialNumber", "Customer", "Location", "Status");
+    this.workorderDatabaseColumnsToAdd.push("Category", "Name", "SerialNumber", "Customer", "Location", "Status");
 
-    this.importService.getAssetExtraFields(this.companyId).subscribe((data)=>{
-      this.assetExtraFieldsColumns=data;
-      this.assetExtraFieldsColumns.forEach((x)=>{
+    this.inventoryDatabaseColumnsToUpdate.push("InventoryId", "PartId", "PartName", "Price", "Cost", "Category", "Quantity");
+    this.inventoryDatabaseColumnsToAdd.push("PartId", "PartName", "Price", "Cost", "Category", "Quantity");
+
+    this.customerDatabaseColumnsToUpdate.push("CompanyCustomerId", "Name", "Category", "Phone", "Email", "Address", "City", "State", "Status", "Zip code");
+    this.customerDatabaseColumnsToAdd.push("Name", "Category", "Phone", "Email", "Address", "City", "State", "Status", "Zip Code");
+
+    this.importService.getAssetExtraFields(this.companyId).subscribe((data) => {
+      this.assetExtraFieldsColumns = data;
+      this.assetExtraFieldsColumns.forEach((x) => {
         this.assetDatabaseColumnsToUpdate.push(x.name);
         this.assetDatabaseColumnsToAdd.push(x.name);
-      })
-      console.log(this.assetDatabaseColumns)
-    })
+      });
+    });
 
-    // this.importService.getInventoryExtraFields(this.companyId).subscribe((data)=>{
-    //   this.inventoryExtraFieldsColumns=data;
-    //   this.inventoryExtraFieldsColumns.forEach((x)=>{
-    //     this.inventoryDatabaseColumnsToUpdate.push(x.name);
-    //     this.inventoryDatabaseColumnsToAdd.push(x.name);
-    //   })
-    //   console.log(this.inventoryDatabaseColumns)
-    // })
-
-    this.importService.getCustomerExtraFields(this.companyId).subscribe((data)=>{
-      this.customerExtraFieldsColumns=data;
-      this.customerExtraFieldsColumns.forEach((x)=>{
+    this.importService.getCustomerExtraFields(this.companyId).subscribe((data) => {
+      this.customerExtraFieldsColumns = data;
+      this.customerExtraFieldsColumns.forEach((x) => {
         this.customerDatabaseColumnsToUpdate.push(x.name);
         this.customerDatabaseColumnsToAdd.push(x.name);
-      })
+      });
       this.updateType("add");
-      console.log(this.customerDatabaseColumns)
-    })
-    // this.columnMappings=new Array(this.assetDatabaseColumns.length).fill({excel:"",database:""});
-    this.columnMappings=new Map<String,String>();
-    console.log(this.columnMappings)
-  }
-  fetchDataFromLocalStorage(){
-      const toMap = (jsonStr: string | null): Map<string, string> => {
-    if (!jsonStr) return new Map<string, string>();
-    try {
-      const parsed = JSON.parse(jsonStr);
-      // If it's an array of pairs (from Array.from(map.entries())), use it directly
-      if (Array.isArray(parsed)) {
-        return new Map<string, string>(parsed);
-      }
-      // If it's a plain object, convert to entries
-      return new Map<string, string>(Object.entries(parsed));
-    } catch (e) {
-      console.error('Error parsing mapping:', e);
-      return new Map<string, string>();
-    }
-  };
-     this.customerAddMapping = toMap(localStorage.getItem("customer_add_mapping"));
-  this.assetAddMapping = toMap(localStorage.getItem("asset_add_mapping"));
-  this.customerUpdateMapping = toMap(localStorage.getItem("customer_update_mapping"));
-  this.assetUpdateMapping = toMap(localStorage.getItem("asset_update_mapping"));
+    });
 
+    this.columnMappings = new Map<String, String>();
   }
-      //   localStorage.setItem("asset_add_mapping",JSON.stringify(Array.from(this.columnMappings.entries())))
+
+  // ─── Named Mapping Helpers ───────────────────────────────────────────────────
+
+  getNamedMappings(key: string): any[] {
+    const raw = localStorage.getItem(key);
+    if (!raw) return [];
+    try { return JSON.parse(raw); } catch { return []; }
+  }
+
+  fetchDataFromLocalStorage(): void {
+    this.customerAddMappings    = this.getNamedMappings("customer_add_mappings");
+    this.assetAddMappings       = this.getNamedMappings("asset_add_mappings");
+    this.customerUpdateMappings = this.getNamedMappings("customer_update_mappings");
+    this.assetUpdateMappings    = this.getNamedMappings("asset_update_mappings");
+  }
+
+  saveMappings(): void {
+    const mappingName = prompt("Enter a name for this mapping:");
+    if (!mappingName || mappingName.trim() === '') {
+      this.triggerAlert("Mapping name cannot be empty", "warning");
+      return;
+    }
+
+    const key = this.currImport + "_" + this.impType + "_mappings";
+    const existing = this.getNamedMappings(key);
+    const idx = existing.findIndex((m: any) => m.name === mappingName.trim());
+    const newEntry = {
+      name: mappingName.trim(),
+      mapping: Array.from(this.columnMappings.entries())
+    };
+
+    if (idx >= 0) {
+      existing[idx] = newEntry;
+    } else {
+      existing.push(newEntry);
+    }
+
+    localStorage.setItem(key, JSON.stringify(existing));
+    this.fetchDataFromLocalStorage();
+    this.triggerAlert("Mapping '" + mappingName + "' saved successfully!", "success");
+  }
+
+  applyNamedMapping(mappingName: string): void {
+    this.selectedMappingName = mappingName;
+    const found = this.currentMappingList.find(m => m.name === mappingName);
+    if (found) {
+      this.columnMappings = new Map(found.mapping);
+      this.previewMapping = found.mapping;
+      this.useSavedMapping = true;
+      this.triggerAlert("Mapping '" + mappingName + "' applied!", "success");
+    }
+  }
+
+  selectPreview(mappingName: string): void {
+    this.selectedMappingName = mappingName;
+    const found = this.currentMappingList.find(m => m.name === mappingName);
+    this.previewMapping = found ? found.mapping : [];
+  }
+
+  deleteNamedMapping(mappingName: string): void {
+    const key = this.currImport + "_" + this.impType + "_mappings";
+    const updated = this.currentMappingList.filter(m => m.name !== mappingName);
+    localStorage.setItem(key, JSON.stringify(updated));
+    this.fetchDataFromLocalStorage();
+    if (this.selectedMappingName === mappingName) {
+      this.columnMappings = new Map();
+      this.selectedMappingName = '';
+      this.previewMapping = [];
+      this.useSavedMapping = false;
+    }
+    this.triggerAlert("Mapping '" + mappingName + "' deleted", "warning");
+  }
+
+  clearAppliedMapping(): void {
+    this.columnMappings = new Map();
+    this.selectedMappingName = '';
+    this.previewMapping = [];
+    this.useSavedMapping = false;
+  }
+
+  // ─── File & Form ─────────────────────────────────────────────────────────────
+
   ngAfterViewInit() {
-  this.openModal(); // Now safe, ViewChild is initialized
-}
+    this.openModal();
+  }
+
   openModal() {
     const modalElement = this.myModal.nativeElement;
-    const modal = new bootstrap.Modal(modalElement); // bootstrap must be globally available
+    const modal = new bootstrap.Modal(modalElement);
     modal.show();
   }
-  
-  convertCSVToXlsx(csvData:any): void {
-    // Replace this with your CSV data
-    // const csvData = 'Name, Age\nJohn, 25\nJane, 30';
 
-    // Specify a file name without extension
-    // const fileName = 'converted_data';
-
+  convertCSVToXlsx(csvData: any): void {
     this.importService.csvToXlsx(csvData, this.convertedFile);
   }
 
-  FileUpload(event:any){
+  FileUpload(event: any) {
     const file = event.target.files[0];
-  const formData = new FormData();
-  formData.append('file', file);
- 
-  this.myFile=formData;
-  const reader: FileReader = new FileReader();
-
+    const formData = new FormData();
+    formData.append('file', file);
+    this.myFile = formData;
+    const reader: FileReader = new FileReader();
     reader.onload = (e: any) => {
-      // Read the contents of the file as a string
       const content: string = e.target.result;
-
-      // Split the content into lines
       const lines: string[] = content.split('\n');
-
-      // Get the first line
-      const firstLine: string = lines[0].substring(0,lines[0].length-1);
-      this.excelColumns=firstLine.split(',');
-
-      // Log or use the first line as needed
-      console.log('First Line:', this.excelColumns);
+      const firstLine: string = lines[0].substring(0, lines[0].length - 1);
+      this.excelColumns = firstLine.split(',');
     };
-
-    // Read the file as text
     reader.readAsText(file);
-    
   }
+
   fileToBase64(file: File): Promise<string> {
     return new Promise<string>((resolve, reject) => {
       const reader = new FileReader();
@@ -236,405 +269,207 @@ export class ImportComponent {
       reader.onerror = error => reject(error);
     });
   }
-  onSubmit(){
-    
-    this.loading=true;
-    this.uploadInProgress = true;
-    this.showAlert= false; // Hide any previous alert
-    localStorage.setItem('uploadInProgress', 'true');
-    console.log("loading",this.loading);
-    console.log(this.importForm.value)
-    const formData=this.myFile
-    const objArray:any={
 
-    }
-    this.columnMappings.forEach((v,k)=>{
-      console.log(v+" "+k)
-      let myString:string=k.toString();
-      // 
-      objArray[myString]=v;
-    // this.col.databaseColumn=v;
-    // this.col.excelColumn=k;
-    
-      
-      // objArray.push(obj);
-      
-     
-      
-    })
-    const jsonString = JSON.stringify(objArray);
-    console.log(jsonString)
-    
-    formData.append('column', jsonString);
-    this.myFile=formData;
-    if(this.importForm.controls['module'].value=="asset"){
-      this.currImport="asset"
-      console.log("Asset")
-      if(this.importForm.controls['importType'].value=="add"){
-        this.impType="add";
-        console.log("-------------add called-------------")
-        formData.append('columnMappings', jsonString);
-
-        let file=formData.get('file');
- 
-        formData.append('file', file);
-
-        this.myFile=formData;
-        if(this.useSavedMapping==true){
-          this.columnMappings= this.assetAddMapping;
-        }
-
-        this.progress=0;
-        console.log(this.columnMappings);
-        this.importService.addAssets(this.myFile,this.companyId,this.email,this.columnMappings).subscribe((event)=>{
-          // console.log(event)
-          // console.log(event.type)
-          // if (event.type === HttpEventType.UploadProgress) {
-          
-          //   this.progress = Math.round(100 * event.loaded / event.total);
-          //   console.log("progress->"+this.progress)
-          // } else if (event instanceof HttpResponse) {
-            
-          //   // this.message = event.body.message;
-           
-          //   // this.currentFile
-          //   // this.fileInfos = this.assetDetailService.getAssetFile(this.assetId);
-            
-          // }
-          // if (event.type === HttpEventType.UploadProgress && event.total) {
-          //   this.progress = Math.round((100 * event.loaded) / event.total);
-          //   localStorage.setItem('uploadProgress', this.progress.toString());
-          // } else if (event.type === HttpEventType.Response) {
-          //   // Upload complete
-          //   this.loading = false;
-          //   this.uploadInProgress = false;
-          //   this.progress = 100;
-          //   localStorage.removeItem('uploadProgress');
-          //   localStorage.removeItem('uploadInProgress');
-          //   this.triggerAlert('File Successfully Uploaded', 'success');
-          // }
-          this.loading=false;
-          console.log("Successfully Uploaded");
-          
-          this.triggerAlert("Asset File Successfully Uploaded","success");
-        },
-        (err)=>{
-          this.loading=false;
-          console.log(err);
-          if(err.status=='409'){
-            this.triggerAlert(err.error.message,"danger");
-          }
-           else if(err.error.errorMessage.startsWith("Upload Limit Exceeded")){
-            this.triggerAlert(err.error.errorMessage,"danger");
-          }
-          else if(err.error.errorMessage=="Mandatory Column Name Is Missing in Mapping"){
-            this.triggerAlert("Failed!! "+err.error.errorMessage,"danger");
-          }
-          else{
-            this.triggerAlert("Failed!! Please check file again and map all fields correctly ","danger");
-          }
-          this.loading = false;
-          this.uploadInProgress = false;
-          this.progress = 0;
-          localStorage.removeItem('uploadProgress');
-          localStorage.removeItem('uploadInProgress');
-          // this.triggerAlert('Failed to Upload File', 'danger');
-          this.ngOnInit();
-        })
-      }
-      else{
-        formData.append('columnMappings', jsonString);
-        // formData.append('email',this.email);
-        let file=formData.get('file');
-        // const newFileName=file.name+'_'+jsonString+'_'+this.email+'_'+this.companyId;
-        //  const newFile = new File([file], newFileName, { type: file.type });
-        formData.append('file', file);
-
-        this.myFile=formData;
-     
-        this.importService.updateAssets(this.myFile,this.companyId,this.email,this.columnMappings).subscribe((data)=>{
-          console.log("Successfully Updated");
-          this.loading=false;
-          this.triggerAlert("Asset File Successfully Updated","success");
-        },
-        (err)=>{
-          this.loading=false;
-          console.log(err);
-          this.ngOnInit();
-          this.triggerAlert("Failed!! Please check file again and map all fields correctly ","danger");
-          
-        })
-       
-
-
-       
-      }
-      
-
-    }
-    
-
-    else if(this.importForm.controls['module'].value=="inventory"){
-      this.currImport="inventory"
-      console.log("inventory")
-      if(this.importForm.controls['importType'].value=="add"){
-        this.impType="add";
-        console.log("-------------add called-------------");
-        // formData.append('columnMappings', jsonString);
-        // formData.append('email',this.email);
-        let file=formData.get('file');
-        const newFileName=file.name+'_'+jsonString+'_'+this.email+'_'+this.companyId;
-         const newFile = new File([file], newFileName, { type: file.type });
-        formData.append('file', newFile);
-
-        this.myFile=formData;
-
-        this.importService.addInventory(this.myFile,this.companyId,this.email).subscribe((data)=>{
-          console.log("Successfully Uploaded");
-          this.loading=false;
-          this.triggerAlert("Inventory File Successfully Uploaded","success");
-        },
-        (err)=>{
-          this.loading=false;
-          console.log(err);
-          if(err.error.errorMessage.startsWith("Upload Limit Exceeded")){
-            this.triggerAlert(err.error.errorMessage,"danger");
-          }
-          else{
-            this.triggerAlert("Failed!! Please check file again and map all fields correctly ","danger");
-          }
-          this.ngOnInit();
-          
-          
-        })
-      }
-      else{
-        this.impType="update";
-        this.importService.updateInventory(this.myFile,this.companyId,this.email).subscribe((data)=>{
-          console.log("Successfully Updated");
-          this.loading=false;
-          this.triggerAlert("Inventory File Successfully Updated","success");
-        },
-        (err)=>{
-          this.loading=false;
-          console.log(err);
-          this.ngOnInit();
-          this.triggerAlert("Failed!! Please check file again and map all fields correctly ","danger");
-   
-        })
-      }
-      
-
-    }
-    else if(this.importForm.controls['module'].value=="customer"){
-      this.currImport="customer"
-      console.log("customer")
-
-
-
-      if(this.importForm.controls['importType'].value=="add"){
-        this.impType="add";
-        console.log("-------------add called-------------");
-        formData.append('columnMappings', jsonString);
-
-        let file=formData.get('file');
-      
-        formData.append('file', file);
-
-        this.myFile=formData;
-        console.log(this.useSavedMapping);
-        if(this.useSavedMapping){
-          this.columnMappings= this.customerAddMapping;
-        }
-         console.log(this.customerAddMapping);
-        console.log(this.columnMappings);
-        this.importService.addCustomer(this.myFile,this.companyId,this.email,this.columnMappings).subscribe((data)=>{
-          console.log("Successfully Uploaded");
-          this.loading=false;
-          this.triggerAlert("Customer File Successfully Uploaded","success");
-        },
-        (err)=>{
-          this.loading=false;
-          console.log(err);
-           if(err.error.errorMessage.startsWith("Upload Limit Exceeded")){
-            this.triggerAlert(err.error.errorMessage,"danger");
-          }
-          else if(err.error.errorMessage=="Mandatory Column Name Is Missing in Mapping"){
-            this.triggerAlert("Failed!! "+err.error.errorMessage,"danger");
-          }
-          else{
-            this.triggerAlert("Failed!! Please check file again and map all fields correctly ","danger");
-          }
-          this.ngOnInit();
-          
-          
-        })
-      }
-      else{
-        formData.append('columnMappings', jsonString);
-
-        let file=formData.get('file');
-        
-        formData.append('file', file);
-
-        this.myFile=formData;
-
-        this.impType="update";
-        this.importService.updateCustomer(this.myFile,this.companyId,this.email).subscribe((data)=>{
-          console.log("Successfully Updated");
-          this.loading=false;
-          this.triggerAlert("Customer File Successfully Updated","success");
-        },
-        (err)=>{
-          this.loading=false;
-          console.log(err);
-          this.ngOnInit();
-          this.triggerAlert("Failed!! Please check file again and map all fields correctly ","danger");
-   
-        })
-      }
-      
-
-    }
-   
-    
-  }
-  dropDown(event:any){
-    this.selectedModule=event.value;
-    this.currImport=event.value
-    console.log(this.currImport)
-  }
-  exportData(){
-    console.log(this.selectedModule);
-    if(this.selectedModule=="asset"){
-      this.assetService.exportexcel();
-    }
-  }
-  triggerAlert(message: string, type: string) {
-    this.alertMessage = message;
-    this.alertType = type;
-    this.showAlert = true;
-    // You can set a timeout to automatically hide the alert after a certain time
-    setTimeout(() => {
-      this.showAlert = false;
-    }, 5000); // Hide the alert after 5 seconds (adjust as needed)
-  }
-
-  update(key:String,value:any){
-    this.columnMappings.set(key,value.target.value)
-  }
-  updateType(data:string){
-    this.impType=data;
-    if(data=="add"){
-      this.assetDatabaseColumns=this.assetDatabaseColumnsToAdd;
-      this.inventoryDatabaseColumns=this.inventoryDatabaseColumnsToAdd;
-      this.customerDatabaseColumns=this.customerDatabaseColumnsToAdd;
-      this.workorderDatabaseColumns=this.workorderDatabaseColumnsToAdd;
-    }
-    else{
-      this.assetDatabaseColumns=this.assetDatabaseColumnsToUpdate;
-      this.inventoryDatabaseColumns=this.inventoryDatabaseColumnsToUpdate;
-      this.customerDatabaseColumns=this.customerDatabaseColumnsToUpdate;
-      this.workorderDatabaseColumns=this.workorderDatabaseColumnsToUpdate;
-    }
-  }
-  exportModule(event:any){
-    this.currExportModuel=event.value;
-
-    console.log(this.currExportModuel)
-  }
-  exportModuleData(){
-    if(this.currExportModuel=="asset"){
-      this.importService.downloadAllAssets(this.companyId).subscribe((data:Blob)=>{
-        const blob = new Blob([data], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
-        const fileName = `assets_${this.companyId}.xlsx`;
-        saveAs(blob, fileName);
-      },
-      (err)=>{
-        console.log(err)
-      })
-    }
-    else if(this.currExportModuel=="customer"){
-      this.importService.downloadAllCustomer(this.companyId).subscribe((data:Blob)=>{
-        const blob = new Blob([data], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
-        const fileName = `customer_${this.companyId}.xlsx`;
-        saveAs(blob, fileName);
-      },
-      (err)=>{
-        console.log(err)
-      })
-    }
-  }
-
-  exportTemplate(event:any){
-    console.log(event.value)
-    this.currExportTemplate=event.value;
-
-    // console.log(this.currExportTemplate)
-  }
-  exportTemplateData(){
-    if(this.currExportTemplate=="asset"){
-    //   const link = document.createElement('a');
-    // link.href = 'assets/Template_Files/Asset_Template.csv'; // path to your file
-    // link.download = 'Asset_template.csv';        // name of the file to be downloaded
-    // link.click();
-    this.importService.downloadAssetTemplate(this.companyId).subscribe((data:Blob)=>{
-       const blob = new Blob([data], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
-    const fileName = `asset_template_${this.companyId}.xlsx`;
-    saveAs(blob, fileName);
-    },
-    (err)=>{
-      console.log(err)
-    })
-    }
-    if(this.currExportTemplate=="customer"){
-      this.importService.downloadCustomerTemplate(this.companyId).subscribe((data:Blob)=>{
-       const blob = new Blob([data], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
-    const fileName = `customer_template_${this.companyId}.csv`;
-    saveAs(blob, fileName);
-    },
-    (err)=>{
-      console.log(err)
-    })
-    }
-  }
   onFileSelected(event: any): void {
     const file: File = event.target.files[0];
     this.selectedFileName = file ? file.name : 'No file chosen';
   }
-    saveMappings(){
-    localStorage.setItem(this.currImport+"_"+this.impType+"_mapping",JSON.stringify(Array.from(this.columnMappings.entries())));
-    this.fetchDataFromLocalStorage();
-    console.log(localStorage.getItem(this.currImport+"_"+this.impType+"_mapping"));
-    // if(this.currImport+"_"+this.impType+"_mapping"=="asset_add_mapping"){
-    //   localStorage.setItem("asset_add_mapping",JSON.stringify(Array.from(this.columnMappings.entries())));
-    // }
-    this.triggerAlert("Mapping Saved Successfully!!","success")
-    console.log(this.columnMappings)
-  }
-  savedMappingLocalStorage(event:any){
-    console.log(event.checked)
-    this.useSavedMapping=event.checked;
-    
-    // Populate columnMappings with saved mapping when toggle is enabled
-    if(event.checked){
-      if(this.currImport === 'asset' && this.impType === 'add' && this.assetAddMapping){
-        this.columnMappings = new Map(this.assetAddMapping);
+
+  onSubmit() {
+    this.loading = true;
+    this.uploadInProgress = true;
+    this.showAlert = false;
+    localStorage.setItem('uploadInProgress', 'true');
+
+    const formData = this.myFile;
+    const objArray: any = {};
+    this.columnMappings.forEach((v, k) => {
+      objArray[k.toString()] = v;
+    });
+    const jsonString = JSON.stringify(objArray);
+    formData.append('column', jsonString);
+    this.myFile = formData;
+
+    if (this.importForm.controls['module'].value === "asset") {
+      this.currImport = "asset";
+      if (this.importForm.controls['importType'].value === "add") {
+        this.impType = "add";
+        formData.append('columnMappings', jsonString);
+        formData.append('file', formData.get('file'));
+        this.myFile = formData;
+
+        this.importService.addAssets(this.myFile, this.companyId, this.email, this.columnMappings).subscribe(
+          () => {
+            this.loading = false;
+            this.triggerAlert("Asset File Successfully Uploaded", "success");
+          },
+          (err) => {
+            this.loading = false;
+            this.uploadInProgress = false;
+            this.progress = 0;
+            localStorage.removeItem('uploadProgress');
+            localStorage.removeItem('uploadInProgress');
+            if (err.status === '409') {
+              this.triggerAlert(err.error.message, "danger");
+            } else if (err.error.errorMessage?.startsWith("Upload Limit Exceeded")) {
+              this.triggerAlert(err.error.errorMessage, "danger");
+            } else if (err.error.errorMessage === "Mandatory Column Name Is Missing in Mapping") {
+              this.triggerAlert("Failed!! " + err.error.errorMessage, "danger");
+            } else {
+              this.triggerAlert("Failed!! Please check file again and map all fields correctly", "danger");
+            }
+            this.ngOnInit();
+          }
+        );
+      } else {
+        formData.append('columnMappings', jsonString);
+        formData.append('file', formData.get('file'));
+        this.myFile = formData;
+        this.importService.updateAssets(this.myFile, this.companyId, this.email, this.columnMappings).subscribe(
+          () => {
+            this.loading = false;
+            this.triggerAlert("Asset File Successfully Updated", "success");
+          },
+          (err) => {
+            this.loading = false;
+            this.ngOnInit();
+            this.triggerAlert("Failed!! Please check file again and map all fields correctly", "danger");
+          }
+        );
       }
-      else if(this.currImport === 'asset' && this.impType === 'update' && this.assetUpdateMapping){
-        this.columnMappings = new Map(this.assetUpdateMapping);
+    } else if (this.importForm.controls['module'].value === "inventory") {
+      this.currImport = "inventory";
+      if (this.importForm.controls['importType'].value === "add") {
+        this.impType = "add";
+        const file = formData.get('file');
+        const newFileName = file.name + '_' + jsonString + '_' + this.email + '_' + this.companyId;
+        const newFile = new File([file], newFileName, { type: file.type });
+        formData.append('file', newFile);
+        this.myFile = formData;
+        this.importService.addInventory(this.myFile, this.companyId, this.email).subscribe(
+          () => { this.loading = false; this.triggerAlert("Inventory File Successfully Uploaded", "success"); },
+          (err) => {
+            this.loading = false;
+            if (err.error.errorMessage?.startsWith("Upload Limit Exceeded")) {
+              this.triggerAlert(err.error.errorMessage, "danger");
+            } else {
+              this.triggerAlert("Failed!! Please check file again and map all fields correctly", "danger");
+            }
+            this.ngOnInit();
+          }
+        );
+      } else {
+        this.impType = "update";
+        this.importService.updateInventory(this.myFile, this.companyId, this.email).subscribe(
+          () => { this.loading = false; this.triggerAlert("Inventory File Successfully Updated", "success"); },
+          (err) => { this.loading = false; this.ngOnInit(); this.triggerAlert("Failed!! Please check file again and map all fields correctly", "danger"); }
+        );
       }
-      else if(this.currImport === 'customer' && this.impType === 'add' && this.customerAddMapping){
-        this.columnMappings = new Map(this.customerAddMapping);
-      }
-      else if(this.currImport === 'customer' && this.impType === 'update' && this.customerUpdateMapping){
-        this.columnMappings = new Map(this.customerUpdateMapping);
+    } else if (this.importForm.controls['module'].value === "customer") {
+      this.currImport = "customer";
+      if (this.importForm.controls['importType'].value === "add") {
+        this.impType = "add";
+        formData.append('columnMappings', jsonString);
+        formData.append('file', formData.get('file'));
+        this.myFile = formData;
+        this.importService.addCustomer(this.myFile, this.companyId, this.email, this.columnMappings).subscribe(
+          () => { this.loading = false; this.triggerAlert("Customer File Successfully Uploaded", "success"); },
+          (err) => {
+            this.loading = false;
+            if (err.error.errorMessage?.startsWith("Upload Limit Exceeded")) {
+              this.triggerAlert(err.error.errorMessage, "danger");
+            } else if (err.error.errorMessage === "Mandatory Column Name Is Missing in Mapping") {
+              this.triggerAlert("Failed!! " + err.error.errorMessage, "danger");
+            } else {
+              this.triggerAlert("Failed!! Please check file again and map all fields correctly", "danger");
+            }
+            this.ngOnInit();
+          }
+        );
+      } else {
+        this.impType = "update";
+        formData.append('columnMappings', jsonString);
+        formData.append('file', formData.get('file'));
+        this.myFile = formData;
+        this.importService.updateCustomer(this.myFile, this.companyId, this.email).subscribe(
+          () => { this.loading = false; this.triggerAlert("Customer File Successfully Updated", "success"); },
+          (err) => { this.loading = false; this.ngOnInit(); this.triggerAlert("Failed!! Please check file again and map all fields correctly", "danger"); }
+        );
       }
     }
-    else{
-      // Clear mappings when toggled off
-      this.columnMappings = new Map();
+  }
+
+  // ─── Misc ─────────────────────────────────────────────────────────────────────
+
+  dropDown(event: any) {
+    this.selectedModule = event.value;
+    this.currImport = event.value;
+    this.selectedMappingName = '';
+    this.previewMapping = [];
+    this.useSavedMapping = false;
+    this.columnMappings = new Map();
+  }
+
+  exportData() {
+    if (this.selectedModule === "asset") this.assetService.exportexcel();
+  }
+
+  triggerAlert(message: string, type: string) {
+    this.alertMessage = message;
+    this.alertType = type;
+    this.showAlert = true;
+    setTimeout(() => { this.showAlert = false; }, 5000);
+  }
+
+  update(key: String, value: any) {
+    this.columnMappings.set(key, value.target.value);
+  }
+
+  updateType(data: string) {
+    this.impType = data;
+    this.selectedMappingName = '';
+    this.previewMapping = [];
+    this.useSavedMapping = false;
+    this.columnMappings = new Map();
+    if (data === "add") {
+      this.assetDatabaseColumns = this.assetDatabaseColumnsToAdd;
+      this.inventoryDatabaseColumns = this.inventoryDatabaseColumnsToAdd;
+      this.customerDatabaseColumns = this.customerDatabaseColumnsToAdd;
+      this.workorderDatabaseColumns = this.workorderDatabaseColumnsToAdd;
+    } else {
+      this.assetDatabaseColumns = this.assetDatabaseColumnsToUpdate;
+      this.inventoryDatabaseColumns = this.inventoryDatabaseColumnsToUpdate;
+      this.customerDatabaseColumns = this.customerDatabaseColumnsToUpdate;
+      this.workorderDatabaseColumns = this.workorderDatabaseColumnsToUpdate;
     }
   }
-  
+
+  exportModule(event: any) { this.currExportModuel = event.value; }
+
+  exportModuleData() {
+    if (this.currExportModuel === "asset") {
+      this.importService.downloadAllAssets(this.companyId).subscribe((data: Blob) => {
+        saveAs(new Blob([data], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' }), `assets_${this.companyId}.xlsx`);
+      });
+    } else if (this.currExportModuel === "customer") {
+      this.importService.downloadAllCustomer(this.companyId).subscribe((data: Blob) => {
+        saveAs(new Blob([data], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' }), `customer_${this.companyId}.xlsx`);
+      });
+    }
+  }
+
+  exportTemplate(event: any) { this.currExportTemplate = event.value; }
+
+  exportTemplateData() {
+    if (this.currExportTemplate === "asset") {
+      this.importService.downloadAssetTemplate(this.companyId).subscribe((data: Blob) => {
+        saveAs(new Blob([data], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' }), `asset_template_${this.companyId}.xlsx`);
+      });
+    }
+    if (this.currExportTemplate === "customer") {
+      this.importService.downloadCustomerTemplate(this.companyId).subscribe((data: Blob) => {
+        saveAs(new Blob([data], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' }), `customer_template_${this.companyId}.csv`);
+      });
+    }
+  }
 }

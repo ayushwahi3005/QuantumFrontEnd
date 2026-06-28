@@ -61,7 +61,7 @@
   </li>
 
 </ul> -->
-<app-header></app-header>
+<app-header (alertEvent)="triggerAlert($event.message, $event.type)"></app-header>
 <div class="main">
    <div *ngIf="showTrialAlert" class="alert alert-warning d-flex align-items-center justify-content-between"
     [ngStyle]="alertStyle" [ngClass]="{'app-assets-open':!hoverOverSidebar}">
@@ -73,6 +73,13 @@
       <!-- <button type="button" class="btn btn-sm btn-outline-secondary" (click)="showTrialAlert = false">Dismiss</button> -->
       <button type="button" class="btn btn-sm btn-outline-secondary" (click)="makeTrialAlertFalse()">Dismiss</button>
     </div>
+  </div>
+  <div *ngIf="showAlert" class="alert alert-info d-flex align-items-center justify-content-between"
+    [ngStyle]="alertStyle" [ngClass]="{'app-assets-open':!hoverOverSidebar}" style="z-index: 1000000;" >
+    {{ alertMessage }}
+    <!-- Optionally, add a close button -->
+    <button type="button" class="btn-close" (click)="showAlert = false" aria-label="Close"
+      style="float: right;"></button>
   </div>
 
   <div class="side-navbar" (mouseover)="onHover()" (mouseleave)="offHover()"
@@ -125,6 +132,7 @@
     <app-inventory *ngIf="current==3" [ngClass]="{'app-assets-open':!hoverOverSidebar}"></app-inventory>
     <app-company-customer *ngIf="current==1" [ngClass]="{'app-assets-open':!hoverOverSidebar}"></app-company-customer>
     <app-analytics-home-page *ngIf="current==6" [ngClass]="{'app-assets-open':!hoverOverSidebar}"></app-analytics-home-page>
+    <app-inspections *ngIf="current==4" [ngClass]="{'app-assets-open':!hoverOverSidebar}"></app-inspections>
     <!-- <app-company-customer-details *ngIf="current==6" [ngClass]="{'app-assets-open':!hoverOverSidebar}"></app-company-customer-details> -->
     <div class="loading" style="height: 100vh; width: 500px;" *ngIf="current==undefined||current==null"></div>
 

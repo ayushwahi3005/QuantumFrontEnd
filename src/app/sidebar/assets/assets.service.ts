@@ -311,7 +311,7 @@ export class AssetsService {
     'device-id': `${localStorage.getItem('deviceId')}`,
   });
 
-
+  console.log(data)
   return this.httpClient.post<any>(
     `${this.assetEndpoint}advancedFilter/optimized`,
     data,

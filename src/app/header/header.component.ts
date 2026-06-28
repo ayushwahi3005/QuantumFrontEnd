@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core';
+import { Component, EventEmitter, inject, Output } from '@angular/core';
 import { Subject } from 'rxjs';
 import { HeaderService } from './header.service';
 import { Router } from '@angular/router';
@@ -6,6 +6,7 @@ import { AuthService } from '../shared/auth.service';
 import { NotificationService } from '../notification/notification.service';
 import { MatDialog } from '@angular/material/dialog';
 import { DialogueComponent } from '../dialogue/dialogue.component';
+import { CustomerResetPasswordService } from '../customer-reset-password/customer-reset-password.service';
 
 @Component({
   selector: 'app-header',
@@ -14,8 +15,63 @@ import { DialogueComponent } from '../dialogue/dialogue.component';
 })
 export class HeaderComponent {
 
+  @Output() alertEvent = new EventEmitter<{message: string, type: string}>();
+  constructor(
+    private headerService: HeaderService, 
+    private router: Router, 
+    private auth: AuthService, 
+    private notificationService: NotificationService,
+    private customerResetPasswordService: CustomerResetPasswordService
+  ) { }
 
-  constructor(private headerService: HeaderService, private router: Router, private auth: AuthService, private notificationService: NotificationService) { }
+  changePasswordOtp: string = '';
+  changePasswordNew: string = '';
+  otpDigits: string[] = ['', '', '', '', '', ''];
+otpVerified: boolean = false;
+showPassword: boolean = false;
+pwChecks = { lower: false, length: false, upper: false, number: false };
+isSubmittingPassword: boolean = false;
+
+  openChangePassword(): void {
+    this.changePasswordOtp = '';
+    this.changePasswordNew = '';
+    this.customerResetPasswordService.sendOTPToEmail(this.email).subscribe(
+      (data) => {
+        console.log("OTP sent to email");
+      },
+      (err) => {
+        console.log("Error sending OTP", err);
+      }
+    );
+  }
+
+  submitChangePassword(): void {
+  if (!this.changePasswordOtp || !this.changePasswordNew) {
+    alert("Please enter both OTP and New Password");
+    return;
+  }
+  
+  this.isSubmittingPassword = true;  // ✅ start loader
+
+  const obj = {
+    email: this.email,
+    password: this.changePasswordNew,
+    otp: this.changePasswordOtp
+  };
+  this.customerResetPasswordService.updatePassword(obj, this.email).subscribe(
+    (data) => {
+      this.isSubmittingPassword = false;  // ✅ stop loader
+      const closeBtn = document.getElementById('closeChangePasswordModal');
+      if (closeBtn) closeBtn.click();
+      this.alertEvent.emit({ message: 'Password updated successfully', type: 'success' });
+    },
+    (err) => {
+      this.isSubmittingPassword = false;  // ✅ stop loader on error too
+      this.alertEvent.emit({ message: err?.error?.errorMessage || "Error updating password", type: 'error' });
+      // alert(err?.error?.errorMessage || "Error updating password");
+    }
+  );
+}
 
   username: any = '';
   email: any = '';
@@ -179,5 +235,24 @@ export class HeaderComponent {
       })
     localStorage.clear()
   }
+
+  get allChecksPass() {
+  return Object.values(this.pwChecks).every(Boolean);
+}
+
+onOtpInput(index: number, event: any): void {
+  const next = document.getElementById(`otp-${index + 1}`);
+  if (event.target.value && next) (next as HTMLElement).focus();
+  this.changePasswordOtp = this.otpDigits.join('');
+}
+
+checkPasswordStrength(value: string): void {
+  this.pwChecks = {
+    lower: /[a-z]/.test(value),
+    length: value.length >= 8,
+    upper: /[A-Z]/.test(value),
+    number: /[0-9]/.test(value)
+  };
+}
 
 }

@@ -8,13 +8,14 @@
   border-radius: 10px;
   border: 1px solid #e0e0e0;
   background-color: white;
-  height: 90vh;
+  height: calc(100vh - 270px);
   width: 85%;
   margin: 30px auto;
   padding: 20px;
   display: flex;
   flex-direction: column;
   overflow: hidden;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 }
 
 h2 {
@@ -430,4 +431,35 @@ table {
 /* Optional: Add animation when refresh is in progress */
 .refresh-btn.loading i {
   animation: spin 0.6s linear infinite;
+}
+
+
+.audit-log-header {
+  background: white;
+  border-radius: 12px;
+  padding: 30px;
+  margin-bottom: 30px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  border-left: 5px solid rgba(0, 0, 0, 0.906);
+  margin-left: 20px;
+  margin-right: 20px;
+ 
+}
+
+.header-title {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  margin-bottom: 10px;
+}
+
+.header-title i {
+  font-size: 32px;
+  color: #007bff;
+}
+.header-title h2 {
+  margin: 0;
+  font-size: 28px;
+  color: #2c3e50;
+  font-weight: 600;
 }

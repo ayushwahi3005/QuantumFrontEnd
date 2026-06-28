@@ -23,6 +23,11 @@ export class DashboardComponent  {
   currentSubscription:any;
   currentSubcriptionMessage:string='';
   currentSubscriptionMessageStyle:string='color: white; border-radius: 5px ; padding: 5px; margin-left:-4px; font-weight: 500;';
+  
+   showAlert: boolean = false; // Flag to toggle alert visibility
+  alertMessage: string = ''; // Alert message
+  alertType: string = 'success';
+  
   sideBarOption=[{
     number:1,
     name:'Customers',
@@ -31,6 +36,11 @@ export class DashboardComponent  {
   {
     number:2,
     name:'Assets',
+    icon:'bi bi-boxes'
+  },
+   {
+    number:4,
+    name:'Inspections',
     icon:'bi bi-boxes'
   },
   {
@@ -354,7 +364,15 @@ openSettings() {
     // }
     localStorage.setItem('trialAlertDismissedInfo',new Date().toISOString());
   }
-
+ triggerAlert(message: string, type: string) {
+    this.alertMessage = message;
+    this.alertType = type;
+    this.showAlert = true;
+    // You can set a timeout to automatically hide the alert after a certain time
+    setTimeout(() => {
+      this.showAlert = false;
+    }, 5000); // Hide the alert after 5 seconds (adjust as needed)
+  }
   
   
 

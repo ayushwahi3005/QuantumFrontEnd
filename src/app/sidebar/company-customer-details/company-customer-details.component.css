@@ -1,3 +1,12 @@
+<!-- Customer Details CSS -->
+
+* {
+    font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+}
+  
+mat-icon {
+    font-family: 'Material Icons';
+}
 
 input{
     margin: 10px 0px;
@@ -6,7 +15,7 @@ input{
     padding: 12px 20px;
    
     /* box-sizing: border-box; */
-    border: 3px solid #aab1b8;
+    border: 2px solid #aab1b8;
     -webkit-transition: 0.5s;
     transition: 0.5s;
     outline:none
@@ -53,11 +62,11 @@ select:focus{
 
 .option{
     width:80vw;
-    margin-top: 50px;
+    /* margin-top: 50px; */
     
     height: 70px;
 
-    margin: 0px auto;
+    /* margin: 0px auto; */
    
   
    
@@ -76,7 +85,7 @@ select:focus{
 .main{
     display: flex;
     flex-direction: row;
-
+    justify-content: center;
   
     
 }
@@ -99,24 +108,30 @@ select:focus{
   z-index: 9999;
   
 }
+
 .back-button{
     cursor: default;
     text-decoration: none;
     color: #8c8e91;
-    font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
-   
+    /* font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif; */
     /* margin: 10px 0px; */
     font-size: larger;
     /* float: inline-start; */
-    height: 20px;
-   
-
-    
-    
-    
-   
-    
+    float: inline-start;
+    /* height: 100px; */
+    width: 100%;
+    padding: 10px;
+    /* margin: 10px; */
+    border: 0.5px white solid;
+    /* border-radius: 10px; */
+    background-color: white;
+    border-bottom-color: lightgray;
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+    overflow: visible;    
 }
+
 .back-button:hover{
     /* color: #1a65ab; */
     color:#1a65ab
@@ -146,7 +161,7 @@ a:hover{
     width: 100%;
 }
 .mainFields input{
-    width: 15vw;
+    width: 20vw;
     height: 40px;
 }
 .mainFields select{
@@ -281,7 +296,7 @@ button{
 }
 .selected{
     background-color: rgba(255, 255, 255, 0.3);
-    border-radius: 10px;
+    border-radius: 5px;
     padding: 10px 10px;
    
   
@@ -325,7 +340,7 @@ img{
     position: absolute;
     left: 0rem;
     width: 250px;
-    height: calc(100% - 76px);
+    height: calc(100% - 53px);
     background-color: #12232E;
     box-shadow:rgba(255, 255, 255, 0.5);
     color: white;
@@ -345,7 +360,7 @@ img{
     height: 25px;
     width: 25px;
     margin-right: 15px;
-    margin-left: 10px;
+    margin-left: 5px;
     text-align: center;
     line-height: 25px;
    
@@ -353,7 +368,8 @@ img{
 }
 .nav-list-item span{
     width: 170px;
-    cursor: default;
+    cursor: pointer;
+    font-size: 16px;
    
     
     
@@ -362,15 +378,16 @@ img{
     padding-right: 0px;
     margin: 10px;
     padding: 10px;
-    width: 250px;
+    width: 230px;
 }
 .nav-list-item:hover{
     background-color: rgba(255, 255, 255, 0.3);
-    border-radius: 10px;
+    border-radius: 5px;
+    cursor: pointer;
  
 }
 .nav-list-open{
-    width: 65px;
+    width: 60px;
     
 }
 .nav-list-open span{
@@ -380,14 +397,13 @@ img{
 }
 .content-area{
     /* width: max-content; */
-    margin-left: 65px;
+    margin-left: 60px;
     display: flex;
     justify-content: center;
-    height: 500px;
-
+    height: calc(100vh - 53px);
     color: black;
-    display: flex;
     transition: margin 150ms linear;
+    overflow-y: scroll;
 }
 .content-area-onhover{
     margin-left: 250px;
@@ -405,9 +421,10 @@ img{
    
    
 } */
-.mat-mdc-button>.mat-icon{
+/* .mat-mdc-button>.mat-icon{
     margin-bottom: 10px;
-}
+} */
+
 .custom-dropdown {
     position: relative; /* Ensure it stays in flow of the document */
     z-index: 1000; /* Bring the dropdown on top of other elements */

@@ -147,4 +147,8 @@ export class AssetPreviewService {
         responseType: 'blob', // ✅ CRITICAL FIX
       },);
   }
+   getIpFromIpInfo(): Observable<any> {
+    return this.httpClient.get('https://ipinfo.io/json');
+  }
+
 }

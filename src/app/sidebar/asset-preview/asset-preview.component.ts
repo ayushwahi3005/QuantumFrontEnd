@@ -24,6 +24,7 @@ import { Subject } from 'rxjs';
 import { NotificationService } from 'src/app/notification/notification.service';
 import { InspectionInstance } from '../asset-details/inspectionInstance';
 import { IDropdownSettings } from 'ng-multiselect-dropdown';
+import { IpInfo } from '../asset-details/asset-details.component';
 
 @Component({
   selector: 'app-asset-preview',
@@ -99,6 +100,7 @@ export class AssetPreviewComponent {
     notes: '',
     createdAt: null,
     updatedAt: null,
+    dueDate: null,
     status: 'PENDING',
     stepValues: [],
     inspectionTemplates: [],
@@ -520,88 +522,234 @@ export class AssetPreviewComponent {
     const hierarchy = this.getLocationHierarchy();
     return hierarchy.length > 3;
   }
-  handleSubmit(employee: any, notes: string, location: string) {
-    console.log("emp=> " + this.selectedEmpName)
-    console.log("emp=> " + employee)
-    if (this.selectedEmpName == null || this.selectedEmpName == '') {
-      this.CheckInOutSubmit(employee, notes, location);
-    }
-    else {
-      this.CheckInOutSubmit(this.selectedEmpName, notes, location);
-    }
+  // handleSubmit(employee: any, notes: string, location: string) {
+  //   console.log("emp=> " + this.selectedEmpName)
+  //   console.log("emp=> " + employee)
+  //   if (this.selectedEmpName == null || this.selectedEmpName == '') {
+  //     this.CheckInOutSubmit(employee, notes, location);
+  //   }
+  //   else {
+  //     this.CheckInOutSubmit(this.selectedEmpName, notes, location);
+  //   }
 
 
-    if (employee) employee = '';
-    this.selectedEmpName = this.username;
-    if (notes) notes = '';
-    if (location) location = '';
-    this.notesRef.nativeElement.value = '';
-    this.locationRef.nativeElement.value = '';
-  }
-  CheckInOutSubmit(employee: string, notes: string, location: string) {
+  //   if (employee) employee = '';
+  //   this.selectedEmpName = this.username;
+  //   if (notes) notes = '';
+  //   if (location) location = '';
+  //   this.notesRef.nativeElement.value = '';
+  //   this.locationRef.nativeElement.value = '';
+  // }
+  // CheckInOutSubmit(employee: string, notes: string, location: string) {
+  //   let obj = {};
+  //   var today = new Date();
+  //   console.log("today--->" + today)
+  //   if (employee == null || employee == '' || notes == null || notes == '') {
+  //     // alert("Fields are Empty");
+  //     this.triggerAlert("Check In/Out Fields are Empty", "warning");
+  //   }
+  //   else {
+  //     if (this.checkInOut.length == 0) {
+  //       obj = {
+  //         "assetId": this.assetId,
+  //         "status": "Checked Out",
+  //        "date": this.datePipe.transform(new Date(), 'yyyy-MM-ddTHH:mm:ss'),
+  //         "employee": employee,
+  //         "notes": notes,
+  //         "location": location,
+  //         "companyId": this.companyId
+  //       }
+  //     }
+  //     else if (this.checkInOut[0].status == 'Checked In') {
+  //       obj = {
+  //         "assetId": this.assetId,
+  //         "status": "Checked Out",
+  //        "date": this.datePipe.transform(new Date(), 'yyyy-MM-ddTHH:mm:ss'),
+  //         "employee": employee,
+  //         "notes": notes,
+  //         "location": location,
+  //         "companyId": this.companyId
+  //       }
+  //     }
+  //     else {
+  //       obj = {
+  //         "assetId": this.assetId,
+  //         "status": "Checked In",
+  //        "date": this.datePipe.transform(new Date(), 'yyyy-MM-ddTHH:mm:ss'),
+  //         "employee": employee,
+  //         "notes": notes,
+  //         "location": location,
+  //         "companyId": this.companyId
+  //       }
+  //     }
+  //     console.log(obj)
+  //     this.assetPreviewService.addCheckInOut(obj).subscribe((data) => {
+  //       console.log(data);
+  //     },
+  //       (err) => {
+  //         console.log(err);
+  //         // if (err.error.error === "TRIAL_EXPIRED"||err.error.error==="SUBSCRIPTION_REQUIRED") {
+  //          if(err.error.error==="TRIAL_EXPIRED"){
+  //           this.triggerAlert(err.error.message, "danger");
+  //         }
+  //         else {
+  //           this.triggerAlert(err.error.errorMessage, "danger");
+  //         }
+  //       },
+  //       () => {
+  //         this.ngOnInit()
+  //       })
+
+  //   }
+
+
+
+  // }
+   handleSubmit(employee: any, notes: string, location: string) {
+      this.assetPreviewService.getIpFromIpInfo().subscribe(
+        (data: any) => {
+          console.log('IP Info', data);
+          let userLoc = data as IpInfo;
+          // console.log('GeoLocation', mylocation);
+          console.log('emp=> ' + this.selectedEmpName);
+          console.log('emp=> ' + employee);
+          let lat = userLoc.loc.split(',')[0];
+          let lon = userLoc.loc.split(',')[1];
+  
+          if (this.selectedEmpName == null || this.selectedEmpName == '') {
+            this.CheckInOutSubmit(
+              employee,
+              notes,
+              location,
+              lat,
+              lon,
+              userLoc.ip,
+              userLoc.city +
+                ', ' +
+                userLoc.region +
+                ', ' +
+                userLoc.country +
+                ' - ' +
+                userLoc.postal,
+            );
+          } else {
+            this.CheckInOutSubmit(
+              this.selectedEmpName,
+              notes,
+              location,
+              lat,
+              lon,
+              userLoc.ip,
+              userLoc.city +
+                ', ' +
+                userLoc.region +
+                ', ' +
+                userLoc.country +
+                ' - ' +
+                userLoc.postal,
+            );
+          }
+  
+          if (employee) employee = '';
+          this.selectedEmpName = this.username;
+          if (notes) notes = '';
+          if (location) location = '';
+          this.notesRef.nativeElement.value = '';
+          this.locationRef.nativeElement.value = '';
+        },
+        (err) => {
+          console.log('Error fetching IP info', err);
+        },
+      );
+      //  this.getGeolocation().then(mylocation => {
+  
+      //   });
+    }
+   CheckInOutSubmit(
+    employee: any,
+    notes: string,
+    location: string,
+    latitude: string,
+    longitude: string,
+    ip: string,
+    userAddress: string,
+  ) {
+    console.log(employee + ' ' + notes);
+    if (employee == null && this.userRole.toLowerCase() != 'admin') {
+      employee = this.username;
+    }
     let obj = {};
     var today = new Date();
-    console.log("today--->" + today)
     if (employee == null || employee == '' || notes == null || notes == '') {
       // alert("Fields are Empty");
-      this.triggerAlert("Check In/Out Fields are Empty", "warning");
-    }
-    else {
+      this.triggerAlert('Check In/Out Fields are Empty', 'warning');
+    } else {
+      if (this.userRole.toLowerCase() != 'admin') {
+        if (localStorage.getItem('name') != null) {
+          employee = localStorage.getItem('name');
+        }
+      }
       if (this.checkInOut.length == 0) {
         obj = {
-          "assetId": this.assetId,
-          "status": "Checked Out",
-         "date": this.datePipe.transform(new Date(), 'yyyy-MM-ddTHH:mm:ss'),
-          "employee": employee,
-          "notes": notes,
-          "location": location,
-          "companyId": this.companyId
-        }
-      }
-      else if (this.checkInOut[0].status == 'Checked In') {
+          assetId: this.assetId,
+          status: 'Checked Out',
+          date: this.datePipe.transform(new Date(), 'yyyy-MM-ddTHH:mm:ss'),
+          employee: employee,
+          notes: notes,
+          location: location,
+          companyId: this.companyId,
+          userLatitude: latitude,
+          userLongitude: longitude,
+          ipAddress: ip,
+          userLocation: userAddress,
+        };
+      } else if (this.checkInOut[0].status == 'Checked In') {
         obj = {
-          "assetId": this.assetId,
-          "status": "Checked Out",
-         "date": this.datePipe.transform(new Date(), 'yyyy-MM-ddTHH:mm:ss'),
-          "employee": employee,
-          "notes": notes,
-          "location": location,
-          "companyId": this.companyId
-        }
-      }
-      else {
+          assetId: this.assetId,
+          status: 'Checked Out',
+          date: this.datePipe.transform(new Date(), 'yyyy-MM-ddTHH:mm:ss'),
+          employee: employee,
+          notes: notes,
+          location: location,
+          companyId: this.companyId,
+          userLatitude: latitude,
+          userLongitude: longitude,
+          ipAddress: ip,
+          userLocation: userAddress,
+        };
+      } else {
         obj = {
-          "assetId": this.assetId,
-          "status": "Checked In",
-         "date": this.datePipe.transform(new Date(), 'yyyy-MM-ddTHH:mm:ss'),
-          "employee": employee,
-          "notes": notes,
-          "location": location,
-          "companyId": this.companyId
-        }
+          assetId: this.assetId,
+          status: 'Checked In',
+          date: this.datePipe.transform(new Date(), 'yyyy-MM-ddTHH:mm:ss'),
+          employee: employee,
+          notes: notes,
+          location: location,
+          companyId: this.companyId,
+          userLatitude: latitude,
+          userLongitude: longitude,
+          ipAddress: ip,
+          userLocation: userAddress,
+        };
       }
-      console.log(obj)
-      this.assetPreviewService.addCheckInOut(obj).subscribe((data) => {
-        console.log(data);
-      },
+      console.log(obj);
+      this.assetPreviewService.addCheckInOut(obj).subscribe(
+        (data) => {
+          console.log(data);
+        },
         (err) => {
           console.log(err);
-          // if (err.error.error === "TRIAL_EXPIRED"||err.error.error==="SUBSCRIPTION_REQUIRED") {
-           if(err.error.error==="TRIAL_EXPIRED"){
-            this.triggerAlert(err.error.message, "danger");
-          }
-          else {
-            this.triggerAlert(err.error.errorMessage, "danger");
+          if (err.error.error === 'TRIAL_EXPIRED') {
+            this.triggerAlert(err.error.message, 'danger');
+          } else {
+            this.triggerAlert(err.error.errorMessage, 'danger');
           }
         },
         () => {
-          this.ngOnInit()
-        })
-
+          this.ngOnInit();
+        },
+      );
     }
-
-
-
   }
 
   triggerAlert(message: string, type: string) {

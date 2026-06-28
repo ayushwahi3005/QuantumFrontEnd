@@ -45,6 +45,7 @@ export class CompanyCustomerComponent implements OnInit, OnDestroy, AfterViewIni
   searchData!: string;
   searchDataBy!: string;
   sortedBy!: string;
+  sortDirection: string = 'ASC'; // Add sort direction property
   showFieldsList!: ShowFieldsData[];
   mandatoryFieldsList!: MandatoryFields[];
   mandatoryFieldsMap!: Map<string, boolean>;
@@ -90,7 +91,7 @@ export class CompanyCustomerComponent implements OnInit, OnDestroy, AfterViewIni
   private countrySubscription!: Subscription; // ✅ track subscription for cleanup
 
   selectedCountryCode: string = 'United States of America';
-  countryCodeList = countryList;
+  // countryCodeList = countryList;
   currentSelectedCountryCode = 'US';
 
   countryList = [
@@ -366,7 +367,9 @@ export class CompanyCustomerComponent implements OnInit, OnDestroy, AfterViewIni
 
   // ✅ Normal version - resets state fields, used when user changes country
   getStateList(country: any) {
-    this.currentSelectedCountryCode = countryList[country] || '';
+    // this.currentSelectedCountryCode = countryList[country] || '';
+    this.currentSelectedCountryCode = country;
+    console.log('Fetching states for country:', country, 'code:', this.currentSelectedCountryCode); // check what country value is
     this.companyCustomerService.countryStateList(this.currentSelectedCountryCode).subscribe(
       (data) => {
         this.stateList = data;
@@ -402,6 +405,7 @@ export class CompanyCustomerComponent implements OnInit, OnDestroy, AfterViewIni
     this.advanceFilterFunc();
   }
 
+  
   formatPhoneNumber(event: Event) {
     let input = (event.target as HTMLInputElement).value;
     input = input.replace(/\D/g, '');
@@ -416,9 +420,14 @@ export class CompanyCustomerComponent implements OnInit, OnDestroy, AfterViewIni
     this.companyCustomerForm.controls['phone'].setValue(input);
   }
 
+  toggleSortDirection() {
+    this.sortDirection = this.sortDirection === 'ASC' ? 'DESC' : 'ASC';
+    this.advanceFilterFunc();
+  }
+
   advanceFilterFunc() {
   this.loadingScreen = true;
-  console.log('filterForm value:', this.filterForm.value); // check if form is valid
+  console.log('filterForm value:', this.filterForm.value);
   console.log('pageIndex:', this.pageIndex, 'pageSize:', this.pageSize);
 
   this.companyCustomerService.advanceFilter(
@@ -427,7 +436,7 @@ export class CompanyCustomerComponent implements OnInit, OnDestroy, AfterViewIni
     this.pageSize,
     this.sortedBy,
     this.searchData,
-    this.asc
+    this.sortDirection === 'ASC' ? true : false
   ).subscribe(
     (data) => {
       console.log('raw API response:', data); // check what API returns

@@ -1,331 +1,324 @@
-<div *ngIf="showAlert" class="alert" [ngClass]="'alert-' + alertType" role="alert">
-    {{ alertMessage }}
-    <!-- Optionally, add a close button -->
-    <button type="button" class="btn-close" (click)="showAlert = false" aria-label="Close" style="float: right;"></button>
+<div *ngIf="showAlert" class="alert d-flex align-items-center justify-content-between"
+  [class]="'alert alert-' + alertType + ' d-flex align-items-center justify-content-between'"
+  role="alert">
+  <div>{{ alertMessage }}</div>
+  <div>
+    <button type="button" class="btn-close" (click)="showAlert = false" aria-label="Close"></button>
   </div>
+</div>
+
 <div class="main" *ngIf="loading==false">
-    <div class="container d-flex justify-content-between">
-        <div>
-        <h1>Import Assistant</h1>
-        <label style="font-size: large;margin-top: 10px;">Record Type</label>
-        <br>
-        <form [formGroup]="importForm" (ngSubmit)="onSubmit()">
-            <div class="form-group">
-                <select class="form-select form-control" id="dropdown"  formControlName="module" style="width: 60%;" (change)="dropDown(val)" #val>
-                
-                <option value="asset" selected>Asset</option>
-                <!-- <option value="workorder" selected>Work Order</option>
-                <option value="inventory" >Inventory</option> -->
-                <option value="customer">Customer</option>
-                </select>
-            </div>
+  <div class="container d-flex justify-content-between">
+    <div>
+      <h1>Import Assistant</h1>
+      <label style="font-size: large;margin-top: 10px;">Record Type</label>
+      <br>
+      <form [formGroup]="importForm" (ngSubmit)="onSubmit()">
+        <div class="form-group">
+          <select class="form-select form-control" id="dropdown" formControlName="module" style="width: 60%;"
+            (change)="dropDown(val)" #val>
+            <option value="asset" selected>Asset</option>
+            <option value="customer">Customer</option>
+          </select>
+        </div>
 
-            <div class="form-group" style="margin-top: 100px;">
-                <input type="radio" id="add" value="add" name="importType" formControlName="importType" (click)="updateType('add')">
-                <label for="add" style="margin-left: 10px;" >ADD</label><br>
-                <input type="radio" id="update" value="update" name="importType" formControlName="importType" (click)="updateType('update')">
-                <label for="update" style="margin-left: 10px;">UPDATE</label>
-            </div>
-            
-            <div class="mt-5">
-                <span class="downloadTemplate" data-toggle="modal" data-target="#downloadTemplate">Download Template</span> 
-            </div>
-            
-            <div class="form-group" class="form-control" (change)="FileUpload($event)" style="border: 0px;">
-              
-                    <label style="font-size: x-large;margin-top: 50px;">CSV File</label><br>
-                    <input type="file" class="mt-1" formControlName="file" #myFile style="display:none" accept=".csv" (change)="onFileSelected($event)">
-                    <button type="button" class="btn btn-secondary mt-2" (click)="myFile.click()" >Choose File</button>
-                    <span class="file-name" style="margin-left: 10px;">{{ selectedFileName }}</span>
-               
-            </div>
-            <button type="submit" class="btn btn-primary mt-5"  [disabled]="importForm.invalid" (click)="myFile.value=''">Submit</button>
-        </form>
+        <div class="form-group" style="margin-top: 100px;">
+          <input type="radio" id="add" value="add" name="importType" formControlName="importType"
+            (click)="updateType('add')">
+          <label for="add" style="margin-left: 10px;">ADD</label><br>
+          <input type="radio" id="update" value="update" name="importType" formControlName="importType"
+            (click)="updateType('update')">
+          <label for="update" style="margin-left: 10px;">UPDATE</label>
+        </div>
+
+        <div class="mt-5">
+          <span class="downloadTemplate" data-toggle="modal" data-target="#downloadTemplate">Download Template</span>
+        </div>
+
+        <div class="form-group" class="form-control" (change)="FileUpload($event)" style="border: 0px;">
+          <label style="font-size: x-large;margin-top: 50px;">CSV File</label><br>
+          <input type="file" class="mt-1" formControlName="file" #myFile style="display:none" accept=".csv"
+            (change)="onFileSelected($event)">
+          <button type="button" class="btn btn-secondary mt-2" (click)="myFile.click()">Choose File</button>
+          <span class="file-name" style="margin-left: 10px;">{{ selectedFileName }}</span>
+        </div>
+
+        <button type="submit" class="btn btn-primary mt-5" [disabled]="importForm.invalid"
+          (click)="myFile.value=''">Submit</button>
+      </form>
     </div>
-        <div *ngIf="excelColumns.length && assetDatabaseColumns.length" style="float: right;" class="mapping">
-            <div>
-              <div class="d-flex justify-content-around">
-                <mat-slide-toggle color="primary" class="blue-toggle" (change)="savedMappingLocalStorage(saved)" #saved>Use Saved Mapping</mat-slide-toggle>
-              <button class="btn btn-primary"  data-toggle="modal" data-target="#viewSavedMappingModal">View Saved Mapping</button>
-              </div>
-              
-            </div>
-            <h2 >Column Mapping</h2>
-            <table class="table" >
-                <thead class="table-dark">
-                    <th style="padding-left: 10%;">Excel Column</th>
-                    <th  style="padding-left: 10%;">Database Column</th>
-                </thead>
-                
-                <tbody >
-                    
-            <tr *ngFor="let excelCol of excelColumns; let i = index" >
-                
-                <td style="padding-left: 10%;">
-             {{ excelCol }}
-                </td>
-                <td style="padding-left: 10%;">
-              <select [ngModel]="columnMappings.get(excelCol)" (change)="update(excelCol,$event)" *ngIf="(currImport=='asset')">
-                <option selected></option>
-                
-                <option *ngFor="let dbCol of assetDatabaseColumns" [value]="dbCol" >
-                  {{ dbCol }}
-                </option>
-              </select>
 
-              <select [ngModel]="columnMappings.get(excelCol)" (change)="update(excelCol,$event)" *ngIf="(currImport=='inventory')">
-                <option selected></option>
-                
-                <option *ngFor="let dbCol of inventoryDatabaseColumns" [value]="dbCol" >
-                  {{ dbCol }}
-                </option>
-              </select>
+    <!-- Column Mapping Panel -->
+    <div *ngIf="excelColumns.length && assetDatabaseColumns.length" style="float: right;" class="mapping">
+      <div>
+        <div class="d-flex justify-content-around align-items-center" style="gap:8px; flex-wrap:wrap;">
 
-              <select [ngModel]="columnMappings.get(excelCol)" (change)="update(excelCol,$event)" *ngIf="(currImport=='workorder')">
-                <option selected></option>
-                
-                <option *ngFor="let dbCol of workorderDatabaseColumns" [value]="dbCol" >
-                  {{ dbCol }}
-                </option>
-              </select>
+          <!-- Applied mapping badge -->
+          <div *ngIf="useSavedMapping && selectedMappingName"
+            style="display:flex;align-items:center;gap:6px;background:#f0f7ff;border:1px solid #bfdbfe;border-radius:8px;padding:6px 12px;font-size:13px;">
+            <i class="bi bi-check-circle-fill" style="color:#2563eb;"></i>
+            <span style="color:#1e40af;font-weight:500;">{{ selectedMappingName }}</span>
+            <!-- <button class="btn btn-sm" style="padding:0 4px;color:#6b7280;" (click)="clearAppliedMapping()"
+              title="Clear mapping">
+              <i class="bi bi-x"></i>
+            </button> -->
+            
+          </div>
 
-              <select [ngModel]="columnMappings.get(excelCol)" (change)="update(excelCol,$event)" *ngIf="(currImport=='customer')">
+          <button class="btn btn-outline-primary btn-sm" data-toggle="modal"
+            data-target="#viewSavedMappingModal" (click)="fetchDataFromLocalStorage()">
+            <i class="bi bi-folder2-open" style="margin-right:4px;"></i> Saved Mappings
+            <span *ngIf="currentMappingList.length > 0"
+              class="badge bg-primary ms-1">{{ currentMappingList.length }}</span>
+          </button>
+          
+        </div>
+      </div>
+
+      <h2>Column Mapping</h2>
+      <table class="table">
+        <thead class="table-dark">
+          <th style="padding-left: 10%;">Excel Column</th>
+          <th style="padding-left: 10%;">Database Column</th>
+        </thead>
+        <tbody>
+          <tr *ngFor="let excelCol of excelColumns; let i = index">
+            <td style="padding-left: 10%;">{{ excelCol }}</td>
+            <td style="padding-left: 10%;">
+              <select [ngModel]="columnMappings.get(excelCol)" (change)="update(excelCol,$event)"
+                *ngIf="(currImport=='asset')">
                 <option selected></option>
-                
-                <option *ngFor="let dbCol of customerDatabaseColumns" [value]="dbCol" >
-                  {{ dbCol }}
-                </option>
+                <option *ngFor="let dbCol of assetDatabaseColumns" [value]="dbCol">{{ dbCol }}</option>
+              </select>
+              <select [ngModel]="columnMappings.get(excelCol)" (change)="update(excelCol,$event)"
+                *ngIf="(currImport=='inventory')">
+                <option selected></option>
+                <option *ngFor="let dbCol of inventoryDatabaseColumns" [value]="dbCol">{{ dbCol }}</option>
+              </select>
+              <select [ngModel]="columnMappings.get(excelCol)" (change)="update(excelCol,$event)"
+                *ngIf="(currImport=='workorder')">
+                <option selected></option>
+                <option *ngFor="let dbCol of workorderDatabaseColumns" [value]="dbCol">{{ dbCol }}</option>
+              </select>
+              <select [ngModel]="columnMappings.get(excelCol)" (change)="update(excelCol,$event)"
+                *ngIf="(currImport=='customer')">
+                <option selected></option>
+                <option *ngFor="let dbCol of customerDatabaseColumns" [value]="dbCol">{{ dbCol }}</option>
               </select>
             </td>
-           
-        </tr>
+          </tr>
         </tbody>
-        </table>
-            <button class="btn btn-primary" style="margin-left: 15%; margin-top: 20px; " (click)="saveMappings()" >Save Mappings</button>
-          </div>
+      </table>
 
-
-          
+      <button class="btn btn-primary" style="margin-left: 15%; margin-top: 20px;" (click)="saveMappings()">
+        <i class="bi bi-floppy" style="margin-right:4px;"></i> Save Mapping
+      </button>
     </div>
+  </div>
 </div>
 
+<!-- Loader -->
 <div class="loader" *ngIf="loading==true" style="margin-top: 10px; margin-left: 48%;">
-  <!-- MYLOADER -->
-   <!-- Loading... {{progress}} -->
-  <div class="bar1"></div>
-  <div class="bar2"></div>
-  <div class="bar3"></div>
-  <div class="bar4"></div>
-  <div class="bar5"></div>
-  <div class="bar6"></div>
-  <div class="bar7"></div>
-  <div class="bar8"></div>
-  <div class="bar9"></div>
-  <div class="bar10"></div>
-  <div class="bar11"></div>
-  <div class="bar12"></div>
+  <div class="bar1"></div><div class="bar2"></div><div class="bar3"></div>
+  <div class="bar4"></div><div class="bar5"></div><div class="bar6"></div>
+  <div class="bar7"></div><div class="bar8"></div><div class="bar9"></div>
+  <div class="bar10"></div><div class="bar11"></div><div class="bar12"></div>
 </div>
-<div class="modal fade" id="exportTable" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle" aria-hidden="true" style="z-index :10000;">
+
+<!-- Export Modal -->
+<div class="modal fade" id="exportTable" tabindex="-1" role="dialog" aria-hidden="true" style="z-index:10000;">
   <div class="modal-dialog" role="document">
     <div class="modal-content">
       <div class="modal-header">
-        <h2 class="modal-title" id="exampleModalLongTitle">Export</h2>
-        <button type="button" class="close  ms-auto" data-dismiss="modal" aria-label="Close" #closeBox3>
+        <h2 class="modal-title">Export</h2>
+        <button type="button" class="close ms-auto" data-dismiss="modal" aria-label="Close" #closeBox3>
           <span aria-hidden="true">&times;</span>
         </button>
       </div>
       <div class="modal-body">
-        <form>
-          <select class="form-select form-control" id="dropdown"   style="width: 100%;" (change)="exportModule(val)" #val>
-                
-            <option value="asset" >Asset</option>
-            <option value="workorder" selected>Work Order</option>
-            <option value="inventory" >Inventory</option>
-            <option value="customer">Customer</option>
-            </select>
-        </form>
-        
-         
-      
+        <select class="form-select form-control" style="width: 100%;" (change)="exportModule(val)" #val>
+          <option value="asset">Asset</option>
+          <option value="workorder" selected>Work Order</option>
+          <option value="inventory">Inventory</option>
+          <option value="customer">Customer</option>
+        </select>
       </div>
       <div class="modal-footer d-flex justify-content-around">
-        
-        <button type="submit" class="btn btn-primary mt-3" (click)="closeBox3.click()" (click)="exportModuleData()"   >Export</button>
-        
-      </div>
-    </div>
-  </div>
-</div>
-<div class="modal fade" id="downloadTemplate" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle" aria-hidden="true" style="z-index :10000;">
-  <div class="modal-dialog" role="document">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h2 class="modal-title" id="exampleModalLongTitle">Select Template</h2>
-        <button type="button" class="close  ms-auto" data-dismiss="modal" aria-label="Close" #closeBox4>
-          <span aria-hidden="true">&times;</span>
-        </button>
-      </div>
-      <div class="modal-body">
-        <form>
-          <select class="form-select form-control" id="dropdown"   style="width: 100%;" (change)="exportTemplate(templateVal)" #templateVal>
-                
-            <option value="asset" >Asset</option>
-            <!-- <option value="workorder" selected>Work Order</option>
-            <option value="inventory" >Inventory</option> -->
-            <option value="customer">Customer</option>
-            </select>
-        </form>
-        
-         
-      
-      </div>
-      <div class="modal-footer d-flex justify-content-around">
-        
-        <button type="submit" class="btn btn-primary mt-3" (click)="closeBox4.click()" (click)="exportTemplateData()"   >Download Template</button>
-        
+        <button type="submit" class="btn btn-primary mt-3" (click)="closeBox3.click()" (click)="exportModuleData()">Export</button>
       </div>
     </div>
   </div>
 </div>
 
-
-
-<div class="modal fade" id="viewSavedMappingModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle" aria-hidden="true" style="z-index :10000;">
+<!-- Download Template Modal -->
+<div class="modal fade" id="downloadTemplate" tabindex="-1" role="dialog" aria-hidden="true" style="z-index:10000;">
   <div class="modal-dialog" role="document">
     <div class="modal-content">
       <div class="modal-header">
-        <h2 class="modal-title" id="exampleModalLongTitle">Mapping Details</h2>
-        <button type="button" class="close  ms-auto" data-dismiss="modal" aria-label="Close" #savedMappingClose>
+        <h2 class="modal-title">Select Template</h2>
+        <button type="button" class="close ms-auto" data-dismiss="modal" aria-label="Close" #closeBox4>
           <span aria-hidden="true">&times;</span>
         </button>
       </div>
       <div class="modal-body">
-        
-        <div *ngIf="impType=='add'">
-          <div *ngIf="currImport === 'customer'">
-            <table class="table table-bordered table-sm">
-              <thead class="table-dark">
-                <tr>
-                  <th>Excel Column</th>
-                  <th>Database Column</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr *ngFor="let item of customerAddMapping | keyvalue">
-                  <td>{{ item.key }}</td>
-                  <td>{{ item.value }}</td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
+        <select class="form-select form-control" style="width: 100%;" (change)="exportTemplate(templateVal)" #templateVal>
+          <option value="asset">Asset</option>
+          <option value="customer">Customer</option>
+        </select>
+      </div>
+      <div class="modal-footer d-flex justify-content-around">
+        <button type="submit" class="btn btn-primary mt-3" (click)="closeBox4.click()" (click)="exportTemplateData()">Download Template</button>
+      </div>
+    </div>
+  </div>
+</div>
 
-          <div *ngIf="currImport=='asset'">
-            <table class="table table-bordered table-sm">
-              <thead class="table-dark">
-                <tr>
-                  <th>Excel Column</th>
-                  <th>Database Column</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr *ngFor="let item of assetAddMapping | keyvalue">
-                  <td>{{ item.key }}</td>
-                  <td>{{ item.value }}</td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
+<!-- ─── Saved Mappings Modal ─────────────────────────────────────────────────── -->
+<div class="modal fade" id="viewSavedMappingModal" tabindex="-1" role="dialog" aria-hidden="true" style="z-index:10000;">
+  <div class="modal-dialog modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2 class="modal-title">Saved Mappings</h2>
+       <button type="button" class="btn btn-light btn-sm ms-auto" data-dismiss="modal" aria-label="Close" style="border-radius: 10px;" #closeBox>
+          <i class="bi bi-x-lg"></i>
+        </button>
+      </div>
+
+      <div class="modal-body" style="padding: 20px;">
+
+        <!-- Context badge -->
+        <div style="margin-bottom:16px;">
+          <span style="font-size:13px;color:#6b7280;">Showing mappings for:</span>
+          <span style="margin-left:6px;background:#f0f7ff;color:#1e40af;padding:3px 10px;border-radius:20px;font-size:13px;font-weight:500;border:1px solid #bfdbfe;">
+            {{ currImport | titlecase }} — {{ impType | titlecase }}
+          </span>
         </div>
-        <div *ngIf="impType=='update'">
-           <div *ngIf="currImport=='customer'">
-            {{this.customerUpdateMapping | json}}
-           </div>
-          <div *ngIf="currImport=='asset'">
-            {{this.assetUpdateMapping | json}}
-          </div>
+
+        <!-- No mappings state -->
+        <div *ngIf="currentMappingList.length === 0"
+          style="text-align:center;padding:40px 20px;color:#9ca3af;">
+          <i class="bi bi-folder2-open" style="font-size:36px;display:block;margin-bottom:10px;"></i>
+          <p style="font-size:14px;margin:0;">No saved mappings yet for this type.</p>
+          <p style="font-size:12px;margin-top:4px;">Map columns and click "Save Mapping" to create one.</p>
         </div>
-         
-      
+
+        <!-- Two-column layout: list + preview -->
+        <div *ngIf="currentMappingList.length > 0" style="display:flex;gap:16px;">
+
+          <!-- Left: mapping list -->
+          <div style="flex:1;min-width:0;">
+            <p style="font-size:12px;font-weight:500;color:#6b7280;text-transform:uppercase;letter-spacing:.5px;margin-bottom:8px;">
+              Saved Mappings
+            </p>
+            <div *ngFor="let m of currentMappingList"
+              (click)="selectPreview(m.name)"
+              style="display:flex;align-items:center;justify-content:space-between;padding:10px 12px;border:1px solid #e5e7eb;border-radius:8px;margin-bottom:8px;cursor:pointer;transition:background .15s;"
+              [style.background]="selectedMappingName === m.name ? '#f0f7ff' : '#fff'"
+              [style.borderColor]="selectedMappingName === m.name ? '#93c5fd' : '#e5e7eb'">
+
+              <div>
+                <strong style="font-size:14px;color:#111;">{{ m.name }}</strong>
+                <span style="font-size:11px;color:#9ca3af;margin-left:6px;">{{ m.mapping.length }} columns</span>
+              </div>
+
+              <div style="display:flex;gap:6px;" (click)="$event.stopPropagation()">
+                <button class="btn btn-sm btn-primary"
+                  (click)="applyNamedMapping(m.name); savedMappingClose.click()"
+                  style="font-size:12px;padding:3px 10px;">
+                  Use
+                </button>
+                <button class="btn btn-sm btn-outline-danger"
+                  (click)="deleteNamedMapping(m.name)"
+                  style="font-size:12px;padding:3px 8px;">
+                  <i class="bi bi-trash"></i>
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Right: preview -->
+          <div style="flex:1.2;min-width:0;">
+            <p style="font-size:12px;font-weight:500;color:#6b7280;text-transform:uppercase;letter-spacing:.5px;margin-bottom:8px;">
+              Preview
+            </p>
+
+            <div *ngIf="!selectedMappingName"
+              style="display:flex;flex-direction:column;align-items:center;justify-content:center;height:200px;color:#d1d5db;border:1px dashed #e5e7eb;border-radius:8px;">
+              <i class="bi bi-arrow-left" style="font-size:20px;margin-bottom:6px;"></i>
+              <span style="font-size:13px;">Select a mapping to preview</span>
+            </div>
+
+            <div *ngIf="selectedMappingName && previewMapping.length > 0"
+              style="max-height:320px;overflow-y:auto;border:1px solid #e5e7eb;border-radius:8px;">
+              <table class="table table-sm" style="margin:0;">
+                <thead style="position:sticky;top:0;background:#1e293b;color:white;">
+                  <tr>
+                    <th style="padding:8px 12px;font-size:12px;">Excel Column</th>
+                    <th style="padding:8px 12px;font-size:12px;">Database Column</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr *ngFor="let entry of previewMapping">
+                    <td style="padding:7px 12px;font-size:13px;color:#374151;">{{ entry[0] }}</td>
+                    <td style="padding:7px 12px;font-size:13px;color:#2563eb;font-weight:500;">{{ entry[1] }}</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+        </div>
       </div>
-      <div class="modal-footer d-flex justify-content-around">
-        
-        <button type="submit" class="btn btn-primary mt-3" (click)="savedMappingClose.click()"   >OK</button>
-        
+
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
       </div>
     </div>
   </div>
 </div>
 
-
-
-<!-- Modal -->
-<!-- Add this in your component HTML -->
+<!-- Info Notice Modal -->
 <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true" #infoNotice>
-   <div class="modal-dialog modal-lg modal-dialog-scrollable">
+  <div class="modal-dialog modal-lg modal-dialog-scrollable">
     <div class="modal-content">
       <div class="modal-header">
         <h1 class="modal-title" id="exampleModalLabel">Notification</h1>
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <div class="modal-body" style="font-family: Arial, sans-serif; line-height: 1.5;">
-
-  <h4 style="color: #d32f2f;">🚨 Asset Data Import – Pre-Import Notification</h4>
-  <p>You are about to import asset records into the system. Please ensure your file is properly formatted and follows the required field rules below:</p>
-
-  <h5>🔑 Required Fields and Guidelines:</h5>
-  <ul>
-    <li><strong>Name</strong><br>Enter the full name of the asset (e.g., "Dell Latitude 7420").</li>
-    <li><strong>Serial Number</strong><br>Serial Numbers can be duplicated, but it is recommended to keep them unique for better tracking.</li>
-    <li><strong>Customer</strong><br>Enter the Customer ID (not the name). Ensure the ID exists in the system before importing.</li>
-    <li><strong>Category</strong><br>Enter the Category Name from the system-defined dropdown. Invalid or missing IDs will cause errors.</li>
-    <li><strong>Location</strong><br>Enter the asset's physical or assigned location (e.g., "Warehouse A", "Client Site - NYC").</li>
-    <li><strong>Status</strong><br>Choose a valid status from the following dropdown options:
-      <ul>
-        <li>Active</li>
-        <li>Inactive</li>
-      </ul>
-    </li>
-  </ul>
-
-  <h5 style="color: #f57c00;">⚠️ Important Notes:</h5>
-  <ul>
-    <li>Records with missing or invalid required fields will be skipped.</li>
-    <li>Ensure there are no formatting errors in your file.</li>
-    <li>Only CSV format is supported for upload.</li>
-  </ul>
-
-  <hr>
-
-  <h4>🧾 Customer Import Guidelines:</h4>
-  <ul>
-    <li><strong>Name</strong><br>Enter the full name of the customer (e.g., "ABC Corporation").</li>
-    <li><strong>Category</strong><br>Enter the Category Name from the predefined dropdown. Only valid IDs will be accepted.</li>
-    <li><strong>Status</strong><br>Choose a status from the available options. Accepted values include:
-      <ul>
-        <li>Active</li>
-        <li>Inactive</li>
-      </ul>
-    </li>
-    <li><strong>Email</strong><br>Enter a valid email address (e.g., "contact&#64;abc.com"). Duplicate or invalid emails may be flagged.</li>
-    <li><strong>Street</strong><br>Enter the street address (e.g., "123 Main St").</li>
-    <li><strong>City</strong><br>Enter the city name (e.g., "San Francisco").</li>
-    <li><strong>State</strong><br>Enter the full state name or abbreviation (e.g., "CA" or "California").</li>
-    <li><strong>Zipcode</strong><br>Enter a valid ZIP or postal code (e.g., "94105"). Must be numeric and 5–10 characters depending on country.</li>
-  </ul>
-
-  <h5 style="color: #f57c00;">⚠️ Important Notes:</h5>
-  <ul>
-    <li>All fields are required unless otherwise specified.</li>
-    <li>Category and Status must match system-defined values.</li>
-    <li>Duplicate emails or missing mandatory fields will result in skipped records.</li>
-    <li>Ensure your import file is in CSV format.</li>
-  </ul>
-
-</div>
-
+        <h4 style="color: #d32f2f;">🚨 Asset Data Import – Pre-Import Notification</h4>
+        <p>You are about to import asset records into the system. Please ensure your file is properly formatted and follows the required field rules below:</p>
+        <h5>🔑 Required Fields and Guidelines:</h5>
+        <ul>
+          <li><strong>Name</strong><br>Enter the full name of the asset (e.g., "Dell Latitude 7420").</li>
+          <li><strong>Serial Number</strong><br>Serial Numbers can be duplicated, but it is recommended to keep them unique for better tracking.</li>
+          <li><strong>Customer</strong><br>Enter the Customer ID (not the name). Ensure the ID exists in the system before importing.</li>
+          <li><strong>Category</strong><br>Enter the Category Name from the system-defined dropdown.</li>
+          <li><strong>Location</strong><br>Enter the asset's physical or assigned location.</li>
+          <li><strong>Status</strong><br>Choose a valid status: Active or Inactive.</li>
+        </ul>
+        <h5 style="color: #f57c00;">⚠️ Important Notes:</h5>
+        <ul>
+          <li>Records with missing or invalid required fields will be skipped.</li>
+          <li>Only CSV format is supported for upload.</li>
+        </ul>
+        <hr>
+        <h4>🧾 Customer Import Guidelines:</h4>
+        <ul>
+          <li><strong>Name</strong> — Full name of the customer.</li>
+          <li><strong>Category</strong> — Category Name from predefined dropdown.</li>
+          <li><strong>Status</strong> — Active or Inactive.</li>
+          <li><strong>Email</strong> — Valid email address.</li>
+          <li><strong>Street, City, State, Zipcode</strong> — Full address details.</li>
+        </ul>
+        <h5 style="color: #f57c00;">⚠️ Important Notes:</h5>
+        <ul>
+          <li>All fields are required unless otherwise specified.</li>
+          <li>Duplicate emails or missing mandatory fields will result in skipped records.</li>
+        </ul>
+      </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Got It</button>
-        
       </div>
     </div>
   </div>

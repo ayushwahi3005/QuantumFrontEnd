@@ -82,6 +82,7 @@ selectedCountryCode='United States of America';
     { number: 7, name: 'Users', icon: 'bi bi-people-fill', tab: 'users' },
     { number: 9, name: 'Subscription', icon: 'bi bi-clipboard-check', tab: 'subscription' },
     { number: 10, name: 'Asset QR code', icon: 'bi bi-qr-code', tab: 'asset-qr' },
+    { number: 13, name: 'Audit Logs', icon: 'bi bi-clock-history', tab: 'audit-logs' },
 
   ];
   constructor(private settingMainService: SettingMainService, private auth: AuthService, private router: Router, private formBuilder: FormBuilder, private route: ActivatedRoute, private notificationService: NotificationService,private cdr: ChangeDetectorRef,private countryService: CountryService) { }

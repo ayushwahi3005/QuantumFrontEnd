@@ -178,7 +178,7 @@ i {
     margin-left: 250px;
 }
 
-app-assets,app-workorder,app-inventory,app-company-customer,app-asset-insights,app-analytics-home-page {
+app-assets,app-workorder,app-inventory,app-company-customer,app-asset-insights,app-analytics-home-page,app-inspections {
     background-color: #F4F5F7;
     /* background-color: #FFFDF8; */
     width: calc(100vw - 60px);
@@ -298,4 +298,8 @@ td{
     cursor: pointer;
     font-size: 16px;
 }
+
+
+
+
 

@@ -8,7 +8,7 @@ export class RoleAndPermissionEdit{
     roleAndPermissions!:string;
 	imports!:string;
     category!:string;
-	inventory!:string;
+	inspection!:string;
     type!:string;
     status!:string;
     ofUser!:Number;

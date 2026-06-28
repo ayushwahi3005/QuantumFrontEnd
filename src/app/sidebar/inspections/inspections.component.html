@@ -1,0 +1,685 @@
+<div class="inspections-container">
+  <div *ngIf="showAlert" class="inspection-alert" [ngClass]="'inspection-alert-' + alertType" role="alert">
+    {{ alertMessage }}
+    <button type="button" class="alert-close-btn" (click)="showAlert = false" aria-label="Close">&times;</button>
+  </div>
+
+  <!-- Header -->
+  <div class="header-section">
+    <div class="d-flex justify-content-between">
+    <h1>Inspections</h1>
+    <!-- <p class="subtitle">Review inspections by status across all assets — no need to open each asset.</p> -->
+    <button class="btn-inspection" data-toggle="modal" data-target="#addInspection" (click)="openAddInspectionModal()">
+      <span class="plus-icon">+</span> Inspection
+    </button>
+    </div>
+  </div>
+
+  <!-- Status Cards Section -->
+  <div class="status-cards-grid">
+    <!-- All Inspections Card -->
+    <div class="status-card all-inspections" (click)="selectTab('ALL')" [ngClass]="{'active': selectedTab === 'ALL'}">
+      <div class="card-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M9 11l3 3L22 4"></path>
+          <path d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+        </svg>
+      </div>
+      <div class="card-content">
+        <div class="card-number">{{ totalInspections }}</div>
+        <div class="card-label">All Inspections</div>
+        <div class="card-sublabel">Across every asset</div>
+      </div>
+    </div>
+
+    <!-- Dynamic Status Cards -->
+    <div *ngFor="let status of statusCounts" 
+         class="status-card" 
+         [ngClass]="'status-card-' + status.status.toLowerCase()" 
+         (click)="selectTab(status.status)" [ngClass]="{'active': selectedTab === status.status}">
+      <div class="card-icon" [style.color]="getStatusColor(status.status)">
+        <svg *ngIf="getStatusCardIcon(status.status) === 'clock'" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <circle cx="12" cy="12" r="10"></circle>
+          <polyline points="12 6 12 12 16 14"></polyline>
+        </svg>
+        <svg *ngIf="getStatusCardIcon(status.status) === 'check'" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <polyline points="20 6 9 17 4 12"></polyline>
+        </svg>
+        <svg *ngIf="getStatusCardIcon(status.status) === 'refresh'" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <polyline points="23 4 23 10 17 10"></polyline>
+          <path d="M20.49 15a9 9 0 1 1-2-8.12"></path>
+        </svg>
+        <svg *ngIf="getStatusCardIcon(status.status) === 'x'" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <circle cx="12" cy="12" r="10"></circle>
+          <line x1="15" y1="9" x2="9" y2="15"></line>
+          <line x1="9" y1="9" x2="15" y2="15"></line>
+        </svg>
+        <svg *ngIf="getStatusCardIcon(status.status) === 'alert'" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3.05h16.94a2 2 0 0 0 1.71-3.05L13.71 3.86a2 2 0 0 0-3.42 0z"></path>
+          <line x1="12" y1="9" x2="12" y2="13"></line>
+          <line x1="12" y1="17" x2="12.01" y2="17"></line>
+        </svg>
+      </div>
+      <div class="card-content">
+        <div class="card-number">{{ status.count }}</div>
+        <div class="card-label">{{ status.status | titlecase }}</div>
+        <div class="card-sublabel">{{ getCardSubtitle(status.status) }}</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Charts and Employee Section -->
+  <div class="charts-section">
+    <div class="chart-container">
+      <div class="chart-header">
+        <svg class="chart-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+          <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+          <circle cx="9" cy="7" r="4"></circle>
+          <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
+          <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+        </svg>
+        <h3>Inspections by Employee</h3>
+        <!-- <p class="chart-subtitle">Open workload — pending & ongoing only</p> -->
+      </div>
+
+      <!-- Legend -->
+      <div class="chart-legend">
+       
+        <span class="legend-item pending">
+          <!-- <span class="legend-dot"></span> -->
+          <span style="font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif; font-size: large;">Pending</span>
+        </span>
+      </div>
+
+      <!-- Employee Bars -->
+      <div class="employee-list">
+        <!-- Unassigned -->
+        <!-- <div class="employee-item">
+          <div class="employee-name">Unassigned</div>
+          <div class="bar-container">
+            <div class="bar unassigned" style="width: 75%; background: linear-gradient(90deg, #FF9800, #FFC107);">
+            </div>
+          </div>
+          <div class="employee-count">3</div>
+        </div> -->
+
+        <!-- Performers from API -->
+        <div *ngFor="let performer of performerCounts; let i = index" class="employee-item">
+  <div class="employee-name">{{ performer.performedBy }}</div>
+
+  <div class="bar-container">
+    <div
+      class="bar"
+      [style.background]="getBarGradient(i)"
+      [style.width.%]="(performer.count / performerCounts[0]?.count) * 100">
+    </div>
+  </div>
+
+  <div class="employee-count">{{ performer.count }}</div>
+</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Search and Filter Section -->
+  <div class="search-filter-section">
+    <div class="search-box">
+      <input 
+        type="text" 
+        placeholder="Search by ID, asset, notes, performer..."
+        [(ngModel)]="searchText"
+        (keyup.enter)="onSearch()"
+        class="search-input"
+      >
+      <svg class="search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+        <circle cx="11" cy="11" r="8"></circle>
+        <path d="m21 21-4.35-4.35"></path>
+      </svg>
+    </div>
+
+    <button class="btn-filters" data-toggle="modal" data-target="#addFilter" (click)="openFilters()">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+        <polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"></polygon>
+      </svg>
+      Filters
+    </button>
+
+    <button class="btn-sort-direction" (click)="toggleSortDirection()" title="Toggle Sort Direction">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <path d="M12 5v14"></path>
+        <path d="M19 12l-7 7-7-7"></path>
+        <path d="M19 8l-7-7-7 7"></path>
+      </svg>
+      {{ sortDirection }}
+    </button>
+  </div>
+
+  <!-- Active Filters Section -->
+  <div class="active-filters-section" *ngIf="appliedFilters.length > 0">
+    <div class="filter-chip" *ngFor="let filter of appliedFilters">
+      <span class="filter-chip-label">{{ filter.label }}:</span>
+      <span class="filter-chip-value">{{ filter.value }}</span>
+      <button class="filter-chip-close" (click)="removeFilter(filter.key)" aria-label="Remove filter">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+          <line x1="18" y1="6" x2="6" y2="18"></line>
+          <line x1="6" y1="6" x2="18" y2="18"></line>
+        </svg>
+      </button>
+    </div>
+    <button class="btn-clear" (click)="clearFilters()">
+      Clear All
+    </button>
+  </div>
+
+  <!-- Data Table -->
+  <div class="table-section">
+    <div class="table-wrapper">
+      <table class="inspections-table">
+        <thead>
+          <tr>
+            <th (click)="sort('id')">ID <span class="sort-indicator">⬍</span></th>
+            <th (click)="sort('inspectionName')">Template</th>
+            <th (click)="sort('assetName')">Asset</th>
+            <!-- <th (click)="sort('assetId')">Serial</th> -->
+            <th (click)="sort('customerName')">Customer</th>
+            <th (click)="sort('category')">Category</th>
+            <th (click)="sort('performedBy')">Performed By</th>
+            <th (click)="sort('dueDate')">Due Date</th>
+            <th (click)="sort('status')">Status</th>
+            <th class="actions-col">Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let inspection of inspections" class="table-row">
+            <td>{{ inspection.inspectionInstance?.assetCategoryInspectionInstanceId}}</td>
+            <td>{{ inspection.inspectionInstance?.assetCategoryInspectionName
+ || 'N/A' }}</td>
+            <td>{{ inspection.assetName }}</td>
+            <!-- <td>{{ inspection.inspectionInstance?.assetId }}</td> -->
+            <td>{{ inspection.customerName }}</td>
+            <td>{{ inspection.assetCategory || 'N/A' }}</td>
+            <td>{{ inspection.inspectionInstance?.actionPerformedBy || 'Unassigned' }}</td>
+            <td>{{ inspection.inspectionInstance?.dueDate | date:'MM/dd/yyyy' || 'N/A' }}</td>
+            <td>
+              <span [ngClass]="'badge ' + getStatusBadgeClass(inspection.inspectionInstance?.status)">
+                {{ getStatusIcon(inspection.inspectionInstance?.status) }}
+                {{ getDisplayStatus(inspection.inspectionInstance?.status) }}
+              </span>
+            </td>
+            <td class="actions-col">
+              <button class="btn-view" title="View">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                  <circle cx="12" cy="12" r="3"></circle>
+                </svg>
+              </button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+
+      <!-- Empty State -->
+      <div *ngIf="inspections.length === 0" class="empty-state">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M13 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"></path>
+          <polyline points="13 2 13 9 20 9"></polyline>
+        </svg>
+        <p>No inspections found</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Pagination -->
+  <div class="pagination-section">
+    <div class="pagination-info">
+      Showing {{ currentPage * pageSize + 1 }} to {{ Math.min((currentPage + 1) * pageSize, totalRecords) }} of {{ totalRecords }} results
+    </div>
+    
+    <div class="pagination-controls">
+      <button 
+        class="btn-pagination-prev"
+        (click)="previousPage()"
+        [disabled]="currentPage === 0"
+      >
+        ← Previous
+      </button>
+
+      <div class="page-numbers">
+        <button 
+          *ngFor="let page of getPaginationArray()"
+          class="page-number"
+          [class.active]="page === currentPage"
+          (click)="goToPage(page)"
+        >
+          {{ page + 1 }}
+        </button>
+      </div>
+
+      <button 
+        class="btn-pagination-next"
+        (click)="nextPage()"
+        [disabled]="currentPage >= totalPages - 1"
+      >
+        Next →
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- Filter Modal -->
+
+<div class="modal fade add-inspection-modal" id="addFilter" tabindex="-1" role="dialog" aria-labelledby="addFilter" aria-hidden="true">
+  <div class="modal-dialog modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header add-inspection-header">
+        <h2 class="modal-title" id="addInspectionTitle">Add Filter</h2>
+        <button
+          type="button"
+          class="close ms-auto"
+          data-dismiss="modal"
+          aria-label="Close"
+          #addInspectionCloseBtn
+          (click)="closeFilters()"
+        >
+          <i class="bi bi-x-lg"></i>
+        </button>
+      </div>
+
+      <div class="modal-body filter-modal-body">
+        <!-- Inspection -->
+        <section class="filter-section-group filter-section-full">
+          <h3 class="filter-section-title">Inspection</h3>
+          <div class="filter-section-grid">
+            <div class="filter-group">
+              <label>Inspection Template</label>
+              <select [(ngModel)]="filterCriteria.inspectionName" class="filter-select">
+                <option value="">All</option>
+                <option *ngFor="let template of templates" [value]="template?.name || template">
+                  {{ template?.name || template }}
+                </option>
+              </select>
+            </div>
+
+            <div class="filter-group">
+              <label>Status</label>
+              <select [(ngModel)]="filterCriteria.status" class="filter-select">
+                <option value="">All</option>
+                <option value="PENDING">Pending</option>
+                <option value="COMPLETED">Completed</option>
+                <option value="FAILED">Failed</option>
+                <option value="IN_PROGRESS">In Progress</option>
+                <option value="ONGOING">Ongoing</option>
+                <option value="CANCELLED">Cancelled</option>
+              </select>
+            </div>
+
+            <div class="filter-group">
+              <label>Performed By</label>
+              <select [(ngModel)]="filterCriteria.performedBy" class="filter-select">
+                <option value="">All</option>
+                <option *ngFor="let performer of performers" [value]="performer">{{ performer }}</option>
+              </select>
+            </div>
+
+            <div class="filter-group">
+              <label>Sort Field</label>
+              <select [(ngModel)]="sortField" class="filter-select">
+                <option value="createdAt">Created Date</option>
+                <option value="status">Status</option>
+                <option value="assetCategoryInspectionName">Inspection Name</option>
+                <option value="actionPerformedBy">Performed By</option>
+                <option value="inspectionDueDate">Due Date</option>
+              </select>
+            </div>
+
+            <div class="filter-group">
+              <label>Sort Direction</label>
+              <select [(ngModel)]="sortDirection" class="filter-select">
+                <option value="DESC">Newest First (DESC)</option>
+                <option value="ASC">Oldest First (ASC)</option>
+              </select>
+            </div>
+          </div>
+        </section>
+
+        <!-- Customer -->
+        <section class="filter-section-group filter-section-full">
+          <h3 class="filter-section-title">Customer</h3>
+          <div class="filter-section-grid">
+            <div class="filter-group">
+              <label>Customer</label>
+              <select [(ngModel)]="filterCriteria.customerId" class="filter-select">
+                <option value="">All</option>
+                <option *ngFor="let customer of customers" [value]="customer.id">{{ customer.name }}</option>
+              </select>
+            </div>
+
+            <div class="filter-group">
+              <label>Customer Category</label>
+              <select [(ngModel)]="filterCriteria.customerCategory" class="filter-select">
+                <option value="">All</option>
+                <option *ngFor="let category of customerCategories" [value]="category.name">{{ category.name }}</option>
+              </select>
+            </div>
+          </div>
+        </section>
+
+        <!-- Asset -->
+        <section class="filter-section-group filter-section-full">
+          <h3 class="filter-section-title">Asset</h3>
+          <div class="filter-section-grid">
+            <div class="filter-group">
+              <label>Asset Name</label>
+              <input
+                type="text"
+                placeholder="e.g. Printer"
+                [(ngModel)]="filterCriteria.assetName"
+                class="filter-input"
+              >
+            </div>
+
+            <div class="filter-group">
+              <label>Asset Customer</label>
+              <input
+                type="text"
+                placeholder="e.g. ABC Logistics"
+                [(ngModel)]="filterCriteria.assetCustomer"
+                class="filter-input"
+              >
+            </div>
+
+            <div class="filter-group">
+              <label>Serial Number</label>
+              <input
+                type="text"
+                placeholder="e.g. SN-001"
+                [(ngModel)]="filterCriteria.serialNumber"
+                class="filter-input"
+              >
+            </div>
+
+            <div class="filter-group">
+              <label>Asset ID</label>
+              <input
+                type="text"
+                placeholder="MongoDB asset ID"
+                [(ngModel)]="filterCriteria.assetId"
+                class="filter-input"
+              >
+            </div>
+
+            <div class="filter-group">
+              <label>Asset Category</label>
+              <select name="assetCategory" [(ngModel)]="filterCriteria.assetCategory" class="filter-select">
+                <option value="">All</option>
+                <option *ngFor="let category of assetCategories" [value]="category.name">{{ category.name }}</option>
+              </select>
+            </div>
+
+            <div class="filter-group">
+              <label>Asset Location</label>
+              <select [(ngModel)]="filterCriteria.assetLocation" class="filter-select">
+                <option value="">All</option>
+                <option
+                  *ngFor="let option of locationBinOptions"
+                  [value]="option.value"
+                  [ngClass]="{'bin-option': option.type === 'bin'}"
+                >
+                  {{ option.label }}
+                </option>
+              </select>
+            </div>
+          </div>
+        </section>
+
+        <!-- Date Ranges -->
+        <section class="filter-section-group filter-section-full">
+          <h3 class="filter-section-title">Date Ranges</h3>
+          <div class="filter-section-grid filter-section-grid-dates">
+  <!-- Created Date Range -->
+  <div class="filter-group">
+    <label>Created Date Range</label>
+    <mat-form-field class="date-range-field">
+      <mat-label>Select created date range</mat-label>
+      <mat-date-range-input [rangePicker]="createdPicker">
+        <input matStartDate [(ngModel)]="createdRangeStart" placeholder="Start date">
+        <input matEndDate [(ngModel)]="createdRangeEnd" placeholder="End date">
+      </mat-date-range-input>
+      <!-- <mat-hint>MM/DD/YYYY – MM/DD/YYYY</mat-hint> -->
+      <mat-datepicker-toggle matIconSuffix [for]="createdPicker"></mat-datepicker-toggle>
+      <mat-date-range-picker #createdPicker></mat-date-range-picker>
+    </mat-form-field>
+  </div>
+
+  <!-- Due Date Range -->
+  <div class="filter-group">
+    <label>Due Date Range</label>
+    <mat-form-field class="date-range-field">
+      <mat-label>Select due date range</mat-label>
+      <mat-date-range-input [rangePicker]="duePicker">
+        <input matStartDate [(ngModel)]="dueRangeStart" placeholder="Start date">
+        <input matEndDate [(ngModel)]="dueRangeEnd" placeholder="End date">
+      </mat-date-range-input>
+      <!-- <mat-hint>MM/DD/YYYY – MM/DD/YYYY</mat-hint> -->
+      <mat-datepicker-toggle matIconSuffix [for]="duePicker"></mat-datepicker-toggle>
+      <mat-date-range-picker #duePicker></mat-date-range-picker>
+    </mat-form-field>
+  </div>
+</div>
+
+<!-- Action Buttons (inside modal footer) -->
+<div class="modal-footer">
+  <button class="btn-modal-reset" (click)="clearFilters()" data-dismiss="modal">Reset</button>
+  <button class="btn-modal-apply" (click)="applyFilters()" data-dismiss="modal">Apply Filters</button>
+</div>
+        </section>
+      </div>
+
+    <div class="modal-footer">
+      <button class="btn-modal-reset" (click)="clearFilters()" data-dismiss="modal">Reset</button>
+      <button class="btn-modal-apply" (click)="applyFilters()" data-dismiss="modal">Apply Filters</button>
+    </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal fade add-inspection-modal" id="addInspection" tabindex="-1" role="dialog" aria-labelledby="addInspectionTitle" aria-hidden="true">
+  <div class="modal-dialog modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header add-inspection-header">
+        <h2 class="modal-title" id="addInspectionTitle">Add Inspection</h2>
+        <button
+          type="button"
+          class="close ms-auto"
+          data-dismiss="modal"
+          aria-label="Close"
+          #addInspectionCloseBtn
+          (click)="resetAddInspectionForm()"
+        >
+          <i class="bi bi-x-lg"></i>
+        </button>
+      </div>
+
+      <div class="modal-body add-inspection-body">
+        <p class="add-inspection-subtitle">
+          Select an asset, then choose inspection template(s) available for that asset's category.
+        </p>
+
+        <!-- Asset -->
+        <div class="add-form-group add-form-group-full">
+          <label>Asset <span class="required-mark">*</span></label>
+          <ng-select
+            [items]="assetList"
+            bindLabel="name"
+            [(ngModel)]="selectedAsset"
+            (ngModelChange)="onAssetSelected()"
+            placeholder="Search by name, serial, or category..."
+            [searchFn]="assetSearchFn"
+            [clearable]="true"
+            class="add-inspection-ng-select"
+          >
+            <ng-template ng-option-tmp let-item="item">
+              <span class="asset-option-name">{{ item.name }}</span>
+              <span class="asset-option-meta" *ngIf="item.serialNumber"> · {{ item.serialNumber }}</span>
+              <span class="asset-option-meta" *ngIf="item.category"> · {{ item.category }}</span>
+            </ng-template>
+          </ng-select>
+        </div>
+
+        <!-- Category (read-only) -->
+        <div class="add-form-group">
+          <label>Asset Category</label>
+          <input
+            type="text"
+            class="filter-input readonly-field"
+            [value]="selectedAssetCategory || 'Select an asset first'"
+            readonly
+          >
+        </div>
+
+        <!-- Performed By -->
+        <div class="add-form-group">
+          <label>Performed By</label>
+          <select [(ngModel)]="inspectionInstance.actionPerformedBy" class="filter-select">
+  <!-- <option [value]="username" *ngIf="this.currUserRole !== 'ADMIN'">
+    {{ username || 'Current user' }}
+  </option> -->
+  <ng-container *ngIf="this.currUserRole === 'ADMIN'">
+    <option *ngFor="let performer of performers" [value]="performer">
+      {{ performer }}
+    </option>
+  </ng-container>
+  <ng-container *ngIf="this.currUserRole !== 'ADMIN'">
+    <option [value]="username" >
+    {{ username || 'Current user' }}
+  </option>
+  </ng-container>
+</select>
+        </div>
+
+        <!-- Notes -->
+        <div class="add-form-group add-form-group-full">
+          <label>Notes</label>
+          <textarea
+            rows="2"
+            placeholder="Optional notes..."
+            [(ngModel)]="inspectionInstance.notes"
+            class="filter-input add-notes-input"
+          ></textarea>
+        </div>
+
+        <div class="add-form-group add-form-group-full">
+          <label>Due Date</label>
+          <input
+            type="date"
+            [(ngModel)]="inspectionInstance.dueDate"
+            class="filter-input"
+          >
+        </div>
+
+        <!-- Inspection Templates -->
+        <div class="add-form-group add-form-group-full">
+          <label>Inspection Template(s) <span class="required-mark">*</span></label>
+
+          <div *ngIf="!selectedAsset" class="add-inspection-hint">
+            Select an asset to load available templates.
+          </div>
+
+          <div *ngIf="selectedAsset && isLoadingTemplates" class="add-inspection-hint">
+            Loading templates for {{ selectedAssetCategory }}...
+          </div>
+
+          <div *ngIf="selectedAsset && !isLoadingTemplates && dropdownList.length === 0" class="add-inspection-hint add-inspection-hint-warning">
+            No inspection templates found for this asset
+          </div>
+
+          <ng-multiselect-dropdown
+            *ngIf="selectedAsset && dropdownList.length > 0"
+            [placeholder]="'Select inspection template(s)...'"
+            [settings]="dropdownSettings"
+            [data]="dropdownList"
+            [(ngModel)]="selectedItems"
+            (onSelect)="onItemSelect()"
+            (onSelectAll)="onSelectAll($event)"
+            (onDeSelect)="onItemDeSelect()"
+            class="add-inspection-multiselect"
+          ></ng-multiselect-dropdown>
+        </div>
+
+        <!-- Inspection Steps -->
+        <div *ngIf="stepObject.length > 0" class="add-form-group add-form-group-full">
+          <label>Inspection Steps</label>
+          <div class="steps-container">
+            <div *ngFor="let template of stepObject" class="template-step-group mb-3">
+              <h5 class="template-step-title fw-bold">{{ template.inspectionName }}</h5>
+             <table class="table">
+  <thead class="table-dark">
+    <tr>
+      <th>Step</th>
+      <th>Value</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr *ngFor="let step of template.stepValues; let i = index" class="step-item">
+      <td class="step-label">
+        <label class="mb-0">{{ i + 1 }}. {{ step.name }}</label>
+      </td>
+      <td class="step-input">
+        <ng-container [ngSwitch]="step.type">
+          <div *ngSwitchCase="'CHECKBOX'" class="input-wrapper checkbox-wrapper">
+            <input 
+              type="checkbox" 
+              [(ngModel)]="step.value" 
+              class="form-check-input" 
+            />
+          </div>
+          <div *ngSwitchCase="'TEXT'" class="input-wrapper">
+            <input 
+              type="text" 
+              [(ngModel)]="step.value" 
+              class="filter-input" 
+              placeholder="Enter text..." 
+            />
+          </div>
+          <div *ngSwitchCase="'NUMBER'" class="input-wrapper">
+            <input 
+              type="number" 
+              [(ngModel)]="step.value" 
+              class="filter-input" 
+              placeholder="Enter number..." 
+            />
+          </div>
+          <div *ngSwitchDefault class="input-wrapper">
+            <input 
+              type="text" 
+              [(ngModel)]="step.value" 
+              class="filter-input" 
+            />
+          </div>
+        </ng-container>
+      </td>
+    </tr>
+  </tbody>
+</table>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="modal-footer add-inspection-footer">
+        <button type="button" class="btn-modal-reset" data-dismiss="modal" (click)="resetAddInspectionForm()">
+          Cancel
+        </button>
+        <button
+          type="button"
+          class="btn-modal-apply"
+          (click)="createInspection()"
+          data-dismiss="modal"
+          [disabled]="isCreatingInspection || !selectedAsset || selectedItems.length === 0"
+        >
+          {{ isCreatingInspection ? 'Creating...' : 'Create Inspection' }}
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

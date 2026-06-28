@@ -1,0 +1,250 @@
+<div class="audit-log-container">
+  <div class="audit-log-header">
+    <div class="header-title">
+      <!-- <i class="bi bi-clock-history"></i> -->
+      <h2>Audit Log</h2>
+    </div>
+    <p class="header-subtitle">Track all system activities and changes in real-time</p>
+  </div>
+
+  <!-- Search Bar -->
+  <div class="search-bar-section">
+    <div class="search-input-wrapper">
+      <i class="bi bi-search"></i>
+      <input 
+        type="text" 
+        class="search-input" 
+        placeholder="Search by entity name, email, or description..." 
+        [(ngModel)]="searchText"
+        (keyup)="applySearch()">
+    </div>
+  </div>
+
+  <!-- Filter Section -->
+  <div class="filter-section">
+    <form [formGroup]="filterForm" class="filter-form">
+      <div class="filter-grid">
+        <div class="filter-group">
+          <label>Module</label>
+          <select formControlName="module" class="form-control">
+            <option value="">All Modules</option>
+            <option *ngFor="let mod of modules" [value]="mod">{{ mod }}</option>
+          </select>
+        </div>
+
+        <div class="filter-group">
+          <label>Action</label>
+          <select formControlName="action" class="form-control">
+            <option value="">All Actions</option>
+            <option *ngFor="let act of actions" [value]="act">{{ act }}</option>
+          </select>
+        </div>
+
+        <div class="filter-group">
+          <label>Email</label>
+          <input 
+            type="text" 
+            formControlName="performedByEmail" 
+            class="form-control" 
+            placeholder="Filter by email">
+        </div>
+
+        <div class="filter-group">
+          <label>Entity ID</label>
+          <input 
+            type="text" 
+            formControlName="entityId" 
+            class="form-control" 
+            placeholder="Filter by entity ID">
+        </div>
+
+        <div class="filter-group">
+          <label>From Date</label>
+          <input 
+            type="datetime-local" 
+            formControlName="fromTimestamp" 
+            class="form-control">
+        </div>
+
+        <div class="filter-group">
+          <label>To Date</label>
+          <input 
+            type="datetime-local" 
+            formControlName="toTimestamp" 
+            class="form-control">
+        </div>
+      </div>
+
+      <div class="filter-actions">
+        <button type="button" class="btn btn-primary btn-apply" (click)="applyFilters()">
+          <i class="bi bi-funnel"></i> Apply Filters
+        </button>
+        <button type="button" class="btn btn-secondary btn-reset" (click)="resetFilters()">
+          <i class="bi bi-arrow-clockwise"></i> Reset
+        </button>
+        <button type="button" class="btn btn-outline-secondary btn-sort" (click)="toggleSort()">
+          <i class="bi" [ngClass]="sortDirection === 'DESC' ? 'bi-sort-down' : 'bi-sort-up'"></i>
+          {{ sortDirection === 'DESC' ? 'Newest First' : 'Oldest First' }}
+        </button>
+      </div>
+    </form>
+  </div>
+
+  <!-- Loading Spinner -->
+  <div *ngIf="isLoading" class="loading-container">
+    <div class="spinner"></div>
+    <p>Loading audit logs...</p>
+  </div>
+
+  <!-- Audit Logs Table -->
+  <div *ngIf="!isLoading" class="audit-logs-section">
+    <div class="table-wrapper">
+      <table class="audit-table table">
+        <thead class="table-dark">
+          <tr>
+            <th>Timestamp</th>
+            <th>Action</th>
+            <th>Module</th>
+            <th>Entity</th>
+            <th>Performed By</th>
+            <th>IP Address</th>
+            <th>Details</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngIf="filteredLogs.length === 0" class="no-records">
+            <td colspan="7">
+              <div class="no-records-message">
+                <i class="bi bi-inbox"></i>
+                <p>No audit logs found</p>
+              </div>
+            </td>
+          </tr>
+          <tr *ngFor="let log of filteredLogs" class="audit-row">
+            <td class="timestamp">
+              {{ formatDate(log.timestamp) }}
+            </td>
+            <td class="action">
+              <span class="action-badge" [ngClass]="getChangesBadgeClass(log.action)">
+                <i [class]="getChangesIcon(log.action)"></i>
+                {{ log.action }}
+              </span>
+            </td>
+            <td class="module">
+              <span class="module-badge">{{ log.module }}</span>
+            </td>
+            <td class="entity">
+              <div class="entity-info">
+                <div class="entity-name">{{ log.entityName || log.entityId }}</div>
+                <div class="entity-id">ID: {{ log.entityId }}</div>
+              </div>
+            </td>
+            <td class="performed-by">
+              <div class="user-info">
+                <div class="user-name">{{ log.performedByName || 'N/A' }}</div>
+                <div class="user-email">{{ log.performedByEmail }}</div>
+              </div>
+            </td>
+            <td class="ip-address">
+              {{ log.ipAddress }}
+            </td>
+            <td class="actions">
+              <button 
+                class="btn-view-history" 
+                (click)="viewEntityHistory(log)"
+                title="View full history for this entity">
+                <i class="bi bi-file-earmark-text"></i> History
+              </button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Pagination -->
+    <div class="pagination-section">
+      <div class="pagination-info">
+        Showing {{ getPaginationInfo() }}
+      </div>
+      <div class="pagination-controls">
+        <button 
+          class="btn btn-sm btn-outline-primary" 
+          (click)="previousPage()"
+          [disabled]="currentPage === 0">
+          <i class="bi bi-chevron-left"></i> Previous
+        </button>
+        <span class="page-indicator">Page {{ currentPage + 1 }}</span>
+        <button 
+          class="btn btn-sm btn-outline-primary" 
+          (click)="nextPage()"
+          [disabled]="(currentPage + 1) * pageSize >= totalRecords">
+          Next <i class="bi bi-chevron-right"></i>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Entity History Modal -->
+  <div *ngIf="showEntityHistory" class="modal-overlay" (click)="closeEntityHistory()">
+    <div class="modal-content" (click)="$event.stopPropagation()">
+      <div class="modal-header">
+        <h5 class="modal-title">
+          <i class="bi bi-clock-history"></i>
+          Entity History
+        </h5>
+        <button class="btn-close" (click)="closeEntityHistory()"></button>
+      </div>
+
+      <div class="modal-body">
+        <div class="entity-details">
+          <div class="detail-row">
+            <span class="label">Entity Name:</span>
+            <span class="value">{{ selectedEntity?.entityName || selectedEntity?.entityId }}</span>
+          </div>
+          <div class="detail-row">
+            <span class="label">Entity ID:</span>
+            <span class="value">{{ selectedEntity?.entityId }}</span>
+          </div>
+          <div class="detail-row">
+            <span class="label">Module:</span>
+            <span class="value">{{ selectedEntity?.module }}</span>
+          </div>
+        </div>
+
+        <div class="history-timeline">
+          <div *ngFor="let entry of entityHistoryData; let i = index" class="timeline-item">
+            <div class="timeline-marker" [ngClass]="getChangesBadgeClass(entry.action)">
+              <i [class]="getChangesIcon(entry.action)"></i>
+            </div>
+            <div class="timeline-content">
+              <div class="timeline-header">
+                <span class="action-label">{{ entry.action }}</span>
+                <span class="timestamp">{{ formatDate(entry.timestamp) }}</span>
+              </div>
+              <div class="performer-info">
+                <span class="performer-name">{{ entry.performedByName || entry.performedByEmail }}</span>
+              </div>
+              <div *ngIf="entry.changes" class="changes-list">
+                <div *ngFor="let change of (entry.changes | keyvalue)" class="change-item">
+                  <span class="field-name">{{ change.key }}</span>
+                  <span class="field-value" *ngIf="isObject(change.value)">
+                    <span class="old-value">{{ change.value.old }}</span>
+                    <i class="bi bi-arrow-right"></i>
+                    <span class="new-value">{{ change.value.new }}</span>
+                  </span>
+                  <span class="field-value" *ngIf="!isObject(change.value)">
+                    {{ change.value }}
+                  </span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="modal-footer">
+        <button class="btn btn-secondary" (click)="closeEntityHistory()">Close</button>
+      </div>
+    </div>
+  </div>
+</div>

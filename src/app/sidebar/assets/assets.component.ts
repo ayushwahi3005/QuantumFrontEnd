@@ -38,6 +38,7 @@ export class AssetsComponent implements OnDestroy{
   excelFile: any;
   fileName = 'AssetSheet.xlsx';
   sortoption: string = '';
+  sortDirection: string = 'ASC'; // Add sort direction property
   searchText: string = '';
   imgId: string = '';
   assetName: string = '';
@@ -755,6 +756,15 @@ exportexcel(): void {
     this.editVisibility = false;
     this.editButtonId = -1;
   }
+  // Method to trim all form control values
+private trimAllFormControls(): void {
+  Object.keys(this.assetForm.controls).forEach((key) => {
+    const control = this.assetForm.get(key);
+    if (control && control.value && typeof control.value === 'string') {
+      control.setValue(control.value.trim());
+    }
+  });
+}
 
   addAsset() {
 
@@ -765,6 +775,8 @@ exportexcel(): void {
     let extraFieldTypeMap = new Map<String, string>();
     this.assetForm.controls['customer'].setValue(this.selectedCustomer);
     const extraFieldsObj: { [key: string]: string } = {};
+
+     this.trimAllFormControls();
 
     this.showFieldsList?.forEach((x) => {
       if (x.show == true) {
@@ -828,7 +840,7 @@ exportexcel(): void {
       this.closeAddAssetModal()
     },
       (err) => {
-        this.closeAddAssetModal()
+        // this.closeAddAssetModal()
         console.log(err);
         console.log(err.status);
         //  if(err.error.error==="TRIAL_EXPIRED"||err.error.error==="SUBSCRIPTION_REQUIRED"){
@@ -1192,6 +1204,12 @@ exportexcel(): void {
     this.optimizedAdvanceFilterFunc()
 
   }
+  
+  toggleSortDirection() {
+    this.sortDirection = this.sortDirection === 'ASC' ? 'DESC' : 'ASC';
+    this.optimizedAdvanceFilterFunc();
+  }
+  
   reset() {
     this.loading = true;
     this.selectedLocationId = '';
@@ -1311,7 +1329,7 @@ optimizedAdvanceFilterFunc() {
 
   // Add sorting if available
   if (this.sortedBy != '') {
-    data['sortDirection'] = 'ASC';
+    data['sortDirection'] = this.sortDirection;
     data['sortField'] = this.sortedBy;
   }
 

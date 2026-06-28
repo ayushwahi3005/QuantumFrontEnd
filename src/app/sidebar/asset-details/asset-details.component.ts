@@ -132,6 +132,7 @@ export class AssetDetailsComponent {
     notes: '',
     createdAt: null,
     updatedAt: null,
+    dueDate: null,
     status: 'PENDING',
     stepValues: [],
     inspectionTemplates: [],
@@ -1931,6 +1932,349 @@ downloadInspectionPDF(instance: any) {
 }
 
 // Pagination methods for inspection instances
+
+
+
+
+// Helper method to extract inspection data
+private extractInspectionData(instance: any): any[] {
+  const inspections: any[] = [];
+
+  if (instance.inspectionTemplates && instance.inspectionTemplates.length > 0) {
+    instance.inspectionTemplates.forEach((template: any) => {
+      const steps = template.stepValues?.map((step: any) => ({
+        name: step.name || 'N/A',
+        value: this.formatStepValue(step)
+      })) || [];
+
+      if (steps.length > 0) {
+        inspections.push({
+          templateName: template.inspectionName || 'Inspection',
+          steps: steps
+        });
+      }
+    });
+  }
+
+  return inspections;
+}
+
+// Helper method to format step values
+private formatStepValue(step: any): string {
+  if (step.type === 'CHECKBOX') {
+    return step.value === true ? 'Yes' : 'No';
+  }
+  return step.value || 'N/A';
+}
+
+// Helper method to build inspection HTML
+private buildInspectionHTML(data: any): string {
+  const STEPS_PER_PAGE = 12;
+  
+  // Flatten all content into a list of blocks to paginate
+  const blocks: any[] = [];
+  data.inspections.forEach((inspection: any) => {
+    for (let i = 0; i < inspection.steps.length; i += STEPS_PER_PAGE) {
+      blocks.push({
+        templateName: inspection.templateName,
+        steps: inspection.steps.slice(i, i + STEPS_PER_PAGE)
+      });
+    }
+  });
+
+  const totalPages = blocks.length || 1;
+
+  let html = `
+    <!DOCTYPE html>
+    <html>
+    <head>
+      <meta charset="UTF-8" />
+      <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+      <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap');
+
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+        :root {
+          --brand:       #1B4FD8;
+          --brand-light: #EEF2FF;
+          --surface:     #F8F9FC;
+          --border:      #E2E6F0;
+          --text-primary:#111827;
+          --text-muted:  #6B7280;
+          --pass:        #16A34A;
+          --pass-bg:     #DCFCE7;
+          --na:          #6B7280;
+          --na-bg:       #F3F4F6;
+          --fail:        #DC2626;
+          --fail-bg:     #FEE2E2;
+        }
+
+        body {
+          font-family: 'Inter', sans-serif;
+          background: var(--surface);
+          color: var(--text-primary);
+          padding: 40px 16px;
+        }
+
+        .page {
+          max-width: 740px;
+          margin: 0 auto 40px auto;
+          background: #fff;
+          border: 1px solid var(--border);
+          border-radius: 12px;
+          overflow: hidden;
+          box-shadow: 0 4px 24px rgba(0,0,0,0.07);
+        }
+        .page:last-child { margin-bottom: 0; }
+
+        .header {
+          background: var(--brand);
+          padding: 28px 36px;
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+          gap: 16px;
+        }
+        .header-title { color: #fff; font-size: 20px; font-weight: 700; letter-spacing: -0.3px; }
+        .header-sub   { color: rgba(255,255,255,0.72); font-size: 13px; margin-top: 2px; }
+        .badge-completed {
+          background: rgba(255,255,255,0.18);
+          color: #fff;
+          font-size: 12px;
+          font-weight: 600;
+          letter-spacing: 0.8px;
+          text-transform: uppercase;
+          padding: 5px 14px;
+          border-radius: 20px;
+          white-space: nowrap;
+          border: 1px solid rgba(255,255,255,0.3);
+        }
+
+        .cont-banner {
+          background: var(--brand);
+          padding: 14px 36px;
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+        }
+        .cont-title { color: #fff; font-size: 14px; font-weight: 600; }
+        .cont-sub   { color: rgba(255,255,255,0.7); font-size: 12px; }
+
+        .meta {
+          display: grid;
+          grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+          border-bottom: 1px solid var(--border);
+        }
+        .meta-item { padding: 18px 36px; border-right: 1px solid var(--border); }
+        .meta-item:last-child { border-right: none; }
+        .meta-label { font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.8px; color: var(--text-muted); margin-bottom: 4px; }
+        .meta-value { font-size: 14px; font-weight: 600; color: var(--text-primary); }
+
+        .inspection-block { border-bottom: 1px solid var(--border); }
+        .inspection-block:last-of-type { border-bottom: none; }
+
+        .inspection-header {
+          padding: 14px 36px;
+          background: var(--brand-light);
+          border-bottom: 1px solid var(--border);
+        }
+        .inspection-title {
+          font-size: 12px;
+          font-weight: 700;
+          color: var(--brand);
+          text-transform: uppercase;
+          letter-spacing: 0.9px;
+        }
+
+        table { width: 100%; border-collapse: collapse; }
+        thead th {
+          padding: 11px 36px;
+          font-size: 11px;
+          font-weight: 700;
+          text-transform: uppercase;
+          letter-spacing: 0.7px;
+          color: var(--text-muted);
+          background: var(--surface);
+          border-bottom: 1px solid var(--border);
+          text-align: left;
+        }
+        thead th:last-child { text-align: right; }
+        tbody tr { border-bottom: 1px solid var(--border); }
+        tbody tr:last-child { border-bottom: none; }
+        tbody tr:hover { background: #FAFBFF; }
+        td { padding: 14px 36px; font-size: 14px; vertical-align: middle; }
+        .step-num  { font-family: 'JetBrains Mono', monospace; font-size: 12px; color: var(--text-muted); width: 36px; }
+        .step-name { font-weight: 500; }
+        .step-result { text-align: right; }
+
+        .chip { display: inline-flex; align-items: center; gap: 5px; padding: 4px 12px; border-radius: 20px; font-size: 12px; font-weight: 600; }
+        .chip-pass { background: var(--pass-bg); color: var(--pass); }
+        .chip-na   { background: var(--na-bg);   color: var(--na);   }
+        .chip-fail { background: var(--fail-bg); color: var(--fail); }
+        .chip::before { content: ''; width: 7px; height: 7px; border-radius: 50%; background: currentColor; }
+
+        .notes-section {
+          padding: 18px 36px;
+          background: var(--surface);
+          border-top: 1px solid var(--border);
+        }
+        .notes-label {
+          font-size: 11px;
+          font-weight: 700;
+          text-transform: uppercase;
+          letter-spacing: 0.8px;
+          color: var(--text-muted);
+          margin-bottom: 6px;
+        }
+        .notes-text {
+          font-size: 14px;
+          color: var(--text-primary);
+          line-height: 1.6;
+          word-wrap: break-word;
+        }
+
+        .footer {
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+          padding: 14px 36px;
+          border-top: 1px solid var(--border);
+          background: #fff;
+        }
+        .performed-by { font-size: 13px; color: var(--text-muted); }
+        .performed-by strong { color: var(--text-primary); font-weight: 600; }
+        .footer-right { display: flex; align-items: center; gap: 20px; }
+        .page-num { font-size: 12px; color: var(--text-muted); }
+        .powered-by { font-size: 11px; color: var(--text-muted); }
+        .powered-by span { font-weight: 700; color: var(--brand); }
+
+        @media print {
+          body { background: #fff; padding: 0; }
+          .page { box-shadow: none; border: none; border-radius: 0; margin: 0; page-break-after: always; }
+          .page:last-child { page-break-after: auto; }
+        }
+      </style>
+    </head>
+    <body>
+  `;
+
+  // Generate pages
+  blocks.forEach((block, pageIdx) => {
+    const isFirstPage = pageIdx === 0;
+    const isLastPage = pageIdx === totalPages - 1;
+    const pageNum = pageIdx + 1;
+
+    html += `<div class="page">`;
+
+    // Header
+    if (isFirstPage) {
+      html += `
+        <div class="header">
+          <div>
+            <div class="header-title">Asset Inspection Report</div>
+            <div class="header-sub">Inspection ID: #${data.assetId}</div>
+          </div>
+          <div class="badge-completed">${data.status}</div>
+        </div>
+        <div class="meta">
+          <div class="meta-item"><div class="meta-label">Asset Name</div><div class="meta-value">${data.assetName}</div></div>
+          <div class="meta-item"><div class="meta-label">Asset ID</div><div class="meta-value">#${data.assetId}</div></div>
+          <div class="meta-item"><div class="meta-label">Inspection Date</div><div class="meta-value">${data.inspectionDate}</div></div>
+        </div>
+      `;
+    } else {
+      html += `
+        <div class="cont-banner">
+          <div class="cont-title">Asset Inspection Report — ${data.assetName}</div>
+          <div class="cont-sub">Inspection ID: #${data.assetId} &nbsp;·&nbsp; ${data.inspectionDate}</div>
+        </div>
+      `;
+    }
+
+    // Inspection block with table
+    html += `
+      <div class="inspection-block">
+        <div class="inspection-header">
+          <div class="inspection-title">${block.templateName}</div>
+        </div>
+        <table>
+          <thead>
+            <tr>
+              <th style="width:48px">#</th>
+              <th>Step</th>
+              <th>Result</th>
+            </tr>
+          </thead>
+          <tbody>
+    `;
+
+    block.steps.forEach((step: any, stepIdx: number) => {
+      const { cls, label } = this.getChipInfo(step.value);
+      html += `
+        <tr>
+          <td class="step-num">${String(stepIdx + 1).padStart(2, '0')}</td>
+          <td class="step-name">${this.escapeHtml(step.name)}</td>
+          <td class="step-result"><span class="chip ${cls}">${label}</span></td>
+        </tr>
+      `;
+    });
+
+    html += `
+          </tbody>
+        </table>
+      </div>
+    `;
+
+    // Notes — only on last page
+    if (isLastPage && data.notes) {
+      html += `
+        <div class="notes-section">
+          <div class="notes-label">Notes</div>
+          <div class="notes-text">${this.escapeHtml(data.notes)}</div>
+        </div>
+      `;
+    }
+
+    // Footer
+    html += `<div class="footer">`;
+    if (isLastPage) {
+      html += `<div class="performed-by">Performed by <strong>${this.escapeHtml(data.performedBy)}</strong></div>`;
+    } else {
+      html += `<div></div>`;
+    }
+    html += `
+      <div class="footer-right">
+        <div class="page-num">Page ${pageNum} of ${totalPages}</div>
+        <div class="powered-by">Powered by <span>Asset Yug</span></div>
+      </div>
+    </div>
+    `;
+
+    html += `</div>`;
+  });
+
+  html += `
+    </body>
+    </html>
+  `;
+
+  return html;
+}
+
+// Helper to determine chip style
+private getChipInfo(value: string): { cls: string; label: string } {
+  if (value === 'Yes') return { cls: 'chip-pass', label: 'Pass' };
+  if (value === 'No') return { cls: 'chip-fail', label: 'Fail' };
+  return { cls: 'chip-na', label: 'N/A' };
+}
+
+// Helper to escape HTML characters
+private escapeHtml(text: string): string {
+  const div = document.createElement('div');
+  div.textContent = text;
+  return div.innerHTML;
+}
 loadInspectionInstances(page?: number, size?: number) {
   if (page !== undefined) this.currentPage = page;
   if (size !== undefined) this.pageSize = size;

@@ -6,25 +6,23 @@ import { AppComponent } from './app.component';
 import { HomeComponent } from './home/home.component';
 import { environment } from 'src/environments/environment';
 import { AngularFireModule } from '@angular/fire/compat';
-// import { AngularFireDatabaseModule } from '@angular/fire/compat/database';
 import { AngularFirestoreModule } from '@angular/fire/compat/firestore';
-// import { AngularFireStorageModule } from '@angular/fire/compat/storage';
-import {  AngularFireAuthModule } from '@angular/fire/compat/auth';
+import { AngularFireAuthModule } from '@angular/fire/compat/auth';
 import { LoginComponent } from './login/login.component';
 import { RegisterComponent } from './register/register.component';
 import { DashboardComponent } from './dashboard/dashboard.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { UsersComponent } from './sidebar/users/users.component';
 import { WorkorderComponent } from './sidebar/workorder/workorder.component';
-import {CdkTextareaAutosize, TextFieldModule} from '@angular/cdk/text-field';
-import {MatInputModule} from '@angular/material/input';
-import {MatSelectModule} from '@angular/material/select';
-import {MatFormFieldModule} from '@angular/material/form-field';
+import { CdkTextareaAutosize, TextFieldModule } from '@angular/cdk/text-field';
+import { MatInputModule } from '@angular/material/input';
+import { MatSelectModule } from '@angular/material/select';
+import { MatFormFieldModule } from '@angular/material/form-field';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { HTTP_INTERCEPTORS, HttpClientModule } from '@angular/common/http';
 import { AssetsComponent } from './sidebar/assets/assets.component';
-import {MatProgressSpinnerModule} from '@angular/material/progress-spinner';
-import {MatBadgeModule} from '@angular/material/badge';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { MatBadgeModule } from '@angular/material/badge';
 import { AssetDetailsComponent } from './sidebar/asset-details/asset-details.component';
 import { SideNavComponent } from './side-nav/side-nav.component';
 import { WorkorderDetailsComponent } from './sidebar/workorder-details/workorder-details.component';
@@ -41,28 +39,28 @@ import { AssetPreviewComponent } from './sidebar/asset-preview/asset-preview.com
 import { ImportComponent } from './setting/import/import.component';
 import { AssetInsightsComponent } from './sidebar/Analytics/asset-insights/asset-insights.component';
 
-import {MatSlideToggleModule} from '@angular/material/slide-toggle';
+import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { WorkorderModuleComponent } from './setting/workorder-module/workorder-module.component';
 import { InvitationComponent } from './invitation/invitation.component';
 import { AssetQRComponent } from './setting/asset-qr/asset-qr.component';
 import { QRCodeModule } from 'angularx-qrcode';
-import {MatTableModule} from '@angular/material/table';
+import { MatTableModule } from '@angular/material/table';
 import { NgSelectModule } from '@ng-select/ng-select';
 import { InventoryModuleComponent } from './setting/inventory-module/inventory-module.component';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDialogContent, MatDialogModule } from '@angular/material/dialog';
 import { MatMenuModule } from '@angular/material/menu';
-import {MatIconModule} from '@angular/material/icon';
-import {MatDividerModule} from '@angular/material/divider';
+import { MatIconModule } from '@angular/material/icon';
+import { MatDividerModule } from '@angular/material/divider';
 import { CompanyCustomerComponent } from './sidebar/company-customer/company-customer.component';
 import { CompanyCustomerDetailsComponent } from './sidebar/company-customer-details/company-customer-details.component';
-import {MatTabsModule} from '@angular/material/tabs';
+import { MatTabsModule } from '@angular/material/tabs';
 import { CompanyCustomerDetailsPreviewComponent } from './sidebar/company-customer-details-preview/company-customer-details-preview.component';
 import { RoleAndPermissionComponent } from './setting/role-and-permission/role-and-permission.component';
-import {MatButtonToggleModule} from '@angular/material/button-toggle';
-import {MatExpansionModule} from '@angular/material/expansion';
-import {MatPaginatorModule} from '@angular/material/paginator';
-import {MatCheckboxModule} from '@angular/material/checkbox';
+import { MatButtonToggleModule } from '@angular/material/button-toggle';
+import { MatExpansionModule } from '@angular/material/expansion';
+import { MatPaginatorModule } from '@angular/material/paginator';
+import { MatCheckboxModule } from '@angular/material/checkbox';
 import { CustomerModuleComponent } from './setting/customer-module/customer-module.component';
 import { LocationComponent } from './setting/location/location.component';
 import { SecretService } from 'src/secret.service';
@@ -74,7 +72,7 @@ import { WorkorderCategoryComponent } from './setting/workorder-category/workord
 import { InventoryCategoryComponent } from './setting/inventory-category/inventory-category.component';
 import { CustomerCategoryComponent } from './setting/customer-category/customer-category.component';
 import { ImportHistoryComponent } from './setting/import-history/import-history.component';
-import {InspectionTemplateComponent} from './setting/inspection-template/inspection-template.component';
+import { InspectionTemplateComponent } from './setting/inspection-template/inspection-template.component';
 import { MatSortModule } from '@angular/material/sort';
 import { MatRadioModule } from '@angular/material/radio';
 import { NgxStripeModule } from 'ngx-stripe';
@@ -83,8 +81,8 @@ import { ResetPasswordAdminComponent } from './admin/reset-password-admin/reset-
 import { AdminHomeComponent } from './admin/admin-home/admin-home.component';
 import { SubscriptionPlanComponent } from './admin/subscription-plan/subscription-plan.component';
 import { PaymentComponent } from './setting/payment/payment.component';
-import { MatCardModule } from '@angular/material/card'; 
-import { MatToolbarModule } from '@angular/material/toolbar'; 
+import { MatCardModule } from '@angular/material/card';
+import { MatToolbarModule } from '@angular/material/toolbar';
 import { CustomerResetPasswordComponent } from './customer-reset-password/customer-reset-password.component';
 import { UserModuleComponent } from './setting/user-module/user-module.component';
 import { SessionInterceptor } from './shared/SessionInterceptor';
@@ -98,6 +96,13 @@ import { AssetInspectionComponent } from './sidebar/Analytics/asset-inspection/a
 import { AssetInspectionCompletionTrendComponent } from './sidebar/Analytics/asset-inspection-completion-trend/asset-inspection-completion-trend.component';
 import { ReducePipe } from './sidebar/Analytics/asset-inspection-completion-trend/reduce.pipe';
 import { ChatbotComponent } from './chatbot/chatbot.component';
+import { MappingFilterPipe } from 'src/utils/pipes/mapping-filter.pipe';
+import { InspectionsComponent } from "./sidebar/inspections/inspections.component";
+import { FilterByStatusPipe } from './sidebar/inspections/filter-by-status.pipe';
+import { AuditLogComponent } from './setting/audit-log/audit-log.component';
+import { MatDatepickerModule } from '@angular/material/datepicker';
+// ✅ ADD THIS IMPORT
+import { MatNativeDateModule } from '@angular/material/core';
 
 @NgModule({
   declarations: [
@@ -147,6 +152,7 @@ import { ChatbotComponent } from './chatbot/chatbot.component';
     UserModuleComponent,
     InspectionTemplateComponent,
     TimeAgoPipe,
+    MappingFilterPipe,
     PageNotFoundComponent,
     CustomersComponent,
     HeaderComponent,
@@ -155,12 +161,10 @@ import { ChatbotComponent } from './chatbot/chatbot.component';
     AssetInspectionComponent,
     AssetInspectionCompletionTrendComponent,
     ReducePipe,
-    ChatbotComponent
-    
-    
-    
-    
-   
+    ChatbotComponent,
+    InspectionsComponent,
+    FilterByStatusPipe,
+    AuditLogComponent
   ],
   imports: [
     BrowserModule,
@@ -170,7 +174,12 @@ import { ChatbotComponent } from './chatbot/chatbot.component';
     AngularFireAuthModule,
     FormsModule,
     ReactiveFormsModule,
-    MatFormFieldModule, MatSelectModule, MatInputModule, TextFieldModule,MatProgressSpinnerModule,MatBadgeModule,
+    MatFormFieldModule,
+    MatSelectModule,
+    MatInputModule,
+    TextFieldModule,
+    MatProgressSpinnerModule,
+    MatBadgeModule,
     BrowserAnimationsModule,
     HttpClientModule,
     NgMultiSelectDropDownModule.forRoot(),
@@ -196,9 +205,13 @@ import { ChatbotComponent } from './chatbot/chatbot.component';
     MatToolbarModule,
     NgChartsModule,
     MatDialogModule,
-    NgxStripeModule.forRoot('pk_test_51QJEvHDbrtjFAyfvm2UQu2ohdlUl814jAftZVEW9IHnfd4YrVOfh5ZBJyfYahnJcOMxwjgK3WjA8tU8XPg5nGpbM00J9CxIx3A'),
+    MatDatepickerModule,
+    // ✅ ADD THIS MODULE
+    MatNativeDateModule,
+    NgxStripeModule.forRoot('pk_test_51QJEvHDbrtjFAyfvm2UQu2ohdlUl814jAftZVEW9IHnfd4YrVOfh5ZBJyfYahnJcOMxwjgK3WjA8tU8XPg5nGpbM00J9CxIx3A')
   ],
-  providers: [DatePipe,
+  providers: [
+    DatePipe,
     SecretService,
     { provide: HTTP_INTERCEPTORS, useClass: SessionInterceptor, multi: true }
   ],
@@ -207,9 +220,7 @@ import { ChatbotComponent } from './chatbot/chatbot.component';
 export class AppModule { }
 
 export function initializeAppFactory(secretsService: SecretService) {
-  return async(): Promise<any> => secretsService.initializeEnvironmentVariables().then(() => {
+  return async (): Promise<any> => secretsService.initializeEnvironmentVariables().then(() => {
     // Initialize Firebase here after secrets are fetched
-    // console.log(environment.firebaseConfig)
-    // AngularFireModule.initializeApp(environment.firebaseConfig);
   });
 }

@@ -77,7 +77,7 @@ export class RoleAndPermissionComponent {
       roleAndPermissions:['none',Validators.required],
       imports:['none',Validators.required],
       category:['none',Validators.required],
-      inventory:['none',Validators.required],
+      inspection:['none',Validators.required],
       companyId:['']
       
   
@@ -99,7 +99,7 @@ export class RoleAndPermissionComponent {
       roleAndPermissions:['none',Validators.required],
       imports:['none',Validators.required],
       category:['none',Validators.required],
-      inventory:['none',Validators.required],
+      inspection:['none',Validators.required],
       companyId:['']
       
   
@@ -179,7 +179,7 @@ export class RoleAndPermissionComponent {
       this.roleAndPermissionFormEdit.controls['roleAndPermissions'].setValue(this.currItem.roleAndPermissions);
       this.roleAndPermissionFormEdit.controls['imports'].setValue(this.currItem.imports);
       this.roleAndPermissionFormEdit.controls['category'].setValue(this.currItem.category);
-      this.roleAndPermissionFormEdit.controls['inventory'].setValue(this.currItem.inventory);
+      this.roleAndPermissionFormEdit.controls['inspection'].setValue(this.currItem.inspection);
       this.roleAndPermissionFormEdit.controls['companyId'].setValue(this.companyId);
       
     }

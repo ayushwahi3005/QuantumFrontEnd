@@ -9,6 +9,7 @@ export class InspectionInstance {
     notes!:string;
     createdAt!:Date|null;
     updatedAt!:Date|null;
+    dueDate!:Date|null;
     status!:'PENDING' | 'COMPLETED' | 'CANCELLED';
     stepValues!:any[];
     inspectionTemplates!:any[]

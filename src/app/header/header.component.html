@@ -31,7 +31,7 @@
             <b class="dropdown-item" style="text-decoration: none; color: black;">Profile ({{email}})</b>
             <b class="dropdown-item">More Details</b>
             <b class="dropdown-item">Contact Support</b>
-            <b class="dropdown-item">Change Password</b>
+            <b class="dropdown-item" style="cursor: pointer;" data-toggle="modal" data-target="#changePasswordModal" (click)="openChangePassword()">Change Password</b>
           </ul>
         </div>
 
@@ -102,5 +102,102 @@
       <a (click)="logout()" style="cursor: pointer;">Log out</a>
       <!-- </span> -->
     </li>
+
+    <!-- Change Password Modal -->
+    <!-- Change Password Modal -->
+<div class="modal fade" id="changePasswordModal" tabindex="-1" role="dialog" aria-labelledby="changePasswordModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content" style="border-radius: 16px; border: none; padding: 28px 24px;">
+
+      <!-- Header -->
+      <div style="margin-bottom: 4px; display: flex; justify-content: space-between; align-items: flex-start;">
+        <div>
+          <h2 style="font-size: 18px; font-weight: 500; margin: 0 0 4px;">Reset Password</h2>
+          <p style="font-size: 13px; color: #6b7280; margin: 0;">
+            Enter the code sent to <strong style="color: #111;">{{email}}</strong> to reset your password.
+          </p>
+        </div>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"
+          style="background: none; border: none; font-size: 1.4rem; line-height: 1; color: #6b7280;" id="closeChangePasswordModal">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+
+      <div style="margin: 20px 0;">
+        <!-- OTP Boxes -->
+        <div style="display: flex; gap: 8px; align-items: center; justify-content: center;margin-bottom: 8px;">
+          <input *ngFor="let i of [0,1,2]; let idx = index"
+            type="text" maxlength="1"
+            [(ngModel)]="otpDigits[idx]"
+            (input)="onOtpInput(idx, $event)"
+            [id]="'otp-' + idx"
+            style="width:44px;height:48px;border-radius:10px;border:1px solid #d1d5db;background:#f9fafb;text-align:center;font-size:18px;font-weight:500;outline:none;">
+          <span style="font-size: 20px; color: #9ca3af;">·</span>
+          <input *ngFor="let i of [3,4,5]; let idx = index"
+            type="text" maxlength="1"
+            [(ngModel)]="otpDigits[idx + 3]"
+            (input)="onOtpInput(idx + 3, $event)"
+            [id]="'otp-' + (idx + 3)"
+            style="width:44px;height:48px;border-radius:10px;border:1px solid #d1d5db;background:#f9fafb;text-align:center;font-size:18px;font-weight:500;outline:none;">
+        </div>
+
+        <!-- Verified indicator (show after OTP validated) -->
+        <div *ngIf="otpVerified" style="display:flex;align-items:center;justify-content:center;gap:6px;font-size:13px;font-weight:500;color:#16a34a;margin-bottom:16px;">
+          <i class="bi bi-check-circle-fill"></i> Code verified
+        </div>
+
+        <hr style="border: none; border-top: 1px solid #e5e7eb; margin: 16px 0;">
+
+        <!-- New Password -->
+        <label style="font-size:13px;font-weight:500;color:#6b7280;display:block;margin-bottom:6px;">New password</label>
+        <div style="position: relative; margin-bottom: 12px;">
+          <i class="bi bi-key" style="position:absolute;left:12px;top:50%;transform:translateY(-50%);color:#9ca3af;font-size:15px;"></i>
+          <input [type]="showPassword ? 'text' : 'password'"
+            class="form-control"
+            [(ngModel)]="changePasswordNew"
+            (ngModelChange)="checkPasswordStrength($event)"
+            placeholder="Enter new password"
+            style="padding-left:36px;padding-right:40px;height:44px;border-radius:8px;border:1px solid #d1d5db;background:#f9fafb;">
+          <button type="button" (click)="showPassword = !showPassword"
+            style="position:absolute;right:12px;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;color:#6b7280;padding:0;">
+            <i [class]="showPassword ? 'bi bi-eye-slash' : 'bi bi-eye'" style="font-size:17px;"></i>
+          </button>
+        </div>
+
+        <!-- Password strength checklist -->
+        <ul style="list-style:none;padding:0;margin:0 0 20px;display:flex;flex-direction:column;gap:6px;">
+          <li [style.color]="pwChecks.lower ? '#16a34a' : '#9ca3af'" style="display:flex;align-items:center;gap:8px;font-size:13px;">
+            <i [class]="pwChecks.lower ? 'bi bi-check-circle-fill' : 'bi bi-x'"></i> At least one lowercase letter
+          </li>
+          <li [style.color]="pwChecks.length ? '#16a34a' : '#9ca3af'" style="display:flex;align-items:center;gap:8px;font-size:13px;">
+            <i [class]="pwChecks.length ? 'bi bi-check-circle-fill' : 'bi bi-x'"></i> Minimum 8 characters
+          </li>
+          <li [style.color]="pwChecks.upper ? '#16a34a' : '#9ca3af'" style="display:flex;align-items:center;gap:8px;font-size:13px;">
+            <i [class]="pwChecks.upper ? 'bi bi-check-circle-fill' : 'bi bi-x'"></i> At least one uppercase letter
+          </li>
+          <li [style.color]="pwChecks.number ? '#16a34a' : '#9ca3af'" style="display:flex;align-items:center;gap:8px;font-size:13px;">
+            <i [class]="pwChecks.number ? 'bi bi-check-circle-fill' : 'bi bi-x'"></i> At least one number
+          </li>
+        </ul>
+      </div>
+
+      <!-- Footer -->
+      <div style="display:flex;gap:10px;">
+        <button type="button" data-dismiss="modal"
+          style="flex:1;height:42px;border-radius:8px;border:1px solid #d1d5db;background:#fff;font-size:14px;font-weight:500;color:#374151;cursor:pointer;">
+          Cancel
+        </button>
+        <button type="button" (click)="submitChangePassword()"
+          [disabled]="!allChecksPass || isSubmittingPassword"
+          [style.background]="allChecksPass && !isSubmittingPassword ? '#1e3a5f' : '#9ca3af'"
+          style="flex:2;height:42px;border-radius:8px;border:none;font-size:14px;font-weight:500;color:#fff;cursor:pointer;transition:background .2s;display:flex;align-items:center;justify-content:center;gap:8px;">
+          <span *ngIf="isSubmittingPassword" class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+          <span>{{ isSubmittingPassword ? 'Resetting...' : 'Reset password' }}</span>
+        </button>
+      </div>
+
+    </div>
+  </div>
+</div>
 
   </ul>

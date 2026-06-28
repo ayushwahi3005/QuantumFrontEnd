@@ -908,6 +908,17 @@
     <div class="modal-content">
       <div class="modal-header" style="padding: 13px 15px;">
         <h2 class="modal-title" style="margin:0; display: flex; justify-content: center;" id="exampleModalLongTitle">{{selectedInspectionInstance?.assetCategoryInspectionName }} Inspection Steps</h2>
+        <!-- <span>
+          <button mat-button id="matbutton" [matMenuTriggerFor]="menu">
+      
+            <mat-icon>more_vert</mat-icon>
+          </button>
+          
+          <mat-menu #menu="matMenu" style="z-index: 10000000000000000000;">
+            <button mat-menu-item style="z-index: 10000000000000000000;">Resend Invite</button>
+           
+          </mat-menu>
+        </span> -->
         <button type="button" class="btn btn-light btn-sm ms-auto" data-dismiss="modal" aria-label="Close" style="border-radius: 10px;" (click)="clearData()" #closeBox5>
           <b class="bi bi-x-lg"></b>
         </button>
@@ -956,8 +967,9 @@
                         [checked]="inspectionInstance.steps[i]?.value"
                         (change)="handleStepCheckox($event,i,step.type)"> -->
 
-                        <!-- <mat-checkbox  [color]="checkBoxColor"  (change)="handleStepCheckox($event.checked,i,step.type)" ></mat-checkbox> -->
-                        <mat-checkbox  [color]="checkBoxColor"  [(ngModel)]="step.value" ></mat-checkbox>
+                        <mat-checkbox  [color]="checkBoxColor"  [checked]="step?.value=='true'"  (change)="handleStepCheckox($event.checked,i,step.type)" ></mat-checkbox>
+                        <!-- <mat-checkbox  [color]="checkBoxColor"  [(ngModel)]="step.value" ></mat-checkbox> -->
+                      
                     </ng-container>
                     
                     <ng-template #elseBlock>
@@ -988,8 +1000,8 @@
         </div>
         <div class="modal-footer">
           <button type="button" class="btn btn-secondary" data-dismiss="modal" (click)="cancelInspection()" *ngIf="userRole=='ADMIN' && selectedInspectionInstance?.status!='CANCELLED'">Cancel Inspection</button>
-          <button type="button" class="btn btn-secondary" data-dismiss="modal" (click)="clearData()">Close</button>
-          <button type="button" class="btn btn-secondary" (click)="clearSavedData()" *ngIf="selectedInspectionInstance?.status!='CANCELLED'">Clear</button>
+          <!-- <button type="button" class="btn btn-secondary" data-dismiss="modal" (click)="clearData()">Close</button> -->
+          <!-- <button type="button" class="btn btn-secondary" (click)="clearSavedData()" *ngIf="selectedInspectionInstance?.status!='CANCELLED'">Clear</button> -->
           <button type="button" class="btn btn-primary" (click)="saveInpectionValue()" (click)="closeBox5.click()" *ngIf="selectedInspectionInstance?.status!='CANCELLED'">Submit</button>
           <button type="button" class="btn btn-primary" (click)="tempSave()" (click)="closeBox5.click()" *ngIf="selectedInspectionInstance?.status!='CANCELLED'">Save changes</button>
           
@@ -1130,6 +1142,7 @@
         <h2 class="modal-title" style="margin:0; display: flex; justify-content: center;" id="exampleModalLongTitle">
           {{selectedInspectionInstance?.assetCategoryInspectionName }} Inspection Steps
         </h2>
+  
 
         <button type="button" class="btn btn-light btn-sm ms-auto" data-dismiss="modal" aria-label="Close" style="border-radius: 10px;" (click)="clearData()" #closeBox5 >
           <b class="bi bi-x-lg"></b>

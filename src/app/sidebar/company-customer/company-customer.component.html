@@ -54,6 +54,7 @@
   
   
    </div>
+   
 
     <div class="d-flex justify-content-between">
 
@@ -62,8 +63,9 @@
           <path fill-rule="evenodd" d="M11.5 15a.5.5 0 0 0 .5-.5V2.707l3.146 3.147a.5.5 0 0 0 .708-.708l-4-4a.5.5 0 0 0-.708 0l-4 4a.5.5 0 1 0 .708.708L11 2.707V14.5a.5.5 0 0 0 .5.5m-7-14a.5.5 0 0 1 .5.5v11.793l3.146-3.147a.5.5 0 0 1 .708.708l-4 4a.5.5 0 0 1-.708 0l-4-4a.5.5 0 0 1 .708-.708L4 13.293V1.5a.5.5 0 0 1 .5-.5"/>
         </svg>
       </a>
+      
      
-      <div class="dropdown-menu" aria-labelledby="sortButton" style="z-index: 10; cursor: pointer; margin-top: 5px; padding: 8px;">
+      <div class="dropdown-menu" aria-labelledby="sortButton" style="z-index: 100000; cursor: pointer; margin-top: 5px; padding: 8px;">
         <div style="padding: 8px 12px;cursor: default;">Sort by</div>
         <a class="dropdown-item" (click)="sortBy('name')">Name</a>
         <a class="dropdown-item" (click)="sortBy('category')">Category</a>
@@ -77,6 +79,7 @@
         <!-- <a class="dropdown-item" (click)="sortBy('zipCode')">ZipCode</a> -->
         <a *ngFor="let item of selectedExtraColums"  class="dropdown-item" (click)="sortBy(item)" >{{item}}</a>
       </div>
+      
 
     <!-- <mat-form-field>
       <mat-select placeholder="Custom Columns" [(ngModel)]="selectedExtraColums" multiple>
@@ -115,6 +118,20 @@
         </svg>
       </a>
 
+      <button class="btn btn-light" type="button" (click)="toggleSortDirection()" 
+            style="margin: 0 5px; border: 1px solid #c0c0c0;" 
+            *ngIf="sortedBy" 
+            title="Toggle Sort Direction">
+            <!-- <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" 
+              class="bi bi-arrow-down-up" viewBox="0 0 16 16">
+              <path fill-rule="evenodd" 
+                d="M11.5 15a.5.5 0 0 0 .5-.5V2.707l3.146 3.147a.5.5 0 0 0 .708-.708l-4-4a.5.5 0 0 0-.708 0l-4 4a.5.5 0 1 0 .708.708L11 2.707V14.5a.5.5 0 0 0 .5.5z"/>
+              <path fill-rule="evenodd" 
+                d="M4.5 1a.5.5 0 0 0-.5.5v11.793L.854 10.146a.5.5 0 1 0-.708.708l4 4a.5.5 0 0 0 .708 0l4-4a.5.5 0 0 0-.708-.708L4 13.293V1.5a.5.5 0 0 0-.5-.5z"/>
+            </svg> -->
+            <span style="margin-left: 5px;">{{ sortDirection }}</span>
+          </button>
+
     </div>
       
     
@@ -125,7 +142,9 @@
       <div class="col" style="margin: 0; padding: 0; width: 100%;">
 
         <button *ngIf="searchDataBy" class="sort btn btn-secondary" (click)="removeSearchDataBy()">Search By: {{searchDataBy|titlecase}} &times;</button>
-        <button *ngIf="sortedBy" class="sort btn btn-secondary" (click)="removeSort()">Sorted By: {{sortedBy|titlecase}} &times;</button>
+        <button *ngIf="sortedBy" style="margin: 2px;" class="sort btn btn-secondary" (click)="removeSort()">Sorted By: {{sortedBy|titlecase}} &times;</button>
+         <span  *ngIf="sortedBy" style="margin-left: 5px; border: #0c0c0c 1px solid; padding:8px 12px; border-radius: 5px; background-color: black;color: azure; font-weight: 600;" >{{ sortDirection }}</span>
+     
         <span *ngIf="appliedFilterListSize >0">
           <button *ngFor="let item of appliedFilterList" class="sort btn btn-primary" style="margin: 0px 5px;" (click)="removeSingleFilter(item)">{{(item=="companyCustomerId")?"Id":item|titlecase}}: {{appliedFilterListMap.get(item)|titlecase}} &times;</button>
           <button class="btn btn-warning" (click)="reset()">Clear All</button>
