@@ -1,5 +1,7 @@
 import { Component, ElementRef, HostListener, OnInit, ViewChild } from '@angular/core';
 import { IDropdownSettings } from 'ng-multiselect-dropdown';
+import * as jspdf from 'jspdf';
+import * as XLSX from 'xlsx';
 import { AssetDetailsService } from '../asset-details/asset-details.service';
 import { InspectionInstance } from '../asset-details/inspectionInstance';
 import { AssetsService } from '../assets/assets.service';
@@ -27,6 +29,7 @@ interface InspectionDetail {
   assetName: string;
   assetCategory: string;
   customerName: string;
+  assetBusinessId:number;
 }
 
 interface FilterCriteria {
@@ -58,6 +61,9 @@ interface FilterCriteria {
 })
 export class InspectionsComponent implements OnInit {
   @ViewChild('addInspectionCloseBtn') addInspectionCloseBtn?: ElementRef;
+  @ViewChild('inspectionViewCloseBtn') inspectionViewCloseBtn?: ElementRef;
+  @ViewChild('inspectionEditCloseBtn') inspectionEditCloseBtn?: ElementRef;
+  @ViewChild('exportCloseBtn') exportCloseBtn?: ElementRef;
 
   
 
@@ -120,6 +126,14 @@ export class InspectionsComponent implements OnInit {
   alertMessage = '';
   alertType = 'success';
   currUserRole: string = localStorage.getItem('role') || '';
+  userRole: string = localStorage.getItem('role') || '';
+  checkBoxColor = 'primary';
+  selectedInspectionInstance: any = null;
+  viewDropdownList: any[] = [];
+  editDropdownList: any[] = [];
+  dueDateInput = '';
+  notedData = '';
+  inspectionExportType = 'inspection-overview';
   constructor(
     private inspectionsService: InspectionsService,
     private assetDetailsService: AssetDetailsService,
@@ -131,6 +145,7 @@ export class InspectionsComponent implements OnInit {
     this.username = localStorage.getItem('name') || '';
     this.selectedTab = 'ALL';
     this.currUserRole= localStorage.getItem('role') || '';
+    this.userRole = this.currUserRole;
 
     this.dropdownSettings = {
       singleSelection: false,
@@ -308,6 +323,7 @@ private getLocationBinDisplayName(value: string): string {
   loadAssets(): void {
     this.inspectionsService.getActiveAssetList(this.companyId).subscribe({
       next: (data) => {
+        console.log('Loaded assets:', data);
         this.assetList = data || [];
       },
       error: (error) => {
@@ -362,16 +378,29 @@ private getLocationBinDisplayName(value: string): string {
     });
   }
 
-  onItemSelect(): void {
+  onItemSelect(event?: any): void {
+    if (this.selectedInspectionInstance && !this.selectedAsset) {
+      this.updateStepListFromLocalStorage();
+      return;
+    }
     this.updateStepList();
   }
 
   onSelectAll(items: any[]): void {
+    if (this.selectedInspectionInstance && !this.selectedAsset) {
+      this.selectedItems = items;
+      this.updateStepListFromLocalStorage();
+      return;
+    }
     this.selectedItems = items;
     this.updateStepList();
   }
 
-  onItemDeSelect(): void {
+  onItemDeSelect(event?: any): void {
+    if (this.selectedInspectionInstance && !this.selectedAsset) {
+      this.updateStepListFromLocalStorage();
+      return;
+    }
     this.updateStepList();
   }
 
@@ -491,7 +520,8 @@ private getLocationBinDisplayName(value: string): string {
 }
 
   closeAddInspectionModal(): void {
-    this.addInspectionCloseBtn?.nativeElement?.click();
+    this.addInspectionCloseBtn?.nativeElement.click();
+    this.hideBootstrapModal('addInspection');
     this.resetAddInspectionForm();
   }
 
@@ -962,4 +992,679 @@ private getLocationBinDisplayName(value: string): string {
   onDocumentClick(): void {
     this.closeDateRangePickers();
   }
+
+  viewInspection(detail: InspectionDetail): void {
+    const instance = { ...(detail.inspectionInstance || {}) };
+    this.selectedInspectionInstance = instance;
+    this.inspectionInstance = instance;
+    this.inspectionInstance.companyId = this.companyId;
+    this.prepareViewInspectionData(instance);
+  }
+
+  prepareViewInspectionData(instance: any): void {
+    if (instance.inspectionTemplates?.length) {
+      this.stepObject = instance.inspectionTemplates.map((template: any) => ({
+        inspectionName: template.inspectionName,
+        stepValues: (template.stepValues || []).map((step: any) => ({ ...step })),
+      }));
+    } else if (instance.stepValues?.length) {
+      this.stepObject = [{
+        inspectionName: instance.assetCategoryInspectionName || 'Inspection',
+        stepValues: instance.stepValues.map((step: any) => ({ ...step })),
+      }];
+    } else {
+      this.stepObject = [];
+    }
+
+    if (instance.selectedItemList?.length) {
+      this.selectedItems = [...instance.selectedItemList];
+      this.viewDropdownList = [...instance.selectedItemList];
+      return;
+    }
+
+    if (this.stepObject.length) {
+      this.selectedItems = this.stepObject.map((stepGroup: any, index: number) => ({
+        id: instance.assetCategoryInspectionId || index,
+        name: stepGroup.inspectionName,
+      }));
+      this.viewDropdownList = [...this.selectedItems];
+      return;
+    }
+
+    this.selectedItems = instance.assetCategoryInspectionName
+      ? [{ id: instance.assetCategoryInspectionId, name: instance.assetCategoryInspectionName }]
+      : [];
+    this.viewDropdownList = [...this.selectedItems];
+  }
+
+  clearViewInspectionData(): void {
+    this.clearData();
+  }
+
+  canEditInspection(detail: InspectionDetail): boolean {
+    const status = detail.inspectionInstance?.status;
+    return status === 'PENDING' || this.currUserRole === 'ADMIN';
+  }
+
+  editInspection(detail: InspectionDetail): void {
+    const instance = { ...(detail.inspectionInstance || {}) };
+    this.mySelectedInspectionInstanceFunc(instance);
+  }
+
+  mySelectedInspectionInstanceFunc(instance: any): void {
+    this.selectedItems = instance.selectedItemList ? [...instance.selectedItemList] : [];
+    this.dropdownList = [...this.selectedItems];
+    this.selectedInspectionInstance = instance;
+    this.inspectionInstance = { ...instance };
+    this.inspectionInstance.companyId = this.companyId;
+    this.notedData = instance.notes;
+    this.syncDueDateInputFromInstance(instance);
+    this.updateStepListFromLocalStorage();
+  }
+
+  clearData(): void {
+    this.selectedInspectionInstance = null;
+    this.selectedItems = [];
+    this.viewDropdownList = [];
+    this.stepObject = [];
+    this.dueDateInput = '';
+    this.notedData = '';
+    this.inspectionInstance = this.createEmptyInspectionInstance();
+  }
+
+  applyDueDateToInstance(): void {
+    this.inspectionInstance.dueDate = this.dueDateInput
+      ? new Date(`${this.dueDateInput}T00:00:00`)
+      : null;
+  }
+
+  syncDueDateInputFromInstance(instance?: any): void {
+    const dueDate = instance?.dueDate ?? instance?.inspectionDueDate ?? this.inspectionInstance?.dueDate;
+    if (!dueDate) {
+      this.dueDateInput = '';
+      return;
+    }
+    const parsed = new Date(dueDate);
+    this.dueDateInput = Number.isNaN(parsed.getTime())
+      ? ''
+      : parsed.toISOString().split('T')[0];
+  }
+
+  addNote(event: any): void {
+    this.inspectionInstance.notes = event.target.value;
+  }
+
+  handleStepCheckox(isChecked: any, index: number, type: string): void {
+    if (this.inspectionInstance.stepValues?.[index]) {
+      this.inspectionInstance.stepValues[index].value = isChecked;
+    }
+  }
+
+  updateStepListFromLocalStorage(): void {
+    this.updateStepListFromInstance();
+  }
+
+  saveInpectionValue(): void {
+    this.saveInspectionValue();
+  }
+
+  tempSave(): void {
+    this.tempSaveInspection();
+  }
+
+  updateStepListFromInstance(): void {
+    const templates = this.inspectionInstance.inspectionTemplates || [];
+    const steps: any[] = [];
+    const stepObj: any[] = [];
+
+    templates.forEach((item: any) => {
+      const myCurrStep: any[] = [];
+      (item.stepValues || []).forEach((step: any) => {
+        const obj = {
+          name: step.name,
+          inspectionStepId: step.inspectionStepId ?? null,
+          value: step.value,
+          type: step.type,
+        };
+        steps.push(obj);
+        myCurrStep.push(obj);
+      });
+      stepObj.push({
+        inspectionName: item.inspectionName,
+        stepValues: myCurrStep,
+      });
+    });
+
+    this.stepObject = stepObj;
+    this.inspectionInstance.stepValues = steps;
+    this.inspectionInstance.inspectionTemplates = this.stepObject;
+  }
+
+  private syncStepObjectToInstance(): void {
+    this.inspectionInstance.inspectionTemplates = this.stepObject;
+    const steps: any[] = [];
+    this.stepObject.forEach((template: any) => {
+      (template.stepValues || []).forEach((step: any) => steps.push({ ...step }));
+    });
+    this.inspectionInstance.stepValues = steps;
+    this.inspectionInstance.selectedItemList = this.selectedItems;
+  }
+
+  saveInspectionValue(): void {
+    this.applyDueDateToInstance();
+    this.syncStepObjectToInstance();
+    this.inspectionInstance.actionPerformedBy = this.username;
+    const currDateTime = new Date();
+    if (!this.inspectionInstance.createdAt) {
+      this.inspectionInstance.createdBy = this.username;
+      this.inspectionInstance.createdAt = currDateTime;
+    }
+    this.inspectionInstance.updatedAt = currDateTime;
+    this.inspectionInstance.status = 'COMPLETED';
+
+    this.assetDetailsService.addAssetInspection(this.inspectionInstance).subscribe({
+      next: () => this.triggerAlert('Inspection saved successfully', 'success'),
+      error: (err) => {
+        const message = err?.error?.error === 'TRIAL_EXPIRED'
+          ? err.error.message
+          : (err?.error?.errorMessage || 'Failed to save inspection');
+        this.triggerAlert(message, 'danger');
+      },
+      complete: () => {
+        this.clearData();
+        this.loadDetailedInspections();
+        this.loadStatusCounts();
+        this.loadPerformerCounts();
+        this.closeModal('edit');
+      },
+    });
+  }
+
+  tempSaveInspection(): void {
+    this.applyDueDateToInstance();
+    this.syncStepObjectToInstance();
+    this.inspectionInstance.actionPerformedBy = this.username;
+    const currDateTime = new Date();
+    if (!this.inspectionInstance.createdAt) {
+      this.inspectionInstance.createdBy = this.username;
+      this.inspectionInstance.createdAt = currDateTime;
+    }
+    this.inspectionInstance.updatedAt = currDateTime;
+    this.inspectionInstance.status = 'PENDING';
+
+    this.assetDetailsService.addAssetInspection(this.inspectionInstance).subscribe({
+      next: () => this.triggerAlert('Inspection saved successfully', 'success'),
+      error: (err) => {
+        const message = err?.error?.error === 'TRIAL_EXPIRED'
+          ? err.error.message
+          : (err?.error?.errorMessage || 'Failed to save inspection');
+        this.triggerAlert(message, 'danger');
+      },
+      complete: () => {
+        this.clearData();
+        this.loadDetailedInspections();
+        this.loadStatusCounts();
+        this.loadPerformerCounts();
+        this.closeModal('edit');
+      },
+    });
+  }
+
+  closeModal(modal: 'view' | 'edit' = 'edit'): void {
+    if (modal === 'view') {
+      this.inspectionViewCloseBtn?.nativeElement.click();
+    } else {
+      this.inspectionEditCloseBtn?.nativeElement.click();
+    }
+    // Fallback: also force-close via DOM in case the ViewChild isn't resolved yet
+    const modalId = modal === 'view' ? 'inspection-view-popup' : 'inspection-edit-popup';
+    this.hideBootstrapModal(modalId);
+  }
+
+  private hideBootstrapModal(modalId: string): void {
+    const modalEl = document.getElementById(modalId);
+    if (!modalEl) return;
+
+    // Try Bootstrap 5
+    try {
+      const bootstrapModal = (window as any).bootstrap?.Modal;
+      if (bootstrapModal) {
+        const instance = bootstrapModal.getInstance(modalEl);
+        if (instance) instance.hide();
+      }
+    } catch (_) {}
+
+    // Try jQuery / Bootstrap 4
+    try {
+      if ((window as any).$) {
+        (window as any).$(modalEl).modal('hide');
+      }
+    } catch (_) {}
+
+    // Always force-clean after a tick so Bootstrap has time to run first
+    setTimeout(() => {
+      modalEl.classList.remove('show');
+      modalEl.style.display = 'none';
+      modalEl.setAttribute('aria-hidden', 'true');
+      document.body.classList.remove('modal-open');
+      document.body.style.removeProperty('padding-right');
+      document.body.style.removeProperty('overflow');
+      document.querySelectorAll('.modal-backdrop').forEach((backdrop) => backdrop.remove());
+    }, 80);
+  }
+
+  cancelInspection(): void {
+    this.applyDueDateToInstance();
+    this.syncStepObjectToInstance();
+
+    const payload = { ...this.inspectionInstance };
+    payload.actionPerformedBy = this.username;
+    payload.selectedItemList = [...this.selectedItems];
+    const currDateTime = new Date();
+    if (!payload.createdAt) {
+      payload.createdBy = this.username;
+      payload.createdAt = currDateTime;
+    }
+    payload.updatedAt = currDateTime;
+    payload.status = 'CANCELLED';
+
+    this.assetDetailsService.addAssetInspection(payload).subscribe({
+      next: () => this.triggerAlert('Inspection cancelled successfully', 'success'),
+      error: (err) => {
+        const message = err?.error?.error === 'TRIAL_EXPIRED'
+          ? err.error.message
+          : (err?.error?.errorMessage || 'Failed to cancel inspection');
+        this.triggerAlert(message, 'danger');
+      },
+      complete: () => {
+        this.clearData();
+        this.loadDetailedInspections();
+        this.loadStatusCounts();
+        this.loadPerformerCounts();
+        this.closeModal('edit');
+      },
+    });
+  }
+
+  clearSavedData(): void {
+    this.stepObject.forEach((template: any) => {
+      (template.stepValues || []).forEach((step: any) => {
+        step.value = step.type === 'CHECKBOX' ? false : '';
+      });
+    });
+    this.syncStepObjectToInstance();
+    this.notedData = '';
+    this.dueDateInput = '';
+    if (this.inspectionInstance) {
+      this.inspectionInstance.notes = '';
+      this.inspectionInstance.dueDate = null;
+    }
+    // this.closeModal('edit');
+  }
+
+  downloadInspectionPDF(detail: InspectionDetail): void {
+    const instance = detail.inspectionInstance || {};
+    const doc = new jspdf.jsPDF();
+    const pageWidth = doc.internal.pageSize.getWidth();
+    const pageHeight = doc.internal.pageSize.getHeight();
+    let yPosition = 10;
+    const lineHeight = 7;
+    const margin = 10;
+    const contentWidth = pageWidth - 2 * margin;
+
+    doc.setFillColor(25, 40, 82);
+    doc.rect(0, 0, pageWidth, 25, 'F');
+    doc.setTextColor(255, 255, 255);
+    doc.setFontSize(16);
+    doc.setFont('helvetica', 'bold');
+    doc.text('Inspection Report', margin, 18);
+    yPosition = 30;
+
+    doc.setTextColor(0, 0, 0);
+    doc.setFontSize(10);
+    doc.setFont('helvetica', 'bold');
+    doc.text('Asset Name:', margin, yPosition);
+    doc.setFont('helvetica', 'normal');
+    doc.text(detail.assetName || 'N/A', margin + 35, yPosition);
+    yPosition += lineHeight;
+
+    doc.setFont('helvetica', 'bold');
+    doc.text('Customer:', margin, yPosition);
+    doc.setFont('helvetica', 'normal');
+    doc.text(detail.customerName || 'N/A', margin + 35, yPosition);
+    yPosition += lineHeight;
+
+    doc.setFont('helvetica', 'bold');
+    doc.text('Inspection Date:', margin, yPosition);
+    doc.setFont('helvetica', 'normal');
+    const inspectionDate = instance.createdAt
+      ? new Date(instance.createdAt).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })
+      : 'N/A';
+    doc.text(inspectionDate, margin + 35, yPosition);
+    yPosition += lineHeight + 5;
+
+    doc.setFillColor(25, 40, 82);
+    doc.rect(margin, yPosition - 3, contentWidth, 7, 'F');
+    doc.setTextColor(255, 255, 255);
+    doc.setFont('helvetica', 'bold');
+    doc.setFontSize(12);
+    doc.text('Inspection Template: ' + (instance.assetCategoryInspectionName || 'N/A'), margin + 5, yPosition + 2);
+    yPosition += 10;
+
+    doc.setTextColor(0, 0, 0);
+    doc.setFontSize(10);
+    doc.setFont('helvetica', 'bold');
+    doc.text('#Step', margin + 5, yPosition);
+    doc.text('Name', margin + 20, yPosition);
+    doc.text('Value', margin + 100, yPosition);
+    yPosition += lineHeight + 2;
+    doc.setDrawColor(200, 200, 200);
+    doc.line(margin, yPosition - 2, margin + contentWidth, yPosition - 2);
+
+    const allSteps = this.collectInspectionSteps(instance);
+    doc.setFont('helvetica', 'normal');
+    doc.setFontSize(9);
+
+    if (allSteps.length > 0) {
+      allSteps.forEach((step: any, index: number) => {
+        if (yPosition > pageHeight - 20) {
+          doc.addPage();
+          yPosition = 10;
+        }
+        doc.text((index + 1).toString(), margin + 5, yPosition + 5);
+        doc.text(step.name || 'N/A', margin + 20, yPosition + 5);
+        doc.text(this.formatStepValue(step), margin + 100, yPosition + 5);
+        yPosition += lineHeight;
+      });
+    } else {
+      doc.text('No inspection steps recorded', margin + 20, yPosition);
+      yPosition += lineHeight;
+    }
+
+    yPosition += 5;
+    doc.line(margin, yPosition, margin + contentWidth, yPosition);
+    yPosition += 5;
+
+    if (instance.notes) {
+      doc.setFont('helvetica', 'bold');
+      doc.text('Notes:', margin, yPosition);
+      yPosition += lineHeight;
+      doc.setFont('helvetica', 'normal');
+      const noteText = doc.splitTextToSize(instance.notes, contentWidth - 10);
+      doc.text(noteText, margin + 5, yPosition);
+      yPosition += noteText.length * lineHeight + 5;
+    }
+
+    const dueDate = instance.dueDate || instance.inspectionDueDate;
+    if (dueDate) {
+      doc.setFont('helvetica', 'bold');
+      doc.text('Due Date: ' + new Date(dueDate).toLocaleDateString('en-US'), margin, yPosition);
+      yPosition += lineHeight;
+    }
+
+    doc.setFont('helvetica', 'bold');
+    doc.setFontSize(9);
+    doc.text('Performed By: ' + (instance.actionPerformedBy || 'N/A'), margin, yPosition);
+    yPosition += lineHeight;
+    doc.text('Status: ' + (instance.status || 'N/A'), margin, yPosition);
+
+    doc.setFontSize(8);
+    doc.setTextColor(150, 150, 150);
+    doc.text('Powered by Asset Yug', pageWidth / 2, pageHeight - 5, { align: 'center' });
+
+    const fileName = `Inspection_${detail.assetName || 'Asset'}_${instance.assetCategoryInspectionInstanceId || 'report'}.pdf`;
+    doc.save(fileName);
+  }
+
+  exportInspectionExcel(detail: InspectionDetail): void {
+    const instance = detail.inspectionInstance || {};
+    const overviewRows = [[
+      'ID',
+      'Template',
+      'Asset',
+      'Asset Serial No.',
+      'Asset Location',
+      'Customer',
+      'Category',
+      'Performed By',
+      'Due Date',
+      'Created Date',
+      'Modified Date',
+      'Status',
+      'Notes',
+    ], [
+      instance.assetCategoryInspectionInstanceId || '',
+      instance.assetCategoryInspectionName || '',
+      detail.assetName || '',
+      (detail as any).assetSerialNumber || (detail as any).serialNumber || '',
+      (detail as any).assetLocation || (detail as any).locationName || '',
+      detail.customerName || '',
+      detail.assetCategory || '',
+      instance.actionPerformedBy || '',
+      this.formatDateForExport(instance.dueDate || instance.inspectionDueDate),
+      this.formatDateForExport(instance.createdAt),
+      this.formatDateForExport(instance.updatedAt),
+      instance.status || '',
+      instance.notes || '',
+    ]];
+
+    const detailRows = [['Template', '#Step', 'Name', 'Type', 'Value']];
+    if (instance.inspectionTemplates?.length) {
+      instance.inspectionTemplates.forEach((template: any) => {
+        (template.stepValues || []).forEach((step: any, index: number) => {
+          detailRows.push([
+            template.inspectionName || '',
+            (index + 1).toString(),
+            step.name || '',
+            step.type || '',
+            this.formatStepValue(step),
+          ]);
+        });
+      });
+    } else {
+      this.collectInspectionSteps(instance).forEach((step: any, index: number) => {
+        detailRows.push([
+          instance.assetCategoryInspectionName || '',
+          (index + 1).toString(),
+          step.name || '',
+          step.type || '',
+          this.formatStepValue(step),
+        ]);
+      });
+    }
+
+    const workbook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(workbook, XLSX.utils.aoa_to_sheet(overviewRows), 'Overview');
+    XLSX.utils.book_append_sheet(workbook, XLSX.utils.aoa_to_sheet(detailRows), 'Details');
+    XLSX.writeFile(
+      workbook,
+      `Inspection_${detail.assetName || 'Asset'}_${instance.assetCategoryInspectionInstanceId || 'export'}.xlsx`,
+    );
+  }
+
+  exportInspectionsList(): void {
+    const payload = {
+      ...this.buildFilterPayload(),
+      pageNumber: 0,
+      pageSize: Math.max(this.totalRecords, this.pageSize),
+    };
+
+    this.inspectionsService.loadDetailedInspections(this.companyId, payload).subscribe({
+      next: (response: InspectionResponse) => {
+        const rows = response.data || [];
+        if (!rows.length) {
+          this.triggerAlert('No inspections available to export', 'warning');
+          return;
+        }
+
+        if (this.inspectionExportType === 'inspection-overview') {
+          this.writeOverviewWorkbook(rows);
+        } else {
+          this.writeDetailedWorkbook(rows);
+        }
+
+        this.triggerAlert('Inspections exported successfully', 'success');
+        this.exportCloseBtn?.nativeElement.click();
+      },
+      error: () => this.triggerAlert('Failed to export inspections', 'danger'),
+    });
+  }
+
+  private writeOverviewWorkbook(rows: InspectionDetail[]): void {
+    const data = [this.getOverviewExportHeaders()];
+    rows.forEach((detail) => data.push(this.buildOverviewExportRow(detail)));
+
+    const workbook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(workbook, XLSX.utils.aoa_to_sheet(data), 'Overview');
+    XLSX.writeFile(workbook, `Inspections_Overview_${this.companyId}.xlsx`);
+  }
+
+  private writeDetailedWorkbook(rows: InspectionDetail[]): void {
+    const overview = [this.getOverviewExportHeaders()];
+    const details = [this.getDetailsExportHeaders()];
+
+    rows.forEach((detail) => {
+      overview.push(this.buildOverviewExportRow(detail));
+      this.appendDetailExportRows(details, detail);
+    });
+
+    const workbook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(workbook, XLSX.utils.aoa_to_sheet(overview), 'Overview');
+    XLSX.utils.book_append_sheet(workbook, XLSX.utils.aoa_to_sheet(details), 'Details');
+    XLSX.writeFile(workbook, `Inspections_Detailed_${this.companyId}.xlsx`);
+  }
+
+  private getOverviewExportHeaders(): string[] {
+    return [
+      'Asset ID',
+      'Asset Name',
+      'Asset Location',
+      'Customer',
+      'Asset Category',
+      'Asset Serial Number',
+      'Inspection ID',
+      'Inspection Name',
+      'Inspection Status',
+      'Created Date',
+      'Due Date',
+      'Date Completed',
+      'Performed By',
+      'Last Modified Date',
+      'Last Modified User',
+      'Notes',
+    ];
+  }
+
+  private getDetailsExportHeaders(): string[] {
+    return [
+      'Asset ID',
+      'Asset Name',
+      'Inspection ID',
+      'Inspection Name',
+      'Inspection Status',
+      'Created Date',
+      'Date Completed',
+      'Performed By',
+      'Instruction Name',
+      'Instruction Value',
+      'Notes',
+      'Last Modified Date',
+      'Last Modified User',
+    ];
+  }
+
+  private buildOverviewExportRow(detail: InspectionDetail): string[] {
+    const instance = detail.inspectionInstance || {};
+    return [
+      detail.assetBusinessId?.toString() || '',
+      detail.assetName || '',
+      (detail as any).assetLocation || (detail as any).locationName || '',
+      detail.customerName || '',
+      detail.assetCategory || '',
+      (detail as any).assetSerialNumber || (detail as any).serialNumber || '',
+      instance.assetCategoryInspectionInstanceId || '',
+      instance.assetCategoryInspectionName || '',
+      instance.status || '',
+      this.formatDateForExport(instance.createdAt),
+      this.formatDateForExport(instance.dueDate || instance.inspectionDueDate),
+      instance.status === 'COMPLETED' ? this.formatDateForExport(instance.updatedAt) : '',
+      instance.actionPerformedBy || '',
+      this.formatDateForExport(instance.updatedAt),
+      this.getLastModifiedUser(instance),
+      instance.notes || '',
+    ];
+  }
+
+  private buildDetailExportRow(detail: InspectionDetail, templateName: string, step: any): string[] {
+    const instance = detail.inspectionInstance || {};
+    return [
+      detail.assetBusinessId?.toString() || '',
+      detail.assetName || '',
+      instance.assetCategoryInspectionInstanceId || '',
+      templateName || instance.assetCategoryInspectionName || '',
+      instance.status || '',
+      this.formatDateForExport(instance.createdAt),
+      instance.status === 'COMPLETED' ? this.formatDateForExport(instance.updatedAt) : '',
+      instance.actionPerformedBy || '',
+      step.name || '',
+      this.formatStepValue(step),
+      step.notes || instance.notes || '',
+      this.formatDateForExport(instance.updatedAt),
+      this.getLastModifiedUser(instance),
+    ];
+  }
+
+  private appendDetailExportRows(details: string[][], detail: InspectionDetail): void {
+    const instance = detail.inspectionInstance || {};
+
+    if (instance.inspectionTemplates?.length) {
+      instance.inspectionTemplates.forEach((template: any) => {
+        (template.stepValues || []).forEach((step: any) => {
+          details.push(this.buildDetailExportRow(detail, template.inspectionName, step));
+        });
+      });
+      return;
+    }
+
+    this.collectInspectionSteps(instance).forEach((step: any) => {
+      details.push(this.buildDetailExportRow(detail, instance.assetCategoryInspectionName, step));
+    });
+  }
+
+  private getLastModifiedUser(instance: any): string {
+    return instance.lastModifiedUser || instance.updatedBy || instance.modifiedBy || instance.actionPerformedBy || '';
+  }
+
+  private collectInspectionSteps(instance: any): any[] {
+    const steps: any[] = [];
+    if (instance.inspectionTemplates?.length) {
+      instance.inspectionTemplates.forEach((template: any) => {
+        if (template.stepValues?.length) {
+          steps.push(...template.stepValues);
+        }
+      });
+      return steps;
+    }
+    return instance.stepValues || [];
+  }
+
+  private formatStepValue(step: any): string {
+    if (step.type === 'CHECKBOX') {
+      return step.value === true || step.value === 'true' ? 'Yes' : 'No';
+    }
+    return step.value != null && step.value !== '' ? String(step.value) : 'N/A';
+  }
+
+  private formatDateForExport(value: any): string {
+    if (!value) {
+      return '';
+    }
+    const parsed = new Date(value);
+    if (Number.isNaN(parsed.getTime())) return '';
+    return parsed.toLocaleDateString('en-US') + ' ' + parsed.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' });
+  }
+
+  compareAssets = (a: any, b: any): boolean => {
+  return a && b ? a.id === b.id : a === b;
+};
 }

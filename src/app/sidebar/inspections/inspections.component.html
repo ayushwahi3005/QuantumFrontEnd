@@ -152,6 +152,11 @@
       </svg>
       {{ sortDirection }}
     </button>
+
+    <button class="btn-export" data-toggle="modal" data-target="#inspectionExportModal" title="Export inspections">
+      <i class="bi bi-download"></i>
+      Export Excel
+    </button>
   </div>
 
   <!-- Active Filters Section -->
@@ -185,6 +190,8 @@
             <th (click)="sort('category')">Category</th>
             <th (click)="sort('performedBy')">Performed By</th>
             <th (click)="sort('dueDate')">Due Date</th>
+            <th (click)="sort('createdAt')">Created</th>
+            <th (click)="sort('updatedAt')">Modified</th>
             <th (click)="sort('status')">Status</th>
             <th class="actions-col">Actions</th>
           </tr>
@@ -200,19 +207,59 @@
             <td>{{ inspection.assetCategory || 'N/A' }}</td>
             <td>{{ inspection.inspectionInstance?.actionPerformedBy || 'Unassigned' }}</td>
             <td>{{ inspection.inspectionInstance?.dueDate | date:'MM/dd/yyyy' || 'N/A' }}</td>
+            <td>{{ inspection.inspectionInstance?.createdAt ? (inspection.inspectionInstance.createdAt | date:'MM/dd/yyyy hh:mm a') : 'N/A' }}</td>
+            <td>{{ inspection.inspectionInstance?.updatedAt ? (inspection.inspectionInstance.updatedAt | date:'MM/dd/yyyy hh:mm a') : 'N/A' }}</td>
             <td>
-              <span [ngClass]="'badge ' + getStatusBadgeClass(inspection.inspectionInstance?.status)">
-                {{ getStatusIcon(inspection.inspectionInstance?.status) }}
-                {{ getDisplayStatus(inspection.inspectionInstance?.status) }}
-              </span>
+              <div class="status-cell">
+                <span [ngClass]="'badge ' + getStatusBadgeClass(inspection.inspectionInstance?.status)">
+                  {{ getStatusIcon(inspection.inspectionInstance?.status) }}
+                  {{ getDisplayStatus(inspection.inspectionInstance?.status) }}
+                </span>
+               
+              </div>
             </td>
             <td class="actions-col">
-              <button class="btn-view" title="View">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                  <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
-                  <circle cx="12" cy="12" r="3"></circle>
-                </svg>
-              </button>
+              <div class="inspection-row-actions">
+                 <button
+                  type="button"
+                  class="btn-action btn-action-pdf"
+                  title="Download PDF"
+                  (click)="downloadInspectionPDF(inspection)">
+                  <i class="bi bi-file-pdf"></i>
+                </button>
+                <button
+                  type="button"
+                  class="btn-action btn-action-excel"
+                  title="Export to Excel"
+                  (click)="exportInspectionExcel(inspection)">
+                  <i class="bi bi-file-earmark-excel"></i>
+                </button>
+                <button
+                  *ngIf="canEditInspection(inspection); else viewOnlyBtn"
+                  class="btn-view"
+                  title="Edit Inspection"
+                  data-toggle="modal"
+                  data-target="#inspection-edit-popup"
+                  (click)="editInspection(inspection)">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                    <circle cx="12" cy="12" r="3"></circle>
+                  </svg>
+                </button>
+                <ng-template #viewOnlyBtn>
+                  <button
+                    class="btn-view"
+                    title="View Inspection"
+                    data-toggle="modal"
+                    data-target="#inspection-view-popup"
+                    (click)="viewInspection(inspection)">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                      <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                      <circle cx="12" cy="12" r="3"></circle>
+                    </svg>
+                  </button>
+                </ng-template>
+              </div>
             </td>
           </tr>
         </tbody>
@@ -278,7 +325,7 @@
           class="close ms-auto"
           data-dismiss="modal"
           aria-label="Close"
-          #addInspectionCloseBtn
+          #addFilterCloseBtn
           (click)="closeFilters()"
         >
           <i class="bi bi-x-lg"></i>
@@ -468,10 +515,10 @@
 </div>
 
 <!-- Action Buttons (inside modal footer) -->
-<div class="modal-footer">
+<!-- <div class="modal-footer">
   <button class="btn-modal-reset" (click)="clearFilters()" data-dismiss="modal">Reset</button>
   <button class="btn-modal-apply" (click)="applyFilters()" data-dismiss="modal">Apply Filters</button>
-</div>
+</div> -->
         </section>
       </div>
 
@@ -509,21 +556,26 @@
         <div class="add-form-group add-form-group-full">
           <label>Asset <span class="required-mark">*</span></label>
           <ng-select
-            [items]="assetList"
-            bindLabel="name"
-            [(ngModel)]="selectedAsset"
-            (ngModelChange)="onAssetSelected()"
-            placeholder="Search by name, serial, or category..."
-            [searchFn]="assetSearchFn"
-            [clearable]="true"
-            class="add-inspection-ng-select"
-          >
-            <ng-template ng-option-tmp let-item="item">
-              <span class="asset-option-name">{{ item.name }}</span>
-              <span class="asset-option-meta" *ngIf="item.serialNumber"> · {{ item.serialNumber }}</span>
-              <span class="asset-option-meta" *ngIf="item.category"> · {{ item.category }}</span>
-            </ng-template>
-          </ng-select>
+  [items]="assetList"
+  bindLabel="name"
+  [(ngModel)]="selectedAsset"
+  (ngModelChange)="onAssetSelected()"
+  [placeholder]="selectedAsset ? '' : 'Search by name, serial, or category...'"
+  [searchFn]="assetSearchFn"
+  [compareWith]="compareAssets"
+  [clearable]="true"
+  class="add-inspection-ng-select"
+>
+  <ng-template ng-label-tmp let-item="item">
+    <span class="asset-selected-name">{{ item.name }}</span>
+  </ng-template>
+
+  <ng-template ng-option-tmp let-item="item">
+    <span class="asset-option-name">{{ item.name }}</span>
+    <span class="asset-option-meta" *ngIf="item.serialNumber"> · {{ item.serialNumber }}</span>
+    <span class="asset-option-meta" *ngIf="item.category"> · {{ item.category }}</span>
+  </ng-template>
+</ng-select>
         </div>
 
         <!-- Category (read-only) -->
@@ -609,58 +661,38 @@
         <!-- Inspection Steps -->
         <div *ngIf="stepObject.length > 0" class="add-form-group add-form-group-full">
           <label>Inspection Steps</label>
-          <div class="steps-container">
-            <div *ngFor="let template of stepObject" class="template-step-group mb-3">
-              <h5 class="template-step-title fw-bold">{{ template.inspectionName }}</h5>
-             <table class="table">
-  <thead class="table-dark">
-    <tr>
-      <th>Step</th>
-      <th>Value</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr *ngFor="let step of template.stepValues; let i = index" class="step-item">
-      <td class="step-label">
-        <label class="mb-0">{{ i + 1 }}. {{ step.name }}</label>
-      </td>
-      <td class="step-input">
-        <ng-container [ngSwitch]="step.type">
-          <div *ngSwitchCase="'CHECKBOX'" class="input-wrapper checkbox-wrapper">
-            <input 
-              type="checkbox" 
-              [(ngModel)]="step.value" 
-              class="form-check-input" 
-            />
-          </div>
-          <div *ngSwitchCase="'TEXT'" class="input-wrapper">
-            <input 
-              type="text" 
-              [(ngModel)]="step.value" 
-              class="filter-input" 
-              placeholder="Enter text..." 
-            />
-          </div>
-          <div *ngSwitchCase="'NUMBER'" class="input-wrapper">
-            <input 
-              type="number" 
-              [(ngModel)]="step.value" 
-              class="filter-input" 
-              placeholder="Enter number..." 
-            />
-          </div>
-          <div *ngSwitchDefault class="input-wrapper">
-            <input 
-              type="text" 
-              [(ngModel)]="step.value" 
-              class="filter-input" 
-            />
-          </div>
-        </ng-container>
-      </td>
-    </tr>
-  </tbody>
-</table>
+          <div class="steps-container d-flex justify-content-around flex-wrap">
+            <div *ngFor="let template of stepObject" class="inspection-template-block">
+              <h3 class="inspection-template-title">{{ template.inspectionName }}</h3>
+              <div class="table-responsive inspection-table-wrap">
+                <table class="table table-bordered inspection-steps-table text-center">
+                  <thead class="table-dark">
+                    <tr>
+                      <th scope="col">#Step</th>
+                      <th scope="col">Name</th>
+                      <th scope="col">Value</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr *ngFor="let step of template.stepValues; let i = index">
+                      <td>{{ i + 1 }}</td>
+                      <td>{{ step.name }}</td>
+                      <td>
+                        <ng-container *ngIf="step.type === 'CHECKBOX'; else addStepValue">
+                          <mat-checkbox [color]="checkBoxColor" [(ngModel)]="step.value"></mat-checkbox>
+                        </ng-container>
+                        <ng-template #addStepValue>
+                          <input
+                            [type]="step.type || 'TEXT'"
+                            class="form-control"
+                            [(ngModel)]="step.value"
+                            [placeholder]="step.type === 'NUMBER' ? 'Enter number...' : 'Enter value...'" />
+                        </ng-template>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
             </div>
           </div>
         </div>
@@ -674,11 +706,235 @@
           type="button"
           class="btn-modal-apply"
           (click)="createInspection()"
-          data-dismiss="modal"
           [disabled]="isCreatingInspection || !selectedAsset || selectedItems.length === 0"
         >
           {{ isCreatingInspection ? 'Creating...' : 'Create Inspection' }}
         </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Inspection View Modal -->
+<div class="modal fade" id="inspection-view-popup" tabindex="-1" role="dialog" aria-labelledby="inspectionViewTitle" aria-hidden="true" data-backdrop="static" data-keyboard="false">
+  <div class="modal-dialog modal-lg inspection-steps-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header inspection-steps-header">
+        <h2 class="modal-title" id="inspectionViewTitle">
+          {{ selectedInspectionInstance?.assetCategoryInspectionName }} Inspection Steps
+        </h2>
+        <button
+          type="button"
+          class="btn btn-light btn-sm"
+          data-dismiss="modal"
+          aria-label="Close"
+          style="border-radius: 10px; border: 1px solid #c0c0c0; --bs-btn-bg: white"
+          (click)="clearData()"
+          #inspectionViewCloseBtn>
+          <i class="bi bi-x-lg"></i>
+        </button>
+      </div>
+
+      <div class="modal-body inspection-steps-body">
+        <div class="inspection-dropdown-wrap">
+          <ng-multiselect-dropdown
+            [placeholder]="'Inspection List'"
+            [settings]="dropdownSettings"
+            [data]="selectedItems"
+            [(ngModel)]="selectedItems"
+            [disabled]="true">
+          </ng-multiselect-dropdown>
+        </div>
+
+        <div *ngIf="selectedItems.length > 0">
+          <div *ngFor="let myStep of stepObject" class="inspection-template-block">
+            <h3 class="inspection-template-title">{{ myStep.inspectionName }}</h3>
+            <div class="table-responsive inspection-table-wrap">
+              <table class="table table-bordered inspection-steps-table text-center">
+                <thead class="table-dark">
+                  <tr>
+                    <th scope="col">#Step</th>
+                    <th scope="col">Name</th>
+                    <th scope="col">Value</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr *ngFor="let step of myStep.stepValues; let i = index">
+                    <td>{{ i + 1 }}</td>
+                    <td>{{ step.name }}</td>
+                    <td>
+                      <ng-container *ngIf="step.type === 'CHECKBOX'; else viewStepValue">
+                        <mat-checkbox
+                          [color]="checkBoxColor"
+                          [checked]="step?.value === true || step?.value === 'true'"
+                          [disabled]="true">
+                        </mat-checkbox>
+                      </ng-container>
+                      <ng-template #viewStepValue>
+                        <input
+                          [type]="step.type || 'TEXT'"
+                          [ngModel]="step.value"
+                          class="form-control"
+                          [disabled]="true" />
+                      </ng-template>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <div class="inspection-meta-grid">
+            <div class="inspection-meta-item">
+              <label class="inspection-meta-label">Due Date</label>
+              <input
+                type="text"
+                class="form-control"
+                [value]="(selectedInspectionInstance?.dueDate || selectedInspectionInstance?.inspectionDueDate) ? ((selectedInspectionInstance?.dueDate || selectedInspectionInstance?.inspectionDueDate) | date:'MM/dd/yyyy') : 'N/A'"
+                disabled />
+            </div>
+            <div class="inspection-meta-item">
+              <label class="inspection-meta-label">Notes</label>
+              <input
+                type="text"
+                class="form-control"
+                [ngModel]="inspectionInstance.notes"
+                [disabled]="true" />
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="modal-footer inspection-steps-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal" (click)="clearData()">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Edit Inspection Modal -->
+<div class="modal fade" id="inspection-edit-popup" tabindex="-1" role="dialog" aria-labelledby="inspectionEditTitle" aria-hidden="true" data-backdrop="static" data-keyboard="false">
+  <div class="modal-dialog modal-lg inspection-steps-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header inspection-steps-header">
+        <h2 class="modal-title" id="inspectionEditTitle">{{ selectedInspectionInstance?.assetCategoryInspectionName }} Inspection Steps</h2>
+        <div style="display: flex; gap: 6px; margin-left: auto;">
+          <button
+            mat-icon-button
+            [matMenuTriggerFor]="inspectionEditMenu"
+            type="button"
+            class="btn btn-light btn-sm"
+            *ngIf="selectedInspectionInstance?.status!='CANCELLED'"
+            aria-label="More actions"
+            style="border-radius: 10px; border: 1px solid #c0c0c0;">
+            <mat-icon>more_vert</mat-icon>
+          </button>
+          <button type="button" class="btn btn-light btn-sm" data-dismiss="modal" aria-label="Close" style="border-radius: 10px; border: 1px solid #c0c0c0; --bs-btn-bg: white" (click)="clearData()" #inspectionEditCloseBtn>
+            <i class="bi bi-x-lg"></i>
+          </button>
+        </div>
+      </div>
+      <mat-menu #inspectionEditMenu="matMenu" panelClass="inspection-menu-panel" xPosition="before">
+        <button
+          mat-menu-item
+          (click)="cancelInspection()"
+          *ngIf="userRole=='ADMIN'">
+          Cancel Inspection
+        </button>
+        <button
+          mat-menu-item
+          (click)="clearSavedData()"
+          *ngIf="selectedInspectionInstance?.status!='CANCELLED'">
+          Clear
+        </button>
+      </mat-menu>
+      <div class="modal-body inspection-steps-body">
+        <div class="inspection-dropdown-wrap">
+          <ng-multiselect-dropdown
+            [placeholder]="'Inspection List'"
+            [settings]="dropdownSettings"
+            [data]="dropdownList"
+            [(ngModel)]="selectedItems"
+            (onSelect)="onItemSelect($event)"
+            (onSelectAll)="onSelectAll($event)"
+            (onDeSelect)="onItemDeSelect($event)">
+          </ng-multiselect-dropdown>
+        </div>
+
+        <div *ngIf="selectedItems.length > 0" style="max-height: 400px; overflow-y: auto;">
+          <div *ngFor="let myStep of stepObject" class="inspection-template-block">
+            <h3 class="inspection-template-title">{{ myStep.inspectionName }}</h3>
+            <div class="table-responsive inspection-table-wrap">
+              <table class="table table-bordered inspection-steps-table text-center">
+                <thead class="table-dark">
+                  <tr>
+                    <th scope="col">#Step</th>
+                    <th scope="col">Name</th>
+                    <th scope="col">Value</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr *ngFor="let step of myStep.stepValues; let i = index">
+                    <td>{{ i + 1 }}</td>
+                    <td>{{ step.name }}</td>
+                    <td>
+                      <ng-container *ngIf="step.type === 'CHECKBOX'; else elseBlock">
+                        <mat-checkbox [color]="checkBoxColor" [checked]="step?.value=='true'" (change)="handleStepCheckox($event.checked,i,step.type)"></mat-checkbox>
+                      </ng-container>
+                      <ng-template #elseBlock>
+                        <input [type]="step.type || 'TEXT'" class="form-control" [(ngModel)]="step.value" />
+                      </ng-template>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <div class="inspection-meta-grid">
+            <div class="inspection-meta-item">
+              <label class="inspection-meta-label">Due Date</label>
+              <input type="date" class="form-control" [(ngModel)]="dueDateInput">
+            </div>
+            <div class="inspection-meta-item">
+              <label class="inspection-meta-label">Notes</label>
+              <input type="text" class="form-control" [ngModel]="inspectionInstance.notes" (change)="addNote($event)">
+            </div>
+          </div>
+        </div>
+      </div>
+        <div class="modal-footer inspection-steps-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal" (click)="clearData()">Close</button>
+          <button type="button" class="btn btn-primary" (click)="saveInpectionValue()" *ngIf="selectedInspectionInstance?.status!='CANCELLED'">Submit</button>
+          <button type="button" class="btn btn-primary" (click)="tempSave()" *ngIf="selectedInspectionInstance?.status!='CANCELLED'">Save changes</button>
+        </div>
+    </div>
+  </div>
+</div>
+
+<!-- Export Inspections Modal -->
+<div class="modal fade" id="inspectionExportModal" tabindex="-1" role="dialog" aria-labelledby="inspectionExportTitle" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header inspection-steps-header">
+        <h2 class="modal-title" id="inspectionExportTitle">Export Inspections</h2>
+        <button type="button" class="btn btn-light btn-sm" data-dismiss="modal" aria-label="Close" style="border-radius: 10px;" #exportCloseBtn>
+          <i class="bi bi-x-lg"></i>
+        </button>
+      </div>
+      <div class="modal-body inspection-steps-body">
+        <div style="display: flex; align-items: center; gap: 8px; margin: 10px 0;">
+          <input type="radio" id="inspections-overview" style="width: auto;" name="inspectionsExportType" value="inspection-overview" checked (change)="inspectionExportType = 'inspection-overview'">
+          <label for="inspections-overview">Export Inspection Overview</label>
+        </div>
+        <div style="display: flex; align-items: center; gap: 8px; margin: 10px 0;">
+          <input type="radio" id="inspections-details" style="width: auto;" name="inspectionsExportType" value="inspection-details" (change)="inspectionExportType = 'inspection-details'">
+          <label for="inspections-details">Export Inspection Details</label>
+        </div>
+      </div>
+      <div class="modal-footer inspection-steps-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+        <button type="button" class="btn btn-primary" (click)="exportInspectionsList()">Export</button>
       </div>
     </div>
   </div>
