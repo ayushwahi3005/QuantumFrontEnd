@@ -58,10 +58,26 @@ export class AssetInsightsComponent {
   // }
 
   ngOnInit() {
-    // this.filteredRecords = [...this.records];
     this.companyId = localStorage.getItem('companyId') || '';
+    this.refreshCounts();
     this.advanceFilterFunc();
-    
+  }
+
+  refreshCounts(): void {
+    this.assetInsightsService.getCheckInOutCount(this.companyId).subscribe({
+      next: (counts) => {
+        this.checkInCount = counts.checkIn;
+        this.checkOutCount = counts.checkOut;
+        this.distinctAssetsCount = this.checkInCount + this.checkOutCount;
+      },
+      error: () => {
+        if (this.paginationResult) {
+          this.checkInCount = this.paginationResult.totalCheckIn;
+          this.checkOutCount = this.paginationResult.totalCheckOut;
+          this.distinctAssetsCount = this.checkInCount + this.checkOutCount;
+        }
+      }
+    });
   }
 
   filterRecords() {
@@ -160,23 +176,21 @@ export class AssetInsightsComponent {
       if (this.paginationResult.data.length == 0 && this.pageIndex != 0) {
         this.pageIndex = 0;
         this.advanceFilterFunc();
+        return;
       }
       this.totalLength = this.paginationResult.totalRecords;
-      this.checkInCount = this.paginationResult.totalCheckIn;
-      this.checkOutCount = this.paginationResult.totalCheckOut;
       this.records = this.paginationResult.data  as AssetRecord[];
       this.filteredRecords = this.paginationResult.data as AssetRecord[];
-      this.distinctAssetsCount=this.checkInCount+this.checkOutCount;
-//       this.distinctAssetsCount = new Set(
-//   this.filteredRecords.map(r => r.assetId)
-// ).size;
-
-      //  this.records = this.paginationResult.data.map((record: string) => JSON.parse(record) as AssetRecord);
-      // this.filteredRecords = this.paginationResult.data.map((record: string) => JSON.parse(record) as AssetRecord);
+      this.refreshCounts();
 
       console.log(this.records);
-      // You can process and assign the data to this.records here
     });
+  }
+
+  onCheckInOutSuccess(): void {
+    this.pageIndex = 0;
+    this.refreshCounts();
+    this.advanceFilterFunc();
   }
 
     handlePageEvent(e: PageEvent) {

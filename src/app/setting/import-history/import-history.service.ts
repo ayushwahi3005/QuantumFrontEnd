@@ -30,4 +30,11 @@ export class ImportHistoryService {
       
     return this.httpClient.post(this.customerEndpoint+"getAllImportHistory/"+companyId+"?pageNumber="+pageNumber+"&pageSize="+pageSize,obj,{headers:this.headers});
   }
+
+  downloadImportErrorReport(companyId: string, importHistoryId: string): Observable<Blob> {
+    return this.httpClient.get(
+      this.customerEndpoint + 'downloadImportErrorReport/' + companyId + '/' + importHistoryId,
+      { headers: this.headers, responseType: 'blob' }
+    );
+  }
 }

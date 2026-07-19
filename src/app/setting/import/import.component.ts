@@ -8,6 +8,7 @@ import { ColumnMapping } from './columnMapping';
 import { HttpEventType, HttpResponse } from '@angular/common/http';
 import * as saveAs from 'file-saver';
 import { MatDialog } from '@angular/material/dialog';
+import { CustomerImportColumnMapping } from './customer-import-column-mapping';
 
 declare var bootstrap: any;
 
@@ -64,10 +65,10 @@ export class ImportComponent {
   selectedFileName!: string;
   useSavedMapping: boolean = false;
 
-  // Named mapping lists
-  customerAddMappings: any[] = [];
+  // Named mapping lists — { id?, name, mapping: [csvCol, field][] }
+  customerAddMappings: { id?: string; name: string; mapping: [string, string][] }[] = [];
   assetAddMappings: any[] = [];
-  customerUpdateMappings: any[] = [];
+  customerUpdateMappings: { id?: string; name: string; mapping: [string, string][] }[] = [];
   assetUpdateMappings: any[] = [];
   selectedMappingName: string = '';
   previewMapping: any[] = [];
@@ -128,9 +129,12 @@ export class ImportComponent {
     this.inventoryDatabaseColumnsToUpdate.push("InventoryId", "PartId", "PartName", "Price", "Cost", "Category", "Quantity");
     this.inventoryDatabaseColumnsToAdd.push("PartId", "PartName", "Price", "Cost", "Category", "Quantity");
 
-    this.customerDatabaseColumnsToUpdate.push("CompanyCustomerId", "Name", "Category", "Phone", "Email", "Address", "City", "State", "Status", "Zip code");
-    this.customerDatabaseColumnsToAdd.push("Name", "Category", "Phone", "Email", "Address", "City", "State", "Status", "Zip Code");
+    this.customerDatabaseColumnsToUpdate.push("CompanyCustomerId", "Name", "Category", "Phone", "Email", "Address", "City", "State", "Country", "Status", "Zip Code");
+    this.customerDatabaseColumnsToAdd.push("Name", "Category", "Phone", "Email", "Address", "City", "State", "Country", "Status", "Zip Code");
 
+    this.loadCustomerTemplateFields();
+
+    this.columnMappings = new Map<String, String>();
     this.importService.getAssetExtraFields(this.companyId).subscribe((data) => {
       this.assetExtraFieldsColumns = data;
       this.assetExtraFieldsColumns.forEach((x) => {
@@ -138,17 +142,64 @@ export class ImportComponent {
         this.assetDatabaseColumnsToAdd.push(x.name);
       });
     });
+    this.updateType("add");
+  }
 
-    this.importService.getCustomerExtraFields(this.companyId).subscribe((data) => {
-      this.customerExtraFieldsColumns = data;
-      this.customerExtraFieldsColumns.forEach((x) => {
-        this.customerDatabaseColumnsToUpdate.push(x.name);
-        this.customerDatabaseColumnsToAdd.push(x.name);
-      });
-      this.updateType("add");
+  loadCustomerTemplateFields(): void {
+    this.importService.getCustomerTemplateFields(this.companyId).subscribe({
+      next: (data) => {
+        const standard = data.standardFields || [];
+        const extra = data.extraFields || [];
+        this.customerDatabaseColumnsToAdd = [...standard, ...extra];
+        this.customerDatabaseColumnsToUpdate = ["CompanyCustomerId", ...standard, ...extra];
+        if (this.impType === 'add') {
+          this.customerDatabaseColumns = this.customerDatabaseColumnsToAdd;
+        } else {
+          this.customerDatabaseColumns = this.customerDatabaseColumnsToUpdate;
+        }
+      },
+      error: () => {
+        this.importService.getCustomerExtraFields(this.companyId).subscribe((fields) => {
+          this.customerExtraFieldsColumns = fields;
+          fields.forEach((x: ExtraFieldName) => {
+            if (!this.customerDatabaseColumnsToAdd.includes(x.name)) {
+              this.customerDatabaseColumnsToAdd.push(x.name);
+            }
+            if (!this.customerDatabaseColumnsToUpdate.includes(x.name)) {
+              this.customerDatabaseColumnsToUpdate.push(x.name);
+            }
+          });
+        });
+      }
     });
+  }
 
-    this.columnMappings = new Map<String, String>();
+  getCustomerRecordType(): 'ADDCUSTOMER' | 'UPDATECUSTOMER' {
+    return this.impType === 'add' ? 'ADDCUSTOMER' : 'UPDATECUSTOMER';
+  }
+
+  loadCustomerSavedMappings(): void {
+    this.importService.getCustomerImportMappings(this.companyId, this.getCustomerRecordType()).subscribe({
+      next: (mappings) => {
+        const list = (mappings || []).map(m => ({
+          id: m.id,
+          name: m.name,
+          mapping: Object.entries(m.columnMappings || {}) as [string, string][]
+        }));
+        if (this.impType === 'add') {
+          this.customerAddMappings = list;
+        } else {
+          this.customerUpdateMappings = list;
+        }
+      },
+      error: () => {
+        if (this.impType === 'add') {
+          this.customerAddMappings = this.getNamedMappings('customer_add_mappings');
+        } else {
+          this.customerUpdateMappings = this.getNamedMappings('customer_update_mappings');
+        }
+      }
+    });
   }
 
   // ─── Named Mapping Helpers ───────────────────────────────────────────────────
@@ -160,10 +211,14 @@ export class ImportComponent {
   }
 
   fetchDataFromLocalStorage(): void {
-    this.customerAddMappings    = this.getNamedMappings("customer_add_mappings");
     this.assetAddMappings       = this.getNamedMappings("asset_add_mappings");
-    this.customerUpdateMappings = this.getNamedMappings("customer_update_mappings");
     this.assetUpdateMappings    = this.getNamedMappings("asset_update_mappings");
+    if (this.currImport === 'customer') {
+      this.loadCustomerSavedMappings();
+    } else {
+      this.customerAddMappings    = this.getNamedMappings("customer_add_mappings");
+      this.customerUpdateMappings = this.getNamedMappings("customer_update_mappings");
+    }
   }
 
   saveMappings(): void {
@@ -173,12 +228,17 @@ export class ImportComponent {
       return;
     }
 
+    if (this.currImport === 'customer') {
+      this.saveCustomerMapping(mappingName.trim());
+      return;
+    }
+
     const key = this.currImport + "_" + this.impType + "_mappings";
     const existing = this.getNamedMappings(key);
     const idx = existing.findIndex((m: any) => m.name === mappingName.trim());
     const newEntry = {
       name: mappingName.trim(),
-      mapping: Array.from(this.columnMappings.entries())
+      mapping: Array.from(this.columnMappings.entries()) as [string, string][]
     };
 
     if (idx >= 0) {
@@ -190,6 +250,36 @@ export class ImportComponent {
     localStorage.setItem(key, JSON.stringify(existing));
     this.fetchDataFromLocalStorage();
     this.triggerAlert("Mapping '" + mappingName + "' saved successfully!", "success");
+  }
+
+  saveCustomerMapping(mappingName: string): void {
+    const columnMappingsObj: Record<string, string> = {};
+    this.columnMappings.forEach((v, k) => {
+      columnMappingsObj[k.toString()] = v.toString();
+    });
+
+    const list = this.currentMappingList;
+    const existing = list.find(m => m.name === mappingName);
+    const payload: CustomerImportColumnMapping = {
+      name: mappingName,
+      recordType: this.getCustomerRecordType(),
+      columnMappings: columnMappingsObj,
+      createdBy: this.email
+    };
+    if (existing?.id) {
+      payload.id = existing.id;
+    }
+
+    this.importService.saveCustomerImportMapping(this.companyId, payload).subscribe({
+      next: () => {
+        this.loadCustomerSavedMappings();
+        this.triggerAlert("Mapping '" + mappingName + "' saved successfully!", "success");
+      },
+      error: (err) => {
+        const msg = err.error?.errorMessage || err.error?.message || 'Failed to save mapping';
+        this.triggerAlert(msg, "danger");
+      }
+    });
   }
 
   applyNamedMapping(mappingName: string): void {
@@ -210,17 +300,60 @@ export class ImportComponent {
   }
 
   deleteNamedMapping(mappingName: string): void {
+    if (this.currImport === 'customer') {
+      const found = this.currentMappingList.find(m => m.name === mappingName);
+      if (!found?.id) {
+        this.triggerAlert("Unable to delete mapping — missing server id", "danger");
+        return;
+      }
+      this.importService.deleteCustomerImportMapping(this.companyId, found.id).subscribe({
+        next: () => {
+          this.loadCustomerSavedMappings();
+          this.clearMappingIfSelected(mappingName);
+          this.triggerAlert("Mapping '" + mappingName + "' deleted", "warning");
+        },
+        error: (err) => {
+          const msg = err.error?.errorMessage || err.error?.message || 'Failed to delete mapping';
+          this.triggerAlert(msg, "danger");
+        }
+      });
+      return;
+    }
+
     const key = this.currImport + "_" + this.impType + "_mappings";
     const updated = this.currentMappingList.filter(m => m.name !== mappingName);
     localStorage.setItem(key, JSON.stringify(updated));
     this.fetchDataFromLocalStorage();
+    this.clearMappingIfSelected(mappingName);
+    this.triggerAlert("Mapping '" + mappingName + "' deleted", "warning");
+  }
+
+  clearMappingIfSelected(mappingName: string): void {
     if (this.selectedMappingName === mappingName) {
       this.columnMappings = new Map();
       this.selectedMappingName = '';
       this.previewMapping = [];
       this.useSavedMapping = false;
     }
-    this.triggerAlert("Mapping '" + mappingName + "' deleted", "warning");
+  }
+
+  hasNameMapping(): boolean {
+    const mappedValues = Array.from(this.columnMappings.values()).map(v => v.toString().toLowerCase());
+    return mappedValues.includes('name');
+  }
+
+  handleCustomerImportError(err: any): void {
+    this.loading = false;
+    this.uploadInProgress = false;
+    if (err.status === 409 || err.error?.error === 'IMPORT_IN_PROGRESS') {
+      this.triggerAlert(err.error?.message || err.error?.errorMessage || 'An import is already in progress', "danger");
+    } else if (err.error?.errorMessage?.startsWith("Upload Limit Exceeded")) {
+      this.triggerAlert(err.error.errorMessage, "danger");
+    } else if (err.error?.errorMessage === "Mandatory Column Name Is Missing in Mapping") {
+      this.triggerAlert("Failed!! " + err.error.errorMessage, "danger");
+    } else {
+      this.triggerAlert(err.error?.errorMessage || "Failed!! Please check file again and map all fields correctly", "danger");
+    }
   }
 
   clearAppliedMapping(): void {
@@ -276,6 +409,11 @@ export class ImportComponent {
   }
 
   onSubmit() {
+    if (this.importForm.controls['module'].value === 'customer' && !this.hasNameMapping()) {
+      this.triggerAlert("Name column mapping is required before import", "danger");
+      return;
+    }
+
     this.loading = true;
     this.uploadInProgress = true;
     this.showAlert = false;
@@ -309,8 +447,8 @@ export class ImportComponent {
             this.progress = 0;
             localStorage.removeItem('uploadProgress');
             localStorage.removeItem('uploadInProgress');
-            if (err.status === '409') {
-              this.triggerAlert(err.error.message, "danger");
+            if (err.status === 409 || err.error?.error === 'IMPORT_IN_PROGRESS') {
+              this.triggerAlert(err.error?.message || err.error?.errorMessage || 'An import is already in progress', "danger");
             } else if (err.error.errorMessage?.startsWith("Upload Limit Exceeded")) {
               this.triggerAlert(err.error.errorMessage, "danger");
             } else if (err.error.errorMessage === "Mandatory Column Name Is Missing in Mapping") {
@@ -372,19 +510,9 @@ export class ImportComponent {
         formData.append('columnMappings', jsonString);
         formData.append('file', formData.get('file'));
         this.myFile = formData;
-        this.importService.addCustomer(this.myFile, this.companyId, this.email, this.columnMappings).subscribe(
+        this.importService.addCustomer(this.myFile, this.companyId, this.email).subscribe(
           () => { this.loading = false; this.triggerAlert("Customer File Successfully Uploaded", "success"); },
-          (err) => {
-            this.loading = false;
-            if (err.error.errorMessage?.startsWith("Upload Limit Exceeded")) {
-              this.triggerAlert(err.error.errorMessage, "danger");
-            } else if (err.error.errorMessage === "Mandatory Column Name Is Missing in Mapping") {
-              this.triggerAlert("Failed!! " + err.error.errorMessage, "danger");
-            } else {
-              this.triggerAlert("Failed!! Please check file again and map all fields correctly", "danger");
-            }
-            this.ngOnInit();
-          }
+          (err) => this.handleCustomerImportError(err)
         );
       } else {
         this.impType = "update";
@@ -393,7 +521,7 @@ export class ImportComponent {
         this.myFile = formData;
         this.importService.updateCustomer(this.myFile, this.companyId, this.email).subscribe(
           () => { this.loading = false; this.triggerAlert("Customer File Successfully Updated", "success"); },
-          (err) => { this.loading = false; this.ngOnInit(); this.triggerAlert("Failed!! Please check file again and map all fields correctly", "danger"); }
+          (err) => this.handleCustomerImportError(err)
         );
       }
     }
@@ -408,6 +536,9 @@ export class ImportComponent {
     this.previewMapping = [];
     this.useSavedMapping = false;
     this.columnMappings = new Map();
+    if (this.currImport === 'customer') {
+      this.loadCustomerSavedMappings();
+    }
   }
 
   exportData() {
@@ -441,6 +572,9 @@ export class ImportComponent {
       this.inventoryDatabaseColumns = this.inventoryDatabaseColumnsToUpdate;
       this.customerDatabaseColumns = this.customerDatabaseColumnsToUpdate;
       this.workorderDatabaseColumns = this.workorderDatabaseColumnsToUpdate;
+    }
+    if (this.currImport === 'customer') {
+      this.loadCustomerSavedMappings();
     }
   }
 

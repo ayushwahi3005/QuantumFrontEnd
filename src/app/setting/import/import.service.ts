@@ -3,6 +3,7 @@ import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { environment } from 'src/environments/environment';
 import * as XLSX from 'xlsx';
+import { CustomerImportColumnMapping, CustomerTemplateFields } from './customer-import-column-mapping';
 
 @Injectable({
   providedIn: 'root'
@@ -65,20 +66,12 @@ export class ImportService {
   //     .set('company', companyId);
   //   return this.httpClient.post('http://localhost:8084/inventory/import/'+companyId+'/'+email,myFile,{ headers: headers });
   // }
-  addCustomer(myFile:any,companyId:string,email:string,columnMapping:any):Observable<any>{
+  addCustomer(formData: FormData, companyId: string, email: string): Observable<any> {
     const myheaders = new HttpHeaders({
       'Authorization': `Bearer ${localStorage.getItem('authToken')}`,
       'Device-ID': `${localStorage.getItem('deviceId')}`
     });
-    
- 
-    const formData: FormData = new FormData();
-
-    formData.append('file', myFile);
-    formData.append('columnMappings', columnMapping.toString()); 
-    console.log("In service file->",columnMapping);
-    console.log(typeof(columnMapping));
-    return this.httpClient.post(this.companyCustomerEndpoint+'import/'+companyId+'/'+email, myFile,{headers:myheaders});
+    return this.httpClient.post(this.companyCustomerEndpoint + 'import/' + companyId + '/' + email, formData, { headers: myheaders });
   }
   addInventory(myFile: any, companyId: string, email: string): Observable<any> {
     const headers = new HttpHeaders({
@@ -87,12 +80,42 @@ export class ImportService {
         .set('company', companyId);
     return this.httpClient.post('http://localhost:8084/importFile', myFile,{headers:this.headers});
   }
-  updateCustomer(file:any,companyId:string,email:string):Observable<any>{
+  updateCustomer(formData: FormData, companyId: string, email: string): Observable<any> {
     const myheaders = new HttpHeaders({
       'Authorization': `Bearer ${localStorage.getItem('authToken')}`,
       'Device-ID': `${localStorage.getItem('deviceId')}`
     });
-    return this.httpClient.post(this.companyCustomerEndpoint+`importUpdation/${companyId}/${email}`,  file,{headers:myheaders});
+    return this.httpClient.post(this.companyCustomerEndpoint + `importUpdation/${companyId}/${email}`, formData, { headers: myheaders });
+  }
+
+  getCustomerTemplateFields(companyId: string): Observable<CustomerTemplateFields> {
+    return this.httpClient.get<CustomerTemplateFields>(
+      this.companyCustomerEndpoint + 'template-fields/' + companyId,
+      { headers: this.headers }
+    );
+  }
+
+  getCustomerImportMappings(companyId: string, recordType: 'ADDCUSTOMER' | 'UPDATECUSTOMER'): Observable<CustomerImportColumnMapping[]> {
+    const params = new HttpParams().set('recordType', recordType);
+    return this.httpClient.get<CustomerImportColumnMapping[]>(
+      this.companyCustomerEndpoint + 'importMappings/' + companyId,
+      { headers: this.headers, params }
+    );
+  }
+
+  saveCustomerImportMapping(companyId: string, mapping: CustomerImportColumnMapping): Observable<CustomerImportColumnMapping> {
+    return this.httpClient.post<CustomerImportColumnMapping>(
+      this.companyCustomerEndpoint + 'importMapping/' + companyId,
+      mapping,
+      { headers: this.headers }
+    );
+  }
+
+  deleteCustomerImportMapping(companyId: string, mappingId: string): Observable<any> {
+    return this.httpClient.delete(
+      this.companyCustomerEndpoint + 'importMapping/' + companyId + '/' + mappingId,
+      { headers: this.headers }
+    );
   }
   updateInventory(file:any,companyId:string,email:string):Observable<any>{
     console.log("Inventory Update is working");

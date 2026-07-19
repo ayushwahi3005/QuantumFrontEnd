@@ -20,4 +20,11 @@ export class AssetInsightsService {
     getCheckinOutData(companyId: any,pageNumber?:number,pageSize?:number) {
       return this.httpClient.get(this.assetEndpoint + "checkInOutAssetData/"+companyId+"?pageNumber="+(pageNumber?pageNumber:"0")+"&pageSize="+(pageSize?pageSize:"10"),{headers:this.headers});
     }
+
+    getCheckInOutCount(companyId: string) {
+      return this.httpClient.get<{ checkIn: number; checkOut: number }>(
+        this.assetEndpoint + 'checkInOutCount/' + companyId,
+        { headers: this.headers }
+      );
+    }
 }

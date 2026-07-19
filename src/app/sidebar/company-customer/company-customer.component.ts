@@ -63,6 +63,7 @@ export class CompanyCustomerComponent implements OnInit, OnDestroy, AfterViewIni
   showAlert: boolean = false;
   alertMessage: string = '';
   alertType: string = 'success';
+  emailInvalid: boolean = false;
   userRole: any;
   checkBoxColor = "primary";
   showMandatoryBasicFields!: Map<string, Boolean>;
@@ -596,11 +597,21 @@ export class CompanyCustomerComponent implements OnInit, OnDestroy, AfterViewIni
       },
       (err) => {
         this.loadingScreen = false;
-        // if (err.error.error === "TRIAL_EXPIRED"||err.error.error==="SUBSCRIPTION_REQUIRED") {
-         if(err.error.error==="TRIAL_EXPIRED"){
+        if (err.error.error === "TRIAL_EXPIRED") {
           this.triggerAlert(err.error.message, "danger");
         } else {
-          this.triggerAlert(err.error.errorMessage, "danger");
+          const msg: string = err.error?.errorMessage || err.error?.message || 'Error adding customer';
+          if (err.status === 400 && msg.includes('Email Already Exists')) {
+            this.emailInvalid = true;
+            this.triggerAlert(msg, "danger");
+            return;
+          }
+          if (err.status === 400 && (msg.toLowerCase().includes('email') || msg.toLowerCase().includes('duplicate') || msg.toLowerCase().includes('already exist'))) {
+            this.emailInvalid = true;
+            this.triggerAlert(msg, "danger");
+            return;
+          }
+          this.triggerAlert(msg, "danger");
         }
       }
     );

@@ -105,8 +105,22 @@
 
         <!-- % Complete Column -->
         <ng-container matColumnDef="complete">
-          <th mat-header-cell *matHeaderCellDef mat-sort-header>% Complete</th>
-          <td mat-cell *matCellDef="let record">{{ record.complete }}%</td>
+          <th mat-header-cell *matHeaderCellDef mat-sort-header>Progress</th>
+          <td mat-cell *matCellDef="let record">
+            <div *ngIf="record.status === 'In-Progress'" class="progress-cell">
+              <div class="progress import-progress">
+                <div class="progress-bar progress-bar-striped progress-bar-animated"
+                  role="progressbar"
+                  [style.width.%]="getCompletePercent(record)"
+                  [attr.aria-valuenow]="getCompletePercent(record)"
+                  aria-valuemin="0"
+                  aria-valuemax="100">
+                </div>
+              </div>
+              <span class="progress-label">{{ getCompletePercent(record) }}%</span>
+            </div>
+            <span *ngIf="record.status !== 'In-Progress'">{{ getCompletePercent(record) }}%</span>
+          </td>
         </ng-container>
 
         <!-- Message Column -->
@@ -119,6 +133,21 @@
         <ng-container matColumnDef="executedBy">
           <th mat-header-cell *matHeaderCellDef mat-sort-header>Executed By</th>
           <td mat-cell *matCellDef="let record">{{ record.executedBy }}</td>
+        </ng-container>
+
+        <!-- Actions Column -->
+        <ng-container matColumnDef="actions">
+          <th mat-header-cell *matHeaderCellDef>Actions</th>
+          <td mat-cell *matCellDef="let record">
+            <button
+              *ngIf="record.hasErrorReport"
+              class="btn btn-sm btn-outline-danger"
+              (click)="downloadErrorReport(record)"
+              [disabled]="downloadingId === record.id">
+              <i class="bi bi-download"></i>
+              {{ downloadingId === record.id ? 'Downloading...' : 'Download errors' }}
+            </button>
+          </td>
         </ng-container>
 
         <!-- Header and Row Definitions -->

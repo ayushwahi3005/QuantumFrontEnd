@@ -410,11 +410,16 @@ currentSelectedCountryCode='US'
         return;
       }
 
-      const phoneRegex = /^^\(\d{3}\) \d{3}-\d{4}$/;
-
-      if (this.companyCustomer.phone &&!phoneRegex.test(this.companyCustomer.phone)) {
-        this.triggerAlert("Please enter a valid phone number", "danger");
-        return;
+      if (this.companyCustomer.phone) {
+        const normalizedPhone = this.companyCustomer.phone.replace(/\s/g, '');
+        const phoneRegex = /^\(\d{3}\) \d{3}-\d{4}$|^\+1\d{10}$|^\d{10}$/;
+        if (!phoneRegex.test(normalizedPhone)) {
+          const digitsOnly = this.companyCustomer.phone.replace(/\D/g, '');
+          if (!(digitsOnly.length === 10 || (digitsOnly.length === 11 && digitsOnly.startsWith('1')))) {
+            this.triggerAlert("Please enter a valid phone number (10-digit US or +1 format)", "danger");
+            return;
+          }
+        }
       }
 
 
@@ -552,6 +557,9 @@ currentSelectedCountryCode='US'
   
       // console.log(this.assetDetails);
       this.companyCustomerDetailsService.updateCompanyCustomer(this.companyCustomer).subscribe((data)=>{
+        if (data?.phone) {
+          this.companyCustomer.phone = data.phone;
+        }
         console.log("Data Updated");
         this.loadingScreen=false;
         this.router.navigate(['/customer/preview',this.companyCustomerId])
