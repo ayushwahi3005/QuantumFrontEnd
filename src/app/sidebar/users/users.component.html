@@ -191,9 +191,8 @@
             </div> -->
             <div>
               <label style="margin: 10px 0px;">Role<span class="text-danger">*</span></label><br>
-            
-              <select class="form-select" formControlName="role" style="width: 97%" 
-                      [ngModel]="selectEditUser?.role?.oid" (change)="updateRoleChange($event.target.value)" #role >
+              <select class="form-select" formControlName="role" style="width: 97%">
+                <option value="" disabled>-- Select Role --</option>
                 <option *ngFor="let role of roleAndPermissionList" [value]="role.id">
                   {{ role.name }}
                 </option>

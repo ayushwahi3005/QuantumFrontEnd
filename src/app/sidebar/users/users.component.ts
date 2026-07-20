@@ -558,8 +558,16 @@ export class UsersComponent {
     selectEditUserFunc(email:string){
       this.userService.getUserDetails(this.companyId,email).subscribe((data)=>{
         this.selectEditUser=data as User;
-        
         console.log(this.selectEditUser)
+        // Patch editUserForm so the role select shows correctly
+        const roleId = this.selectEditUser?.role?.id || this.selectEditUser?.role?.oid;
+        this.editUserForm.patchValue({
+          firstName: this.selectEditUser?.firstName || '',
+          lastName: this.selectEditUser?.lastName || '',
+          phoneNumber: this.selectEditUser?.mobileNumber || '',
+          jobTitle: this.selectEditUser?.title || '',
+          role: roleId || ''
+        });
       },
       (err)=>{
         console.log(err);
