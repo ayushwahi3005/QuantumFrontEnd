@@ -481,3 +481,23 @@ table .bi-eye{
     align-items: center;
 }
 
+li{
+    /* padding-right: 50px; */
+    /* padding-top: 10px; */
+    padding-left: 5px;
+    
+}
+
+.mat-mdc-paginator-container {
+  z-index: 0;
+}
+
+.sticky-paginator {
+  position: sticky;
+  bottom: 0;
+  z-index: 20;
+  background: white;
+  border-top: 1px solid #ddd;
+  padding: 3px 0;
+  border-radius: 0 0 10px 10px;
+}

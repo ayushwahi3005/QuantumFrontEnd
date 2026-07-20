@@ -1574,13 +1574,13 @@ private getLocationBinDisplayName(value: string): string {
   }
 
   private buildOverviewExportRow(detail: InspectionDetail): string[] {
-    const instance = detail.inspectionInstance || {};
+      const instance = detail.inspectionInstance || {};
     return [
       detail.assetBusinessId?.toString() || '',
-      detail.assetName || '',
-      (detail as any).assetLocation || (detail as any).locationName || '',
-      detail.customerName || '',
-      detail.assetCategory || '',
+        detail.assetName || '',
+        (detail as any).assetLocation || (detail as any).locationName || '',
+        detail.customerName || '',
+        detail.assetCategory || '',
       (detail as any).assetSerialNumber || (detail as any).serialNumber || '',
       instance.assetCategoryInspectionInstanceId || '',
       instance.assetCategoryInspectionName || '',
@@ -1588,10 +1588,10 @@ private getLocationBinDisplayName(value: string): string {
       this.formatDateForExport(instance.createdAt),
       this.formatDateForExport(instance.dueDate || instance.inspectionDueDate),
       instance.status === 'COMPLETED' ? this.formatDateForExport(instance.updatedAt) : '',
-      instance.actionPerformedBy || '',
-      this.formatDateForExport(instance.updatedAt),
+        instance.actionPerformedBy || '',
+        this.formatDateForExport(instance.updatedAt),
       this.getLastModifiedUser(instance),
-      instance.notes || '',
+        instance.notes || '',
     ];
   }
 
@@ -1600,36 +1600,36 @@ private getLocationBinDisplayName(value: string): string {
     return [
       detail.assetBusinessId?.toString() || '',
       detail.assetName || '',
-      instance.assetCategoryInspectionInstanceId || '',
+        instance.assetCategoryInspectionInstanceId || '',
       templateName || instance.assetCategoryInspectionName || '',
       instance.status || '',
-      this.formatDateForExport(instance.createdAt),
-      instance.status === 'COMPLETED' ? this.formatDateForExport(instance.updatedAt) : '',
-      instance.actionPerformedBy || '',
-      step.name || '',
-      this.formatStepValue(step),
-      step.notes || instance.notes || '',
-      this.formatDateForExport(instance.updatedAt),
+        this.formatDateForExport(instance.createdAt),
+        instance.status === 'COMPLETED' ? this.formatDateForExport(instance.updatedAt) : '',
+        instance.actionPerformedBy || '',
+        step.name || '',
+        this.formatStepValue(step),
+        step.notes || instance.notes || '',
+        this.formatDateForExport(instance.updatedAt),
       this.getLastModifiedUser(instance),
-    ];
+      ];
   }
 
   private appendDetailExportRows(details: string[][], detail: InspectionDetail): void {
     const instance = detail.inspectionInstance || {};
 
-    if (instance.inspectionTemplates?.length) {
-      instance.inspectionTemplates.forEach((template: any) => {
-        (template.stepValues || []).forEach((step: any) => {
+      if (instance.inspectionTemplates?.length) {
+        instance.inspectionTemplates.forEach((template: any) => {
+          (template.stepValues || []).forEach((step: any) => {
           details.push(this.buildDetailExportRow(detail, template.inspectionName, step));
+          });
         });
-      });
       return;
     }
 
-    this.collectInspectionSteps(instance).forEach((step: any) => {
+        this.collectInspectionSteps(instance).forEach((step: any) => {
       details.push(this.buildDetailExportRow(detail, instance.assetCategoryInspectionName, step));
-    });
-  }
+        });
+      }
 
   private getLastModifiedUser(instance: any): string {
     return instance.lastModifiedUser || instance.updatedBy || instance.modifiedBy || instance.actionPerformedBy || '';

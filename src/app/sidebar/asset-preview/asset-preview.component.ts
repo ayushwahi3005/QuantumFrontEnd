@@ -7,6 +7,7 @@ import { AssetFile } from './assetFile';
 import { ShowFieldsData } from './showFieldsData';
 import { MandatoryFields } from './mandatoryFields';
 import { ActivatedRoute, Route, Router } from '@angular/router';
+import { HttpErrorResponse, HttpEventType, HttpResponse } from '@angular/common/http';
 import { AssetDetailsService } from '../asset-details/asset-details.service';
 import { AssetsComponent } from '../assets/assets.component';
 import * as saveAs from 'file-saver';
@@ -21,6 +22,7 @@ import html2canvas from 'html2canvas';
 import * as jspdf from 'jspdf';
 import { User } from './user';
 import { Subject } from 'rxjs';
+import { PageEvent } from '@angular/material/paginator';
 import { NotificationService } from 'src/app/notification/notification.service';
 import { InspectionInstance } from '../asset-details/inspectionInstance';
 import { IDropdownSettings } from 'ng-multiselect-dropdown';
@@ -75,6 +77,7 @@ export class AssetPreviewComponent {
   alertMessage: string = ''; // Alert message
   alertType: string = 'success';
   deleteFileId!: string; // Alert type: success, warning, error, etc.
+  private readonly maxFileSizeBytes = 10 * 1024 * 1024;
   technicalUserList!: User[];
   userRole: any;
   userRoleDetails: any;
@@ -87,6 +90,13 @@ export class AssetPreviewComponent {
 
   allInspection: any = []
   allInspectionInstance: any = []
+
+  // Pagination properties for inspection instances
+  pageIndex: number = 0;
+  pageSize: number = 10;
+  totalLength: number = 0;
+  pageEvent!: PageEvent;
+
   currentInspection: any;
   checkBoxColor = "primary"
   selectedInspectionInstance: any;
@@ -123,6 +133,8 @@ export class AssetPreviewComponent {
 
   stepObject: any[] = [];
   notedData!: string;
+  dueDateInput: string = '';
+  qrDownloading = false;
 
   sideBarOption = [{
     number: 1,
@@ -133,6 +145,11 @@ export class AssetPreviewComponent {
     number: 2,
     name: 'Assets',
     icon: 'bi bi-boxes'
+  },
+  {
+    number:4,
+    name:'Inspections',
+    icon:'bi bi-boxes'
   },
    {
     number:6,
@@ -178,6 +195,8 @@ export class AssetPreviewComponent {
     this.showFieldsMap = new Map<string, boolean>();
     this.email = localStorage.getItem('user');
     this.companyId = localStorage.getItem('companyId');
+    this.pageIndex = parseInt(localStorage.getItem('assetPreviewInspectionPageInd') || '0', 10);
+    this.pageSize = parseInt(localStorage.getItem('assetPreviewInspectionPageSize') || '10', 10);
     this.currentInspection = null;
     // console.log("--------preview",this.assetComponent.previewAsset)
     this.activatedRoute.paramMap.subscribe(params => {
@@ -321,14 +340,7 @@ export class AssetPreviewComponent {
         this.loading = false;
       })
       
-    this.assetPreviewService.getAllAssetInspectionInstanceByAssetId(this.assetId).subscribe((data) => {
-      this.allInspectionInstance = data;
-
-      console.log(this.allInspectionInstance)
-    },
-      (err) => {
-        console.log(err);
-      })
+    this.loadInspectionInstances();
     this.assetPreviewService.getAssetFile(this.assetId).subscribe((data) => {
       //console.log("total",data);
       this.loading = true;
@@ -762,29 +774,20 @@ export class AssetPreviewComponent {
     }, 5000); // Hide the alert after 5 seconds (adjust as needed)
   }
 
-  generatePdf(elementId: string, fileName: string) {
+ generatePdf(elementId: string, fileName: string) {
   const element: any = document.getElementById(elementId);
 
-  // ✅ Get actual rendered dimensions
-  const rect = element.getBoundingClientRect();
-  const actualWidth = rect.width;
-  const actualHeight = rect.height;
-
-  console.log('actual width:', actualWidth, 'actual height:', actualHeight);
-
-  // ✅ Make it square by adding whitespace on shorter axis
-  const maxDimension = Math.max(actualWidth, actualHeight);
-  const horizontalPadding = (maxDimension - actualWidth) / 2;  // add to left & right
-  const verticalPadding = (maxDimension - actualHeight) / 2;   // add to top & bottom
+  const actualWidth = Math.max(element.scrollWidth, element.getBoundingClientRect().width);
+  const actualHeight = Math.max(element.scrollHeight, element.getBoundingClientRect().height);
 
   html2canvas(element, {
     scale: 3,
     backgroundColor: '#ffffff',
     logging: true,
-    x: -horizontalPadding,     // ✅ extend capture left
-    y: -verticalPadding,       // ✅ extend capture top
-    width: maxDimension,       // ✅ square capture
-    height: maxDimension,      // ✅ square capture
+    width: actualWidth,
+    height: actualHeight,
+    windowWidth: actualWidth,
+    windowHeight: actualHeight,
     useCORS: true,
     scrollX: 0,
     scrollY: 0,
@@ -792,26 +795,19 @@ export class AssetPreviewComponent {
     const capturedWidth = canvas.width;
     const capturedHeight = canvas.height;
 
-    console.log('canvas width:', capturedWidth, 'canvas height:', capturedHeight);
-
-    // ✅ Create a NEW perfectly square canvas
     const squareCanvas = document.createElement('canvas');
     const squareSize = Math.max(capturedWidth, capturedHeight);
     squareCanvas.width = squareSize;
     squareCanvas.height = squareSize;
 
     const ctx = squareCanvas.getContext('2d')!;
-
-    // White background
     ctx.fillStyle = '#ffffff';
     ctx.fillRect(0, 0, squareSize, squareSize);
 
-    // ✅ Center the captured image inside the square canvas
     const offsetX = (squareSize - capturedWidth) / 2;
     const offsetY = (squareSize - capturedHeight) / 2;
     ctx.drawImage(canvas, offsetX, offsetY);
 
-    // ✅ Export square canvas to PDF
     const imgData = squareCanvas.toDataURL('image/png');
     const sizePx = this.qrSize * 100;
 
@@ -822,10 +818,18 @@ export class AssetPreviewComponent {
     });
     pdf.addImage(imgData, 'PNG', 0, 0, sizePx, sizePx);
     pdf.save(fileName + '.pdf');
+  }).catch((err) => {
+    console.log(err);
+    this.triggerAlert('Could not generate QR PDF', 'danger');
+  }).finally(() => {
+    this.qrDownloading = false;   // <-- always reset, success or fail
   });
 }
   downloadQR() {
+     this.qrDownloading = true;
+      setTimeout(() => {
     this.generatePdf('myqr', this.assetDetails.name + "_" + this.assetDetails.serialNumber + "_QR");
+    }, 0);
   }
 
   download(id: string, name: string) {
@@ -859,6 +863,7 @@ export class AssetPreviewComponent {
   deleteFile() {
     this.assetPreviewService.deleteFile(this.deleteFileId).subscribe((data) => {
       console.log(data);
+      this.triggerAlert('File deleted successfully', 'success');
     },
       (err) => {
         console.log(err);
@@ -870,10 +875,93 @@ export class AssetPreviewComponent {
         }
       },
       () => {
-        this.ngOnInit();
+        this.reloadAssetFiles();
         this.deleteFileId = '';
       })
   }
+
+  fileUpload(event: any) {
+    const files: File[] = Array.from(event.target.files || []);
+    if (!files.length) {
+      return;
+    }
+
+    const oversizedFiles = files.filter((file) => file.size > this.maxFileSizeBytes);
+    if (oversizedFiles.length) {
+      this.triggerAlert(
+        `File size exceeds maximum limit (10MB per file): ${oversizedFiles.map((file) => file.name).join(', ')}`,
+        'danger',
+      );
+      event.target.value = '';
+      return;
+    }
+
+    this.uploadFilesSequentially(files, 0, event.target);
+  }
+
+  private uploadFilesSequentially(files: File[], index: number, inputEl: HTMLInputElement) {
+    if (index >= files.length) {
+      this.currentFile = null;
+      this.progress = 0;
+      inputEl.value = '';
+      this.reloadAssetFiles();
+      return;
+    }
+
+    const uploadingFile = files[index];
+    this.currentFile = uploadingFile;
+    this.progress = 0;
+
+    this.assetPreviewService.addAssetFile(uploadingFile, this.assetId, this.username).subscribe({
+      next: (uploadEvent) => {
+        if (uploadEvent.type === HttpEventType.UploadProgress && uploadEvent.total) {
+          this.progress = Math.round((100 * uploadEvent.loaded) / uploadEvent.total);
+        } else if (uploadEvent instanceof HttpResponse) {
+          this.progress = 100;
+          this.triggerAlert(`Uploaded ${uploadingFile.name} successfully`, 'success');
+        }
+      },
+      error: (err: HttpErrorResponse) => {
+        this.currentFile = null;
+        this.progress = 0;
+
+        let errorMessage = `Could not upload ${uploadingFile.name}.`;
+        if (err?.status === 413) {
+          errorMessage = `File size exceeds server limit for ${uploadingFile.name}.`;
+        } else if (err?.error?.error === 'TRIAL_EXPIRED') {
+          errorMessage = err.error.message;
+        } else if (err?.error?.errorMessage) {
+          errorMessage = err.error.errorMessage;
+        }
+
+        this.triggerAlert(errorMessage, 'danger');
+        this.uploadFilesSequentially(files, index + 1, inputEl);
+      },
+      complete: () => {
+        this.uploadFilesSequentially(files, index + 1, inputEl);
+      },
+    });
+  }
+
+  private reloadAssetFiles() {
+    this.assetPreviewService.getAssetFile(this.assetId).subscribe(
+      (data) => {
+        this.fileInfos = data || [];
+      },
+      (err) => console.log(err),
+    );
+  }
+
+  formatFileSize(bytes: number): string {
+    if (!bytes) {
+      return '0 B';
+    }
+    const units = ['B', 'KB', 'MB', 'GB'];
+    const index = Math.min(Math.floor(Math.log(bytes) / Math.log(1024)), units.length - 1);
+    const size = bytes / Math.pow(1024, index);
+    return `${size.toFixed(index === 0 ? 0 : 1)} ${units[index]}`;
+  }
+
   updateStepList() {
     //  console.log(this.currentInspection)
     //   console.log(this.assetId)
@@ -1004,6 +1092,7 @@ export class AssetPreviewComponent {
     this.inspectionInstance.stepValues = [];
   }
   tempSave() {
+    this.applyDueDateToInstance();
     this.inspectionInstance.actionPerformedBy = this.username;
     const currDateTime = new Date();
 
@@ -1033,7 +1122,7 @@ export class AssetPreviewComponent {
       () => {
         this.selectedItems = []
         this.clearSavedData();
-        this.ngOnInit();
+        this.loadInspectionInstances();
       })
     console.log(this.inspectionInstance)
     console.log(this.selectedItems)
@@ -1048,6 +1137,7 @@ export class AssetPreviewComponent {
 
     this.selectedItems = [];
     this.notedData = "";
+    this.dueDateInput = '';
   }
   updateNotedData(data: any) {
     this.notedData = data;
@@ -1063,7 +1153,26 @@ export class AssetPreviewComponent {
     this.inspectionInstance.companyId = this.companyId;
     this.inspectionInstance.actionPerformedBy = this.username;
     this.notedData = instance.notes;
+    this.syncDueDateInputFromInstance(instance);
     this.updateStepListFromLocalStorage();
+  }
+
+  applyDueDateToInstance(): void {
+    this.inspectionInstance.dueDate = this.dueDateInput
+      ? new Date(`${this.dueDateInput}T00:00:00`)
+      : null;
+  }
+
+  syncDueDateInputFromInstance(instance?: any): void {
+    const dueDate = instance?.dueDate ?? instance?.inspectionDueDate ?? this.inspectionInstance?.dueDate;
+    if (!dueDate) {
+      this.dueDateInput = '';
+      return;
+    }
+    const parsed = new Date(dueDate);
+    this.dueDateInput = Number.isNaN(parsed.getTime())
+      ? ''
+      : parsed.toISOString().split('T')[0];
   }
   inspectionChanged() {
       console.log(this.currentInspection)
@@ -1114,6 +1223,7 @@ export class AssetPreviewComponent {
       console.log(this.inspectionInstance.stepValues)
     }
     saveInpectionValue() {
+      this.applyDueDateToInstance();
       console.log(this.inspectionInstance)
       console.log(this.stepObject)
       this.inspectionInstance.actionPerformedBy = this.username;
@@ -1144,7 +1254,7 @@ export class AssetPreviewComponent {
         () => {
           this.selectedItems = []
           this.clearSavedData();
-          this.ngOnInit();
+          this.loadInspectionInstances();
         })
     }
     handleStepChange(event: any, index: number, type: string): void {
@@ -1214,7 +1324,7 @@ export class AssetPreviewComponent {
         () => {
           this.inspectionInstance.stepValues = [];
           this.inspectionInstance.notes = '';
-          this.ngOnInit();
+          this.loadInspectionInstances();
         })
     }
     cancelInspection() {
@@ -1248,14 +1358,14 @@ export class AssetPreviewComponent {
         this.selectedItems = []
         this.clearSavedData();
         this.closeBox5.nativeElement.click();
-        // ✅ close modal only after API succeeds
-        this.ngOnInit();
+        this.loadInspectionInstances();
     })
 }
 
      clearData(){
     this.selectedItems=[]
     this.inspectionInstance=new InspectionInstance();
+    this.dueDateInput = '';
     // this.inspectionInstance.notes='';
     // this.notedData="";
   }
@@ -1320,7 +1430,449 @@ export class AssetPreviewComponent {
       this.exportCloseBox?.nativeElement.click();
     })
   }
+  }
+
+  // downloadInspectionPDF(instance: any) {
+  //   const doc = new jspdf.jsPDF();
+  //   const pageWidth = doc.internal.pageSize.getWidth();
+  //   const pageHeight = doc.internal.pageSize.getHeight();
+  //   let yPosition = 10;
+  //   const lineHeight = 7;
+  //   const margin = 10;
+  //   const contentWidth = pageWidth - 2 * margin;
+
+  //   doc.setFillColor(25, 40, 82);
+  //   doc.rect(0, 0, pageWidth, 25, 'F');
+  //   doc.setTextColor(255, 255, 255);
+  //   doc.setFontSize(16);
+  //   doc.setFont('helvetica', 'bold');
+  //   doc.text('Asset Inspection Report', margin, 18);
+  //   yPosition = 30;
+
+  //   doc.setTextColor(0, 0, 0);
+  //   doc.setFontSize(10);
+  //   doc.setFont('helvetica', 'bold');
+  //   doc.text('Asset Name:', margin, yPosition);
+  //   doc.setFont('helvetica', 'normal');
+  //   doc.text(this.assetDetails?.name || 'N/A', margin + 35, yPosition);
+  //   yPosition += lineHeight;
+
+  //   doc.setFont('helvetica', 'bold');
+  //   doc.text('Asset ID:', margin, yPosition);
+  //   doc.setFont('helvetica', 'normal');
+  //   doc.text(this.assetDetails?.id?.toString() || this.assetId?.toString() || 'N/A', margin + 35, yPosition);
+  //   yPosition += lineHeight;
+
+  //   doc.setFont('helvetica', 'bold');
+  //   doc.text('Inspection Date:', margin, yPosition);
+  //   doc.setFont('helvetica', 'normal');
+  //   const inspectionDate = instance.createdAt
+  //     ? new Date(instance.createdAt).toLocaleDateString('en-US', {
+  //         year: 'numeric',
+  //         month: 'long',
+  //         day: 'numeric',
+  //       })
+  //     : 'N/A';
+  //   doc.text(inspectionDate, margin + 35, yPosition);
+  //   yPosition += lineHeight + 5;
+
+  //   doc.setFillColor(25, 40, 82);
+  //   doc.rect(margin, yPosition - 3, contentWidth, 7, 'F');
+  //   doc.setTextColor(255, 255, 255);
+  //   doc.setFont('helvetica', 'bold');
+  //   doc.setFontSize(12);
+  //   doc.text('Inspection Template: ' + (instance.assetCategoryInspectionName || 'N/A'), margin + 5, yPosition + 2);
+  //   yPosition += 10;
+
+  //   doc.setTextColor(0, 0, 0);
+  //   doc.setFontSize(10);
+  //   doc.setFont('helvetica', 'bold');
+  //   doc.text('#Step', margin + 5, yPosition);
+  //   doc.text('Name', margin + 20, yPosition);
+  //   doc.text('Value', margin + 100, yPosition);
+  //   yPosition += lineHeight + 2;
+  //   doc.setDrawColor(200, 200, 200);
+  //   doc.line(margin, yPosition - 2, margin + contentWidth, yPosition - 2);
+
+  //   doc.setFont('helvetica', 'normal');
+  //   doc.setFontSize(9);
+
+  //   let allSteps: any[] = [];
+  //   if (instance.inspectionTemplates?.length) {
+  //     instance.inspectionTemplates.forEach((template: any) => {
+  //       if (template.stepValues?.length) {
+  //         allSteps = allSteps.concat(template.stepValues);
+  //       }
+  //     });
+  //   } else if (instance.stepValues?.length) {
+  //     allSteps = instance.stepValues;
+  //   }
+
+  //   if (allSteps.length > 0) {
+  //     allSteps.forEach((step: any, index: number) => {
+  //       if (yPosition > pageHeight - 20) {
+  //         doc.addPage();
+  //         yPosition = 10;
+  //       }
+  //       doc.text((index + 1).toString(), margin + 5, yPosition + 5);
+  //       doc.text(step.name || 'N/A', margin + 20, yPosition + 5);
+  //       let valueText = 'N/A';
+  //       if (step.type === 'CHECKBOX') {
+  //         valueText = step.value === true || step.value === 'true' ? 'Yes' : 'No';
+  //       } else {
+  //         valueText = step.value || 'N/A';
+  //       }
+  //       doc.text(valueText, margin + 100, yPosition + 5);
+  //       yPosition += lineHeight;
+  //     });
+  //   } else {
+  //     doc.text('No inspection steps recorded', margin + 20, yPosition);
+  //     yPosition += lineHeight;
+  //   }
+
+  //   yPosition += 5;
+  //   doc.line(margin, yPosition, margin + contentWidth, yPosition);
+  //   yPosition += 5;
+
+  //   if (instance.notes) {
+  //     doc.setFont('helvetica', 'bold');
+  //     doc.text('Notes:', margin, yPosition);
+  //     yPosition += lineHeight;
+  //     doc.setFont('helvetica', 'normal');
+  //     const noteText = doc.splitTextToSize(instance.notes, contentWidth - 10);
+  //     doc.text(noteText, margin + 5, yPosition);
+  //     yPosition += noteText.length * lineHeight + 5;
+  //   }
+
+  //   yPosition += 5;
+  //   doc.setFont('helvetica', 'bold');
+  //   doc.setFontSize(9);
+  //   doc.text('Performed By: ' + (instance.actionPerformedBy || 'N/A'), margin, yPosition);
+  //   yPosition += lineHeight;
+  //   doc.text('Status: ' + (instance.status || 'N/A'), margin, yPosition);
+
+  //   doc.setFontSize(8);
+  //   doc.setTextColor(150, 150, 150);
+  //   doc.text('Powered by Asset Yug', pageWidth / 2, pageHeight - 5, { align: 'center' });
+
+  //   const fileName = `Inspection_${this.assetDetails?.name || 'Asset'}_${instance.assetCategoryInspectionInstanceId}.pdf`;
+  //   doc.save(fileName);
+  // }
+
+  downloadInspectionPDF(instance: any) {
+    const instances = [instance];
+    const doc = new jspdf.jsPDF();
+    const pageWidth = doc.internal.pageSize.getWidth();
+    const pageHeight = doc.internal.pageSize.getHeight();
+    const margin = 10;
+    const contentWidth = pageWidth - 2 * margin;
+    const stepColX = margin + 25;
+    const valueColX = margin + contentWidth - 30;
+    const nameColWidth = valueColX - stepColX - 5;
+    const valueColWidth = margin + contentWidth - valueColX - 2;
+    let yPosition = 0;
+  
+    const navy: [number, number, number] = [25, 40, 82];
+    const blue: [number, number, number] = [59, 91, 179];
+    const lightGray: [number, number, number] = [245, 246, 248];
+    const green: [number, number, number] = [34, 139, 60];
+    const red: [number, number, number] = [180, 60, 60];
+  
+    const checkPageBreak = (needed: number) => {
+      if (yPosition + needed > pageHeight - 15) {
+        doc.addPage();
+        yPosition = 15;
+      }
+    };
+  
+    // ---------- HEADER ----------
+    doc.setFillColor(...navy);
+    doc.rect(0, 0, pageWidth, 32, 'F');
+  
+    doc.setTextColor(150, 180, 255);
+    doc.setFontSize(9);
+    doc.setFont('helvetica', 'bold');
+    doc.text((localStorage.getItem('companyName') || 'COMPANY NAME').toUpperCase(), margin, 12);
+  
+    doc.setTextColor(255, 255, 255);
+    doc.setFontSize(18);
+    doc.text('Asset Inspection Report', margin, 24);
+  
+    // QR placeholder box
+    doc.setFillColor(255, 255, 255);
+    doc.roundedRect(pageWidth - margin - 22, 6, 22, 22, 2, 2, 'F');
+    doc.setTextColor(...navy);
+    doc.setFontSize(7);
+    doc.setFont('helvetica', 'normal');
+    doc.text('QR Code', pageWidth - margin - 11, 24, { align: 'center' });
+  
+    yPosition = 42;
+  
+    // ---------- ASSET INFO CARD ----------
+    doc.setDrawColor(225, 225, 225);
+    doc.setFillColor(255, 255, 255);
+    doc.roundedRect(margin, yPosition - 8, contentWidth, 20, 2, 2, 'S');
+  
+    const col1 = margin + 5;
+    const col2 = margin + contentWidth / 3 + 5;
+    const col3 = margin + (2 * contentWidth) / 3 + 5;
+  
+    doc.setTextColor(120, 120, 120);
+    doc.setFontSize(8);
+    doc.setFont('helvetica', 'normal');
+    doc.text('Asset Name', col1, yPosition - 2);
+    doc.text('Asset ID', col2, yPosition - 2);
+    doc.text('Inspection Date', col3, yPosition - 2);
+  
+    doc.setTextColor(0, 0, 0);
+    doc.setFontSize(10);
+    doc.setFont('helvetica', 'bold');
+    doc.text(this.assetDetails?.name || 'N/A', col1, yPosition + 5);
+    doc.text(this.assetDetails?.id?.toString() || 'N/A', col2, yPosition + 5);
+  
+    const latestDate = instances?.[0]?.createdAt
+      ? new Date(instances[0].createdAt).toLocaleDateString('en-US', {
+          year: 'numeric', month: 'long', day: 'numeric',
+        })
+      : 'N/A';
+    doc.text(latestDate, col3, yPosition + 5);
+  
+    yPosition += 22;
+  
+    // ---------- LOOP THROUGH EACH INSPECTION ----------
+    (instances || []).forEach((instance: any, instanceIndex: number) => {
+      checkPageBreak(20);
+  
+      // Section header bar
+      doc.setFillColor(...navy);
+      doc.rect(margin, yPosition, contentWidth, 9, 'F');
+      doc.setTextColor(255, 255, 255);
+      doc.setFontSize(10);
+      doc.setFont('helvetica', 'bold');
+      doc.text(`Inspection ${instanceIndex + 1}`, margin + 4, yPosition + 6);
+  
+      const idLabel = `ID: ${instance.assetCategoryInspectionInstanceId || 'N/A'}`;
+      const idWidth = doc.getTextWidth(idLabel) + 6;
+      doc.setFillColor(255, 255, 255);
+      doc.roundedRect(margin + contentWidth - idWidth - 4, yPosition + 1.5, idWidth, 6, 3, 3, 'F');
+      doc.setTextColor(...navy);
+      doc.setFontSize(8);
+      doc.text(idLabel, margin + contentWidth - idWidth - 1, yPosition + 5.5);
+  
+      yPosition += 9;
+  
+      // Table header row
+      doc.setFillColor(...blue);
+      doc.rect(margin, yPosition, contentWidth, 8, 'F');
+      doc.setTextColor(255, 255, 255);
+      doc.setFontSize(9);
+      doc.setFont('helvetica', 'bold');
+      doc.text('#Step', margin + 5, yPosition + 5.5);
+      doc.text('Name', margin + 25, yPosition + 5.5);
+      doc.text('Value', margin + contentWidth - 30, yPosition + 5.5);
+      yPosition += 8;
+  
+      // Gather steps
+      let allSteps: any[] = [];
+      if (instance.inspectionTemplates?.length) {
+        instance.inspectionTemplates.forEach((template: any) => {
+          if (template.stepValues?.length) allSteps = allSteps.concat(template.stepValues);
+        });
+      } else if (instance.stepValues?.length) {
+        allSteps = instance.stepValues;
+      }
+  
+      doc.setFont('helvetica', 'normal');
+      doc.setFontSize(9);
+  
+      // if (allSteps.length > 0) {
+      //   allSteps.forEach((step: any, index: number) => {
+      //     checkPageBreak(9);
+  
+      //     const rowHeight = 8;
+      //     if (index % 2 === 1) {
+      //       doc.setFillColor(...lightGray);
+      //       doc.rect(margin, yPosition, contentWidth, rowHeight, 'F');
+      //     }
+  
+      //     doc.setTextColor(0, 0, 0);
+      //     doc.text((index + 1).toString(), margin + 5, yPosition + 5.5);
+      //     doc.text(step.name || 'N/A', margin + 25, yPosition + 5.5);
+  
+      //     if (step.type === 'CHECKBOX') {
+      //       const isYes = step.value === true || step.value === 'true';
+      //       doc.setTextColor(...(isYes ? green : red));
+      //       doc.setFont('helvetica', 'bold');
+      //       doc.text(isYes ? 'Yes' : 'No', margin + contentWidth - 30, yPosition + 5.5);
+      //       doc.setFont('helvetica', 'normal');
+      //     } else {
+      //       doc.setTextColor(80, 80, 80);
+      //       const valueText = (step.value !== undefined && step.value !== null && step.value !== '')
+      //         ? `# ${step.value}`
+      //         : 'N/A';
+      //       doc.text(valueText, margin + contentWidth - 30, yPosition + 5.5);
+      //     }
+  
+      //     yPosition += rowHeight;
+      //   });
+      // }
+      // if (allSteps.length > 0) {
+      //   allSteps.forEach((step: any, index: number) => {
+      //     const nameLines = doc.splitTextToSize(step.name || 'N/A', nameColWidth);
+      //     const rowHeight = Math.max(8, nameLines.length * 5 + 3); // grow row if wrapped
+      
+      //     checkPageBreak(rowHeight);
+      
+      //     if (index % 2 === 1) {
+      //       doc.setFillColor(...lightGray);
+      //       doc.rect(margin, yPosition, contentWidth, rowHeight, 'F');
+      //     }
+      
+      //     doc.setTextColor(0, 0, 0);
+      //     doc.text((index + 1).toString(), margin + 5, yPosition + 5.5);
+      //     doc.text(nameLines, stepColX, yPosition + 5.5);
+      
+      //     if (step.type === 'CHECKBOX') {
+      //       const isYes = step.value === true || step.value === 'true';
+      //       doc.setTextColor(...(isYes ? green : red));
+      //       doc.setFont('helvetica', 'bold');
+      //       doc.text(isYes ? 'Yes' : 'No', valueColX, yPosition + 5.5);
+      //       doc.setFont('helvetica', 'normal');
+      //     } else {
+      //       doc.setTextColor(80, 80, 80);
+      //       const valueText = (step.value !== undefined && step.value !== null && step.value !== '')
+      //         ? `# ${step.value}`
+      //         : 'N/A';
+      //       doc.text(valueText, valueColX, yPosition + 5.5);
+      //     }
+      
+      //     yPosition += rowHeight;
+      //   });
+      // }
+      if (allSteps.length > 0) {
+        allSteps.forEach((step: any, index: number) => {
+          const nameLines = doc.splitTextToSize(step.name || 'N/A', nameColWidth);
+      
+          let valueLines: string[];
+          let isCheckbox = false;
+          let isYes = false;
+      
+          if (step.type === 'CHECKBOX') {
+            isCheckbox = true;
+            isYes = step.value === true || step.value === 'true';
+            valueLines = [isYes ? 'Yes' : 'No'];
+          } else {
+            const valueText = (step.value !== undefined && step.value !== null && step.value !== '')
+              ? `# ${step.value}`
+              : 'N/A';
+            valueLines = doc.splitTextToSize(valueText.toString(), valueColWidth);
+          }
+      
+          const lineCount = Math.max(nameLines.length, valueLines.length);
+          const rowHeight = Math.max(8, lineCount * 5 + 3);
+      
+          checkPageBreak(rowHeight);
+      
+          if (index % 2 === 1) {
+            doc.setFillColor(...lightGray);
+            doc.rect(margin, yPosition, contentWidth, rowHeight, 'F');
+          }
+      
+          doc.setTextColor(0, 0, 0);
+          doc.text((index + 1).toString(), margin + 5, yPosition + 5.5);
+          doc.text(nameLines, stepColX, yPosition + 5.5);
+      
+          if (isCheckbox) {
+            doc.setTextColor(...(isYes ? green : red));
+            doc.setFont('helvetica', 'bold');
+            doc.text(valueLines, valueColX, yPosition + 5.5);
+            doc.setFont('helvetica', 'normal');
+          } else {
+            doc.setTextColor(80, 80, 80);
+            doc.text(valueLines, valueColX, yPosition + 5.5);
+          }
+      
+          yPosition += rowHeight;
+        });
+      }
+      else {
+        doc.setTextColor(120, 120, 120);
+        doc.text('No inspection steps recorded', margin + 25, yPosition + 5.5);
+        yPosition += 8;
+      }
+  
+      // Notes box
+      if (instance.notes) {
+        checkPageBreak(20);
+        doc.setDrawColor(225, 225, 225);
+        doc.setFillColor(255, 255, 255);
+        const noteText = doc.splitTextToSize(instance.notes, contentWidth - 12);
+        const boxHeight = noteText.length * 5 + 10;
+        doc.roundedRect(margin, yPosition + 2, contentWidth, boxHeight, 2, 2, 'S');
+  
+        doc.setTextColor(120, 120, 120);
+        doc.setFontSize(8);
+        doc.setFont('helvetica', 'bold');
+        doc.text('Notes', margin + 4, yPosition + 8);
+  
+        doc.setTextColor(40, 40, 40);
+        doc.setFont('helvetica', 'normal');
+        doc.setFontSize(9);
+        doc.text(noteText, margin + 4, yPosition + 14);
+  
+        yPosition += boxHeight + 6;
+      }
+  
+      yPosition += 4; // gap before next inspection card
+    });
+  
+    // ---------- FOOTER on every page ----------
+    const pageCount = doc.internal.pages.length - 1;
+    for (let i = 1; i <= pageCount; i++) {
+      doc.setPage(i);
+      doc.setFontSize(8);
+      doc.setTextColor(150, 150, 150);
+      doc.text('Powered by Asset Yug', margin, pageHeight - 6, { align: 'left' });
+      doc.text(`Page ${i} of ${pageCount}`, pageWidth - margin, pageHeight - 6, { align: 'right' });
+    }
+  
+    const fileName = `Inspection_${this.assetDetails?.name || 'Asset'}_${this.assetId || ''}.pdf`;
+    doc.save(fileName);
+  }
+
+  loadInspectionInstances() {
+    this.assetPreviewService
+      .getAllAssetInspectionInstanceByAssetId(this.assetId, this.pageIndex, this.pageSize)
+      .subscribe(
+        (data) => {
+          if (data && data.data && Array.isArray(data.data)) {
+            this.allInspectionInstance = data.data;
+            this.totalLength = data.totalRecords || 0;
+
+            if (this.allInspectionInstance.length === 0 && this.pageIndex !== 0) {
+              this.pageIndex = this.pageIndex - 1;
+              this.loadInspectionInstances();
+              return;
+            }
+          } else {
+            this.allInspectionInstance = Array.isArray(data) ? data : [];
+            this.totalLength = this.allInspectionInstance.length;
+          }
+        },
+        (err) => {
+          console.log(err);
+        },
+      );
+  }
+
+  handleInspectionPageEvent(e: PageEvent) {
+    this.pageEvent = e;
+    this.totalLength = e.length;
+    this.pageSize = e.pageSize;
+    this.pageIndex = e.pageIndex;
+    localStorage.setItem('assetPreviewInspectionPageInd', this.pageIndex.toString());
+    localStorage.setItem('assetPreviewInspectionPageSize', this.pageSize.toString());
+    this.loadInspectionInstances();
+  }
 
 }
-}
-

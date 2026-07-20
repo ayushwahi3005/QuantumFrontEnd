@@ -212,6 +212,16 @@ export class AssetDetailsService {
       { headers: this.headers },
     );
   }
+  getActiveCompanyCustomerList(companyId: string): Observable<any> {
+    // const headers = new HttpHeaders({
+    //   'Authorization': `Bearer ${localStorage.getItem('authToken')}`,
+    //   'Content-Type': 'application/json'
+    // });
+    return this.httpClient.get(
+      this.companyCustomerEndpoint + 'allActiveCompanyCustomer/' + companyId,
+      { headers: this.headers },
+    );
+  }
   getRoleAndPermission(id: string, name: string): Observable<any> {
     return this.httpClient.get(
       this.customerEndpoint + 'roleAndPermissionByName/get/' + id + '/' + name,
@@ -228,7 +238,7 @@ export class AssetDetailsService {
   getAllAssetInspection(id: string, category: string): Observable<any> {
     return this.httpClient.get(
       this.assetEndpoint +
-        'getAllAssetInspectionByCategory/' +
+        'getAllActiveAssetInspectionByCategory/' +
         id +
         '?category=' +
         category,

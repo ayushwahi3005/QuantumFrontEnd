@@ -1,6 +1,7 @@
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { HttpClient, HttpHeaders, HttpRequest } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
+import { catchError } from 'rxjs/operators';
 import { environment } from 'src/environments/environment';
 
 @Injectable({
@@ -47,6 +48,35 @@ export class AssetPreviewService {
       headers: this.headers
     });
   }
+
+  addAssetFile(file: File, assetId: string, username: string): Observable<any> {
+    const myHeaders = new HttpHeaders({
+      Authorization: `Bearer ${localStorage.getItem('authToken')}`,
+      'Device-ID': `${localStorage.getItem('deviceId')}`,
+    });
+
+    const formData = new FormData();
+    formData.append('file', file);
+
+    const req = new HttpRequest(
+      'POST',
+      `${this.assetEndpoint}addFile/${assetId}/${username}`,
+      formData,
+      {
+        headers: myHeaders,
+        reportProgress: true,
+        responseType: 'json',
+      },
+    );
+
+    return this.httpClient.request(req).pipe(
+      catchError((error) => {
+        console.error('File upload failed:', error);
+        throw error;
+      }),
+    );
+  }
+
   download(id: string): Observable<any> {
     return this.httpClient.get(this.assetEndpoint + "getFile/download/" + id, {
 
@@ -112,7 +142,7 @@ export class AssetPreviewService {
     });
   }
   getAllAssetInspection(id: string, category: string): Observable<any> {
-    return this.httpClient.get(this.assetEndpoint + 'getAllAssetInspectionByCategory/' + id + '?category=' + category, { headers: this.headers });
+    return this.httpClient.get(this.assetEndpoint + 'getAllActiveAssetInspectionByCategory/' + id + '?category=' + category, { headers: this.headers });
   }
 
   addAssetInspection(inspection: any): Observable<any> {
@@ -124,8 +154,11 @@ export class AssetPreviewService {
   getAllAssetInspectionInstance(id: string): Observable<any> {
     return this.httpClient.get(this.assetEndpoint + 'getAllAssetInspectionInstance/' + id, { headers: this.headers });
   }
-  getAllAssetInspectionInstanceByAssetId(id: string): Observable<any> {
-    return this.httpClient.get(this.assetEndpoint + 'getAllAssetInspectionInstanceByAssetId/' + id, { headers: this.headers });
+  getAllAssetInspectionInstanceByAssetId(id: string, pageNumber: number = 0, pageSize: number = 10): Observable<any> {
+    return this.httpClient.get(
+      this.assetEndpoint + 'getAllAssetInspectionInstanceByAssetId/' + id + '/' + pageNumber + '/' + pageSize,
+      { headers: this.headers },
+    );
   }
   getAllLocationWithBin(companyId: any): Observable<any> {
     const headers = new HttpHeaders({

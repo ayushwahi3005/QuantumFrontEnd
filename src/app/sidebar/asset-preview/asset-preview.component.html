@@ -312,8 +312,9 @@
                   <th scope="col">Inspection Template</th>
                   <th scope="col">Performed By</th>
                   <th scope="col">Notes</th>
-                  <th scope="col" >Status</th>
-                  <th> </th>
+                  <th scope="col">Due Date</th>
+                  <th scope="col" class="text-center">Status</th>
+                  <th class="text-center"> </th>
                  
    
                 </tr>
@@ -329,7 +330,9 @@
                   </td>
                   <td>{{instance.actionPerformedBy|titlecase}}</td>
                   <td>{{instance.notes|titlecase}}</td>
-                  <td style="display: flex; align-items: center; gap: 8px; justify-content: center; border-bottom-width:0px">
+                  <td>{{ (instance.dueDate || instance.inspectionDueDate) ? ((instance.dueDate || instance.inspectionDueDate) | date: 'MM/dd/yyyy') : '—' }}</td>
+                  <td class="inspection-status-col">
+                  <div class="inspection-status-cell">
                   <span
                     [ngClass]="{
                       'pending': instance.status === 'PENDING',
@@ -339,13 +342,13 @@
                   >
                     {{ instance.status }}
                   </span>
-
                  
+                  </div>
                 </td>
                   
-                  <td *ngIf="instance.status=='PENDING' || userRole === 'ADMIN';else emptyTd"><i class="bi bi-eye" data-target="#inspection-edit-popup" data-toggle="modal" (click)="mySelectedInspectionInstanceFunc(instance)"></i></td>
+                  <td *ngIf="instance.status=='PENDING' || userRole === 'ADMIN';else emptyTd"> <i class="bi bi-file-pdf" style="color: #dc3545; cursor: pointer; font-size: 16px;" (click)="downloadInspectionPDF(instance)" title="Download Inspection PDF"></i><i class="bi bi-eye" data-target="#inspection-edit-popup" data-toggle="modal" (click)="mySelectedInspectionInstanceFunc(instance)"></i></td>
                   <ng-template #emptyTd>
-                    <td><i class="bi bi-eye" data-target="#inspection-view-popup" data-toggle="modal" (click)="mySelectedInspectionInstanceFunc(instance)"></i></td>
+                    <td> <i class="bi bi-file-pdf" style="color: #dc3545; cursor: pointer; font-size: 16px;" (click)="downloadInspectionPDF(instance)" title="Download Inspection PDF"></i><i class="bi bi-eye" data-target="#inspection-view-popup" data-toggle="modal" (click)="mySelectedInspectionInstanceFunc(instance)"></i></td>
                   </ng-template>
                   
                   
@@ -354,35 +357,40 @@
                
           </tbody>
         </table>
-        
-      
+
+        <mat-paginator [length]="totalLength" (page)="handleInspectionPageEvent($event)" [pageSize]="pageSize"
+          [pageIndex]="pageIndex" [pageSizeOptions]="[5, 10, 20, 50]" aria-label="Select page"
+          style="z-index: 0; height: auto; font-size: 15px;">
+        </mat-paginator>
         
       </div>
 
         </div>
 
         <div class="card mt-2" *ngIf="currOption==2">
-          <!-- <h1 style="display: flex; justify-content: center; margin-top: 10px;">Files</h1> -->
           <div class="card-body">
-            <!-- <div>
-                  <input type="file" (change)="fileUpload($event)"  #imageFile>
-                  
-                </div> -->
-            <!-- <div class="progress my-3" *ngIf="currentFile">
-                  <div
-                    class="progress-bar progress-bar-info progress-bar-striped"
-                    role="progressbar"
-                    attr.aria-valuenow="{{ progress }}"
-                    aria-valuemin="0"
-                    aria-valuemax="100"
-                    [ngStyle]="{ width: progress + '%' }"
-                  >
-                    {{ progress }}%
-                  </div>
-                  
-                </div> -->
+            <div class="file-upload-toolbar">
+              <input type="file" (change)="fileUpload($event)" #imageFile multiple style="display:none">
+              <button type="button" class="btn btn-primary file-upload-btn" (click)="imageFile.click()">
+                Upload File(s)
+              </button>
+            </div>
+
+            <div class="progress my-3" *ngIf="currentFile">
+              <div
+                class="progress-bar progress-bar-info progress-bar-striped"
+                role="progressbar"
+                attr.aria-valuenow="{{ progress }}"
+                aria-valuemin="0"
+                aria-valuemax="100"
+                [ngStyle]="{ width: progress + '%' }"
+              >
+                Uploading {{ currentFile?.name }} ({{ formatFileSize(currentFile?.size) }}) - {{ progress }}%
+              </div>
+            </div>
+
             <div class="file-list-container">
-              <table class="table" id="asset-detial table" *ngIf="(fileInfos!=null)">
+              <table class="table" id="asset-detail-table" *ngIf="fileInfos?.length">
                 <thead class="table-dark">
                   <tr >
                  
@@ -697,7 +705,7 @@
 <!-- View/Download QR Code -->
 
 <div class="modal fade" id="qrPopUp" tabindex="-1" role="dialog" aria-hidden="true">
-  <div class="modal-dialog" role="document" style="max-width: 450px; width: 100%;">
+  <div class="modal-dialog" role="document" style="max-width: 540px; width: 100%;">
     <div class="modal-content">
       <div class="modal-header" style="padding: 13px 15px;">
         <h2 class="modal-title" style="margin: 0; display: flex; justify-content: center;">Download QR</h2>
@@ -709,34 +717,28 @@
         <div class="modal-body justify-content-around">
 
           <div class="d-flex justify-content-around qr">
-
+           
 
             <div class="qr first" id="myqr" *ngIf="qr?.type=='1'">
-              <div class="inside">
-                <p style="display: flex; justify-content: center; padding-top: 5px; margin-bottom: 0px;">{{qr.custom}}
-                </p>
-                <qrcode [qrdata]="qrData" [width]="200" [errorCorrectionLevel]="'M'"
-                  style="display: flex; justify-content: center;"></qrcode>
-                <p style="display: flex; justify-content: center;">{{qr.optional}}</p>
+              <div class="inside" style="width: 200px; margin: 0 auto;">
+                  <p style="word-break: break-word; overflow-wrap: break-word; white-space: normal; text-align: center; font-size: 10px; margin: 0; padding-top: 5px; line-height: 1.2;">{{qr.custom}}</p>
+                  <qrcode [qrdata]="qrData" [width]="200" [errorCorrectionLevel]="'M'" style="display: flex; justify-content: center;"></qrcode>
+                  <p style="word-break: break-word; overflow-wrap: break-word; white-space: normal; text-align: center; font-size: 10px; margin: 0; line-height: 1.2;">{{qr.optional}}</p>
               </div>
-            </div>
+          </div>
             <div class="qr second " *ngIf="qr?.type=='2'" id="myqr" style="display: flex;">
-              <div class="inside d-flex justify-content-around">
-               
-                <div style="margin-top: auto;">
-                    <qrcode [qrdata]="qrData" [width]="200" [errorCorrectionLevel]="'M'" style="margin: auto 0px;"></qrcode>
-                    <p style="display: flex; justify-content: center; padding-top: 5px;">{{qr.custom}}</p>
-                  </div>
-                <div style="margin: auto; width: 70px; margin-left: 30px; ">
-                  <p
-                    style="font-family: Copperplate Gothic Light; font-weight: bolder;text-align: center;margin: auto; margin-bottom: 13px; ">
-                    AssetYug</p>
-                  <p style="width: 70px; justify-content: center;">Serial#: <b> {{assetDetails.serialNumber}}</b></p>
-                  <p style="width: 70px; justify-content: center;">{{qr.optional}}</p>
-
-                </div>
-              </div>
-            </div>
+  <div class="inside d-flex justify-content-around">
+    <div style="margin-top: auto; flex-shrink: 0; width: 200px;">
+      <qrcode [qrdata]="qrData" [width]="200" [errorCorrectionLevel]="'M'" style="margin: auto 0px;"></qrcode>
+      <p style="word-break: break-word; overflow-wrap: break-word; white-space: normal; font-size: 10px; margin: 0; line-height: 1.2; text-align: center; width: 200px; box-sizing: border-box;">{{qr.custom}}</p>
+    </div>
+    <div style="margin: auto; flex: 1; min-width: 90px; max-width: 160px; word-break: break-word; overflow-wrap: break-word; padding: 0 10px;">
+      <p style="font-family: Copperplate Gothic Light; font-weight: bolder; text-align: center; margin: 0; margin-bottom: 8px; font-size: 11px;">AssetYug</p>
+      <p style="word-break: break-word; overflow-wrap: break-word; font-size: 11px; margin: 0; margin-bottom: 4px; line-height: 1.3; text-align: center;">Serial#: <b>{{ assetDetails.serialNumber }}</b></p>
+      <p style="word-break: break-word; overflow-wrap: break-word; font-size: 10px; margin: 0; line-height: 1.2; text-align: center;">{{ qr.optional }}</p>
+    </div>
+  </div>
+</div>
 
 
           </div>
@@ -749,8 +751,17 @@
                 <option value="7">7 x 7</option>
               </select>
             </div>
-            <button (click)="downloadQR()" class="btn btn-success"
-              style="float: right; align-self: center;">Download</button>
+           <button
+                (click)="downloadQR()"
+                class="btn btn-success"
+                [disabled]="qrDownloading"
+                style="float: right; align-self: center; min-width: 100px;">
+                <span *ngIf="!qrDownloading">Download</span>
+                <span *ngIf="qrDownloading">
+                  <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true" style="margin-right: 6px;"></span>
+                  Downloading...
+                </span>
+              </button>
           </div>
 
         </div>
@@ -760,20 +771,21 @@
   </div>
 </div>
 
+<!-- Creating an Inspection -->
 
-<div class="modal fade" id="inspection-preview-popup" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle" aria-hidden="true" data-backdrop="static" data-keyboard="false">
-  <div class="modal-dialog" role="document">
-    <div class="modal-content">
+<div class="modal fade" id="inspection-preview-popup" tabindex="-1" role="dialog" aria-labelledby="addInspectionTitle" aria-hidden="true" data-backdrop="static" data-keyboard="false">
+  <div class="modal-dialog modal-lg inspection-steps-dialog" role="document">
+    <div class="modal-content" style="max-height: 90vh;">
       <div class="modal-header" style="padding: 13px 15px;">
-        <h2 class="modal-title" style="margin:0; display: flex; justify-content: center;" id="exampleModalLongTitle">Add Inspection</h2>
+        <h2 class="modal-title" id="addInspectionTitle" style="margin: 0; display: flex; justify-content: center;">Add Inspection</h2>
         <button type="button" class="btn btn-light btn-sm ms-auto" data-dismiss="modal" aria-label="Close" style="border-radius: 10px;" #closeBox>
           <b class="bi bi-x-lg"></b>
         </button>
       </div>
  
-        <div class="modal-body">
+        <div class="modal-body" style="overflow-y: auto;">
   
-           <div style="width: 100%; margin-bottom: 15px;">
+           <div class="inspection-dropdown-wrap">
             <ng-multiselect-dropdown
               [placeholder]="'Inspection List'"
               [settings]="dropdownSettings"
@@ -781,109 +793,108 @@
               [(ngModel)]="selectedItems"
               (onSelect)="onItemSelect($event)"
               (onSelectAll)="onSelectAll($event)"
-              (onDeSelect)="onItemDeSelect($event)"
-              style="width: 100%;">
+              (onDeSelect)="onItemDeSelect($event)">
             </ng-multiselect-dropdown>
           </div>
        
-          <div *ngIf="this.selectedItems.length > 0">
-            <div *ngFor="let myStep of stepObject">
-              <h1>{{ myStep.inspectionName }}</h1>
-            <table class="table" id="asset-detial table" >
-              <thead class="table-dark text-center">
+          <div *ngIf="selectedItems.length > 0">
+            <div *ngFor="let myStep of stepObject" class="inspection-template-block">
+              <h3 class="inspection-template-title">{{ myStep.inspectionName }}</h3>
+            <div class="table-responsive inspection-table-wrap">
+            <table class="table table-bordered inspection-steps-table text-center">
+              <thead class="table-dark">
                   <tr >
-                     
-                      
-                      <th scope="col">#Step</th>
-                     
+                      <th scope="col" style="width: 15%;">#Step</th>
                       <th scope="col">Name</th>
                       <th scope="col">Value</th>
-                     
-       
                     </tr>
               </thead>
               <tbody>
-                <tr *ngFor="let step of myStep.stepValues; let i = index" style="height:50px">
+                <tr *ngFor="let step of myStep.stepValues; let i = index">
                   <td>{{i+1}}</td>
                   <td>{{ step.name }}</td>
                   <td>
                     <ng-container *ngIf="step.type === 'CHECKBOX'; else elseBlock">
-                      
-                      <!-- <input
-                        type="checkbox"
-                        [checked]="inspectionInstance.steps[i]?.value"
-                        (change)="handleStepCheckox($event,i,step.type)"> -->
-
-                        <!-- <mat-checkbox  [color]="checkBoxColor"  (change)="handleStepCheckox($event.checked,i,step.type)" ></mat-checkbox> -->
                         <mat-checkbox  [color]="checkBoxColor"  [(ngModel)]="step.value" ></mat-checkbox>
                     </ng-container>
                     
                     <ng-template #elseBlock>
-                      <!-- <input 
-                      [type]="step.type || 'TEXT'" 
-                     
-                     
-                      (change)="handleStepChange($event, i, step.type)"
-                    /> -->
                       <input 
                       [type]="step.type || 'TEXT'" 
-                     
-                     
+                      class="form-control"
                      [(ngModel)]="step.value"
                     />
                     </ng-template>
                     
                   </td>
                 </tr>
-                
-                
-                   
               </tbody>
             </table>
             </div>
-            Notes<input type="text" [ngModel]="this.inspectionInstance.notes" (change)="addNote($event)">
+            </div>
+            <div class="inspection-meta-grid">
+              <div>
+                <label>Due Date</label>
+                <input type="date" class="form-control" [(ngModel)]="dueDateInput">
+              </div>
+              <div>
+                <label>Notes</label>
+                <input type="text" class="form-control" [ngModel]="inspectionInstance.notes" (change)="addNote($event)">
+              </div>
+            </div>
           </div>
         </div>
-        <div class="modal-footer">
-          <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-          <!-- <button type="button" class="btn btn-secondary" (click)="clearSavedData()" (click)="closeBox.click()">Clear</button> -->
-          <button type="button" class="btn btn-primary" (click)="saveInpectionValue()" (click)="closeBox.click()" [disabled]="this.selectedItems.length==0">Submit</button>
-          <button type="button" class="btn btn-primary" (click)="tempSave()" (click)="closeBox.click()" [disabled]="this.selectedItems.length==0">Save changes</button>
-          
+        <div class="modal-footer inspection-steps-footer">
+          <button type="button" class="btn btn-light" style="border: 1px solid #c0c0c0;" data-dismiss="modal">Cancel</button>
+          <button type="button" class="btn btn-primary" (click)="saveInpectionValue()" (click)="closeBox.click()" [disabled]="selectedItems.length==0">Submit</button>
+          <button type="button" class="btn btn-primary" (click)="tempSave()" (click)="closeBox.click()" [disabled]="selectedItems.length==0">Save changes</button>
         </div>
     </div>
   </div>
 </div>
 
-<div
-  class="modal fade"
-  id="inspection-edit-popup"
-  tabindex="-1"
-  role="dialog"
-  aria-labelledby="exampleModalLongTitle"
-  aria-hidden="true"
-  data-backdrop="static"
-  data-keyboard="false"
->
-  <div class="modal-dialog" role="document">
-    <div class="modal-content">
-      <div class="modal-header" style="padding: 13px 15px;">
-        <h2 class="modal-title" style="margin:0; display: flex; justify-content: center;" id="exampleModalLongTitle">{{selectedInspectionInstance?.assetCategoryInspectionName }} Inspection Steps</h2>
-        <!-- <button type="button" class="close ms-auto" data-dismiss="modal" aria-label="Close" #closeBox>
-          <span aria-hidden="true">&times;</span>
-        </button> -->
+<!-- Editing an Inspection -->
 
-        <button type="button" class="btn btn-light btn-sm ms-auto" data-dismiss="modal" aria-label="Close" style="border-radius: 10px; border: 1px solid #c0c0c0;--bs-btn-bg: white" (click)="clearData()" #closeBox5>
-          <!-- <span aria-hidden="true">&times;</span> -->
-          <i class="bi bi-x-lg"></i>
+<div class="modal fade" id="inspection-edit-popup" tabindex="-1" role="dialog" aria-labelledby="inspectionEditTitle" aria-hidden="true" data-backdrop="static" data-keyboard="false">
+  <div class="modal-dialog modal-lg inspection-steps-dialog" role="document">
+    <div class="modal-content" style="max-height: 90vh;">
+      <div class="modal-header" style="padding: 13px 15px;">
+        <h2 class="modal-title" id="inspectionEditTitle" style="margin: 0; display: flex; justify-content: center;">{{selectedInspectionInstance?.assetCategoryInspectionName }} Inspection Steps</h2>
+
+        <div class="d-flex align-items-center ms-auto" style="gap: 6px;">
+        <button
+          mat-icon-button
+          [matMenuTriggerFor]="inspectionEditMenu"
+          type="button"
+          class="btn-sm"
+          *ngIf="selectedInspectionInstance?.status!='CANCELLED'"
+          aria-label="More actions"
+          style="border-radius: 10px;">
+          <mat-icon>more_vert</mat-icon>
+        </button>
+        <mat-menu #inspectionEditMenu="matMenu" panelClass="inspection-menu-panel">
+          <button
+            mat-menu-item
+            data-dismiss="modal"
+            (click)="cancelInspection()"
+            *ngIf="userRole=='ADMIN'">
+            Cancel Inspection
+          </button>
+          <button
+            mat-menu-item
+            (click)="clearSavedData(); closeBox5.click()"
+            *ngIf="selectedInspectionInstance?.status!='CANCELLED'">
+            Clear
+          </button>
+        </mat-menu>
+
+        <button type="button" class="btn btn-light btn-sm ms-auto" data-dismiss="modal" aria-label="Close" style="border-radius: 10px;" (click)="clearData()" #closeBox5>
+          <b class="bi bi-x-lg"></b>
         </button>
       </div>
-      <div class="modal-body">
-          <!-- <select  id="inspection" [(ngModel)]="currentInspection" (change)="inspectionChanged()">
-       
-            <option [ngValue]="inspection" *ngFor="let inspection of allInspection">{{inspection.name}}</option>
-            
-          </select> -->
+      </div>
+      <div class="modal-body" style="overflow-y: auto;">
+          <div class="inspection-dropdown-wrap">
           <ng-multiselect-dropdown
   [placeholder]="'Inspection List'"
   [settings]="dropdownSettings"
@@ -894,71 +905,58 @@
   (onDeSelect)="onItemDeSelect($event)"
 >
 </ng-multiselect-dropdown>
-          <div *ngIf="this.selectedItems.length > 0">
-            <div *ngFor="let myStep of stepObject">
-              <h1>{{ myStep.inspectionName }}</h1>
-            <table class="table" id="asset-detial table" >
-              <thead class="table-dark text-center">
+          </div>
+          <div *ngIf="selectedItems.length > 0">
+            <div *ngFor="let myStep of stepObject" class="inspection-template-block">
+              <h3 class="inspection-template-title">{{ myStep.inspectionName }}</h3>
+            <div class="table-responsive inspection-table-wrap">
+            <table class="table table-bordered inspection-steps-table text-center">
+              <thead class="table-dark">
                   <tr >
-                     
-                      
-                      <th scope="col">#Step</th>
-                     
+                      <th scope="col" style="width: 15%;">#Step</th>
                       <th scope="col">Name</th>
                       <th scope="col">Value</th>
-                     
-       
                     </tr>
               </thead>
               <tbody>
-                <tr *ngFor="let step of myStep.stepValues; let i = index" style="height:50px">
+                <tr *ngFor="let step of myStep.stepValues; let i = index">
                   <td>{{i+1}}</td>
                   <td>{{ step.name }}</td>
                   <td>
                     <ng-container *ngIf="step.type === 'CHECKBOX'; else elseBlock">
-                      
-                      <!-- <input
-                        type="checkbox"
-                        [checked]="inspectionInstance.steps[i]?.value"
-                        (change)="handleStepCheckox($event,i,step.type)"> -->
-
                         <mat-checkbox  [color]="checkBoxColor" [checked]="step?.value=='true'"  (change)="handleStepCheckox($event.checked,i,step.type)" ></mat-checkbox>
-                        <!-- <mat-checkbox  [color]="checkBoxColor"  [(ngModel)]="step.value" ></mat-checkbox> -->
                     </ng-container>
                     
                     <ng-template #elseBlock>
-                      <!-- <input 
-                      [type]="step.type || 'TEXT'" 
-                     
-                     
-                      (change)="handleStepChange($event, i, step.type)"
-                    /> -->
                       <input 
                       [type]="step.type || 'TEXT'" 
-                     
-                     
+                      class="form-control"
                      [(ngModel)]="step.value"
                     />
                     </ng-template>
                     
                   </td>
                 </tr>
-                
-                
-                   
               </tbody>
             </table>
             </div>
-            Notes<input type="text" [ngModel]="this.inspectionInstance.notes" (change)="addNote($event)">
+            </div>
+            <div class="inspection-meta-grid">
+              <div>
+                <label>Due Date</label>
+                <input type="date" class="form-control" [(ngModel)]="dueDateInput">
+              </div>
+              <div>
+                <label>Notes</label>
+                <input type="text" class="form-control" [ngModel]="inspectionInstance.notes" (change)="addNote($event)">
+              </div>
+            </div>
           </div>
         </div>
-        <div class="modal-footer">
-          <button type="button" class="btn btn-secondary" data-dismiss="modal"  (click)="cancelInspection()" *ngIf="userRole=='ADMIN' && selectedInspectionInstance?.status!='CANCELLED'">Cancel Inspection</button>
+        <div class="modal-footer inspection-steps-footer">
           <button type="button" class="btn btn-secondary" data-dismiss="modal" (click)="clearData()">Close</button>
-          <button type="button" class="btn btn-secondary" (click)="clearSavedData()" (click)="closeBox5.click()"  *ngIf="selectedInspectionInstance?.status!='CANCELLED'">Clear</button>
           <button type="button" class="btn btn-primary" (click)="saveInpectionValue()" (click)="closeBox5.click()"  *ngIf="selectedInspectionInstance?.status!='CANCELLED'">Submit</button>
           <button type="button" class="btn btn-primary" (click)="tempSave()" (click)="closeBox5.click()"  *ngIf="selectedInspectionInstance?.status!='CANCELLED'">Save changes</button>
-          
         </div>
       <!-- <div class="d-flex justify-content-center"> -->
         <!-- <div class="modal-body"> -->
@@ -1088,77 +1086,96 @@
 </div>
 
 
-<div class="modal fade" id="inspection-view-popup" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle" aria-hidden="true"   data-backdrop="static"
-  data-keyboard="false">
-  <div class="modal-dialog" role="document">
+<div class="modal fade" id="inspection-view-popup" tabindex="-1" role="dialog" aria-labelledby="inspectionViewTitle" aria-hidden="true" data-backdrop="static" data-keyboard="false">
+  <div class="modal-dialog modal-lg inspection-steps-dialog" role="document">
     <div class="modal-content">
-      <div class="modal-header" style="padding: 13px 15px;">
-        <h2 class="modal-title" style="margin:0; display: flex; justify-content: center;" id="exampleModalLongTitle">
-          {{selectedInspectionInstance?.assetCategoryInspectionName }} Inspection Steps
+      <div class="modal-header inspection-steps-header">
+        <h2 class="modal-title" id="inspectionViewTitle">
+          {{ selectedInspectionInstance?.assetCategoryInspectionName }} Inspection Steps
         </h2>
-
-        <button type="button" class="btn btn-light btn-sm ms-auto" data-dismiss="modal" aria-label="Close" style="border-radius: 10px; border: 1px solid #c0c0c0; --bs-btn-bg: white" (click)="clearData()" #closeBox5 >
+        <button
+          type="button"
+          class="btn btn-light btn-sm"
+          data-dismiss="modal"
+          aria-label="Close"
+          style="border-radius: 10px; border: 1px solid #c0c0c0; --bs-btn-bg: white"
+          (click)="clearData()"
+          #closeBox5>
           <i class="bi bi-x-lg"></i>
         </button>
       </div>
 
-      <div class="modal-body">
-        <ng-multiselect-dropdown
-          [placeholder]="'Inspection List'"
-          [settings]="dropdownSettings"
-          [data]="dropdownList"
-          [(ngModel)]="selectedItems"
-          (onSelect)="onItemSelect($event)"
-          (onSelectAll)="onSelectAll($event)"
-          (onDeSelect)="onItemDeSelect($event)"
-          [disabled]="true">
-        </ng-multiselect-dropdown>
+      <div class="modal-body inspection-steps-body">
+        <div class="inspection-dropdown-wrap">
+          <ng-multiselect-dropdown
+            [placeholder]="'Inspection List'"
+            [settings]="dropdownSettings"
+            [data]="selectedItems"
+            [(ngModel)]="selectedItems"
+            [disabled]="true">
+          </ng-multiselect-dropdown>
+        </div>
 
-        <div *ngIf="this.selectedItems.length > 0">
-          <div *ngFor="let myStep of stepObject">
-            <h1>{{ myStep.inspectionName }}</h1>
-            <table class="table" id="asset-detial table">
-              <thead class="table-dark text-center">
-                <tr>
-                  <th scope="col">#Step</th>
-                  <th scope="col">Name</th>
-                  <th scope="col">Value</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr *ngFor="let step of myStep.stepValues; let i = index" style="height:50px">
-                  <td>{{i+1}}</td>
-                  <td>{{ step.name }}</td>
-                  <td>
-                    <ng-container *ngIf="step.type === 'CHECKBOX'; else elseBlock">
-                      <mat-checkbox
-                        [color]="checkBoxColor"
-                        [(ngModel)]="step.value"
-                        [disabled]="true">
-                      </mat-checkbox>
-                    </ng-container>
-
-                    <ng-template #elseBlock>
-                      <input
-                        [type]="step.type || 'TEXT'"
-                        [(ngModel)]="step.value"
-                        [disabled]="true" />
-                    </ng-template>
-                  </td>
-                </tr>
-              </tbody>
-            </table>
+        <div *ngIf="selectedItems.length > 0">
+          <div *ngFor="let myStep of stepObject" class="inspection-template-block">
+            <h3 class="inspection-template-title">{{ myStep.inspectionName }}</h3>
+            <div class="table-responsive inspection-table-wrap">
+              <table class="table table-bordered inspection-steps-table text-center">
+                <thead class="table-dark">
+                  <tr>
+                    <th scope="col">#Step</th>
+                    <th scope="col">Name</th>
+                    <th scope="col">Value</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr *ngFor="let step of myStep.stepValues; let i = index">
+                    <td>{{ i + 1 }}</td>
+                    <td>{{ step.name }}</td>
+                    <td>
+                      <ng-container *ngIf="step.type === 'CHECKBOX'; else viewStepValue">
+                        <mat-checkbox
+                          [color]="checkBoxColor"
+                          [checked]="step?.value === true || step?.value === 'true'"
+                          [disabled]="true">
+                        </mat-checkbox>
+                      </ng-container>
+                      <ng-template #viewStepValue>
+                        <input
+                          [type]="step.type || 'TEXT'"
+                          [ngModel]="step.value"
+                          class="form-control"
+                          [disabled]="true" />
+                      </ng-template>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
           </div>
-          Notes
-          <input
-            type="text"
-            [ngModel]="this.inspectionInstance.notes"
-            (change)="addNote($event)"
-            [disabled]="true" />
+
+          <div class="inspection-meta-grid">
+            <div class="inspection-meta-item">
+              <label class="inspection-meta-label">Due Date</label>
+              <input
+                type="text"
+                class="form-control"
+                [value]="(selectedInspectionInstance?.dueDate || selectedInspectionInstance?.inspectionDueDate) ? ((selectedInspectionInstance?.dueDate || selectedInspectionInstance?.inspectionDueDate) | date:'MM/dd/yyyy') : 'N/A'"
+                disabled />
+            </div>
+            <div class="inspection-meta-item">
+              <label class="inspection-meta-label">Notes</label>
+              <input
+                type="text"
+                class="form-control"
+                [ngModel]="inspectionInstance.notes"
+                [disabled]="true" />
+            </div>
+          </div>
         </div>
       </div>
 
-      <div class="modal-footer">
+      <div class="modal-footer inspection-steps-footer">
         <button type="button" class="btn btn-secondary" data-dismiss="modal" (click)="clearData()">Close</button>
       </div>
     </div>

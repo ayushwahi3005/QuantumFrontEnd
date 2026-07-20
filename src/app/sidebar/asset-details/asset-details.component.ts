@@ -24,6 +24,7 @@ import {
 } from '@angular/common/http';
 import { AssetFile } from './assetFile';
 import { Observable } from 'rxjs';
+import { PageEvent } from '@angular/material/paginator';
 import * as fileSaver from 'file-saver';
 import * as saveAs from 'file-saver';
 import { WorkOrder } from './workorder';
@@ -155,17 +156,14 @@ export class AssetDetailsComponent {
 
   stepObject: any[] = [];
   notedData!: string;
+  dueDateInput: string = '';
 
   // Pagination properties for inspection instances
-  currentPage: number = 0;
+  pageIndex: number = 0;
   pageSize: number = 10;
-  totalElements: number = 0;
-  totalPages: number = 0;
-  isFirstPage: boolean = true;
-  isLastPage: boolean = true;
-  
-  // Math utility for template
-  Math = Math;
+  totalLength: number = 0;
+  pageEvent!: PageEvent;
+qrDownloading: boolean = false;
   constructor(
     private activatedRoute: ActivatedRoute,
     private assetDetailService: AssetDetailsService,
@@ -212,6 +210,8 @@ export class AssetDetailsComponent {
     this.qrSize = 3;
     this.email = localStorage.getItem('user');
     this.companyId = localStorage.getItem('companyId');
+    this.pageIndex = parseInt(localStorage.getItem('assetDetailsInspectionPageInd') || '0', 10);
+    this.pageSize = parseInt(localStorage.getItem('assetDetailsInspectionPageSize') || '10', 10);
     this.activatedRoute.paramMap.subscribe((data) => {
       console.log(this.assetDetails);
       this.assetId = data.get('id');
@@ -235,34 +235,8 @@ export class AssetDetailsComponent {
           console.log(err);
         },
       );
-    this.assetDetailService
-      .getAllAssetInspectionInstanceByAssetId(this.assetId, this.currentPage, this.pageSize)
-      .subscribe(
-        (data) => {
-          console.log('inspection instance data', data);
-          // Handle the actual backend response format: {data: Array, totalRecords: number}
-          if (data && data.data && Array.isArray(data.data)) {
-            this.allInspectionInstance = data.data;
-            this.totalElements = data.totalRecords || 0;
-            this.totalPages = Math.ceil(this.totalElements / this.pageSize);
-            this.isFirstPage = this.currentPage === 0;
-            this.isLastPage = this.currentPage >= this.totalPages - 1;
-          } else {
-            // Fallback for different response format
-            this.allInspectionInstance = Array.isArray(data) ? data : [];
-            this.totalElements = this.allInspectionInstance.length;
-            this.totalPages = 1;
-            this.isFirstPage = true;
-            this.isLastPage = true;
-          }
-
-          console.log(this.allInspectionInstance);
-        },
-        (err) => {
-          console.log(err);
-        },
-      );
-    this.assetDetailService.getCompanyCustomerList(this.companyId).subscribe(
+    this.loadInspectionInstances();
+    this.assetDetailService.getActiveCompanyCustomerList(this.companyId).subscribe(
       (data) => {
         this.companyCustomerList = data;
         // this.companyCustomerList.forEach((x) => {
@@ -514,6 +488,7 @@ export class AssetDetailsComponent {
   onCheck() {
     console.log('OnCheck clicked');
     console.log(typeof this.assetDetails);
+    console.log(this.assetDetails);
     // this.mandatoryFieldsMap.forEach((val,key)=>{
     //   if(this.assetDetails.get(key))
     // })
@@ -1145,26 +1120,17 @@ export class AssetDetailsComponent {
  generatePdf(elementId: string, fileName: string) {
   const element: any = document.getElementById(elementId);
 
-  // ✅ Get actual rendered dimensions
-  const rect = element.getBoundingClientRect();
-  const actualWidth = rect.width;
-  const actualHeight = rect.height;
-
-  console.log('actual width:', actualWidth, 'actual height:', actualHeight);
-
-  // ✅ Make it square by adding whitespace on shorter axis
-  const maxDimension = Math.max(actualWidth, actualHeight);
-  const horizontalPadding = (maxDimension - actualWidth) / 2;  // add to left & right
-  const verticalPadding = (maxDimension - actualHeight) / 2;   // add to top & bottom
+  const actualWidth = Math.max(element.scrollWidth, element.getBoundingClientRect().width);
+  const actualHeight = Math.max(element.scrollHeight, element.getBoundingClientRect().height);
 
   html2canvas(element, {
     scale: 3,
     backgroundColor: '#ffffff',
     logging: true,
-    x: -horizontalPadding,     // ✅ extend capture left
-    y: -verticalPadding,       // ✅ extend capture top
-    width: maxDimension,       // ✅ square capture
-    height: maxDimension,      // ✅ square capture
+    width: actualWidth,
+    height: actualHeight,
+    windowWidth: actualWidth,
+    windowHeight: actualHeight,
     useCORS: true,
     scrollX: 0,
     scrollY: 0,
@@ -1172,26 +1138,19 @@ export class AssetDetailsComponent {
     const capturedWidth = canvas.width;
     const capturedHeight = canvas.height;
 
-    console.log('canvas width:', capturedWidth, 'canvas height:', capturedHeight);
-
-    // ✅ Create a NEW perfectly square canvas
     const squareCanvas = document.createElement('canvas');
     const squareSize = Math.max(capturedWidth, capturedHeight);
     squareCanvas.width = squareSize;
     squareCanvas.height = squareSize;
 
     const ctx = squareCanvas.getContext('2d')!;
-
-    // White background
     ctx.fillStyle = '#ffffff';
     ctx.fillRect(0, 0, squareSize, squareSize);
 
-    // ✅ Center the captured image inside the square canvas
     const offsetX = (squareSize - capturedWidth) / 2;
     const offsetY = (squareSize - capturedHeight) / 2;
     ctx.drawImage(canvas, offsetX, offsetY);
 
-    // ✅ Export square canvas to PDF
     const imgData = squareCanvas.toDataURL('image/png');
     const sizePx = this.qrSize * 100;
 
@@ -1202,13 +1161,23 @@ export class AssetDetailsComponent {
     });
     pdf.addImage(imgData, 'PNG', 0, 0, sizePx, sizePx);
     pdf.save(fileName + '.pdf');
+  }).catch((err) => {
+    console.log(err);
+    this.triggerAlert('Could not generate QR PDF', 'danger');
+  }).finally(() => {
+    this.qrDownloading = false;   // <-- always reset, success or fail
   });
 }
   downloadQR() {
+    console.log('downloadQR clicked');
+    this.qrDownloading = true;
+    
+    setTimeout(() => {
     this.generatePdf(
       'myqr',
       this.assetDetails.name + '_' + this.assetDetails.serialNumber + '_QR',
     );
+  }, 0);
   }
   customerChange(event: any) {
     console.log('changed->' + event.target.value);
@@ -1217,6 +1186,8 @@ export class AssetDetailsComponent {
       this.companyCustomerArr = myData.split(',');
       this.changedCustomerName = this.companyCustomerArr[0];
       this.changedCustomerId = this.companyCustomerArr[1];
+      this.assetDetails.customer = this.changedCustomerName;
+      this.assetDetails.customerId = this.changedCustomerId;
     }
   }
   preview() {
@@ -1249,6 +1220,7 @@ export class AssetDetailsComponent {
   // }
 
   saveInpectionValue() {
+    this.applyDueDateToInstance();
     console.log(this.inspectionInstance);
     console.log(this.stepObject);
     this.inspectionInstance.actionPerformedBy = this.username;
@@ -1510,6 +1482,7 @@ export class AssetDetailsComponent {
     this.inspectionInstance.stepValues = [];
   }
   tempSave() {
+    this.applyDueDateToInstance();
     this.inspectionInstance.actionPerformedBy = this.username;
     const currDateTime = new Date();
 
@@ -1557,6 +1530,7 @@ export class AssetDetailsComponent {
 
     this.selectedItems = [];
     this.notedData = '';
+    this.dueDateInput = '';
   }
   cancelInspection(){
     this.inspectionInstance.actionPerformedBy = this.username;
@@ -1613,11 +1587,31 @@ export class AssetDetailsComponent {
     this.inspectionInstance.companyId = this.companyId;
     this.inspectionInstance.actionPerformedBy = this.username;
     this.notedData = instance.notes;
+    this.syncDueDateInputFromInstance(instance);
     this.updateStepListFromLocalStorage();
   }
   clearData() {
     this.selectedItems = [];
     this.inspectionInstance = new InspectionInstance();
+    this.dueDateInput = '';
+  }
+
+  applyDueDateToInstance(): void {
+    this.inspectionInstance.dueDate = this.dueDateInput
+      ? new Date(`${this.dueDateInput}T00:00:00`)
+      : null;
+  }
+
+  syncDueDateInputFromInstance(instance?: any): void {
+    const dueDate = instance?.dueDate ?? instance?.inspectionDueDate ?? this.inspectionInstance?.dueDate;
+    if (!dueDate) {
+      this.dueDateInput = '';
+      return;
+    }
+    const parsed = new Date(dueDate);
+    this.dueDateInput = Number.isNaN(parsed.getTime())
+      ? ''
+      : parsed.toISOString().split('T')[0];
   }
   exportExcel() {}
   downloadCheckInOut() {
@@ -2275,29 +2269,24 @@ private escapeHtml(text: string): string {
   div.textContent = text;
   return div.innerHTML;
 }
-loadInspectionInstances(page?: number, size?: number) {
-  if (page !== undefined) this.currentPage = page;
-  if (size !== undefined) this.pageSize = size;
-
+loadInspectionInstances() {
   this.assetDetailService
-    .getAllAssetInspectionInstanceByAssetId(this.assetId, this.currentPage, this.pageSize)
+    .getAllAssetInspectionInstanceByAssetId(this.assetId, this.pageIndex, this.pageSize)
     .subscribe(
       (data) => {
         console.log('inspection instance data', data);
-        // Handle the actual backend response format: {data: Array, totalRecords: number}
         if (data && data.data && Array.isArray(data.data)) {
           this.allInspectionInstance = data.data;
-          this.totalElements = data.totalRecords || 0;
-          this.totalPages = Math.ceil(this.totalElements / this.pageSize);
-          this.isFirstPage = this.currentPage === 0;
-          this.isLastPage = this.currentPage >= this.totalPages - 1;
+          this.totalLength = data.totalRecords || 0;
+
+          if (this.allInspectionInstance.length === 0 && this.pageIndex !== 0) {
+            this.pageIndex = this.pageIndex - 1;
+            this.loadInspectionInstances();
+            return;
+          }
         } else {
-          // Fallback for different response format
           this.allInspectionInstance = Array.isArray(data) ? data : [];
-          this.totalElements = this.allInspectionInstance.length;
-          this.totalPages = 1;
-          this.isFirstPage = true;
-          this.isLastPage = true;
+          this.totalLength = this.allInspectionInstance.length;
         }
 
         console.log(this.allInspectionInstance);
@@ -2308,59 +2297,13 @@ loadInspectionInstances(page?: number, size?: number) {
     );
 }
 
-goToNextPage() {
-  if (!this.isLastPage && this.currentPage < this.totalPages - 1) {
-    this.loadInspectionInstances(this.currentPage + 1);
-  }
-}
-
-goToPreviousPage() {
-  if (!this.isFirstPage && this.currentPage > 0) {
-    this.loadInspectionInstances(this.currentPage - 1);
-  }
-}
-
-goToFirstPage() {
-  if (!this.isFirstPage) {
-    this.loadInspectionInstances(0);
-  }
-}
-
-goToLastPage() {
-  if (!this.isLastPage && this.totalPages > 0) {
-    this.loadInspectionInstances(this.totalPages - 1);
-  }
-}
-
-goToPage(page: number) {
-  if (page >= 0 && page < this.totalPages && page !== this.currentPage) {
-    this.loadInspectionInstances(page);
-  }
-}
-
-onPageSizeChange(event: any) {
-  const newPageSize = parseInt(event.target.value, 10);
-  if (newPageSize !== this.pageSize) {
-    this.currentPage = 0; // Reset to first page when changing page size
-    this.loadInspectionInstances(0, newPageSize);
-  }
-}
-
-getPageNumbers(): number[] {
-  const pages: number[] = [];
-  const maxPagesToShow = 5;
-  let startPage = Math.max(0, this.currentPage - Math.floor(maxPagesToShow / 2));
-  let endPage = Math.min(this.totalPages - 1, startPage + maxPagesToShow - 1);
-
-  // Adjust start page if end page reaches the limit
-  if (endPage - startPage + 1 < maxPagesToShow) {
-    startPage = Math.max(0, endPage - maxPagesToShow + 1);
-  }
-
-  for (let i = startPage; i <= endPage; i++) {
-    pages.push(i);
-  }
-
-  return pages;
+handleInspectionPageEvent(e: PageEvent) {
+  this.pageEvent = e;
+  this.totalLength = e.length;
+  this.pageSize = e.pageSize;
+  this.pageIndex = e.pageIndex;
+  localStorage.setItem('assetDetailsInspectionPageInd', this.pageIndex.toString());
+  localStorage.setItem('assetDetailsInspectionPageSize', this.pageSize.toString());
+  this.loadInspectionInstances();
 }
 }

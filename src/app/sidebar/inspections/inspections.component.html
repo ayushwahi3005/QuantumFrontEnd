@@ -661,7 +661,7 @@
         <!-- Inspection Steps -->
         <div *ngIf="stepObject.length > 0" class="add-form-group add-form-group-full">
           <label>Inspection Steps</label>
-          <div class="steps-container d-flex justify-content-around flex-wrap">
+          <div class="steps-container">
             <div *ngFor="let template of stepObject" class="inspection-template-block">
               <h3 class="inspection-template-title">{{ template.inspectionName }}</h3>
               <div class="table-responsive inspection-table-wrap">

@@ -1518,8 +1518,3 @@
 .step-input .checkbox-wrapper .form-check-input {
   margin: 0;
 }
-
-.add-inspection-ng-select ::ng-deep .ng-select-container .ng-value-container .ng-input {
-  opacity: 0 !important;
-  pointer-events: none !important;
-}
