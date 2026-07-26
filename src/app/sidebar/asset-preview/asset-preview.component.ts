@@ -1560,23 +1560,27 @@ export class AssetPreviewComponent {
   // }
 
   downloadInspectionPDF(instance: any) {
-    const instances = [instance];
+    const instances = [instance]; // normalize single instance into array
+  
     const doc = new jspdf.jsPDF();
     const pageWidth = doc.internal.pageSize.getWidth();
     const pageHeight = doc.internal.pageSize.getHeight();
     const margin = 10;
     const contentWidth = pageWidth - 2 * margin;
-    const stepColX = margin + 25;
-    const valueColX = margin + contentWidth - 30;
-    const nameColWidth = valueColX - stepColX - 5;
-    const valueColWidth = margin + contentWidth - valueColX - 2;
     let yPosition = 0;
   
     const navy: [number, number, number] = [25, 40, 82];
     const blue: [number, number, number] = [59, 91, 179];
     const lightGray: [number, number, number] = [245, 246, 248];
+    const altRowGray: [number, number, number] = [250, 250, 250];
     const green: [number, number, number] = [34, 139, 60];
     const red: [number, number, number] = [180, 60, 60];
+  
+    // Column layout (shared across all templates/instances)
+    const stepColX = margin + 25;
+    const valueColX = margin + contentWidth * 0.63;
+    const nameColWidth = valueColX - stepColX - 5;
+    const valueColWidth = margin + contentWidth - valueColX - 2;
   
     const checkPageBreak = (needed: number) => {
       if (yPosition + needed > pageHeight - 15) {
@@ -1628,7 +1632,7 @@ export class AssetPreviewComponent {
     doc.setFontSize(10);
     doc.setFont('helvetica', 'bold');
     doc.text(this.assetDetails?.name || 'N/A', col1, yPosition + 5);
-    doc.text(this.assetDetails?.id?.toString() || 'N/A', col2, yPosition + 5);
+    doc.text(this.assetDetails?.id?.toString() || this.assetId?.toString() || 'N/A', col2, yPosition + 5);
   
     const latestDate = instances?.[0]?.createdAt
       ? new Date(instances[0].createdAt).toLocaleDateString('en-US', {
@@ -1639,19 +1643,21 @@ export class AssetPreviewComponent {
   
     yPosition += 22;
   
-    // ---------- LOOP THROUGH EACH INSPECTION ----------
-    (instances || []).forEach((instance: any, instanceIndex: number) => {
+    // ---------- LOOP THROUGH EACH INSPECTION INSTANCE ----------
+    instances.forEach((inst: any, instanceIndex: number) => {
       checkPageBreak(20);
   
-      // Section header bar
+      const sectionStartY = yPosition; // top of card, for border later
+  
+      // Instance header bar
       doc.setFillColor(...navy);
       doc.rect(margin, yPosition, contentWidth, 9, 'F');
       doc.setTextColor(255, 255, 255);
       doc.setFontSize(10);
       doc.setFont('helvetica', 'bold');
-      doc.text(`Inspection ${instanceIndex + 1}`, margin + 4, yPosition + 6);
+      doc.text('Inspection Details', margin + 4, yPosition + 6);
   
-      const idLabel = `ID: ${instance.assetCategoryInspectionInstanceId || 'N/A'}`;
+      const idLabel = `ID: ${inst.assetCategoryInspectionInstanceId || 'N/A'}`;
       const idWidth = doc.getTextWidth(idLabel) + 6;
       doc.setFillColor(255, 255, 255);
       doc.roundedRect(margin + contentWidth - idWidth - 4, yPosition + 1.5, idWidth, 6, 3, 3, 'F');
@@ -1661,169 +1667,144 @@ export class AssetPreviewComponent {
   
       yPosition += 9;
   
-      // Table header row
-      doc.setFillColor(...blue);
-      doc.rect(margin, yPosition, contentWidth, 8, 'F');
-      doc.setTextColor(255, 255, 255);
-      doc.setFontSize(9);
-      doc.setFont('helvetica', 'bold');
-      doc.text('#Step', margin + 5, yPosition + 5.5);
-      doc.text('Name', margin + 25, yPosition + 5.5);
-      doc.text('Value', margin + contentWidth - 30, yPosition + 5.5);
-      yPosition += 8;
+      // ---------- RENDER EACH TEMPLATE SEPARATELY (prevents step mixing) ----------
+      const renderStepsTable = (steps: any[]) => {
+        doc.setFont('helvetica', 'normal');
+        doc.setFontSize(9);
   
-      // Gather steps
-      let allSteps: any[] = [];
-      if (instance.inspectionTemplates?.length) {
-        instance.inspectionTemplates.forEach((template: any) => {
-          if (template.stepValues?.length) allSteps = allSteps.concat(template.stepValues);
+        if (steps.length > 0) {
+          steps.forEach((step: any, index: number) => {
+            const nameLines = doc.splitTextToSize(step.name || 'N/A', nameColWidth);
+  
+            let valueLines: string[];
+            let isCheckbox = false;
+            let isYes = false;
+  
+            if (step.type === 'CHECKBOX') {
+              isCheckbox = true;
+              isYes = step.value === true || step.value === 'true';
+              valueLines = [isYes ? 'Yes' : 'No'];
+            } else {
+              const valueText = (step.value !== undefined && step.value !== null && step.value !== '')
+                ? `${step.value}`
+                : 'N/A';
+              valueLines = doc.splitTextToSize(valueText.toString(), valueColWidth);
+            }
+  
+            const lineCount = Math.max(nameLines.length, valueLines.length);
+            const rowHeight = Math.max(8, lineCount * 5 + 3);
+  
+            checkPageBreak(rowHeight);
+  
+            if (index % 2 === 1) {
+              doc.setFillColor(...altRowGray);
+              doc.rect(margin, yPosition, contentWidth, rowHeight, 'F');
+            }
+  
+            doc.setTextColor(0, 0, 0);
+            doc.text((index + 1).toString(), margin + 5, yPosition + 5.5);
+            doc.text(nameLines, stepColX, yPosition + 5.5);
+  
+            if (isCheckbox) {
+              doc.setTextColor(...(isYes ? green : red));
+              doc.setFont('helvetica', 'bold');
+              doc.text(valueLines, valueColX, yPosition + 5.5);
+              doc.setFont('helvetica', 'normal');
+            } else {
+              doc.setTextColor(80, 80, 80);
+              doc.text(valueLines, valueColX, yPosition + 5.5);
+            }
+  
+            yPosition += rowHeight;
+          });
+        } else {
+          doc.setTextColor(120, 120, 120);
+          doc.text('No steps recorded', stepColX, yPosition + 5.5);
+          yPosition += 8;
+        }
+      };
+  
+      if (inst.inspectionTemplates?.length) {
+        inst.inspectionTemplates.forEach((template: any, templateIndex: number) => {
+          console.log('individual template:', template);
+          checkPageBreak(15);
+  
+          // Template sub-header
+          doc.setFillColor(...blue);
+          doc.rect(margin, yPosition, contentWidth, 7, 'F');
+          doc.setTextColor(255, 255, 255);
+          doc.setFontSize(9);
+          doc.setFont('helvetica', 'bold');
+          doc.text(
+            // template.name || template.templateName || `Section ${templateIndex + 1}`,
+            instance.assetCategoryInspectionName,
+            margin + 4,
+            yPosition + 5
+          );
+          yPosition += 7;
+  
+          // Column header row
+          doc.setFillColor(...lightGray);
+          doc.rect(margin, yPosition, contentWidth, 7, 'F');
+          doc.setTextColor(80, 80, 80);
+          doc.setFontSize(9);
+          doc.setFont('helvetica', 'bold');
+          doc.text('#', margin + 5, yPosition + 5);
+          doc.text('Inspection Item', stepColX, yPosition + 5);
+          doc.text('Response', valueColX, yPosition + 5);
+          yPosition += 7;
+  
+          renderStepsTable(template.stepValues || []);
+  
+          yPosition += 4; // gap between templates within same instance
         });
-      } else if (instance.stepValues?.length) {
-        allSteps = instance.stepValues;
-      }
+      } else if (inst.stepValues?.length) {
+        // Fallback: flat step list, no template grouping
+        doc.setFillColor(...lightGray);
+        doc.rect(margin, yPosition, contentWidth, 7, 'F');
+        doc.setTextColor(80, 80, 80);
+        doc.setFontSize(8);
+        doc.setFont('helvetica', 'bold');
+        doc.text('#Step', margin + 5, yPosition + 5);
+        doc.text('Name', stepColX, yPosition + 5);
+        doc.text('Value', valueColX, yPosition + 5);
+        yPosition += 7;
   
-      doc.setFont('helvetica', 'normal');
-      doc.setFontSize(9);
-  
-      // if (allSteps.length > 0) {
-      //   allSteps.forEach((step: any, index: number) => {
-      //     checkPageBreak(9);
-  
-      //     const rowHeight = 8;
-      //     if (index % 2 === 1) {
-      //       doc.setFillColor(...lightGray);
-      //       doc.rect(margin, yPosition, contentWidth, rowHeight, 'F');
-      //     }
-  
-      //     doc.setTextColor(0, 0, 0);
-      //     doc.text((index + 1).toString(), margin + 5, yPosition + 5.5);
-      //     doc.text(step.name || 'N/A', margin + 25, yPosition + 5.5);
-  
-      //     if (step.type === 'CHECKBOX') {
-      //       const isYes = step.value === true || step.value === 'true';
-      //       doc.setTextColor(...(isYes ? green : red));
-      //       doc.setFont('helvetica', 'bold');
-      //       doc.text(isYes ? 'Yes' : 'No', margin + contentWidth - 30, yPosition + 5.5);
-      //       doc.setFont('helvetica', 'normal');
-      //     } else {
-      //       doc.setTextColor(80, 80, 80);
-      //       const valueText = (step.value !== undefined && step.value !== null && step.value !== '')
-      //         ? `# ${step.value}`
-      //         : 'N/A';
-      //       doc.text(valueText, margin + contentWidth - 30, yPosition + 5.5);
-      //     }
-  
-      //     yPosition += rowHeight;
-      //   });
-      // }
-      // if (allSteps.length > 0) {
-      //   allSteps.forEach((step: any, index: number) => {
-      //     const nameLines = doc.splitTextToSize(step.name || 'N/A', nameColWidth);
-      //     const rowHeight = Math.max(8, nameLines.length * 5 + 3); // grow row if wrapped
-      
-      //     checkPageBreak(rowHeight);
-      
-      //     if (index % 2 === 1) {
-      //       doc.setFillColor(...lightGray);
-      //       doc.rect(margin, yPosition, contentWidth, rowHeight, 'F');
-      //     }
-      
-      //     doc.setTextColor(0, 0, 0);
-      //     doc.text((index + 1).toString(), margin + 5, yPosition + 5.5);
-      //     doc.text(nameLines, stepColX, yPosition + 5.5);
-      
-      //     if (step.type === 'CHECKBOX') {
-      //       const isYes = step.value === true || step.value === 'true';
-      //       doc.setTextColor(...(isYes ? green : red));
-      //       doc.setFont('helvetica', 'bold');
-      //       doc.text(isYes ? 'Yes' : 'No', valueColX, yPosition + 5.5);
-      //       doc.setFont('helvetica', 'normal');
-      //     } else {
-      //       doc.setTextColor(80, 80, 80);
-      //       const valueText = (step.value !== undefined && step.value !== null && step.value !== '')
-      //         ? `# ${step.value}`
-      //         : 'N/A';
-      //       doc.text(valueText, valueColX, yPosition + 5.5);
-      //     }
-      
-      //     yPosition += rowHeight;
-      //   });
-      // }
-      if (allSteps.length > 0) {
-        allSteps.forEach((step: any, index: number) => {
-          const nameLines = doc.splitTextToSize(step.name || 'N/A', nameColWidth);
-      
-          let valueLines: string[];
-          let isCheckbox = false;
-          let isYes = false;
-      
-          if (step.type === 'CHECKBOX') {
-            isCheckbox = true;
-            isYes = step.value === true || step.value === 'true';
-            valueLines = [isYes ? 'Yes' : 'No'];
-          } else {
-            const valueText = (step.value !== undefined && step.value !== null && step.value !== '')
-              ? `# ${step.value}`
-              : 'N/A';
-            valueLines = doc.splitTextToSize(valueText.toString(), valueColWidth);
-          }
-      
-          const lineCount = Math.max(nameLines.length, valueLines.length);
-          const rowHeight = Math.max(8, lineCount * 5 + 3);
-      
-          checkPageBreak(rowHeight);
-      
-          if (index % 2 === 1) {
-            doc.setFillColor(...lightGray);
-            doc.rect(margin, yPosition, contentWidth, rowHeight, 'F');
-          }
-      
-          doc.setTextColor(0, 0, 0);
-          doc.text((index + 1).toString(), margin + 5, yPosition + 5.5);
-          doc.text(nameLines, stepColX, yPosition + 5.5);
-      
-          if (isCheckbox) {
-            doc.setTextColor(...(isYes ? green : red));
-            doc.setFont('helvetica', 'bold');
-            doc.text(valueLines, valueColX, yPosition + 5.5);
-            doc.setFont('helvetica', 'normal');
-          } else {
-            doc.setTextColor(80, 80, 80);
-            doc.text(valueLines, valueColX, yPosition + 5.5);
-          }
-      
-          yPosition += rowHeight;
-        });
-      }
-      else {
+        renderStepsTable(inst.stepValues);
+      } else {
         doc.setTextColor(120, 120, 120);
-        doc.text('No inspection steps recorded', margin + 25, yPosition + 5.5);
+        doc.setFontSize(9);
+        doc.text('No inspection steps recorded', stepColX, yPosition + 5.5);
         yPosition += 8;
       }
-  
-      // Notes box
-      if (instance.notes) {
-        checkPageBreak(20);
+
+      // ---------- NOTES BOX ----------
+      if (inst.notes) {
+        yPosition += 4; // clear gap between last table row and notes box
+
+        const noteText = doc.splitTextToSize(inst.notes, contentWidth - 12);
+        const boxHeight = noteText.length * 5 + 12; // computed BEFORE checking page break
+
+        checkPageBreak(boxHeight + 4); // use real height, not a flat guess
+
         doc.setDrawColor(225, 225, 225);
         doc.setFillColor(255, 255, 255);
-        const noteText = doc.splitTextToSize(instance.notes, contentWidth - 12);
-        const boxHeight = noteText.length * 5 + 10;
-        doc.roundedRect(margin, yPosition + 2, contentWidth, boxHeight, 2, 2, 'S');
-  
+        doc.roundedRect(margin, yPosition, contentWidth, boxHeight, 2, 2, 'S');
+
         doc.setTextColor(120, 120, 120);
         doc.setFontSize(8);
         doc.setFont('helvetica', 'bold');
-        doc.text('Notes', margin + 4, yPosition + 8);
-  
+        doc.text('Notes', margin + 4, yPosition + 6);
+
         doc.setTextColor(40, 40, 40);
         doc.setFont('helvetica', 'normal');
         doc.setFontSize(9);
-        doc.text(noteText, margin + 4, yPosition + 14);
-  
+        doc.text(noteText, margin + 4, yPosition + 12);
+
         yPosition += boxHeight + 6;
       }
   
-      yPosition += 4; // gap before next inspection card
+      yPosition += 8; // gap before next inspection card
     });
   
     // ---------- FOOTER on every page ----------
@@ -1832,11 +1813,12 @@ export class AssetPreviewComponent {
       doc.setPage(i);
       doc.setFontSize(8);
       doc.setTextColor(150, 150, 150);
-      doc.text('Powered by Asset Yug', margin, pageHeight - 6, { align: 'left' });
+  
+      doc.text('Powered by AssetYug', margin, pageHeight - 6, { align: 'left' });
       doc.text(`Page ${i} of ${pageCount}`, pageWidth - margin, pageHeight - 6, { align: 'right' });
     }
   
-    const fileName = `Inspection_${this.assetDetails?.name || 'Asset'}_${this.assetId || ''}.pdf`;
+    const fileName = `Inspection_${this.assetDetails?.name || 'Asset'}_${instance.assetCategoryInspectionInstanceId || ''}.pdf`;
     doc.save(fileName);
   }
 

@@ -158,10 +158,10 @@ export class InspectionTemplateComponent {
       this.triggerAlert("Please Enter Name","warning");
       return;
     }
-    if(this.inspectionForm.categoryName.length===0||this.inspectionForm.categoryName==null||this.inspectionForm.categoryName==undefined){
-      this.triggerAlert("Please Enter Asset Category","warning");
-      return;
-    }
+    // if(this.inspectionForm.categoryName.length===0||this.inspectionForm.categoryName==null||this.inspectionForm.categoryName==undefined){
+    //   this.triggerAlert("Please Enter Asset Category","warning");
+    //   return;
+    // }
 
     this.inspectionTemplateService
       .addAssetInspection(this.inspectionForm)
@@ -207,44 +207,42 @@ export class InspectionTemplateComponent {
     (window as any).$('#edit-inspection').modal('show');
   }
   updateInspection() {
-    console.log(this.inspectionSteps.toString)
-    console.log(this.selectedCategory.value);
-    // this.inspectionForm.status='active';
-    this.inspectionForm.companyId=this.companyId;
-    this.inspectionForm.steps=this.inspectionSteps;
-    if(this.selectedCategory.value && this.selectedCategory.value.length > 0) {
-      this.inspectionForm.categoryName = this.selectedCategory.value;
-    }
-    
-    console.log(this.inspectionForm);
-    if(this.inspectionForm.name==''||this.inspectionForm.name==null||this.inspectionForm.name==undefined){
-      this.triggerAlert("Please Enter Name","warning");
-      return;
-    }
-    if(this.inspectionForm.categoryName.length===0||this.inspectionForm.categoryName==null||this.inspectionForm.categoryName==undefined){
-      this.triggerAlert("Please Enter Asset Category","warning");
-      return;
-    }
+  console.log(this.inspectionSteps.toString)
+  console.log(this.selectedCategory.value);
+  this.inspectionForm.companyId = this.companyId;
+  this.inspectionForm.steps = this.inspectionSteps;
 
-    this.inspectionTemplateService
-      .updateAssetInspection(this.inspectionForm)
-      .subscribe((data) => {
-        console.log('Successfully Updated Inspection');
-        this.triggerAlert("Successfully Updated Inspection","success");
-      },
-      (err)=>{
-        console.log(err);
-      }, 
-      ()=>{
-        this.inspectionForm=new Inspection();
-        this.inspectionSteps = [new InspectionStep()];
-        this.selectedCategory.reset();
-        this.isEditMode = false;
-        // Close the modal
-        (window as any).$('#edit-inspection').modal('hide');
-        this.ngOnInit();
-      });
+  // Always sync — don't gate on length > 0
+  this.inspectionForm.categoryName = this.selectedCategory.value || [];
+
+  console.log(this.inspectionForm);
+  if (this.inspectionForm.name == '' || this.inspectionForm.name == null || this.inspectionForm.name == undefined) {
+    this.triggerAlert("Please Enter Name", "warning");
+    return;
   }
+  // if (this.inspectionForm.categoryName.length === 0 || this.inspectionForm.categoryName == null || this.inspectionForm.categoryName == undefined) {
+  //   this.triggerAlert("Please Enter Asset Category", "warning");
+  //   return;
+  // }
+
+  this.inspectionTemplateService
+    .updateAssetInspection(this.inspectionForm)
+    .subscribe((data) => {
+      console.log('Successfully Updated Inspection');
+      this.triggerAlert("Successfully Updated Inspection", "success");
+    },
+    (err) => {
+      console.log(err);
+    },
+    () => {
+      this.inspectionForm = new Inspection();
+      this.inspectionSteps = [new InspectionStep()];
+      this.selectedCategory.reset();
+      this.isEditMode = false;
+      (window as any).$('#edit-inspection').modal('hide');
+      this.ngOnInit();
+    });
+}
   removeStep(i: number) {
     this.inspectionSteps.splice(i, 1);
   }

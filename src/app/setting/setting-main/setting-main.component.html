@@ -71,89 +71,61 @@
 
       <form class="row g-3" [formGroup]="companyInformationForm" (ngSubmit)="addCompanyInformation()">
         <div class="col-md-12">
-          <label for="companyName" class="form-label">Company Name<span class="text-danger">*</span></label>
-          <input type="text" class="form-control" formControlName="companyName"
-            [ngModel]="companyInformation ? companyInformation.companyName : ''">
-        </div>
-        <div class="col-md-12">
-          <img src={{companyInformation?.comapanyLogo}}>
-          <label for="comapanyLogo" class="form-label">Company Logo</label>
-          <input type="file" class="form-control" (change)="imageUpload($event)">
-
-        </div>
-        <div class="col-12">
-          <label for="accountId" class="form-label">Account ID</label><br>
-          <input value={{companyInformation?.id}} disabled style="width: 440px;">
-
-        </div>
-        <div class="col-12">
-          <label for="Address" class="form-label">Address<span class="text-danger">*</span></label>
-          <input type="text" class="form-control" formControlName="address1" placeholder="Address 1"
-            [ngModel]="companyInformation ? companyInformation.address1 : ''">
-        </div>
-        <div class="col-12">
-          <input type="text" class="form-control" formControlName="address2" placeholder="Address 2"
-            [ngModel]="companyInformation ? companyInformation.address2 : ''">
-        </div>
-         <div class="col-12">
-            <select class="form-control" formControlName="country" (change)="getStateList($event.target.value)">
-            <option value="">Select Country</option>
-             <option *ngFor="let c of countryList" [value]="c">
-                        {{ c }}
-                      </option>
-            <!-- Add more countries as needed -->
-          </select>
-        </div>
-        
-        
-       
-        <div class="col-md-4">
-
-          <!-- <input type="text" class="form-control" formControlName="state" placeholder="State"
-            [ngModel]="companyInformation ? companyInformation.state : ''"> -->
-
-            <select class="form-control" formControlName="state">
-            <option value="">Select State</option>
-            <option *ngFor="let state of stateList" [value]="state">{{ state }}</option>
-            <!-- Add more countries as needed -->
-          </select>
-
-            <!-- <option *ngFor="let state of stateList" [value]="state">{{ state }}</option> -->
-        </div>
-        <div class="col-md-4">
-
-          <input type="text" class="form-control" formControlName="city" placeholder="City"
-            [ngModel]="companyInformation ? companyInformation.city : ''">
-        </div>
-        <div class="col-md-4">
-          <input type="text" class="form-control" formControlName="zipCode" placeholder="Enter ZIP Code"
-            [ngModel]="companyInformation ? companyInformation.zipCode : ''" maxlength="15" minlength="3"
-            pattern="^[0-9A-Za-z]{3,15}$" />
-          <div *ngIf="companyInformationForm.get('zipCode')?.invalid && companyInformationForm.get('zipCode')?.touched"
-            class="text-danger">
-            <span *ngIf="this.companyInformationForm.get('zipCode')?.errors?.required">ZIP Code is required.</span>
-            <span *ngIf="this.companyInformationForm.get('zipCode')?.errors?.pattern">Enter a valid ZIP Code (e.g.,
-              123456).</span>
-          </div>
-        </div>
-        <div class="col-12">
-          <label for="phoneNo" class="form-label">Phone Number<span class="text-danger">*</span></label>
-          <input type="tel" class="form-control" formControlName="phoneNo" value="+1"
-            [ngModel]="companyInformation ? companyInformation.phoneNo : ''" maxlength="10" pattern="[0-9]{10}"
-            minlength="10" maxlength="10">
-        </div>
-        <div class="col-12">
-          <label for="website" class="form-label">Website<span class="text-danger">*</span></label>
-          <input type="text" class="form-control" formControlName="website" pattern="^.+\.com$"
-            [ngModel]="companyInformation ? companyInformation.website : ''">
-          <div *ngIf="companyInformationForm.get('website')?.invalid" class="text-danger">
-
-            <span *ngIf="this.companyInformationForm.get('website')?.errors?.pattern">Enter a valid Website Name.</span>
-          </div>
-        </div>
-        <!-- <button type="submit" class="btn btn-primary" data-toggle="modal" data-target="#popup" [disabled]="companyInformationForm.invalid">Submit</button> -->
-        <!-- <button type="submit" class="btn btn-primary" data-toggle="modal" data-target="#popup" >Submit</button> -->
-        <button type="submit" class="btn btn-primary">Submit</button>
+  <label for="companyName" class="form-label">Company Name<span class="text-danger">*</span></label>
+  <input type="text" class="form-control" formControlName="companyName">
+</div>
+<div class="col-md-12">
+  <img src={{companyInformation?.comapanyLogo}}>
+  <label for="comapanyLogo" class="form-label">Company Logo</label>
+  <input type="file" class="form-control" (change)="imageUpload($event)">
+</div>
+<div class="col-12">
+  <label for="accountId" class="form-label">Account ID</label><br>
+  <input value={{companyInformation?.id}} disabled style="width: 440px;">
+</div>
+<div class="col-12">
+  <label for="Address" class="form-label">Address<span class="text-danger">*</span></label>
+  <input type="text" class="form-control" formControlName="address1" placeholder="Address 1">
+</div>
+<div class="col-12">
+  <input type="text" class="form-control" formControlName="address2" placeholder="Address 2">
+</div>
+<div class="col-12">
+  <select class="form-control" formControlName="country" (change)="getStateList($event.target.value)">
+    <option value="">Select Country</option>
+    <option *ngFor="let c of countryList" [value]="c">{{ c }}</option>
+  </select>
+</div>
+<div class="col-md-4">
+  <select class="form-control" formControlName="state">
+    <option value="">Select State</option>
+    <option *ngFor="let state of stateList" [value]="state">{{ state }}</option>
+  </select>
+</div>
+<div class="col-md-4">
+  <input type="text" class="form-control" formControlName="city" placeholder="City">
+</div>
+<div class="col-md-4">
+ 
+  <input type="text" class="form-control" formControlName="zipCode" placeholder="Enter ZIP Code" maxlength="15" minlength="3">
+  <div *ngIf="companyInformationForm.get('zipCode')?.invalid && companyInformationForm.get('zipCode')?.touched" class="text-danger">
+    <span *ngIf="companyInformationForm.get('zipCode')?.errors?.required">ZIP Code is required.</span>
+    <span *ngIf="companyInformationForm.get('zipCode')?.errors?.pattern">Enter a valid ZIP Code (e.g., 123456).</span>
+  </div>
+</div>
+<div class="col-12">
+  <label for="phoneNo" class="form-label">Phone Number<span class="text-danger">*</span></label>
+  <input type="tel" class="form-control" formControlName="phoneNo" maxlength="10" minlength="10">
+  <span *ngIf="companyInformationForm.get('phoneNo')?.errors?.required">Phone Number is not correct.</span>
+</div>
+<div class="col-12">
+  <label for="website" class="form-label">Website<span class="text-danger">*</span></label>
+  <input type="text" class="form-control" formControlName="website">
+  <div *ngIf="companyInformationForm.get('website')?.invalid" class="text-danger">
+    <span *ngIf="companyInformationForm.get('website')?.errors?.pattern">Enter a valid Website Name.</span>
+  </div>
+</div>
+<button type="submit" class="btn btn-primary">Submit</button>
       </form>
     </div>
 

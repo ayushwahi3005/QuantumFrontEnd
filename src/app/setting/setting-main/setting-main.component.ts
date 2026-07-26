@@ -5,9 +5,8 @@ import { SettingMainService } from './setting-main.service';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import Lottie from 'lottie-web';
 import { CompanyInformation } from './companyInformation';
-import { map, Subject, switchMap } from 'rxjs';
+import { Subject } from 'rxjs';
 import { NotificationService } from 'src/app/notification/notification.service';
-import { state } from '@angular/animations';
 import { CountryService } from 'src/app/shared/country/country.service';
 
 declare var bootstrap: any; // important
@@ -24,53 +23,32 @@ export class SettingMainComponent {
   username: any = '';
   companyInformationForm!: FormGroup;
   companyImage: any;
-  country:any
+  country: any;
   companyInformation!: CompanyInformation;
   companyId!: any;
   role: any;
-  showAlert: boolean = false; // Flag to toggle alert visibility
-  alertMessage: string = ''; // Alert message
+  showAlert: boolean = false;
+  alertMessage: string = '';
   alertType: string = 'success';
-  showTrialAlert: boolean = false; // Flag for trial expiry alert in template
+  showTrialAlert: boolean = false;
   unReadCount: number = 0;
   private notificationSubject = new Subject<string>();
   notificationList: Notification[] = [];
-  trialStatus:any;
-  trialDayLeft!:number;
-  currentSubscription:any;
-    stateList:any = [];
-  countryList=[
-  "Canada",
-  "Mexico",
-  "United States of America",
+  trialStatus: any;
+  trialDayLeft!: number;
+  currentSubscription: any;
+  stateList: any = [];
+  countryList = [
+    "Canada", "Mexico", "United States of America",
+    "Antigua and Barbuda", "The Bahamas", "Barbados", "Cuba", "Dominica",
+    "Dominican Republic", "Grenada", "Haiti", "Jamaica", "Saint Kitts and Nevis",
+    "Saint Lucia", "Saint Vincent and the Grenadines", "Trinidad and Tobago",
+    "Belize", "Costa Rica", "El Salvador", "Guatemala", "Honduras", "Nicaragua", "Panama"
+  ];
+  currentSelectedCountryCode = 'US';
+  selectedCountryCode = 'United States of America';
 
-  "Antigua and Barbuda",
-  "The Bahamas",
-  "Barbados",
-  "Cuba",
-  "Dominica",
-  "Dominican Republic",
-  "Grenada",
-  "Haiti",
-  "Jamaica",
-  "Saint Kitts and Nevis",
-  "Saint Lucia",
-  "Saint Vincent and the Grenadines",
-  "Trinidad and Tobago",
-
-  "Belize",
-  "Costa Rica",
-  "El Salvador",
-  "Guatemala",
-  "Honduras",
-  "Nicaragua",
-  "Panama"
-]
-currentSelectedCountryCode='US'
-selectedCountryCode='United States of America';
   sideBarOption = [
-
-
     { number: 1, name: 'Company Information', icon: 'bi bi-bookshelf', tab: 'company' },
     { number: 2, name: 'Locations and Bins', icon: 'bi bi-geo-alt-fill', tab: 'location' },
     { number: 3, name: 'Custom Fields', icon: 'bi bi-boxes', tab: 'custom-fields' },
@@ -83,144 +61,117 @@ selectedCountryCode='United States of America';
     { number: 9, name: 'Subscription', icon: 'bi bi-clipboard-check', tab: 'subscription' },
     { number: 10, name: 'Asset QR code', icon: 'bi bi-qr-code', tab: 'asset-qr' },
     { number: 13, name: 'Audit Logs', icon: 'bi bi-clock-history', tab: 'audit-logs' },
-
   ];
-  constructor(private settingMainService: SettingMainService, private auth: AuthService, private router: Router, private formBuilder: FormBuilder, private route: ActivatedRoute, private notificationService: NotificationService,private cdr: ChangeDetectorRef,private countryService: CountryService) { }
+
+  constructor(
+    private settingMainService: SettingMainService,
+    private auth: AuthService,
+    private router: Router,
+    private formBuilder: FormBuilder,
+    private route: ActivatedRoute,
+    private notificationService: NotificationService,
+    private cdr: ChangeDetectorRef,
+    private countryService: CountryService
+  ) {}
 
   ngOnInit() {
-      this.companyInformationForm = this.formBuilder.group({
+    // SINGLE form group definition — includes id and customerEmail now
+    this.companyInformationForm = this.formBuilder.group({
+      id: [''],
       companyName: ['', Validators.required],
+      comapanyLogo: [''],
+      country: [''],
       address1: ['', Validators.required],
       address2: [''],
-      city: [''],
-      state: [''],
-      country: [''],  // Keep in form group
-      zipCode: ['', [Validators.required, Validators.pattern('^[0-9A-Za-z]{6,15}$')]],
+      city: ['', Validators.required],
+      state: [''], // not required
+      zipCode: ['', [Validators.required, Validators.pattern('^[0-9A-Za-z]{3,15}$')]],
       phoneNo: ['', [Validators.required, Validators.pattern('[0-9]{10}')]],
       website: ['', [Validators.required, Validators.pattern('^.+\\.com$')]],
-      comapanyLogo: ['']
+      customerEmail: ['']
     });
-    let trialInfo=localStorage.getItem('trialAlertDismissedInfo');
-    
+
+    let trialInfo = localStorage.getItem('trialAlertDismissedInfo');
+
     this.email = localStorage.getItem('user');
-    console.log(this.email);
     this.companyId = localStorage.getItem('companyId');
-        this.role = localStorage.getItem('role')
+    this.role = localStorage.getItem('role');
+
     this.loadCompanyInformation();
 
-    
     document.body.style.overflow = 'hidden';
     if (localStorage.getItem('settingHomeOption') != null) {
-      console.log("localStorage.getItem('settingHomeOption')->", localStorage.getItem('settingHomeOption'));
-      // localStorage.getItem('settingHomeOption')
       this.current = Number(this.sideBarOption.find(opt => opt.tab === localStorage.getItem('settingHomeOption'))?.number);
     }
     this.route.queryParams.subscribe(params => {
       const tab = params['tab'];
-      console.log("Tab Param:", tab);
       if (tab) {
         const match = this.sideBarOption.find(opt => opt.tab === tab);
         if (match) {
           this.current = match.number;
           localStorage.setItem('settingHomeOption', match.tab.toString());
-          console.log(localStorage.getItem('settingHomeOption'))
         }
       }
     });
- 
+
     this.settingMainService.dashboard(this.email).subscribe((data) => {
       this.username = data.firstName + " " + data.lastName;
     }, (err) => {
       console.log(err);
+    });
 
-    })
-    this.settingMainService.getFreeTrail(this.companyId).subscribe((data)=>{
-      this.trialStatus=data;
-      if(this.trialStatus.trialExpired==false){
-       
+    this.settingMainService.getFreeTrail(this.companyId).subscribe((data) => {
+      this.trialStatus = data;
+      if (this.trialStatus.trialExpired == false) {
         const today = new Date();
         const trialEndDate = new Date(this.trialStatus.trialEndDate);
         const timeDiff = trialEndDate.getTime() - today.getTime();
         this.trialDayLeft = Math.ceil(timeDiff / (1000 * 3600 * 24));
       }
-      console.log(this.trialStatus)
-       this.settingMainService.getCurrSubscription(this.companyId).subscribe((data)=>{
-        console.log("Current Subscription",data)
-        this.currentSubscription=data;
-       
-      if((this.currentSubscription==null||this.currentSubscription.status!='ACTIVE')&&this.trialStatus.trialExpired===false &&this.trialDayLeft>0){
-        const trialDate = trialInfo ? new Date(trialInfo) : new Date(0); 
-        const now = new Date();
-
-        const ONE_DAY_MS = 24 * 60 * 60 * 1000;
-        const isWithinOneDay = (now.getTime() - trialDate.getTime()) <= ONE_DAY_MS;
-
-        if(trialInfo!==null&&trialInfo!==undefined&&isWithinOneDay){
-         this.showTrialAlert=false;
-        }else{
-          this.showTrialAlert=true;
+      this.settingMainService.getCurrSubscription(this.companyId).subscribe((data) => {
+        this.currentSubscription = data;
+        if ((this.currentSubscription == null || this.currentSubscription.status != 'ACTIVE') && this.trialStatus.trialExpired === false && this.trialDayLeft > 0) {
+          const trialDate = trialInfo ? new Date(trialInfo) : new Date(0);
+          const now = new Date();
+          const ONE_DAY_MS = 24 * 60 * 60 * 1000;
+          const isWithinOneDay = (now.getTime() - trialDate.getTime()) <= ONE_DAY_MS;
+          if (trialInfo !== null && trialInfo !== undefined && isWithinOneDay) {
+            this.showTrialAlert = false;
+          } else {
+            this.showTrialAlert = true;
+          }
+        } else {
+          this.showTrialAlert = false;
         }
-      }
-      else{
-        this.showTrialAlert=false;
-      }
-      },
-      (err)=>{
+      }, (err) => {
         console.log(err);
       });
-    },
-    (err)=>{
+    }, (err) => {
       console.log(err);
     });
-    
-    this.companyInformationForm = this.formBuilder.group(({
-      companyName: ['', Validators.required],
-      comapanyLogo: [''],
-      id: [''],
-      country: [''],
-      address1: ['', Validators.required],
-      address2: [''],
-      city: ['', Validators.required],
-      state: ['', Validators.required],
-      zipCode: ['', Validators.required],
-      phoneNo: ['', Validators.required],
-      website: ['', Validators.required],
-      customerEmail: ['']
-    }))
-    // this.fetchCompanyInformation();
 
     this.settingMainService.getNotification(this.email).subscribe((data) => {
-      // console.log("Notification Data",data);  
       this.unReadCount = 0;
       if (data != null) {
-        // console.log("Notification",data);
         this.notificationList = data;
-        console.log("Notification", this.notificationList);
         this.notificationList.forEach((notification: any) => {
-          console.log("Is Unread", notification.isRead);
           if (notification.read === false) {
             this.unReadCount++;
           }
         });
-        console.log("Unread Count", this.unReadCount);
-      }
-      else {
+      } else {
         this.notificationList = [];
       }
-    },
-      (err) => {
-        console.log("Notification Error", err);
-        this.notificationList = [];
-      });
-
-
+    }, (err) => {
+      console.log("Notification Error", err);
+      this.notificationList = [];
+    });
 
     this.notificationService.getNotificationObservable().subscribe((message) => {
       try {
         this.unReadCount = 0;
         this.notificationList = typeof message === 'string' ? JSON.parse(message) : message;
         this.notificationList.forEach((notification: any) => {
-          console.log("Is Unread", notification.isRead);
           if (notification.read === false) {
             this.unReadCount++;
           }
@@ -229,248 +180,178 @@ selectedCountryCode='United States of America';
         this.notificationList = [];
         console.error('Failed to parse notification message:', e);
       }
-      console.log("Notification received:", this.notificationList);
     });
 
     this.settingMainService.dashboard(this.email).subscribe((data) => {
-
       this.username = data.firstName + " " + data.lastName;
-      console.log("dashboard" + this.username)
-
       if (this.username == '' || this.username == null) {
         this.ngOnInit();
-      }
-      else {
-
+      } else {
         localStorage.setItem('name', this.username);
-
       }
+    }, (err) => {
+      console.log("myerr------------>", err.status);
+    });
 
-    },
-      (err) => {
-        console.log("myerr------------>", err.status);
-        // <<<<<<< HEAD
-
-        // =======
-
-        //     if(err.status=="403"||err.status=="401"){
-        //       // localStorage.clear()
-        //       // alert("Session expired");
-
-        //       // this.logout();
-
-        //     }
-        // >>>>>>> c76357d6ff37298b2abc3a005a33f527121f016e
-      })
-     
-     
-      this.stateList = [];
-      
-console.log("Company Information",this.companyInformationForm.value);
-
-
-      
-     
+    this.stateList = [];
   }
-    loadCompanyInformation(): void {
-    this.settingMainService
-      .getCompanyInformation(this.companyId)
-      .pipe(
-        switchMap((company: any) => {
-          this.companyInformation = company;
-          this.selectedCountryCode = company.country || '';
 
-          return this.settingMainService
-            .countryStateList(this.selectedCountryCode)
-            .pipe(
-              map((states: any[]) => {
-                return { company, states };
-              })
-            );
-        })
-      )
-      .subscribe({
-        next: (result: { company: any; states: any[] }) => {
-          this.stateList = result.states;
+  // Decoupled: patch the form immediately after company info loads,
+  // and load the state list independently (doesn't block form population)
+  loadCompanyInformation(): void {
+    this.settingMainService.getCompanyInformation(this.companyId).subscribe({
+      next: (company: any) => {
+        console.log('Company data received:', company);
+        this.companyInformation = company;
+        this.selectedCountryCode = company.country || '';
+        this.companyImage = company.comapanyLogo;
 
-          this.companyInformationForm.patchValue({
-            companyName: result.company.companyName,
-            address1: result.company.address1,
-            address2: result.company.address2,
-            city: result.company.city,
-            state: result.company.state,
-            country: result.company.country,
-            zipCode: result.company.zipCode,
-            phoneNo: result.company.phoneNo,
-            website: result.company.website
+        this.companyInformationForm.patchValue({
+          id: company.id,
+          companyName: company.companyName,
+          address1: company.address1,
+          address2: company.address2,
+          city: company.city,
+          state: company.state,
+          country: company.country,
+          zipCode: company.zipCode,
+          phoneNo: company.phoneNo,
+          website: company.website,
+          customerEmail: company.customerEmail
+        });
+
+        console.log('Form value after patch:', this.companyInformationForm.value);
+
+        // Load state list separately — doesn't block form patching above
+        if (company.country) {
+          this.settingMainService.countryStateList(company.country).subscribe({
+            next: (states: any[]) => {
+              this.stateList = states;
+              // re-apply state now that the dropdown options exist
+              this.companyInformationForm.patchValue({ state: company.state });
+            },
+            error: (err) => console.error('State list error:', err)
           });
-        },
-        error: (err) => console.error(err)
-      });
+        }
+      },
+      error: (err) => console.error('Company info error:', err)
+    });
   }
+
   fetchCompanyInformation() {
     this.settingMainService.getCompanyInformation(this.companyId).subscribe((data) => {
-      console.log("Company Information", data)
       if (data?.country) {
         this.countryService.setCountryCode(data.country);
       }
-       this.companyInformationForm.patchValue({
+      this.companyInformation = data;
+      this.companyInformationForm.patchValue({
         country: this.companyInformation?.country || '',
         state: this.companyInformation?.state || ''
-      })
-      this.companyInformation = data;
+      });
       this.companyImage = this.companyInformation?.comapanyLogo;
-      console.log(this.companyInformation)
-    },
-      (err) => {
-        console.log(err);
-      })
+    }, (err) => {
+      console.log(err);
+    });
   }
 
   playLottieAnimation() {
     Lottie.loadAnimation({
       container: this.lottieAnimationContainer.nativeElement,
-      renderer: 'svg', // or 'canvas', choose based on your preference
-      loop: true, // Set loop to true if needed
-      autoplay: true, // Autoplay the animation
-      path: 'assets/tick.json' // Path to your animation JSON file
+      renderer: 'svg',
+      loop: true,
+      autoplay: true,
+      path: 'assets/tick.json'
     });
   }
+
   update(val: number) {
-    console.log(val);
     this.current = val;
     const selectedVal = this.sideBarOption.find(opt => opt.number === this.current);
-    console.log("Selected Value:", selectedVal?.tab);
     localStorage.setItem('settingHomeOption', selectedVal?.tab.toString() || 'company');
     const selected = this.sideBarOption.find(opt => opt.number === val);
     if (selected) {
-      // Update the URL with query param ?tab=tabName
       this.router.navigate(['/setting-home'], { queryParams: { tab: selected.tab } });
     }
-
-    // if(val==3){
-    //   this.router.navigate(['/custom-setting'])
-    // }
   }
+
   logout() {
     this.auth.currUser = null;
     this.auth.isLoggedIn = false;
     this.settingMainService.removeSession(this.email).subscribe((data) => {
-      console.log("Session Removed")
-    },
-      (err) => {
-        console.log("Session delete error ", err)
-      })
+      console.log("Session Removed");
+    }, (err) => {
+      console.log("Session delete error ", err);
+    });
     localStorage.removeItem('token');
     localStorage.removeItem('user');
-
     localStorage.removeItem('currOption');
     localStorage.removeItem('authToken');
     localStorage.removeItem('companyId');
-
     this.router.navigate(['/login']);
-
-
   }
+
   imageUpload(event: any) {
-    console.log(event);
     const file = event.target.files[0];
     const reader = new FileReader();
     reader.readAsDataURL(file);
     reader.onload = () => {
-      console.log(reader.result);
-
       this.companyImage = reader.result;
-
-
     };
-
-
-
-
   }
+
   addCompanyInformation() {
     if (this.companyInformationForm.invalid) {
-      console.log(this.companyInformationForm.invalid)
-      this.triggerAlert('Please fill all required fields correctly', 'danger');
+      const invalidFields: string[] = [];
+      Object.keys(this.companyInformationForm.controls).forEach(key => {
+        const control = this.companyInformationForm.get(key);
+        if (control && control.invalid) {
+          invalidFields.push(key);
+        }
+      });
+      this.triggerAlert(`Please fill required fields correctly: ${invalidFields.join(', ')}`, 'danger');
       return;
     }
-    // Include country in the payload
-    const formData = this.companyInformationForm.value;
+
     this.companyInformationForm.controls['customerEmail'].setValue(this.email);
     this.companyInformationForm.controls['comapanyLogo'].setValue(this.companyImage);
     this.companyInformationForm.controls['id'].setValue(this.companyId);
-    console.log(this.country)
-    console.log("Form Data:", this.companyInformationForm.value);
 
-
-    const includedFields = ['companyName', 'address1', 'city', 'state', 'zipCode', 'phoneNo', 'website'];
+    const includedFields = ['companyName', 'address1', 'zipCode', 'phoneNo', 'website'];
     let allFieldsValid = true;
     includedFields.forEach(field => {
       const value = this.companyInformationForm.get(field)?.value;
       if (!value || (typeof value === 'string' && value.trim() === '')) {
-        this.triggerAlert(`Please Fill all Fields.`, 'danger');
+        this.triggerAlert(`Please Fill Field.`+field, 'danger');
         allFieldsValid = false;
-        return; // Stop submission if any field is invalid
-
-      } else {
-        console.log(`Field "${field}" has value:`, value);
+        return;
       }
-    })
+    });
     if (!allFieldsValid) {
-      return; // Stop submission if any field is invalid
+      return;
     }
-    // for (const key of Object.keys(this.companyInformationForm.controls)) {
-    //   if (!excludedFields.includes(key)) {
-    //     const value = this.companyInformationForm.get(key)?.value;
-    //     if (!value || (typeof value === 'string' && value.trim() === '')) {
-    //         this.triggerAlert(`Please fill out the "${key}" field.`, 'danger');
-    //         allFieldsValid = false;
-    //         break;
-    //     } else {
-    //       console.log(`Field "${key}" has value:`, value);
-    //     }
-    //   }
-    // }
 
-    // if (!allFieldsValid) {
-    //   return; // Stop submission if any field is invalid
-    // }
     this.settingMainService.addCompanyInformation(this.companyInformationForm.value).subscribe((data) => {
-      console.log("Company Data Uploaded");
       this.triggerAlert("Company Information Updated Successfully", 'success');
-      // this.ngOnInit()
-    },
-      (err) => {
-        console.log(err);
-
-        alert(err)
-      }
-      , () => {
-        console.log("Update")
-        // this.ngOnInit()
-        // this.fetchCompanyInformation();
-      })
-      // this.ngOnInit();
-      //  this.fetchCompanyInformation();
+    }, (err) => {
+      console.log(err);
+      alert(err);
+    });
   }
+
   triggerAlert(message: string, type: string) {
     this.alertMessage = message;
     this.alertType = type;
     this.showAlert = true;
-    // You can set a timeout to automatically hide the alert after a certain time
     setTimeout(() => {
       this.showAlert = false;
-    }, 5000); // Hide the alert after 5 seconds (adjust as needed)
+    }, 5000);
   }
 
   notificationClick() {
-    console.log("Notification Clicked");
     if (this.unReadCount > 0) {
       this.settingMainService.updateNotification(this.notificationList, this.email).subscribe(
         (response) => {
-          console.log(response);
-          this.unReadCount = 0; // Reset unread count after marking as read
+          this.unReadCount = 0;
         },
         (error) => {
           console.error("Error updating notification", error);
@@ -479,32 +360,25 @@ console.log("Company Information",this.companyInformationForm.value);
     }
   }
 
-
   forgotpassword() {
     const modalElement = document.getElementById('manageaccount');
-  const modalInstance = bootstrap.Modal.getInstance(modalElement);
-
-  if (modalInstance) {
-    modalInstance.hide();  // closes modal cleanly
+    const modalInstance = bootstrap.Modal.getInstance(modalElement);
+    if (modalInstance) {
+      modalInstance.hide();
+    }
+    this.router.navigate(['/reset-password']);
   }
 
-  this.router.navigate(['/reset-password']);
-  }
-  getStateList(country:any){
-    this.settingMainService.countryStateList(country).subscribe((data)=>{
-      this.stateList=data;
-      console.log("State List",this.stateList);
-    },
-    (err)=>{
+  getStateList(country: any) {
+    this.settingMainService.countryStateList(country).subscribe((data) => {
+      this.stateList = data;
+    }, (err) => {
       console.log(err);
     });
   }
-  makeTrialAlertFalse(){
-    this.showTrialAlert=false;
-    // let obj={
-    //   trialAlertDismissed:true,
-    //   dimissTime:new Date().toISOString()
-    // }
-    localStorage.setItem('trialAlertDismissedInfo',new Date().toISOString());
+
+  makeTrialAlertFalse() {
+    this.showTrialAlert = false;
+    localStorage.setItem('trialAlertDismissedInfo', new Date().toISOString());
   }
 }
