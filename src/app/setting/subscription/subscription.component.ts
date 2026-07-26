@@ -1020,6 +1020,8 @@ export class SubscriptionComponent {
       return;
     }
     console.log('Add Plan');
+    // Prefill user count from the existing subscription, if any, instead of always starting at 1
+    this.person = this.currSubscription?.person || this.startPerson;
     const modalElement = document.getElementById('addPerson');
     this.popUpModel = new bootstrap.Modal(modalElement);
     this.popUpModel.show();

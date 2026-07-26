@@ -591,23 +591,20 @@
 
         <!-- Performed By -->
         <div class="add-form-group">
-          <label>Performed By</label>
-          <select [(ngModel)]="inspectionInstance.actionPerformedBy" class="filter-select">
-  <!-- <option [value]="username" *ngIf="this.currUserRole !== 'ADMIN'">
-    {{ username || 'Current user' }}
-  </option> -->
-  <ng-container *ngIf="this.currUserRole === 'ADMIN'">
-    <option *ngFor="let performer of performers" [value]="performer">
-      {{ performer }}
-    </option>
-  </ng-container>
-  <ng-container *ngIf="this.currUserRole !== 'ADMIN'">
-    <option [value]="username" >
-    {{ username || 'Current user' }}
-  </option>
-  </ng-container>
-</select>
-        </div>
+  <label>Performed By</label>
+  <select [(ngModel)]="inspectionInstance.actionPerformedBy" name="actionPerformedBy" class="filter-select">
+    <ng-container *ngIf="currUserRole === 'ADMIN'">
+      <option *ngFor="let user of activeUsers" [value]="user.firstName + ' ' + user.lastName">
+        {{ user.firstName }} {{ user.lastName }}
+      </option>
+    </ng-container>
+    <ng-container *ngIf="currUserRole !== 'ADMIN'">
+      <option [value]="username">
+        {{ username || 'Current user' }}
+      </option>
+    </ng-container>
+  </select>
+</div>
 
         <!-- Notes -->
         <div class="add-form-group add-form-group-full">

@@ -27,6 +27,7 @@ import { NotificationService } from 'src/app/notification/notification.service';
 import { InspectionInstance } from '../asset-details/inspectionInstance';
 import { IDropdownSettings } from 'ng-multiselect-dropdown';
 import { IpInfo } from '../asset-details/asset-details.component';
+import { DashboardService } from 'src/app/dashboard/dashboard.service';
 
 @Component({
   selector: 'app-asset-preview',
@@ -136,6 +137,12 @@ export class AssetPreviewComponent {
   dueDateInput: string = '';
   qrDownloading = false;
 
+  freeTrialDetails: any;
+  trialDayLeft!: number;
+  currentSubscription: any;
+  currentSubcriptionMessage: string = '';
+  currentSubscriptionMessageStyle: string = 'color: white; border-radius: 5px ; padding: 5px; margin-left:-4px; font-weight: 500;';
+
   sideBarOption = [{
     number: 1,
     name: 'Customers',
@@ -179,7 +186,7 @@ export class AssetPreviewComponent {
 
   ];
 
-  constructor(private activatedRoute: ActivatedRoute, private assetPreviewService: AssetPreviewService, private datePipe: DatePipe, private auth: AuthService, private router: Router, private assetService: AssetsService, private notificationService: NotificationService) {
+  constructor(private activatedRoute: ActivatedRoute, private assetPreviewService: AssetPreviewService, private datePipe: DatePipe, private auth: AuthService, private router: Router, private assetService: AssetsService, private notificationService: NotificationService, private dashService: DashboardService) {
   }
   ngOnInit() {
     this.inspectionExportType='inspection-overview';
@@ -195,6 +202,7 @@ export class AssetPreviewComponent {
     this.showFieldsMap = new Map<string, boolean>();
     this.email = localStorage.getItem('user');
     this.companyId = localStorage.getItem('companyId');
+    this.loadCurrentPlanBanner();
     this.pageIndex = parseInt(localStorage.getItem('assetPreviewInspectionPageInd') || '0', 10);
     this.pageSize = parseInt(localStorage.getItem('assetPreviewInspectionPageSize') || '10', 10);
     this.currentInspection = null;
@@ -968,6 +976,9 @@ export class AssetPreviewComponent {
 
     this.inspectionInstance.assetId = this.assetId;
     this.inspectionInstance.companyId = this.companyId;
+    if (!this.inspectionInstance.actionPerformedBy) {
+      this.inspectionInstance.actionPerformedBy = this.username;
+    }
     // this.inspectionInstance.assetCategoryInspectionId = this.currentInspection.id;
     this.inspectionInstance.assetCategoryInspectionName = "";
     this.selectedItems.forEach((item: any) => {
@@ -1093,7 +1104,9 @@ export class AssetPreviewComponent {
   }
   tempSave() {
     this.applyDueDateToInstance();
-    this.inspectionInstance.actionPerformedBy = this.username;
+    if (!this.inspectionInstance.actionPerformedBy) {
+      this.inspectionInstance.actionPerformedBy = this.username;
+    }
     const currDateTime = new Date();
 
     if (this.inspectionInstance.createdAt == null ) {
@@ -1226,7 +1239,9 @@ export class AssetPreviewComponent {
       this.applyDueDateToInstance();
       console.log(this.inspectionInstance)
       console.log(this.stepObject)
-      this.inspectionInstance.actionPerformedBy = this.username;
+      if (!this.inspectionInstance.actionPerformedBy) {
+        this.inspectionInstance.actionPerformedBy = this.username;
+      }
       const currDateTime = new Date();
       if (this.inspectionInstance.createdAt == null ) {
         this.inspectionInstance.createdBy = this.username;
@@ -1559,7 +1574,9 @@ export class AssetPreviewComponent {
   //   doc.save(fileName);
   // }
 
-  downloadInspectionPDF(instance: any) {
+  
+
+downloadInspectionPDF(instance: any) {
     const instances = [instance]; // normalize single instance into array
   
     const doc = new jspdf.jsPDF();
@@ -1736,8 +1753,8 @@ export class AssetPreviewComponent {
           doc.setFontSize(9);
           doc.setFont('helvetica', 'bold');
           doc.text(
-            // template.name || template.templateName || `Section ${templateIndex + 1}`,
-            instance.assetCategoryInspectionName,
+            template.inspectionName || `Section ${templateIndex + 1}`,
+            // instance.assetCategoryInspectionName,
             margin + 4,
             yPosition + 5
           );
@@ -1855,6 +1872,41 @@ export class AssetPreviewComponent {
     localStorage.setItem('assetPreviewInspectionPageInd', this.pageIndex.toString());
     localStorage.setItem('assetPreviewInspectionPageSize', this.pageSize.toString());
     this.loadInspectionInstances();
+  }
+
+  loadCurrentPlanBanner() {
+    this.dashService.getFreeTrailDetails(this.companyId).subscribe(
+      (data) => {
+        this.freeTrialDetails = data;
+        if (this.freeTrialDetails?.trialExpired == false) {
+          const today = new Date();
+          const trialEndDate = new Date(this.freeTrialDetails.trialEndDate);
+          const timeDiff = trialEndDate.getTime() - today.getTime();
+          this.trialDayLeft = Math.ceil(timeDiff / (1000 * 3600 * 24));
+        }
+        this.dashService.getCurrSubscription(this.companyId).subscribe(
+          (subData) => {
+            this.currentSubscription = subData;
+            if (this.currentSubscription != null && this.currentSubscription.status === 'ACTIVE') {
+              this.currentSubcriptionMessage = ' Plan : ' + this.currentSubscription.subscriptionName;
+              this.currentSubscriptionMessageStyle += ' border:solid #800e94ff 1px; background-color: #9C27B0';
+            } else if ((this.currentSubscription == null || this.currentSubscription.status != 'ACTIVE') && this.freeTrialDetails?.trialExpired === false && this.trialDayLeft > 0) {
+              this.currentSubcriptionMessage = 'Trial Period - ' + this.trialDayLeft + ' Days Left';
+              this.currentSubscriptionMessageStyle += 'border:solid #ffab00 1px; background-color: #f5c242;';
+            } else {
+              this.currentSubcriptionMessage = 'No Plan';
+              this.currentSubscriptionMessageStyle += ' border:solid #dd1e10ff 1px; background-color: #F44336';
+            }
+          },
+          (err) => {
+            console.log('Current Subscription Error', err);
+          },
+        );
+      },
+      (err) => {
+        console.log('Free Trial Details Error', err);
+      },
+    );
   }
 
 }

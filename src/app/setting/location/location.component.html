@@ -99,7 +99,7 @@
               <i class="bi bi-search searchIcon"></i>
           </div>
           <div>
-              <button class="btn btn-primary" id="dropdownMenuButton" data-toggle="modal" data-target="#addBin">+ Bin</button>
+              <button class="btn btn-primary" id="dropdownMenuButton" data-toggle="modal" data-target="#addBin" (click)="openAddBinModal()">+ Bin</button>
           </div>
       </div>
       <div class="location_table">
@@ -243,7 +243,7 @@
       <div class="modal-content">
         <div class="modal-header" style="padding: 13px 15px">
           <h2 class="modal-title" id="exampleModalLongTitle" style="margin:0; display: flex; justify-content: center;">Add Bin</h2>
-          <button type="button" class="btn btn-light btn-sm ms-auto" data-dismiss="modal" aria-label="Close" style="border-radius: 10px;" #addBinCloseBox (click)="binNumber.value=''"  (click)="location.value=''">
+          <button type="button" class="btn btn-light btn-sm ms-auto" data-dismiss="modal" aria-label="Close" style="border-radius: 10px;" #addBinCloseBox (click)="openAddBinModal()">
             <!-- <span aria-hidden="true" style="height: 20px; width: 10px; background-color: #f0f0f0; border:none; display:block; padding-top: 0px;  ">&times;</span> -->
             <i class="bi bi-x-lg"></i>
           </button>
@@ -262,8 +262,10 @@
                   <label for="location">Location<span style="border: none; background-color: white;display:contents;" class="text-danger"> *</span></label>
                   <!-- <input type="text" class="form-control" id="location" formControlName="location" > -->
                   <!-- <i class="bi bi-trash-fill delete" style="display: inline-flex; margin-top: 12px; margin-left: 10px; color: red; margin-right: 5px;" (click)="removeMandatoryFieldFilter('assetId')"></i> -->
-                  <select class="form-select form-control" id="state" formControlName="locationId" style="font-size: 16px; padding-left: 11px; width: 100%; margin-top: 10px; border-radius: 5px; height: 35px; border: 1px solid #c0c0c0; transition: border-color 0.3s, box-shadow 0.3s;" #location >
-                    <option value="{{location.id}}" *ngFor="let location of locationActiveList">{{location.name}}</option>
+                  <select  class="form-select form-control" id="location" formControlName="locationId" style="font-size: 16px; padding-left: 11px; width: 100%; margin-top: 10px; border-radius: 5px; height: 35px; border: 1px solid #c0c0c0; transition: border-color 0.3s, box-shadow 0.3s;" #location >
+                    <option [value]="location.id" *ngFor="let location of locationActiveList">
+                      {{ location.name }}
+                    </option>
                     <!-- <option value="{{[customer.name,customer.id]}}" *ngFor="let customer of companyCustomerList">{{customer.name}}</option> -->
                     <!-- <option value="outOfService" selected>Out Of Service</option> -->
                   </select>
@@ -274,7 +276,7 @@
           </form>
        
           <div style="display: flex; justify-content: center; margin-top: 15px;">
-          <button  class="btn btn-light"  (click)="addBinCloseBox.click()" style="margin: 10px; width: 100px; margin-right: 30px; border: 1px solid #c0c0c0">Cancel</button>
+          <button  class="btn btn-light"  (click)="openAddBinModal(); addBinCloseBox.click()" style="margin: 10px; width: 100px; margin-right: 30px; border: 1px solid #c0c0c0">Cancel</button>
           <button type="submit" class="btn btn-primary"  (click)="saveBin()"  style="margin: 10px; width: 100px;">Save</button>
           
         </div>

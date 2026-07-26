@@ -195,6 +195,12 @@ export class AssetDetailsService {
       { headers: this.headers },
     );
   }
+  getUserDetail(companyId: string, email: string): Observable<any> {
+    return this.httpClient.get(
+      this.userEndpoint + 'getUserDetails/' + companyId + '/' + email,
+      { headers: this.headers },
+    );
+  }
   getQR(companyId: string): Observable<any> {
     // console.log("companyId->",companyId);
     return this.httpClient.get(this.assetEndpoint + 'getQRData/' + companyId, {

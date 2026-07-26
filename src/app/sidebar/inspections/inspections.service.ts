@@ -38,6 +38,7 @@ export class InspectionsService {
   companyCustomerEndpoint = environment.endpoint + 'companycustomer/';
   customerEndpoint = environment.endpoint + 'customer/';
   assetEndpoint = environment.endpoint + 'assets/';
+  userEndpoint = environment.endpoint + 'users/';
 
 
   // Feature 1: Load status counts
@@ -99,6 +100,18 @@ export class InspectionsService {
     });
     return this.httpClient.get(
       this.assetEndpoint + 'getActiveAssets/' + companyId,
+      { headers },
+    );
+  }
+
+  getActiveUserList(companyId: string): Observable<any> {
+    const headers = new HttpHeaders({
+      Authorization: `Bearer ${localStorage.getItem('authToken')}`,
+      'Content-Type': 'application/json',
+      'device-id': `${localStorage.getItem('deviceId')}`,
+    });
+    return this.httpClient.get(
+      this.userEndpoint + 'getActiveUsers/' + companyId,
       { headers },
     );
   }

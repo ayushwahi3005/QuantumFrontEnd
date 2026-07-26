@@ -823,6 +823,12 @@
                 <input type="date" class="form-control" [(ngModel)]="dueDateInput">
               </div>
               <div class="inspection-meta-item">
+                <label class="inspection-meta-label">Performed By</label>
+                <select class="form-select form-control" [(ngModel)]="inspectionInstance.actionPerformedBy" [ngModelOptions]="{standalone: true}">
+                  <option value="{{technician.firstName}} {{technician.lastName}}" *ngFor="let technician of technicalUserList">{{technician.firstName}} {{technician.lastName}}</option>
+                </select>
+              </div>
+              <div class="inspection-meta-item">
                 <label class="inspection-meta-label">Notes<span class="text-danger"> *</span></label>
                 <textarea class="form-control" [ngModel]="inspectionInstance.notes" (change)="addNote($event)"></textarea>
               </div>

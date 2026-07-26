@@ -28,6 +28,11 @@
     </li>
     <!-- <hr style="margin: 0.5rem 0;"> -->
 
+    <li class="free-trial-banner" style="margin-top: 400px; margin-bottom: 20px; position: absolute; bottom: 45px;">
+      <span [attr.style]="currentSubscriptionMessageStyle">
+        {{ currentSubcriptionMessage }}
+      </span>
+    </li>
 
     <li class="nav-list-item" style=" position: absolute; bottom: 0;" [routerLink]="['/setting-home']">
       <i class="bi bi-gear-fill" style="color:white;"></i>
@@ -836,6 +841,12 @@
               <div>
                 <label>Due Date</label>
                 <input type="date" class="form-control" [(ngModel)]="dueDateInput">
+              </div>
+              <div>
+                <label>Performed By</label>
+                <select class="form-select form-control" [(ngModel)]="inspectionInstance.actionPerformedBy" [ngModelOptions]="{standalone: true}">
+                  <option value="{{technician.firstName}} {{technician.lastName}}" *ngFor="let technician of technicalUserList">{{technician.firstName}} {{technician.lastName}}</option>
+                </select>
               </div>
               <div>
                 <label>Notes</label>

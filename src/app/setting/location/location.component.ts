@@ -208,7 +208,7 @@ selectedCountryCode='United States of America';
     this.locationService.saveBin(this.binForm.value).subscribe(
       (data) => {
         console.log(data);
-       
+        
       },
       (err) => {
         console.log(err);
@@ -217,6 +217,7 @@ selectedCountryCode='United States of America';
       () => {
         this.ngOnInit();
         this.addBinCloseBox.nativeElement.click();
+       
          this.triggerAlert("Successfully Added Bin","success")
       }
     );
@@ -441,7 +442,17 @@ selectedCountryCode='United States of America';
       }
     );
   }
-
+openAddBinModal(): void {
+  this.binForm.reset({
+    id: null,
+    locationId: '',
+    binNumber: '',
+    status: 'active',
+    companyId: this.companyId,
+  });
+  this.editVisibility = false;
+  this.editButtonId = -1;
+}
     
 
 // getStateList(country:any){

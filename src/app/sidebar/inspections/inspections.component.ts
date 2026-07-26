@@ -54,6 +54,12 @@ interface FilterCriteria {
   sortDirection: string;
 }
 
+interface ActiveUser {
+  id?: string;
+  firstName: string;
+  lastName: string;
+}
+
 @Component({
   selector: 'app-inspections',
   templateUrl: './inspections.component.html',
@@ -104,6 +110,7 @@ export class InspectionsComponent implements OnInit {
 
   templates: string[] = [''];
   performers: string[] = [''];
+  activeUsers: ActiveUser[] = [];
   assetCategories: any[] = [];
   assetLocations: any[] = [];
    locationBinOptions: LocationBinOption[] = []; 
@@ -146,6 +153,7 @@ export class InspectionsComponent implements OnInit {
     this.selectedTab = 'ALL';
     this.currUserRole= localStorage.getItem('role') || '';
     this.userRole = this.currUserRole;
+    console.log('Current user role:', this.currUserRole);
 
     this.dropdownSettings = {
       singleSelection: false,
@@ -165,6 +173,7 @@ export class InspectionsComponent implements OnInit {
     this.fetchAllCompanyCustomerCategories();
     this.fetchAllCompanyCustomers();
     this.fetchAllLocationWithBins();
+    this.populateActiveUsers();
   }
   private flattenLocationBinData(locations: any[]): LocationBinOption[] {
     const options: LocationBinOption[] = [];
@@ -291,7 +300,7 @@ private getLocationBinDisplayName(value: string): string {
       companyId: '',
       assetCategoryInspectionId: '',
       assetCategoryInspectionName: '',
-      actionPerformedBy: '',
+      actionPerformedBy: this.username|| '',
       createdBy: '',
       notes: '',
       createdAt: null,
@@ -727,7 +736,31 @@ private getLocationBinDisplayName(value: string): string {
 
   populatePerformerFilter(): void {
     this.performers = [...this.performerCounts.map(p => p.performedBy)];
+    console.log('Populated performers for filter:', this.performers);
   }
+  populateActiveUsers(): void {
+  this.inspectionsService.getActiveUserList(this.companyId).subscribe({
+    next: (data) => {
+      this.activeUsers = data || [];
+
+      if (this.currUserRole === 'ADMIN') {
+        const alreadyPresent = this.activeUsers.some(
+          (u) => `${u.firstName} ${u.lastName}` === this.username
+        );
+        if (!alreadyPresent && this.username) {
+          const [firstName, ...rest] = this.username.split(' ');
+          this.activeUsers.unshift({ firstName, lastName: rest.join(' ') });
+        }
+      }
+
+      console.log('Loaded active users:', this.activeUsers);
+    },
+    error: (error) => {
+      console.error('Error loading active users:', error);
+      this.activeUsers = [];
+    }
+  });
+}
 
   getDisplayStatus(status: string): string {
     return status?.charAt(0).toUpperCase() + status?.slice(1).toLowerCase();
